@@ -1,9 +1,9 @@
-#ifndef SiPixelMonitorDigi_SiPixelDigiSource_h
-#define SiPixelMonitorDigi_SiPixelDigiSource_h
+#ifndef Phase1SiPixelMonitorDigi_SiPixelDigiSource_h
+#define Phase1SiPixelMonitorDigi_SiPixelDigiSource_h
 // -*- C++ -*-
 //
-// Package:     SiPixelMonitorDigi
-// Class  :     SiPixelDigiSource
+// Package:     Phase1SiPixelMonitorDigi
+// Class  :     Phase1SiPixelDigiSource
 // 
 /**
 
@@ -28,7 +28,7 @@
 #include "DQMServices/Core/interface/DQMStore.h"
 #include "DQMServices/Core/interface/DQMEDAnalyzer.h"
 
-#include "DQM/SiPixelMonitorDigi/interface/SiPixelDigiModule.h"
+#include "DQM/Phase1SiPixelMonitorDigi/interface/Phase1SiPixelDigiModule.h"
 
 #include "DataFormats/Common/interface/DetSetVector.h"
 #include "DataFormats/SiPixelDigi/interface/PixelDigi.h"
@@ -45,10 +45,10 @@
 
 #include <boost/cstdint.hpp>
 
- class SiPixelDigiSource : public DQMEDAnalyzer {
+ class Phase1SiPixelDigiSource : public DQMEDAnalyzer {
     public:
-       explicit SiPixelDigiSource(const edm::ParameterSet& conf);
-       ~SiPixelDigiSource();
+       explicit Phase1SiPixelDigiSource(const edm::ParameterSet& conf);
+       ~Phase1SiPixelDigiSource();
 
        typedef edm::DetSet<PixelDigi>::const_iterator    DigiIterator;
        
@@ -80,7 +80,7 @@
        bool ladOn, layOn, phiOn;
        //forward:
        bool ringOn, bladeOn, diskOn; 
-       std::map<uint32_t,SiPixelDigiModule*> thePixelStructure;
+       std::map<uint32_t,Phase1SiPixelDigiModule*> thePixelStructure;
 
        int nDP1P1M1;
        int nDP1P1M2;

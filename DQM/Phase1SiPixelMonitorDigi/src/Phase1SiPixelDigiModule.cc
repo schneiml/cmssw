@@ -1,4 +1,4 @@
-#include "DQM/SiPixelMonitorDigi/interface/SiPixelDigiModule.h"
+#include "DQM/Phase1SiPixelMonitorDigi/interface/Phase1SiPixelDigiModule.h"
 #include "DQMServices/Core/interface/DQMStore.h"
 #include "DQM/SiPixelCommon/interface/SiPixelHistogramId.h"
 /// Framework
@@ -25,20 +25,20 @@
 //
 // Constructors
 //
-SiPixelDigiModule::SiPixelDigiModule() : id_(0),
+Phase1SiPixelDigiModule::Phase1SiPixelDigiModule() : id_(0),
 					 ncols_(416),
 					 nrows_(160) 
 {
 }
 ///
-SiPixelDigiModule::SiPixelDigiModule(const uint32_t& id) : 
+Phase1SiPixelDigiModule::Phase1SiPixelDigiModule(const uint32_t& id) : 
   id_(id),
   ncols_(416),
   nrows_(160)
 { 
 }
 ///
-SiPixelDigiModule::SiPixelDigiModule(const uint32_t& id, const int& ncols, const int& nrows) : 
+Phase1SiPixelDigiModule::Phase1SiPixelDigiModule(const uint32_t& id, const int& ncols, const int& nrows) : 
   id_(id),
   ncols_(ncols),
   nrows_(nrows)
@@ -47,11 +47,11 @@ SiPixelDigiModule::SiPixelDigiModule(const uint32_t& id, const int& ncols, const
 //
 // Destructor
 //
-SiPixelDigiModule::~SiPixelDigiModule() {}
+Phase1SiPixelDigiModule::~Phase1SiPixelDigiModule() {}
 //
 // Book histograms
 //
-void SiPixelDigiModule::book(const edm::ParameterSet& iConfig, const edm::EventSetup& iSetup, DQMStore::IBooker & iBooker, int type, bool twoD, bool hiRes, bool reducedSet, bool additInfo, bool isUpgrade) {
+void Phase1SiPixelDigiModule::book(const edm::ParameterSet& iConfig, const edm::EventSetup& iSetup, DQMStore::IBooker & iBooker, int type, bool twoD, bool hiRes, bool reducedSet, bool additInfo, bool isUpgrade) {
 
   //isUpgrade = iConfig.getUntrackedParameter<bool>("isUpgrade");
   edm::ESHandle<TrackerTopology> tTopoHandle;
@@ -315,7 +315,7 @@ void SiPixelDigiModule::book(const edm::ParameterSet& iConfig, const edm::EventS
 //
 // Fill histograms
 //
-int SiPixelDigiModule::fill(const edm::DetSetVector<PixelDigi>& input, const edm::EventSetup& iSetup,
+int Phase1SiPixelDigiModule::fill(const edm::DetSetVector<PixelDigi>& input, const edm::EventSetup& iSetup,
              MonitorElement* combBarrel, MonitorElement* chanBarrel, std::vector<MonitorElement*>& chanBarrelL, MonitorElement* combEndcap,
 			    bool modon, bool ladon, bool layon, bool phion, 
 			    bool bladeon, bool diskon, bool ringon, 
@@ -531,13 +531,13 @@ int SiPixelDigiModule::fill(const edm::DetSetVector<PixelDigi>& input, const edm
 }
 
 // This was done in the Source file, but is moved to the Module for thread safety reasons. Using ME that is booked here.
-void SiPixelDigiModule::resetRocMap(){
+void Phase1SiPixelDigiModule::resetRocMap(){
   if (mePixRocsDisk_) mePixRocsDisk_->Reset();
   if (mePixRocsLay_) mePixRocsLay_->Reset();
 }
 
 //Moved from source. Gets the zero and low eff ROCs from each module. Called in source for each module.
-std::pair<int,int> SiPixelDigiModule::getZeroLoEffROCs(){
+std::pair<int,int> Phase1SiPixelDigiModule::getZeroLoEffROCs(){
   int nZeroROC = 0;
   int nLoEffROC = 0;
   float SF = 1.0;

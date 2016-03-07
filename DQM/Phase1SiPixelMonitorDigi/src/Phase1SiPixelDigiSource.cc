@@ -1,7 +1,7 @@
 // -*- C++ -*-
 //
-// Package:    SiPixelMonitorDigi
-// Class:      SiPixelDigiSource
+// Package:    Phase1SiPixelMonitorDigi
+// Class:      Phase1SiPixelDigiSource
 // 
 /**\class 
 
@@ -15,7 +15,7 @@
 //         Created:  
 //
 //
-#include "DQM/SiPixelMonitorDigi/interface/SiPixelDigiSource.h"
+#include "DQM/Phase1SiPixelMonitorDigi/interface/Phase1SiPixelDigiSource.h"
 // Framework
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
@@ -45,7 +45,7 @@
 using namespace std;
 using namespace edm;
 
-SiPixelDigiSource::SiPixelDigiSource(const edm::ParameterSet& iConfig) :
+Phase1SiPixelDigiSource::Phase1SiPixelDigiSource(const edm::ParameterSet& iConfig) :
   conf_(iConfig),
   src_( conf_.getParameter<edm::InputTag>( "src" ) ),
   saveFile( conf_.getUntrackedParameter<bool>("saveFile",false) ),
@@ -86,20 +86,20 @@ SiPixelDigiSource::SiPixelDigiSource(const edm::ParameterSet& iConfig) :
    }
    infile.close();
    
-   LogInfo ("PixelDQM") << "SiPixelDigiSource::SiPixelDigiSource: Got DQM BackEnd interface"<<endl;
+   LogInfo ("PixelDQM") << "Phase1SiPixelDigiSource::Phase1SiPixelDigiSource: Got DQM BackEnd interface"<<endl;
 }
 
 
-SiPixelDigiSource::~SiPixelDigiSource()
+Phase1SiPixelDigiSource::~Phase1SiPixelDigiSource()
 {
    // do anything here that needs to be done at desctruction time
    // (e.g. close files, deallocate resources etc.)
-  LogInfo ("PixelDQM") << "SiPixelDigiSource::~SiPixelDigiSource: Destructor"<<endl;
+  LogInfo ("PixelDQM") << "Phase1SiPixelDigiSource::~Phase1SiPixelDigiSource: Destructor"<<endl;
 }
 
 
 void 
-SiPixelDigiSource::beginLuminosityBlock(const edm::LuminosityBlock& lb, edm::EventSetup const&)
+Phase1SiPixelDigiSource::beginLuminosityBlock(const edm::LuminosityBlock& lb, edm::EventSetup const&)
 {
   int thisls = lb.id().luminosityBlock();
 
@@ -117,7 +117,7 @@ SiPixelDigiSource::beginLuminosityBlock(const edm::LuminosityBlock& lb, edm::Eve
 }
 
 void 
-SiPixelDigiSource::endLuminosityBlock(const edm::LuminosityBlock& lb, edm::EventSetup const&)
+Phase1SiPixelDigiSource::endLuminosityBlock(const edm::LuminosityBlock& lb, edm::EventSetup const&)
 {
   int thisls = lb.id().luminosityBlock();
 
@@ -149,8 +149,8 @@ SiPixelDigiSource::endLuminosityBlock(const edm::LuminosityBlock& lb, edm::Event
 
 
 
-void SiPixelDigiSource::dqmBeginRun(const edm::Run& r, const edm::EventSetup& iSetup){
-  LogInfo ("PixelDQM") << " SiPixelDigiSource::beginJob - Initialisation ... " << std::endl;
+void Phase1SiPixelDigiSource::dqmBeginRun(const edm::Run& r, const edm::EventSetup& iSetup){
+  LogInfo ("PixelDQM") << " Phase1SiPixelDigiSource::beginJob - Initialisation ... " << std::endl;
   LogInfo ("PixelDQM") << "Mod/Lad/Lay/Phi " << modOn << "/" << ladOn << "/" 
 		       << layOn << "/" << phiOn << std::endl;
   LogInfo ("PixelDQM") << "Blade/Disk/Ring" << bladeOn << "/" << diskOn << "/" 
@@ -220,14 +220,14 @@ void SiPixelDigiSource::dqmBeginRun(const edm::Run& r, const edm::EventSetup& iS
   }
 }
 
-void SiPixelDigiSource::bookHistograms(DQMStore::IBooker & iBooker, edm::Run const &, const edm::EventSetup & iSetup){
+void Phase1SiPixelDigiSource::bookHistograms(DQMStore::IBooker & iBooker, edm::Run const &, const edm::EventSetup & iSetup){
   bookMEs(iBooker, iSetup);
 }
 
 //------------------------------------------------------------------
 // Method called for every event
 //------------------------------------------------------------------
-void SiPixelDigiSource::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+void Phase1SiPixelDigiSource::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   edm::ESHandle<TrackerTopology> tTopoHandle;
   iSetup.get<TrackerTopologyRcd>().get(tTopoHandle);
@@ -244,7 +244,7 @@ void SiPixelDigiSource::analyze(const edm::Event& iEvent, const edm::EventSetup&
   int lumiSection = (int)iEvent.luminosityBlock();
   int nEventDigis = 0; int nActiveModules = 0;
 
-  std::map<uint32_t,SiPixelDigiModule*>::iterator struct_iter;
+  std::map<uint32_t,Phase1SiPixelDigiModule*>::iterator struct_iter;
   for(int i=0; i!=192; i++) numberOfDigis[i]=0;
   for(int i=0; i!=1152; i++) nDigisPerChan[i]=0;  
   for(int i=0; i!=4; i++) nDigisPerDisk[i]=0;  
@@ -574,13 +574,13 @@ void SiPixelDigiSource::analyze(const edm::Event& iEvent, const edm::EventSetup&
 //------------------------------------------------------------------
 // Build data structure
 //------------------------------------------------------------------
-void SiPixelDigiSource::buildStructure(const edm::EventSetup& iSetup){
+void Phase1SiPixelDigiSource::buildStructure(const edm::EventSetup& iSetup){
 
   edm::ESHandle<TrackerTopology> tTopoHandle;
   iSetup.get<TrackerTopologyRcd>().get(tTopoHandle);
   const TrackerTopology *pTT = tTopoHandle.product();
 
-  LogInfo ("PixelDQM") <<" SiPixelDigiSource::buildStructure" ;
+  LogInfo ("PixelDQM") <<" Phase1SiPixelDigiSource::buildStructure" ;
   edm::ESHandle<TrackerGeometry> pDD;
   iSetup.get<TrackerDigiGeometryRecord>().get( pDD );
 
@@ -604,13 +604,13 @@ void SiPixelDigiSource::buildStructure(const edm::EventSetup& iSetup){
 	uint32_t id = detId();
 	int layer = PixelBarrelName(DetId(id),pTT,isUpgrade).layerName();
 	if (layer > noOfLayers) noOfLayers = layer;
-	SiPixelDigiModule* theModule = new SiPixelDigiModule(id, ncols, nrows);
-	thePixelStructure.insert(pair<uint32_t,SiPixelDigiModule*> (id,theModule));
+	Phase1SiPixelDigiModule* theModule = new Phase1SiPixelDigiModule(id, ncols, nrows);
+	thePixelStructure.insert(pair<uint32_t,Phase1SiPixelDigiModule*> (id,theModule));
 
       }	else if((detId.subdetId() == static_cast<int>(PixelSubdetector::PixelEndcap)) && (!isUpgrade)) {
 	LogDebug ("PixelDQM") << " ---> Adding Endcap Module " <<  detId.rawId() << endl;
 	uint32_t id = detId();
-	SiPixelDigiModule* theModule = new SiPixelDigiModule(id, ncols, nrows);
+	Phase1SiPixelDigiModule* theModule = new Phase1SiPixelDigiModule(id, ncols, nrows);
        
         PixelEndcapName::HalfCylinder side = PixelEndcapName(DetId(id),pTT,isUpgrade).halfCylinder();
         int disk   = PixelEndcapName(DetId(id),pTT,isUpgrade).diskName();
@@ -634,11 +634,11 @@ void SiPixelDigiSource::buildStructure(const edm::EventSetup& iSetup){
 	mask = false;
 	if(isPIB && mask) continue;
 	
-	thePixelStructure.insert(pair<uint32_t,SiPixelDigiModule*> (id,theModule));
+	thePixelStructure.insert(pair<uint32_t,Phase1SiPixelDigiModule*> (id,theModule));
       }	else if( (detId.subdetId() == static_cast<int>(PixelSubdetector::PixelEndcap)) && (isUpgrade)) {
 	LogDebug ("PixelDQM") << " ---> Adding Endcap Module " <<  detId.rawId() << endl;
 	uint32_t id = detId();
-	SiPixelDigiModule* theModule = new SiPixelDigiModule(id, ncols, nrows);
+	Phase1SiPixelDigiModule* theModule = new Phase1SiPixelDigiModule(id, ncols, nrows);
         
         PixelEndcapName::HalfCylinder side = PixelEndcapName(DetId(id),pTT,isUpgrade).halfCylinder();
         int disk   = PixelEndcapName(DetId(id),pTT,isUpgrade).diskName();
@@ -662,7 +662,7 @@ void SiPixelDigiSource::buildStructure(const edm::EventSetup& iSetup){
 	mask = false;
 	if(isPIB && mask) continue;
 	
-	thePixelStructure.insert(pair<uint32_t,SiPixelDigiModule*> (id,theModule));
+	thePixelStructure.insert(pair<uint32_t,Phase1SiPixelDigiModule*> (id,theModule));
       }//end_elseif(isUpgrade)
 
     }
@@ -672,7 +672,7 @@ void SiPixelDigiSource::buildStructure(const edm::EventSetup& iSetup){
 //------------------------------------------------------------------
 // Book MEs
 //------------------------------------------------------------------
-void SiPixelDigiSource::bookMEs(DQMStore::IBooker & iBooker, const edm::EventSetup& iSetup){
+void Phase1SiPixelDigiSource::bookMEs(DQMStore::IBooker & iBooker, const edm::EventSetup& iSetup){
   
   // Get DQM interface
   iBooker.setCurrentFolder(topFolderName_);
@@ -697,7 +697,7 @@ void SiPixelDigiSource::bookMEs(DQMStore::IBooker & iBooker, const edm::EventSet
     char title4[80]; sprintf(title4, "FED Digi Occupancy (NDigis/<NDigis>) vs LumiSections;Lumi Section;FED");
     avgfedDigiOccvsLumi = iBooker.book2D ("avgfedDigiOccvsLumi", title4, 640,0., 3200., 40, -0.5, 39.5);
   }  
-  std::map<uint32_t,SiPixelDigiModule*>::iterator struct_iter;
+  std::map<uint32_t,Phase1SiPixelDigiModule*>::iterator struct_iter;
  
   SiPixelFolderOrganizer theSiPixelFolder(false);
 
@@ -709,7 +709,7 @@ void SiPixelDigiSource::bookMEs(DQMStore::IBooker & iBooker, const edm::EventSet
       } else {
 
 	if(!isPIB) throw cms::Exception("LogicError")
-	  << "[SiPixelDigiSource::bookMEs] Creation of DQM folder failed";
+	  << "[Phase1SiPixelDigiSource::bookMEs] Creation of DQM folder failed";
       }
     }
     if(ladOn){
@@ -865,4 +865,4 @@ void SiPixelDigiSource::bookMEs(DQMStore::IBooker & iBooker, const edm::EventSet
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(SiPixelDigiSource);
+DEFINE_FWK_MODULE(Phase1SiPixelDigiSource);

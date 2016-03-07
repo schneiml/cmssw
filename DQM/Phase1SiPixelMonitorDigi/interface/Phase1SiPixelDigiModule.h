@@ -1,9 +1,9 @@
-#ifndef SiPixelMonitorDigi_SiPixelDigiModule_h
-#define SiPixelMonitorDigi_SiPixelDigiModule_h
+#ifndef Phase1SiPixelMonitorDigi_SiPixelDigiModule_h
+#define Phase1SiPixelMonitorDigi_SiPixelDigiModule_h
 // -*- C++ -*-
 //
-// Package:    SiPixelMonitorDigi
-// Class:      SiPixelDigiModule
+// Package:    Phase1SiPixelMonitorDigi
+// Class:      Phase1SiPixelDigiModule
 // 
 /**\class 
 
@@ -42,18 +42,18 @@
 #include "Geometry/TrackerNumberingBuilder/interface/GeometricDet.h"
 #include "Geometry/TrackerGeometryBuilder/interface/PixelGeomDetType.h"
 
-class SiPixelDigiModule {        
+class Phase1SiPixelDigiModule {        
 
  public:
 
   /// Default constructor
-  SiPixelDigiModule();
+  Phase1SiPixelDigiModule();
   /// Constructor with raw DetId
-  SiPixelDigiModule(const uint32_t& id);
+  Phase1SiPixelDigiModule(const uint32_t& id);
   /// Constructor with raw DetId and sensor size
-  SiPixelDigiModule(const uint32_t& id, const int& ncols, const int& nrows);
+  Phase1SiPixelDigiModule(const uint32_t& id, const int& ncols, const int& nrows);
   /// Destructor
-  ~SiPixelDigiModule();
+  ~Phase1SiPixelDigiModule();
 
   typedef edm::DetSet<PixelDigi>::const_iterator    DigiIterator;
 
