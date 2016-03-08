@@ -66,7 +66,7 @@ Phase1SiPixelRawDataErrorSource::Phase1SiPixelRawDataErrorSource(const edm::Para
   firstRun = true;
   LogInfo ("PixelDQM") << "Phase1SiPixelRawDataErrorSource::Phase1SiPixelRawDataErrorSource: Got DQM BackEnd interface"<<endl;
   topFolderName_ = conf_.getParameter<std::string>("TopFolderName");
-  inputSourceToken_ = consumes<FEDRawDataCollection>(conf_.getUntrackedParameter<string>("inputSource", "source"));
+  inputSourceToken_ = consumes<FEDRawDataCollection>(conf_.getUntrackedParameter<string>("inputSource", "rawDataCollector"));
 }
 
 
@@ -104,8 +104,10 @@ void Phase1SiPixelRawDataErrorSource::analyze(const edm::Event& iEvent, const ed
 {
   eventNo++;
   //check feds in readout
+  std::cout << "**** Anayze\n";
   if(eventNo==1){
     // check if any Pixel FED is in readout:
+  std::cout << "**** event1\n";
     edm::Handle<FEDRawDataCollection> rawDataHandle;
     iEvent.getByToken(inputSourceToken_, rawDataHandle);
     if(!rawDataHandle.isValid()){
@@ -114,6 +116,7 @@ void Phase1SiPixelRawDataErrorSource::analyze(const edm::Event& iEvent, const ed
     else{
       const FEDRawDataCollection& rawDataCollection = *rawDataHandle;
       for(int i = 0; i != 40; i++){
+  std::cout << "**** FED " << i << "\n";
         if(rawDataCollection.FEDData(i).size() && rawDataCollection.FEDData(i).data()) fedcounter->setBinContent(i+1,1);
       }
     }
@@ -123,6 +126,7 @@ void Phase1SiPixelRawDataErrorSource::analyze(const edm::Event& iEvent, const ed
   iEvent.getByToken( src_, input );
   if (!input.isValid()) return; 
 
+  std::cout << "**** isvalid \n";
   int lumiSection = (int)iEvent.luminosityBlock();
   
   int nEventBPIXModuleErrors = 0; int nEventFPIXModuleErrors = 0; int nEventBPIXFEDErrors = 0; int nEventFPIXFEDErrors = 0;

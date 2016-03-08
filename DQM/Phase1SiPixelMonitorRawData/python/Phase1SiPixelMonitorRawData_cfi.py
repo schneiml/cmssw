@@ -7,7 +7,8 @@ from Configuration.StandardSequences.Eras import eras
 
 Phase1SiPixelRawDataErrorSource = cms.EDAnalyzer("Phase1SiPixelRawDataErrorSource",
     TopFolderName = cms.string('Pixel'),
-    src = cms.InputTag("siPixelDigis"),
+    src = cms.InputTag("simSiPixelDigis"),
+    inputSource = cms.untracked.string("rawDataCollector"),
     outputFile = cms.string('Pixel_DQM_Error.root'),
     saveFile = cms.untracked.bool(False),
     isPIB = cms.untracked.bool(False),
