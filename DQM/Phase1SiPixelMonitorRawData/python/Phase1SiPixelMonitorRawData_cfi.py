@@ -15,8 +15,7 @@ Phase1SiPixelRawDataErrorSource = cms.EDAnalyzer("Phase1SiPixelRawDataErrorSourc
     reducedSet = cms.untracked.bool(False),
     modOn = cms.untracked.bool(True),
     ladOn = cms.untracked.bool(False),
-    bladeOn = cms.untracked.bool(False)
+    bladeOn = cms.untracked.bool(False),
+    isUpgrade = cms.untracked.bool(True)
 )
 
-# Modify for if the phase 1 pixel detector is active
-eras.phase1Pixel.toModify( Phase1SiPixelRawDataErrorSource, isUpgrade=cms.untracked.bool(True) )

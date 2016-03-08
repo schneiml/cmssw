@@ -28,6 +28,7 @@ Phase1SiPixelDigiSource = cms.EDAnalyzer("Phase1SiPixelDigiSource",
     ringOn = cms.untracked.bool(False),
     bladeOn = cms.untracked.bool(False),
     diskOn = cms.untracked.bool(False),
-    bigEventSize = cms.untracked.int32(1000)
+    bigEventSize = cms.untracked.int32(1000),
+    isUpgrade = cms.untracked.bool(True)
 )
 
