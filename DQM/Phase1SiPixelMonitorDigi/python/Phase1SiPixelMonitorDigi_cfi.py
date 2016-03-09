@@ -7,7 +7,7 @@ from Configuration.StandardSequences.Eras import eras
 
 Phase1SiPixelDigiSource = cms.EDAnalyzer("Phase1SiPixelDigiSource",
     TopFolderName = cms.string('Pixel'),
-    src = cms.InputTag("siPixelDigis"),
+    src = cms.InputTag("simSiPixelDigis"),
     outputFile = cms.string('Pixel_DQM_Digi.root'),
     saveFile = cms.untracked.bool(False),
     isPIB = cms.untracked.bool(False),

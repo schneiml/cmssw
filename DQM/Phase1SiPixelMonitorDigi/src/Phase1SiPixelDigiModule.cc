@@ -335,6 +335,7 @@ int Phase1SiPixelDigiModule::fill(const edm::DetSetVector<PixelDigi>& input, con
   }
 
   edm::DetSetVector<PixelDigi>::const_iterator isearch = input.find(id_); // search  digis of detid
+std::cout << "++++ For id " << id_ << " have " << isearch->data.size() << " total " << input.size() << "\n";
   
   unsigned int numberOfDigisMod = 0;
   int msize;

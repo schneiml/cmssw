@@ -233,11 +233,12 @@ void Phase1SiPixelDigiSource::analyze(const edm::Event& iEvent, const edm::Event
   iSetup.get<TrackerTopologyRcd>().get(tTopoHandle);
   const TrackerTopology *pTT = tTopoHandle.product();
   
+std::cout << "++++ Analyze\n";  
   // get input data
   edm::Handle< edm::DetSetVector<PixelDigi> >  input;
   iEvent.getByToken(srcToken_, input);
   if (!input.isValid()) return; 
-  
+std::cout << "++++ Data valid \n";  
 
   int bx = iEvent.bunchCrossing();
 
