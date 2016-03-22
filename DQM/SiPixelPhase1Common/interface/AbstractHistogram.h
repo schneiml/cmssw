@@ -20,44 +20,35 @@
 struct AbstractHistogram {
 
   void fill(double x, double y) {
-    assert(!vec1d);
-    count++;
     if (me) {
       me->Fill(x, y);
       return;
+    } else if (th1) {
+      th1->Fill(x, y);
+    } else {
+      assert(!"Invalid histogram. This is a problem in the HistogramManager.");
     } 
-    if (!vec2d) {
-      vec2d = new std::vector<std::pair<double,double>>();
-    }
-    vec2d->push_back(std::make_pair(x, y));
   }; 
   
   void fill(double x) {
-    assert(!vec2d);
-    count++;
     if (me) {
       me->Fill(x);
       return;
-    } 
-    if (!vec1d) {
-      vec1d = new std::vector<double>();
+    } else if (th1) {
+      th1->Fill(x);
+    } else {
+      assert(!"Invalid histogram. This is a problem in the HistogramManager.");
     }
-    vec1d->push_back(x);
   };
   
-  void fill() {
-    assert(!me  && !vec1d && !vec2d);
-    count++;
-  };
-  
-  int count = 0;
+  int count = 0; // how many things where inserted already. For concat.
+  bool is0d = false; // for a 0D histogram we still have a TH1D, with 1 bin and metadata on the y-Axis.
   MonitorElement* me = nullptr;
-  std::vector<double> *vec1d = nullptr;
-  std::vector<std::pair<double, double>> *vec2d = nullptr;
+  TH1* th1 = nullptr;
 
   ~AbstractHistogram() {
-    if (vec1d) delete vec1d;
-    if (vec2d) delete vec2d;
+    // if both are set the ME should own the TH1
+    if (th1 && !me) delete th1;
   };
 
 };

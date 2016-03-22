@@ -1,4 +1,4 @@
-#ifndef SiPixelPhase1Digis_h // Can we use #pagma once?
+#ifndef SiPixelPhase1Digis_h // Can we use #pragma once?
 #define SiPixelPhase1Digis_h
 // -*- C++ -*-
 //
@@ -8,31 +8,32 @@
 
 // Original Author: Marcel Schneider
 
-// DQM Stuff
-#include "DQMServices/Core/interface/DQMEDAnalyzer.h"
-
 // Input data stuff
 #include "DataFormats/Common/interface/DetSetVector.h"
 #include "DataFormats/SiPixelDigi/interface/PixelDigi.h"
 
 // PixelDQM Framework
-#include "DQM/SiPixelPhase1Common/interface/HistogramManager.h"
+#include "DQM/SiPixelPhase1Common/interface/PluginTemplates.h"
 
-class SiPixelPhase1Digis : public DQMEDAnalyzer {
+class SiPixelPhase1Digis : public SiPixelPhase1Base {
+  // List of quantities to be plotted. 
+  enum {
+    ADC, // digi ADC readouts
+    NDIGIS, // number of digis per event and module
 
+    MAX_HIST // a sentinel that gives the number of quantities (not a plot).
+  };
   public:
   explicit SiPixelPhase1Digis(const edm::ParameterSet& conf);
-  ~SiPixelPhase1Digis();
 
-  virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
-  virtual void dqmBeginRun(const edm::Run&, edm::EventSetup const&) override;
-  virtual void bookHistograms(DQMStore::IBooker &, edm::Run const &, edm::EventSetup const &) override;
+  void analyze(const edm::Event&, const edm::EventSetup&) ;
+
+  template<class Consumer>
+  void registerConsumes(const edm::ParameterSet& iConfig, Consumer& c);
 
   private:
   edm::InputTag src_;
   edm::EDGetTokenT<edm::DetSetVector<PixelDigi>> srcToken_;
-
-  HistogramManager histoman;
 
 };
 
