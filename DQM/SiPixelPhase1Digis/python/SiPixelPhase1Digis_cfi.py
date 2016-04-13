@@ -45,8 +45,7 @@ SiPixelPhase1DigisConf = cms.VPSet(
       Specification().groupBy("PXBarrel|PXEndcap/FED/Event")
                      .reduce("COUNT")
                      .groupBy("PXBarrel|PXEndcap/FED")
-		     .save()
-                     #.groupBy("PXBarrel|PXEndcap", "EXTEND_Y")
+                     .groupBy("PXBarrel|PXEndcap", "EXTEND_Y")
                      .save(),
       Specification().groupBy("PXBarrel|PXEndcap/PXLayer|PXDisk/FED/Event")
                      .reduce("COUNT")
@@ -56,6 +55,7 @@ SiPixelPhase1DigisConf = cms.VPSet(
   ),
   DefaultHisto.clone(
     enabled = True, # Event Rate
+    bookUndefined = True, # for now needed, since BX and Lumi are not defined in booking.
     name = "eventrate",
     title = "Rate of Pixel Events",
     xlabel = "Lumisection",
@@ -79,7 +79,7 @@ SiPixelPhase1DigisConf = cms.VPSet(
                      .groupBy(DefaultHisto.defaultGrouping.value() + "/PXBModule|PXFModule/row", "EXTEND_X")
                      .groupBy(DefaultHisto.defaultGrouping.value() + "/PXBModule|PXFModule", "EXTEND_Y")
                      .save(),
-      Specification().groupBy(DefaultHisto.defaultGrouping.value() + "/PXBModule|PXFModule/row")
+      Specification().groupBy(DefaultHisto.defaultGrouping.value() + "/PXBModule|PXFModule/col")
                      .groupBy(DefaultHisto.defaultGrouping.value() + "/PXBModule|PXFModule", "EXTEND_X")
                      .save(),
       Specification().groupBy(DefaultHisto.defaultGrouping.value() + "/PXBModule|PXFModule/row")
