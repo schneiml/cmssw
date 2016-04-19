@@ -18,7 +18,8 @@ SiPixelPhase1DigisConf = cms.VPSet(
                      .groupBy(parent(DefaultHisto.defaultGrouping), "EXTEND_X")
                      .saveAll(),
       Specification().groupBy(parent(DefaultHisto.defaultGrouping)) # per-layer
-                     .save()
+                     .save(),
+      Specification(PerModule).groupBy(DefaultHisto.defaultPerModule).save()
     )
   ),
   DefaultHisto.clone(
@@ -41,7 +42,10 @@ SiPixelPhase1DigisConf = cms.VPSet(
       Specification().groupBy(DefaultHisto.defaultGrouping.value() + "/DetId/Event")
                      .reduce("COUNT")
                      .groupBy(parent(DefaultHisto.defaultGrouping)) # per-layer
-                     .save()
+                     .save(),
+      Specification(PerModule).groupBy(DefaultHisto.defaultPerModule.value() + "/Event")
+                              .reduce("COUNT")
+                              .groupBy(DefaultHisto.defaultPerModule).save()
     )
   ),
   DefaultHisto.clone(
@@ -88,19 +92,19 @@ SiPixelPhase1DigisConf = cms.VPSet(
     ylabel = "#digis",
     dimensions = 0,
     specs = cms.VPSet(
-      Specification().groupBy(DefaultHisto.defaultGrouping.value() + "/PXBModule|PXPanel/row/col")
-                     .groupBy(DefaultHisto.defaultGrouping.value() + "/PXBModule|PXPanel/row", "EXTEND_X")
-                     .groupBy(DefaultHisto.defaultGrouping.value() + "/PXBModule|PXPanel", "EXTEND_Y")
+      Specification(PerModule).groupBy(DefaultHisto.defaultPerModule.value() + "/row/col")
+                     .groupBy(DefaultHisto.defaultPerModule.value() + "/row", "EXTEND_X")
+                     .groupBy(DefaultHisto.defaultPerModule.value(), "EXTEND_Y")
                      .save()
 		     .groupBy(DefaultHisto.defaultGrouping, "SUM").saveAll(),
 
-      Specification().groupBy(DefaultHisto.defaultGrouping.value() + "/PXBModule|PXPanel/col")
-                     .groupBy(DefaultHisto.defaultGrouping.value() + "/PXBModule|PXPanel", "EXTEND_X")
+      Specification(PerModule).groupBy(DefaultHisto.defaultPerModule.value() + "/col")
+                     .groupBy(DefaultHisto.defaultPerModule.value(), "EXTEND_X")
                      .save()
 		     .groupBy(DefaultHisto.defaultGrouping, "SUM").saveAll(),
 
-      Specification().groupBy(DefaultHisto.defaultGrouping.value() + "/PXBModule|PXPanel/row")
-                     .groupBy(DefaultHisto.defaultGrouping.value() + "/PXBModule|PXPanel", "EXTEND_X")
+      Specification(PerModule).groupBy(DefaultHisto.defaultPerModule.value() + "/row")
+                     .groupBy(DefaultHisto.defaultPerModule.value(), "EXTEND_X")
                      .save()
 		     .groupBy(DefaultHisto.defaultGrouping, "SUM").saveAll(),
 
