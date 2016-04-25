@@ -17,7 +17,7 @@
 
 class SiPixelPhase1Digis : public SiPixelPhase1Base {
   // List of quantities to be plotted. 
-  enum {
+  SIPIXEL_PHASE1_ENUM (
     ADC, // digi ADC readouts
     NDIGIS, // number of digis per event and module
     NDIGIS_FED, // number of digis per event and FED
@@ -26,7 +26,7 @@ class SiPixelPhase1Digis : public SiPixelPhase1Base {
     DEBUG, // geometry debugging
 
     MAX_HIST // a sentinel that gives the number of quantities (not a plot).
-  };
+  );
   public:
   explicit SiPixelPhase1Digis(const edm::ParameterSet& conf);
 

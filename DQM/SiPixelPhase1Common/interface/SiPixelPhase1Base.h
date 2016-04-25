@@ -17,17 +17,21 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "DQM/SiPixelPhase1Common/interface/HistogramManager.h"
+#include "DQM/SiPixelPhase1Common/interface/SiPixelPhase1Enum.h"
 
 #include <vector>
 
 // used as a mixin for Analyzer and Harvester.
+template<class phase1enum>
 class HistogramManagerHolder {
   public:
   HistogramManagerHolder(const edm::ParameterSet& iConfig)
     : geometryInterface(iConfig.getParameter<edm::ParameterSet>("geometry")) {
-    auto histograms = iConfig.getParameter<edm::VParameterSet>("histograms");
-    for (auto histoconf : histograms) {
-      histo.emplace_back(HistogramManager(histoconf, geometryInterface));
+    auto histograms = iConfig.getParameter<edm::ParameterSet>("histograms");
+    std::vector<std::string> names;
+    histograms.getParameterSetNames(names);
+    for (auto& name : names) {
+      histo.emplace_back(HistogramManager(histograms.getParameter<edm::ParameterSet>(name), geometryInterface));
     }
   };
 
@@ -38,7 +42,8 @@ class HistogramManagerHolder {
 
 // This is the base class your plugin may derive from. You are not required to
 // use it but if you just need some normal HistogramManager this should be perfect.
-class SiPixelPhase1Base : public DQMEDAnalyzer, public HistogramManagerHolder {
+template<class phase1enum> 
+class SiPixelPhase1Base : public DQMEDAnalyzer, public HistogramManagerHolder<phase1enum> {
   public:
   SiPixelPhase1Base(const edm::ParameterSet& iConfig) 
     : DQMEDAnalyzer(), HistogramManagerHolder(iConfig) {};
