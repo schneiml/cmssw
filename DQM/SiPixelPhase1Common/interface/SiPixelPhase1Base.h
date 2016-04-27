@@ -25,26 +25,21 @@
 // used as a mixin for Analyzer and Harvester.
 class HistogramManagerHolder {
   public:
-  HistogramManagerHolder(const edm::ParameterSet& iConfig)
+  template<class phase1enum>
+  HistogramManagerHolder(const edm::ParameterSet& iConfig, phase1enum* /* unused */)
     : geometryInterface(iConfig.getParameter<edm::ParameterSet>("geometry")) {
     auto histograms = iConfig.getParameter<edm::ParameterSet>("histograms");
     std::vector<std::string> names;
-    if (this->_enum_max() == 0) { // This is used for default harvesters
+    if (phase1enum::_enum_max() == 0) { // This is used for default harvesters
       histograms.getParameterSetNames(names);
-      std::cout << "+++ HistogramManagerHolder: using config order\n";
     } else { // for specialized ones, make sure the order is correct.
-      std::cout << "+++ HistogramManagerHolder: using enum order\n";
-      for (unsigned int i = 0; i < this->_enum_max(); i++) 
-        names.push_back(this->_tostring(i));
+      for (unsigned int i = 0; i < phase1enum::_enum_max(); i++) 
+        names.push_back(phase1enum::_tostring(i));
       //TODO: maybe push the others as well
     }
-    for (auto& name : names) {
-      std::cout << "+++ HistogramManagerHolder: putting " << name << "\n";
+    for (auto& name : names) 
       histo.emplace_back(HistogramManager(histograms.getParameter<edm::ParameterSet>(name), geometryInterface));
-    }
   };
-
-  SIPIXEL_PHASE1_ENUM();
 
   protected:
   std::vector<HistogramManager> histo;
@@ -55,8 +50,9 @@ class HistogramManagerHolder {
 // use it but if you just need some normal HistogramManager this should be perfect.
 class SiPixelPhase1Base : public DQMEDAnalyzer, public HistogramManagerHolder {
   public:
-  SiPixelPhase1Base(const edm::ParameterSet& iConfig) 
-    : DQMEDAnalyzer(), HistogramManagerHolder(iConfig) {};
+  template<class phase1enum>
+  SiPixelPhase1Base(const edm::ParameterSet& iConfig, phase1enum* classwithenum) 
+    : DQMEDAnalyzer(), HistogramManagerHolder(iConfig, classwithenum) {};
 
   // You should analyze something, and call histoman.fill(...).
   //void analyze(edm::Event const& e, edm::EventSetup const& eSetup);
@@ -75,10 +71,11 @@ class SiPixelPhase1Base : public DQMEDAnalyzer, public HistogramManagerHolder {
 // However, you have to instantiate one with the same config as your Analyzer 
 // to get the Harvesting one.
 // For custom harvesting, you have to derive from this one. 
-class SiPixelPhase1Harvester : public DQMEDHarvester, public HistogramManagerHolder {
+class SiPixelPhase1HarvesterBase : public DQMEDHarvester, public HistogramManagerHolder {
   public:
-  SiPixelPhase1Harvester(const edm::ParameterSet& iConfig) 
-    : DQMEDHarvester(), HistogramManagerHolder(iConfig) {};
+  template<class phase1enum>
+  SiPixelPhase1HarvesterBase(const edm::ParameterSet& iConfig, phase1enum* classwithenum) 
+    : DQMEDHarvester(), HistogramManagerHolder(iConfig, classwithenum) {};
 
   void dqmEndLuminosityBlock(DQMStore::IBooker& iBooker, DQMStore::IGetter& iGetter, edm::LuminosityBlock const& lumiBlock, edm::EventSetup const& eSetup) {
     for (HistogramManager& histoman : histo)

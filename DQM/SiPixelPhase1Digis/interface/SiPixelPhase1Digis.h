@@ -16,6 +16,7 @@
 #include "DQM/SiPixelPhase1Common/interface/SiPixelPhase1Base.h"
 
 class SiPixelPhase1Digis : public SiPixelPhase1Base {
+  public:
   // List of quantities to be plotted. 
   SIPIXEL_PHASE1_ENUM (
     ADC, // digi ADC readouts
@@ -24,10 +25,7 @@ class SiPixelPhase1Digis : public SiPixelPhase1Base {
     EVENT, // event frequency
     MAP, // digi hitmap per module
     DEBUG, // geometry debugging
-
-    MAX_HIST // a sentinel that gives the number of quantities (not a plot).
   );
-  public:
   explicit SiPixelPhase1Digis(const edm::ParameterSet& conf);
 
   void analyze(const edm::Event&, const edm::EventSetup&) ;

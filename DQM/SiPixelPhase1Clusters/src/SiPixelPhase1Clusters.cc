@@ -19,7 +19,7 @@
 
 
 SiPixelPhase1Clusters::SiPixelPhase1Clusters(const edm::ParameterSet& iConfig) :
-  SiPixelPhase1Base(iConfig) 
+  SiPixelPhase1Base(iConfig, this) 
 {
   srcToken_ = consumes<edmNew::DetSetVector<SiPixelCluster>>(iConfig.getParameter<edm::InputTag>("src"));
 }

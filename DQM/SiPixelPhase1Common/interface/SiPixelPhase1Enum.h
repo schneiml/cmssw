@@ -28,7 +28,7 @@
 // for now. 
 // The conversion function throw (hopefully) helpful exceptions on bad input.
 #define SIPIXEL_PHASE1_ENUM_IMPL(name, type, ...) enum name { __VA_ARGS__ }; \
- virtual std::string name##_tostring(type i) { \
+ static std::string name##_tostring(type i) { \
    auto max = sizeof((type[]){__VA_ARGS__}) / sizeof(type); \
    if (i >= max) throw cms::Exception("SiPixelPhase1EnumValueInvalid") << "Value '" << i << "' out of range for enum " ##name ", legal values {" #__VA_ARGS__ "}"; \
    const char* str = #__VA_ARGS__; \
@@ -37,12 +37,12 @@
    const char* end = str; \
    while (*end != '\0' && *end != ',') end++; \
    return std::string(str, end); } \
- virtual type name##_fromstring(std::string val) { \
+ static type name##_fromstring(std::string val) { \
    auto max = sizeof((type[]){__VA_ARGS__}) / sizeof(type); \
    for (unsigned int i = 0; i < max; i++) \
        if (name##_tostring(i) == val) return (type)i; \
    throw cms::Exception("SiPixelPhase1EnumValueInvalid") << "String name '" << val << "' not in enum " #name ", legal values {" #__VA_ARGS__ "}"; }; \
- virtual unsigned int name##_enum_max() { return sizeof((type[]){__VA_ARGS__}) / sizeof(type); }; 
+ static unsigned int name##_enum_max() { return sizeof((type[]){__VA_ARGS__}) / sizeof(type); }; 
    
 // Declares an anoynymous enum and uses unsigned int as a type for the enum
 // Use carefully, since the conversion functions are not properly scoped.
