@@ -12,7 +12,8 @@
 #include "DataFormats/SiPixelCluster/interface/SiPixelCluster.h"
 
 class SiPixelPhase1Clusters : public SiPixelPhase1Base {
-  enum {
+  public:
+  SIPIXEL_PHASE1_ENUM (
     CHARGE,
     SIZE,
     NCLUSTERS,
@@ -20,9 +21,8 @@ class SiPixelPhase1Clusters : public SiPixelPhase1Base {
     POSITION_B,
     POSITION_F,
     SIZE_VS_ETA
-  };
+  );
 
-  public:
   explicit SiPixelPhase1Clusters(const edm::ParameterSet& conf);
   void analyze(const edm::Event&, const edm::EventSetup&);
 

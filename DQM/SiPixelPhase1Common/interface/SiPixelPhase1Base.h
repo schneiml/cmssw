@@ -20,20 +20,31 @@
 #include "DQM/SiPixelPhase1Common/interface/SiPixelPhase1Enum.h"
 
 #include <vector>
+#include <iostream>
 
 // used as a mixin for Analyzer and Harvester.
-template<class phase1enum>
 class HistogramManagerHolder {
   public:
   HistogramManagerHolder(const edm::ParameterSet& iConfig)
     : geometryInterface(iConfig.getParameter<edm::ParameterSet>("geometry")) {
     auto histograms = iConfig.getParameter<edm::ParameterSet>("histograms");
     std::vector<std::string> names;
-    histograms.getParameterSetNames(names);
+    if (this->_enum_max() == 0) { // This is used for default harvesters
+      histograms.getParameterSetNames(names);
+      std::cout << "+++ HistogramManagerHolder: using config order\n";
+    } else { // for specialized ones, make sure the order is correct.
+      std::cout << "+++ HistogramManagerHolder: using enum order\n";
+      for (unsigned int i = 0; i < this->_enum_max(); i++) 
+        names.push_back(this->_tostring(i));
+      //TODO: maybe push the others as well
+    }
     for (auto& name : names) {
+      std::cout << "+++ HistogramManagerHolder: putting " << name << "\n";
       histo.emplace_back(HistogramManager(histograms.getParameter<edm::ParameterSet>(name), geometryInterface));
     }
   };
+
+  SIPIXEL_PHASE1_ENUM();
 
   protected:
   std::vector<HistogramManager> histo;
@@ -42,8 +53,7 @@ class HistogramManagerHolder {
 
 // This is the base class your plugin may derive from. You are not required to
 // use it but if you just need some normal HistogramManager this should be perfect.
-template<class phase1enum> 
-class SiPixelPhase1Base : public DQMEDAnalyzer, public HistogramManagerHolder<phase1enum> {
+class SiPixelPhase1Base : public DQMEDAnalyzer, public HistogramManagerHolder {
   public:
   SiPixelPhase1Base(const edm::ParameterSet& iConfig) 
     : DQMEDAnalyzer(), HistogramManagerHolder(iConfig) {};
@@ -64,7 +74,7 @@ class SiPixelPhase1Base : public DQMEDAnalyzer, public HistogramManagerHolder<ph
 // provides sane default implementations, so most plugins don't care about this.
 // However, you have to instantiate one with the same config as your Analyzer 
 // to get the Harvesting one.
-// For custom harvesting, you have to derive from this one.
+// For custom harvesting, you have to derive from this one. 
 class SiPixelPhase1Harvester : public DQMEDHarvester, public HistogramManagerHolder {
   public:
   SiPixelPhase1Harvester(const edm::ParameterSet& iConfig) 

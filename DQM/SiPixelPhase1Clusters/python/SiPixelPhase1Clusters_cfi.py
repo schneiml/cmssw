@@ -112,14 +112,14 @@ SiPixelPhase1ClustersSizeVsEta = DefaultHisto.clone(
   )
 )
 
-SiPixelPhase1ClustersConf = cms.VPSet(
-  SiPixelPhase1ClustersCharge,
-  SiPixelPhase1ClustersSize,
-  SiPixelPhase1ClustersNClusters,
-  SiPixelPhase1ClustersEventrate,
-  SiPixelPhase1ClustersPositionB,
-  SiPixelPhase1ClustersPositionF,
-  SiPixelPhase1ClustersSizeVsEta
+SiPixelPhase1ClustersConf = cms.PSet(
+  CHARGE     = SiPixelPhase1ClustersCharge,
+  SIZE       = SiPixelPhase1ClustersSize,
+  NCLUSTERS  = SiPixelPhase1ClustersNClusters,
+  EVENTRATE  = SiPixelPhase1ClustersEventrate,
+  POSITION_B = SiPixelPhase1ClustersPositionB,
+  POSITION_F = SiPixelPhase1ClustersPositionF,
+  SIZE_VS_ETA= SiPixelPhase1ClustersSizeVsEta
 )
 
 

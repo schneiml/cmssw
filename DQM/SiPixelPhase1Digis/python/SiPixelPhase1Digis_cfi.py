@@ -146,13 +146,13 @@ SiPixelPhase1DigisDebug = DefaultHisto.clone(
 )
 
 # This has to match the order of the names in the C++ enum.
-SiPixelPhase1DigisConf = cms.VPSet(
-  SiPixelPhase1DigisADC,
-  SiPixelPhase1DigisNdigis,
-  SiPixelPhase1DigisNdigisPerFED,
-  SiPixelPhase1DigisEvents,
-  SiPixelPhase1DigisHitmap,
-  SiPixelPhase1DigisDebug
+SiPixelPhase1DigisConf = cms.PSet(
+  ADC        = SiPixelPhase1DigisADC,
+  NDIGIS     = SiPixelPhase1DigisNdigis,
+  NDIGIS_FED = SiPixelPhase1DigisNdigisPerFED,
+  EVENT      = SiPixelPhase1DigisEvents,
+  MAP        = SiPixelPhase1DigisHitmap,
+  DEBUG      = SiPixelPhase1DigisDebug
 )
 
 SiPixelPhase1DigisAnalyzer = cms.EDAnalyzer("SiPixelPhase1Digis",

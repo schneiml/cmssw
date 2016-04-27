@@ -21,13 +21,14 @@
 // The magic here is that the enum names are passed thru __VA_ARGS__, and we 
 // also get a ", " separated string of the names as #__VA_ARGS__.
 // We use this to declare two functions _tostring and _fromstring, that contain
-// the constant string and parse it at runtime.
+// the constant string and parse it at runtime. These are virtual methods such
+// that the parent class can access then without CRTP or similar hacks.
 // This could be more efficient (use constexpr to declare a table?) but using 
 // strings in critical code is bad anyways, so this is correct, short, and fine
 // for now. 
 // The conversion function throw (hopefully) helpful exceptions on bad input.
 #define SIPIXEL_PHASE1_ENUM_IMPL(name, type, ...) enum name { __VA_ARGS__ }; \
- std::string name##_tostring(type i) { \
+ virtual std::string name##_tostring(type i) { \
    auto max = sizeof((type[]){__VA_ARGS__}) / sizeof(type); \
    if (i >= max) throw cms::Exception("SiPixelPhase1EnumValueInvalid") << "Value '" << i << "' out of range for enum " ##name ", legal values {" #__VA_ARGS__ "}"; \
    const char* str = #__VA_ARGS__; \
@@ -36,12 +37,12 @@
    const char* end = str; \
    while (*end != '\0' && *end != ',') end++; \
    return std::string(str, end); } \
- type name##_fromstring(std::string val) { \
+ virtual type name##_fromstring(std::string val) { \
    auto max = sizeof((type[]){__VA_ARGS__}) / sizeof(type); \
    for (unsigned int i = 0; i < max; i++) \
        if (name##_tostring(i) == val) return (type)i; \
    throw cms::Exception("SiPixelPhase1EnumValueInvalid") << "String name '" << val << "' not in enum " #name ", legal values {" #__VA_ARGS__ "}"; }; \
- unsigned int name##_enum_max() { return sizeof((type[]){__VA_ARGS__}) / sizeof(type); }; 
+ virtual unsigned int name##_enum_max() { return sizeof((type[]){__VA_ARGS__}) / sizeof(type); }; 
    
 // Declares an anoynymous enum and uses unsigned int as a type for the enum
 // Use carefully, since the conversion functions are not properly scoped.
