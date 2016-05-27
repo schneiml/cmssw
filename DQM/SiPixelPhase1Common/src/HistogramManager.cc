@@ -526,7 +526,7 @@ void HistogramManager::executeExtend(SummationStep& step, Table& t, bool isX) {
     n += bins;
     if (bins > 1) separators[new_vals] += std::to_string(n) + ",";
   }
-  for (auto& e : separators) e.second = "(" + e.second + ")";
+  for (auto& e : separators) e.second = "(" + e.second + ")/";
 
   Table out;
   for (auto& e : t) {
@@ -537,6 +537,8 @@ void HistogramManager::executeExtend(SummationStep& step, Table& t, bool isX) {
     std::string colname = geometryInterface.pretty(col0);
     TH1* th1 = e.second.th1;
     assert(th1);
+    auto separator = separators[new_vals];
+    if (colname == "") separator = "";  // for dummy column
 
     AbstractHistogram& new_histo = out[new_vals];
     GeometryInterface::Values copy(new_vals);
@@ -546,15 +548,14 @@ void HistogramManager::executeExtend(SummationStep& step, Table& t, bool isX) {
 
       const char* title;
       if (isX)
-        title =
-            (std::string("") + th1->GetTitle() + " per " + colname + ";" +
-             separators[new_vals] + colname + "/" +
-             th1->GetXaxis()->GetTitle() + ";" + th1->GetYaxis()->GetTitle())
-                .c_str();
+        title = (std::string("") + th1->GetTitle() + " per " + colname + ";" +
+                 colname + separator + th1->GetXaxis()->GetTitle() + ";" +
+                 th1->GetYaxis()->GetTitle())
+                    .c_str();
       else
         title = (std::string("") + th1->GetTitle() + " per " + colname + ";" +
-                 th1->GetXaxis()->GetTitle() + ";" + separators[new_vals] +
-                 colname + "/" + th1->GetYaxis()->GetTitle())
+                 th1->GetXaxis()->GetTitle() + ";" + colname + separator +
+                 th1->GetYaxis()->GetTitle())
                     .c_str();
 
       if (th1->GetDimension() == 1 && isX) {
