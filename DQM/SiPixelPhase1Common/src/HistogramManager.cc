@@ -523,8 +523,8 @@ void HistogramManager::executeExtend(SummationStep& step, Table& t, bool isX) {
       bins = th1->GetXaxis()->GetNbins();
     else
       bins = th1->GetYaxis()->GetNbins();
-    n += bins;
     if (bins > 1) separators[new_vals] += std::to_string(n) + ",";
+    n += bins;
   }
   for (auto& e : separators) e.second = "(" + e.second + ")/";
 
