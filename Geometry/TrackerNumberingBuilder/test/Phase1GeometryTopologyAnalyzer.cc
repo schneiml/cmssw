@@ -85,7 +85,7 @@ std::string Phase1GeometryTopologyAnalyzer::print(const TrackerTopology* tTopo, 
   GlobalVector rot(surface.rotation().zy()-surface.rotation().yz(),
 		   surface.rotation().zx()-surface.rotation().xz(),
 		   surface.rotation().yx()-surface.rotation().xy());
-  float angle= (acos((surface.rotation().xx()+surface.rotation().yy()+surface.rotation().zz()-1)/2)/atan(1))*45;
+  //float angle= (acos((surface.rotation().xx()+surface.rotation().yy()+surface.rotation().zz()-1)/2)/atan(1))*45;
   
   // Printout for CMSSW checks
   if ( subdet == PixelSubdetector::PixelBarrel ) {
