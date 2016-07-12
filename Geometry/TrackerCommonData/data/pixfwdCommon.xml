@@ -22,6 +22,5 @@
         <Rotation name="Y180" phiX="180.*deg" thetaX="90.*deg" phiY="90.*deg" thetaY="90.*deg" phiZ="0.*deg" thetaZ="180.*deg"/>
         <Rotation name="Z180" phiX="180.*deg" thetaX="90.*deg" phiY="270.*deg" thetaY="90.*deg" phiZ="0.*deg" thetaZ="0.*deg"/>
         <ReflectionRotation name="ReflectionX" phiX="180.*deg" thetaX="90.*deg" phiY="90.*deg" thetaY="90.*deg" phiZ="0.*deg" thetaZ="0.*deg"/>
-	<ReflectionRotation name="ReflectionZ" phiX="0.*deg" thetaX="90.*deg" phiY="90.*deg" thetaY="90.*deg" phiZ="0.*deg" thetaZ="180.*deg"/>
     </RotationSection>
 </DDDefinition>

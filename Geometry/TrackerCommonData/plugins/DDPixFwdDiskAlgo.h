@@ -27,7 +27,7 @@ private:
   std::string              childName;   //Child name
   std::string              rotName;     //Name of the base rotation matrix
   std::string              flagString;  //Flag if a blade is present
-  int                      nBlades;     //Number of blades in a half disk
+  int                      nBlades;     //Number of blades
   int                      startCopyNo; //Start Copy number
   double                   bladeAngle;  //Angle of blade rotation aroung y-axis
   double                   zPlane;      //Common shift in z for all blades
