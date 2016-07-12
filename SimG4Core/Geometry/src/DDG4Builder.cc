@@ -139,6 +139,13 @@ DDGeometryReturnType DDG4Builder::BuildGeometry() {
 	}
 	int offset = getInt("CopyNoOffset",ddcurLP);
 	int tag = getInt("CopyNoTag",ddcurLP);				
+        if (!gra.edgeData(cit->second)->rot_.rotation()) {
+          edm::LogError("SimG4CoreGeometry") << ">>Rotation invalid! d=" << gra.nodeData(cit->first).ddname() 
+            << " m=" << ddLP.ddname() << " cp=" << gra.edgeData(cit->second)->copyno_
+            << " r=" << gra.edgeData(cit->second)->rot_.ddname() << "\n" ;          
+
+        }
+        assert(gra.edgeData(cit->second)->rot_.rotation());
 	DDRotationMatrix rm(gra.edgeData(cit->second)->rot());
 	DD3Vector x, y, z;
 	rm.GetComponents(x, y, z);
