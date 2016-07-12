@@ -3,7 +3,7 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("PrintMaterialBudget")
 
 process.load('FWCore.MessageService.MessageLogger_cfi')
-process.load('Geometry.CMSCommonData.cmsExtendedGeometry2015XML_cfi')
+process.load('Geometry.CMSCommonData.cmsExtendedGeometry2017XML_cfi')
 process.load('Geometry.TrackerNumberingBuilder.trackerNumberingGeometry_cfi')
 process.load('Geometry.HcalCommonData.hcalParameters_cfi')
 process.load('Geometry.HcalCommonData.hcalDDDSimConstants_cfi')
@@ -61,6 +61,6 @@ process.g4SimHits.UseMagneticField        = False
 process.g4SimHits.Physics.DummyEMPhysics  = True
 process.g4SimHits.Physics.DefaultCutValue = 10. 
 process.g4SimHits.Watchers = cms.VPSet(cms.PSet(
-	Name           = cms.untracked.string('TIDF'),
+	Name           = cms.untracked.string('PixelForward'),
 	type           = cms.string('PrintMaterialBudgetInfo')
 ))
