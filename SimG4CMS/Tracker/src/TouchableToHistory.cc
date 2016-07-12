@@ -12,7 +12,7 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
-//#define DEBUG
+#define DEBUG
 
 void TouchableToHistory::buildAll(){
   if (alreadySet) return;
@@ -43,16 +43,20 @@ void TouchableToHistory::buildAll(){
     myMap[st] = nav_type((*it)->navType().begin(),(*it)->navType().end());
     myDirectMap[st] = (*it)->geographicalID();
 
-    /*
+
 #ifdef DEBUG    
-    LogDebug("TrackerSimDebugNumbering")<< " INSERTING "<<view.logicalPart().name()<<" "<<t<<" "<<hist->GetVolume()->GetLogicalVolume()->GetName();
+    //LogDebug("TrackerSimDebugNumbering")<< " INSERTING "<<view.logicalPart().name()<<" "<<t<<" "<<hist->GetVolume()->GetLogicalVolume()->GetName();
     LogDebug("TrackerSimDebugNumbering")<<" Sensitive: "<<hist->GetVolume()->GetLogicalVolume()->GetSensitiveDetector()<<std::endl;
     LogDebug("TrackerSimDebugNumbering")<<"Now size is "<<myDirectMap.size()<<std::endl;
-    if (oldsize == myDirectMap.size())
-      edm::LogError("TrackerSimInfoNumbering")<< "Touchable to History Error!!!!";
+    if (oldsize == myDirectMap.size()) {
+      edm::LogError log("TrackerSimInfoNumbering");
+      log << "Touchable to History Error at size " << oldsize << " detid " << (*it)->geographicalID()
+        << "\n Nav_Story (size " << st.size() << "):\n  ";
+      for (auto const& p : st) log << p.first << ": " << p.second << "\n  ";
+    }
     dumpG4VPV(hist);
 #endif
-    */
+
     delete hist;
 
   }
@@ -61,7 +65,7 @@ void TouchableToHistory::buildAll(){
   if (myDirectMap.size() != allSensitiveDets.size()){
     edm::LogError("TrackerSimInfoNumbering")<<" ERROR: DDD sensitive detectors do not match Geant4 ones.";
     //FIXME use throw
-    abort();
+    assert(!"ERROR: DDD sensitive detectors do not match Geant4 ones.");
   }
 
 
