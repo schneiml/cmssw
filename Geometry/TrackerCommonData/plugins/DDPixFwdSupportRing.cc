@@ -53,6 +53,7 @@ void DDPixFwdSupportRing::initialize(const DDNumericArguments & nArgs,
 }
 
 void DDPixFwdSupportRing::execute(DDCompactView& cpv) {
+  return;
   
   int copy = startCopyNo;
   DDName mother = parent().name();
