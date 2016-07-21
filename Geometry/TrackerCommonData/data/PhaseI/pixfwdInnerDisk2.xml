@@ -13,25 +13,13 @@
   <Constant name="OuterRingRMin"        value="[OuterRingRMax]-2.00*mm"/>
   <Constant name="OuterRingCFRMax"        value="[OuterRingRMin]"/>
   <Constant name="OuterRingCFRMin"        value="[OuterRingCFRMax]-0.5*mm"/>
-
   <Constant name="OuterRingHalfWidth"   value="14*mm"/>
   <Constant name="OuterRingZ"           value="[pixfwdDisks:DiskHalfWidth]-[OuterRingHalfWidth]"/>
-
-  <Constant name="InnerRingPhiStart"     value=" 33.862*deg"/><!-- same as in Algorithm -->
-  <Constant name="InnerRingPhiEnd"       value="154.862*deg"/><!-- same as in Algorithm -->
-  <Constant name="InnerRingTubsCount"    value="20" />
-  <Constant name="InnerRingSegmentDPhi"  value="([InnerRingPhiEnd]-[InnerRingPhiStart])/[InnerRingTubsCount]" />
-
-  <Constant name="OuterRingPhiStart"     value="  5.0*deg"/><!-- same as in Algorithm -->
-  <Constant name="OuterRingPhiEnd"       value="175.0*deg"/><!-- same as in Algorithm -->
-  <Constant name="OuterRingTubsCount"    value="40" />
-  <Constant name="OuterRingSegmentDPhi"  value="([OuterRingPhiEnd]-[OuterRingPhiStart])/[OuterRingTubsCount]" />
 
 </ConstantsSection>
  
 
 <SolidSection label="pixfwdInnerDisk2.xml">
-<!--
   <Tubs name="PixelForwardInnerDiskInnerRing"  startPhi="0." deltaPhi="360*deg"
    rMin="[InnerRingRMin]" rMax="[InnerRingRMax]" dz="[InnerRingHalfWidth]"/>
 
@@ -43,37 +31,26 @@
 
   <Tubs name="PixelForwardInnerDiskCFOuterRing"  startPhi="0." deltaPhi="360*deg"
    rMin="[OuterRingCFRMin]" rMax="[OuterRingCFRMax]" dz="[OuterRingHalfWidth]" />
--->
-
-  <Tubs name="PixelForwardInnerDiskInnerRingSegment"  startPhi="-[InnerRingSegmentDPhi]/2.0" deltaPhi="[InnerRingSegmentDPhi]"
-        rMin="[InnerRingRMin]" rMax="[InnerRingRMax]" dz="[InnerRingHalfWidth]"/>
-  <Tubs name="PixelForwardInnerDiskInnerRingCFSegment"  startPhi="-[InnerRingSegmentDPhi]/2.0" deltaPhi="[InnerRingSegmentDPhi]"
-        rMin="[InnerRingCFRMin]" rMax="[InnerRingCFRMax]" dz="[InnerRingHalfWidth]"/>
-
-  <Tubs name="PixelForwardInnerDiskOuterRingSegment"  startPhi="-[OuterRingSegmentDPhi]/2.0" deltaPhi="[OuterRingSegmentDPhi]"
-        rMin="[OuterRingRMin]" rMax="[OuterRingRMax]" dz="[OuterRingHalfWidth]"/>
-  <Tubs name="PixelForwardInnerDiskOuterRingCFSegment"  startPhi="-[OuterRingSegmentDPhi]/2.0" deltaPhi="[OuterRingSegmentDPhi]"
-        rMin="[OuterRingCFRMin]" rMax="[OuterRingCFRMax]" dz="[OuterRingHalfWidth]"/>
 </SolidSection>
  
 <LogicalPartSection label="pixfwdInnerDisk2.xml">
- <LogicalPart name="PixelForwardInnerDiskInnerRingSegment" category="support">
-  <rSolid name="PixelForwardInnerDiskInnerRingSegment"/>
+ <LogicalPart name="PixelForwardInnerDiskInnerRing" category="support">
+  <rSolid name="PixelForwardInnerDiskInnerRing"/>
   <rMaterial name="materials:C_C_InnerInnerRing"/>
  </LogicalPart>
   
- <LogicalPart name="PixelForwardInnerDiskOuterRingSegment" category="support">
-  <rSolid name="PixelForwardInnerDiskOuterRingSegment"/>
+ <LogicalPart name="PixelForwardInnerDiskOuterRing" category="support">
+  <rSolid name="PixelForwardInnerDiskOuterRing"/>
   <rMaterial name="materials:C_C_InnerOuterRing"/>
  </LogicalPart>
 
- <LogicalPart name="PixelForwardInnerDiskInnerRingCFSegment" category="support">
-  <rSolid name="PixelForwardInnerDiskInnerRingCFSegment"/>
+ <LogicalPart name="PixelForwardInnerDiskCFInnerRing" category="support">
+  <rSolid name="PixelForwardInnerDiskCFInnerRing"/>
   <rMaterial name="materials:FPix_CFSkin_InnerInnerRing"/>
  </LogicalPart>
   
- <LogicalPart name="PixelForwardInnerDiskOuterRingCFSegment" category="support">
-  <rSolid name="PixelForwardInnerDiskOuterRingCFSegment"/>
+ <LogicalPart name="PixelForwardInnerDiskCFOuterRing" category="support">
+  <rSolid name="PixelForwardInnerDiskCFOuterRing"/>
   <rMaterial name="materials:FPix_CFSkin_InnerOuterRing"/>
  </LogicalPart>
 
@@ -83,25 +60,25 @@
 <PosPartSection label="Rings">
   <PosPart copyNumber="1">
     <rParent name="pixfwdDisks:PixelForwardDisk2"/>
-    <rChild name="pixfwdInnerDisk2:PixelForwardInnerDiskInnerRingSegment"/>
+    <rChild name="pixfwdInnerDisk2:PixelForwardInnerDiskInnerRing"/>
     <Translation x="0.*mm" y="0.*mm" z="[InnerRingZ]"/>
   </PosPart>
 
   <PosPart copyNumber="1">
     <rParent name="pixfwdDisks:PixelForwardDisk2"/>
-    <rChild name="pixfwdInnerDisk2:PixelForwardInnerDiskOuterRingSegment"/>
+    <rChild name="pixfwdInnerDisk2:PixelForwardInnerDiskOuterRing"/>
     <Translation x="0.*mm" y="0.*mm" z="[OuterRingZ]"/>
   </PosPart>
  
   <PosPart copyNumber="1">
     <rParent name="pixfwdDisks:PixelForwardDisk2"/>
-    <rChild name="pixfwdInnerDisk2:PixelForwardInnerDiskInnerRingCFSegment"/>
+    <rChild name="pixfwdInnerDisk2:PixelForwardInnerDiskCFInnerRing"/>
     <Translation x="0.*mm" y="0.*mm" z="[InnerRingZ]"/>
   </PosPart>
 
   <PosPart copyNumber="1">
     <rParent name="pixfwdDisks:PixelForwardDisk2"/>
-    <rChild name="pixfwdInnerDisk2:PixelForwardInnerDiskInnerRingCFSegment"/>
+    <rChild name="pixfwdInnerDisk2:PixelForwardInnerDiskCFOuterRing"/>
     <Translation x="0.*mm" y="0.*mm" z="[OuterRingZ]"/>
   </PosPart>
  
@@ -130,37 +107,4 @@
  <String  name="FlagString"      value="YYYYYYYYYYYYYYYYYYYYYY"/>
 </Algorithm>
 
-<Algorithm name="track:DDPixFwdSupportRing">
-  <rParent name="pixfwdDisks:PixelForwardDisk2"/>
-  <String  name="Child1Name"       value="pixfwdInnerDisk2:PixelForwardInnerDiskInnerRingSegment"/>
-  <String  name="Child2Name"       value="pixfwdInnerDisk2:PixelForwardInnerDiskInnerRingCFSegment"/>
-  <Numeric name="StartCopyNo"      value="0"/>
-  <Numeric name="Count"            value="[InnerRingTubsCount]"/>
-  <Numeric name="AnchorZ"          value="[InnerRingZ] + 14.343*mm"/>
-  <Vector name="Angle" type="numeric" nEntries="5">
-    33.862*deg, 54.629*deg, 74.862*deg, 112.862*deg, 154.862*deg
-  </Vector>
-  <Vector name="ZPos" type="numeric" nEntries="5">
-    -8.0*mm, -16.0*mm, -15.0*mm, -6.0*mm, -21.0*mm
-  </Vector>
-  <Numeric name="CreateBothHalves" value="1"/>
-  <String  name="RotationName"    value="pixfwdInnerDisk2:InnerRingSegment"/>
-</Algorithm>
-
-<Algorithm name="track:DDPixFwdSupportRing">
-  <rParent name="pixfwdDisks:PixelForwardDisk2"/>
-  <String  name="Child1Name"       value="pixfwdInnerDisk2:PixelForwardInnerDiskOuterRingSegment"/>
-  <String  name="Child2Name"       value="pixfwdInnerDisk2:PixelForwardInnerDiskOuterRingCFSegment"/>
-  <Numeric name="StartCopyNo"      value="0"/>
-  <Numeric name="Count"            value="[OuterRingTubsCount]"/>
-  <Numeric name="AnchorZ"          value="[OuterRingZ]"/>
-  <Vector name="Angle" type="numeric" nEntries="7">
-    5.0*deg, 20.0*deg, 60.0*deg, 80.0*deg, 103.0*deg, 110.0*deg, 175.0*deg
-  </Vector>
-  <Vector name="ZPos" type="numeric" nEntries="7">
-    9.234*mm, 8.666*mm, -1.560*mm, -3.052*mm, 9.023*mm, 9.278*mm, -9.120*mm
-  </Vector>
-  <Numeric name="CreateBothHalves" value="1"/>
-  <String  name="RotationName"    value="pixfwdInnerDisk2:OuterRingSegment"/>
-</Algorithm>
 </DDDefinition>
