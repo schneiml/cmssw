@@ -8,7 +8,7 @@
   <Constant name="InnerRingCFRMax"        value="[InnerRingCFRMin]+0.5*mm"/>
   <Constant name="InnerRingSegmentHalfWidth"   value="15.0*mm"/>
   <Constant name="InnerRingHalfWidth"   value="[InnerRingSegmentHalfWidth] + (15.0*mm/2.0)"/><!-- max offset from Algorithm -->
-  <Constant name="InnerRingZ"           value="[pixfwdDisks:DiskHalfWidth]-[InnerRingHalfWidth]"/>
+  <Constant name="InnerRingZ"           value="[pixfwdDisks:DiskHalfWidth]-[InnerRingHalfWidth] - 23.0*mm"/>
 
   <Constant name="OuterRingRMax"        value="116.6*mm"/> 
   <Constant name="OuterRingRMin"        value="[OuterRingRMax]-2.00*mm"/>
