@@ -3,14 +3,14 @@
 
 <ConstantsSection label="pixfwdOuterDiskSupportRings" eval="true">
   
-  <Constant name="OuterRingRMax"        value="166.0*mm"/>
+  <Constant name="OuterRingRMax"        value="167.5*mm"/><!-- see inner disk comments -->
   <Constant name="OuterRingRMin"        value="[OuterRingRMax]-2.0*mm"/>
   <Constant name="OuterRingCFRMax"      value="[OuterRingRMin]"/>
   <Constant name="OuterRingCFRMin"      value="[OuterRingCFRMax]-0.5*mm"/>
   <Constant name="OuterRingSegmentHalfWidth"   value="18.6*mm"/>
   <Constant name="OuterRingHalfWidth"   value="[OuterRingSegmentHalfWidth] + (14.32*mm/2.0)"/>
   <Constant name="OuterRingZ"           value="-[pixfwdDisks:DiskHalfWidth]+[OuterRingHalfWidth]"/>
-  <Constant name="InnerRingRMax"      value="89.2*mm"/>
+  <Constant name="InnerRingRMax"      value="90.1*mm"/>
   <Constant name="InnerRingRMin"      value="[InnerRingRMax]-2.0*mm"/>
   <Constant name="InnerRingCFRMax"     value="[InnerRingRMin]"/>
   <Constant name="InnerRingCFRMin"     value="[InnerRingCFRMax]-0.5*mm"/>
