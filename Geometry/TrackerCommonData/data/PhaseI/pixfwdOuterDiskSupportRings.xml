@@ -3,18 +3,18 @@
 
 <ConstantsSection label="pixfwdOuterDiskSupportRings" eval="true">
   
-  <Constant name="OuterRingRMax"        value="167.5*mm"/><!-- see inner disk comments -->
-  <Constant name="OuterRingRMin"        value="[OuterRingRMax]-2.0*mm"/>
-  <Constant name="OuterRingCFRMax"      value="[OuterRingRMin]"/>
-  <Constant name="OuterRingCFRMin"      value="[OuterRingCFRMax]-0.5*mm"/>
-  <Constant name="OuterRingSegmentHalfWidth"   value="18.6*mm"/>
+  <Constant name="OuterRingRMin"        value="165.3*mm"/><!-- see inner disk comments -->
+  <Constant name="OuterRingRMax"        value="[OuterRingRMin]+2.1*mm"/>
+  <Constant name="OuterRingCFRMin"      value="[OuterRingRMax]"/>
+  <Constant name="OuterRingCFRMax"      value="[OuterRingCFRMin]+0.5*mm"/>
+  <Constant name="OuterRingSegmentHalfWidth"   value="16*mm"/>
   <Constant name="OuterRingHalfWidth"   value="[OuterRingSegmentHalfWidth] + (14.32*mm/2.0)"/>
   <Constant name="OuterRingZ"           value="-[pixfwdDisks:DiskHalfWidth]+[OuterRingHalfWidth]"/>
-  <Constant name="InnerRingRMax"      value="90.1*mm"/>
-  <Constant name="InnerRingRMin"      value="[InnerRingRMax]-2.0*mm"/>
+  <Constant name="InnerRingRMax"      value="90.05*mm"/>
+  <Constant name="InnerRingRMin"      value="[InnerRingRMax]-2.5*mm"/>
   <Constant name="InnerRingCFRMax"     value="[InnerRingRMin]"/>
   <Constant name="InnerRingCFRMin"     value="[InnerRingCFRMax]-0.5*mm"/>
-  <Constant name="InnerRingSegmentHalfWidth"   value="11.25*mm"/>
+  <Constant name="InnerRingSegmentHalfWidth"   value="12*mm"/>
   <Constant name="InnerRingHalfWidth"   value="[InnerRingSegmentHalfWidth] + (18.675*mm/2.0)"/>
   <Constant name="InnerRingZ"           value="-[pixfwdDisks:DiskHalfWidth]+[InnerRingHalfWidth]"/>
 
@@ -36,7 +36,7 @@
    rMin="[InnerRingCFRMin]" rMax="[InnerRingRMax]" dz="[InnerRingHalfWidth]" />
 
   <Tubs name="PixelForwardOuterDiskOuterRing"  startPhi="0." deltaPhi="360*deg"
-   rMin="[OuterRingCFRMin]" rMax="[OuterRingRMax]" dz="[OuterRingHalfWidth]" />
+   rMin="[OuterRingRMin]" rMax="[OuterRingCFRMax]" dz="[OuterRingHalfWidth]" />
 
 
   <Tubs name="PixelForwardOuterDiskInnerRingSegment"  startPhi="-[InnerRingSegmentDPhi]/2.0" deltaPhi="[InnerRingSegmentDPhi]"
