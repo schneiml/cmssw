@@ -1,4 +1,5 @@
 def = <CutTubs name="PixelForwardOuterDiskOuterRing%d" rMin="[OuterRingRMin]" rMax="[OuterRingRMax]"
+place = <PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskOuterRing%d"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + %f*mm"/></PosPart>
 
 Segments (r = 167): 
 y = inf
