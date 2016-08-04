@@ -16,12 +16,18 @@ BEGIN {
     ndefs = 0;
     l_or_t = "l";
     segment = 0;
+    min_z = 1e9;
+    max_z = -1e9;
 }
 
 # variables to be set in the beginning
 match($0, /def = (.*)$/, ary) {
-    defs[ndefs] = ary[1];
     ndefs++;
+    defs[ndefs] = ary[1];
+}
+
+match($0, /place = (.*)$/, ary) {
+    places[ndefs] = ary[1];
 }
 
 match($0, /r = ([0-9.]+)/, ary) {
@@ -50,6 +56,9 @@ match($0, /phi = ([0-9.]+)/, ary) {
 # The values here always define P2, P1 was saved above.
 match($0, /z = ([-0-9.]+)/, ary) {
     z = ary[1];
+    # track the min/max to properly place&align later
+    if (z < min_z) min_z = z;
+    if (z > max_z) max_z = z;
     if (l_or_t  == "l") {
         P2_z_l = z;
         l_or_t = "t";
@@ -102,6 +111,9 @@ match($0, /z = ([-0-9.]+)/, ary) {
             
             # segment counter for the xml snippet
             segment++;
+
+            # save the offset for later
+            offsets[segment] = offset;
             
             # output one tag for each def (for skin/core)
             for (def in defs) {
@@ -120,5 +132,21 @@ match($0, /z = ([-0-9.]+)/, ary) {
         
         # reset the "side" state machine.
         l_or_t = "l";
+    }
+}
+
+# print the PosPart tags. The tag itself is passed in, we only compute the 
+# offset and add the numbers.
+END {
+    print("");
+    print("<!-- width: " (max_z - min_z) " -->");
+    shift = min_z + (max_z-min_z)/2;
+    for (seg in offsets) {
+        # for the offset, we subtract the min, to get something aligned
+        offset = offsets[seg] - shift;
+        for (place in places) {
+            printf(places[place], seg, offset);
+            print("");
+        }
     }
 }
