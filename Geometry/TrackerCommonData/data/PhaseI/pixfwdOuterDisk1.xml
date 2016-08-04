@@ -148,41 +148,13 @@
     <Translation x="0.*mm" y="0.*mm" z="[InnerRingZ]"/>
   </PosPart>
 
-  <PosPart copyNumber="1">
-    <rParent name="pixfwdDisks:PixelForwardDisk1"/>
-    <rChild name="pixfwdOuterDisk1:PixelForwardOuterDiskOuterRing1"/>
-    <Translation x="0.*mm" y="0.*mm" z="[OuterRingZ]"/>
-  </PosPart>
-  <PosPart copyNumber="1">
-    <rParent name="pixfwdDisks:PixelForwardDisk1"/>
-    <rChild name="pixfwdOuterDisk1:PixelForwardOuterDiskOuterRing2"/>
-    <Translation x="0.*mm" y="0.*mm" z="[OuterRingZ]"/>
-  </PosPart>
-  <PosPart copyNumber="1">
-    <rParent name="pixfwdDisks:PixelForwardDisk1"/>
-    <rChild name="pixfwdOuterDisk1:PixelForwardOuterDiskOuterRing3"/>
-    <Translation x="0.*mm" y="0.*mm" z="[OuterRingZ]"/>
-  </PosPart>
-  <PosPart copyNumber="1">
-    <rParent name="pixfwdDisks:PixelForwardDisk1"/>
-    <rChild name="pixfwdOuterDisk1:PixelForwardOuterDiskOuterRing4"/>
-    <Translation x="0.*mm" y="0.*mm" z="[OuterRingZ]"/>
-  </PosPart>
-  <PosPart copyNumber="1">
-    <rParent name="pixfwdDisks:PixelForwardDisk1"/>
-    <rChild name="pixfwdOuterDisk1:PixelForwardOuterDiskOuterRing5"/>
-    <Translation x="0.*mm" y="0.*mm" z="[OuterRingZ]"/>
-  </PosPart>
-  <PosPart copyNumber="1">
-    <rParent name="pixfwdDisks:PixelForwardDisk1"/>
-    <rChild name="pixfwdOuterDisk1:PixelForwardOuterDiskOuterRing6"/>
-    <Translation x="0.*mm" y="0.*mm" z="[OuterRingZ]"/>
-  </PosPart>
-  <PosPart copyNumber="1">
-    <rParent name="pixfwdDisks:PixelForwardDisk1"/>
-    <rChild name="pixfwdOuterDisk1:PixelForwardOuterDiskOuterRing7"/>
-    <Translation x="0.*mm" y="0.*mm" z="[OuterRingZ]"/>
-  </PosPart>
+<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskOuterRing4"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + 2.750000*mm"/></PosPart>
+<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskOuterRing5"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + 7.250000*mm"/></PosPart>
+<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskOuterRing6"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + 3.750000*mm"/></PosPart>
+<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskOuterRing7"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + -2.500000*mm"/></PosPart>
+<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskOuterRing1"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + 7.250000*mm"/></PosPart>
+<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskOuterRing2"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + 1.500000*mm"/></PosPart>
+<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskOuterRing3"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + -2.750000*mm"/></PosPart>
 
   <PosPart copyNumber="1">
     <rParent name="pixfwdDisks:PixelForwardDisk1"/>
