@@ -36,7 +36,7 @@
 <CutTubs name="PixelForwardOuterDiskOuterRing1" rMin="[OuterRingRMin]" rMax="[OuterRingRMax]"
  dz="14.75*mm"
  startPhi="1.6307124090408036*rad"
- deltaPhi="2.1117690481992404*rad"
+ deltaPhi="0.481057*rad"
  lx="0.083715" ly="0.0259369" lz="-0.996152"
  tx="0" ty="0" tz="1"
 />
@@ -44,7 +44,7 @@
 <CutTubs name="PixelForwardOuterDiskOuterRing2" rMin="[OuterRingRMin]" rMax="[OuterRingRMax]"
  dz="16*mm"
  startPhi="2.1117690481992404*rad"
- deltaPhi="2.7868965634002443*rad"
+ deltaPhi="0.675128*rad"
  lx="0.0403104" ly="0.048617" lz="-0.998004"
  tx="-0.0517603" ty="-0.0624264" tz="0.996706"
 />
@@ -52,7 +52,7 @@
 <CutTubs name="PixelForwardOuterDiskOuterRing3" rMin="[OuterRingRMin]" rMax="[OuterRingRMax]"
  dz="14.25*mm"
  startPhi="2.7868965634002443*rad"
- deltaPhi="3.0215440320400044*rad"
+ deltaPhi="0.234647*rad"
  lx="-0.0120135" ly="-0.0496564" lz="-0.998694"
  tx="-0.017991" ty="-0.0743633" tz="0.997069"
 />
@@ -60,7 +60,7 @@
 <CutTubs name="PixelForwardOuterDiskOuterRing4" rMin="[OuterRingRMin]" rMax="[OuterRingRMax]"
  dz="13.25*mm"
  startPhi="3.0215440320400044*rad"
- deltaPhi="3.2015087358357*rad"
+ deltaPhi="0.179965*rad"
  lx="-0.0103448" ly="-0.343962" lz="-0.938927"
  tx="0.0111603" ty="0.371078" tz="0.928535"
 />
@@ -68,7 +68,7 @@
 <CutTubs name="PixelForwardOuterDiskOuterRing5" rMin="[OuterRingRMin]" rMax="[OuterRingRMax]"
  dz="14.75*mm"
  startPhi="3.2015087358357*rad"
- deltaPhi="3.675594419325634*rad"
+ deltaPhi="0.474086*rad"
  lx="-0.018616" ly="0.060835" lz="-0.997974"
  tx="0" ty="0" tz="1"
 />
@@ -76,7 +76,7 @@
 <CutTubs name="PixelForwardOuterDiskOuterRing6" rMin="[OuterRingRMin]" rMax="[OuterRingRMax]"
  dz="16.75*mm"
  startPhi="3.675594419325634*rad"
- deltaPhi="3.9853360536248923*rad"
+ deltaPhi="0.309742*rad"
  lx="-0.0735321" ly="0.0892985" lz="-0.993287"
  tx="0.036952" ty="-0.044875" tz="0.998309"
 />
@@ -84,7 +84,7 @@
 <CutTubs name="PixelForwardOuterDiskOuterRing7" rMin="[OuterRingRMin]" rMax="[OuterRingRMax]"
  dz="16.5*mm"
  startPhi="3.9853360536248923*rad"
- deltaPhi="4.622447406614442*rad"
+ deltaPhi="0.637111*rad"
  lx="-0.0525516" ly="0.0227467" lz="-0.998359"
  tx="0.0873318" ty="-0.0378012" tz="0.995462"
 />

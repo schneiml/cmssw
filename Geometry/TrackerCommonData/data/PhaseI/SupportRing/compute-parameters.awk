@@ -108,6 +108,9 @@ match($0, /z = ([-0-9.]+)/, ary) {
             n_x_t /= norm;
             n_y_t /= norm;
             n_z_t /= norm;
+
+            # the cuttubs wants a delta phi
+            dphi = phi2 - phi1;
             
             # segment counter for the xml snippet
             segment++;
@@ -122,7 +125,7 @@ match($0, /z = ([-0-9.]+)/, ary) {
                 print("");
                 print(" dz=\"" dz "*mm\" ");
                 print(" startPhi=\"" phi1 "*rad\" ");
-                print(" deltaPhi=\"" phi2 "*rad\" "); # WTF? Who came up with this?
+                print(" deltaPhi=\"" dphi "*rad\" ");
                 print(" lx=\"" n_x_l "\" ly=\"" n_y_l "\" lz=\"" n_z_l "\" ");
                 print(" tx=\"" n_x_t "\" ty=\"" n_y_t "\" tz=\"" n_z_t "\" ");
                 print("/>");
