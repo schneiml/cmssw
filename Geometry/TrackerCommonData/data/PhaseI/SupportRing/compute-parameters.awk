@@ -30,6 +30,10 @@ match($0, /place = (.*)$/, ary) {
     places[ndefs] = ary[1];
 }
 
+match($0, /logical = (.*)$/, ary) {
+    logicals[ndefs] = ary[1];
+}
+
 match($0, /r = ([0-9.]+)/, ary) {
     r = ary[1];
 }
@@ -64,10 +68,16 @@ match($0, /z = ([-0-9.]+)/, ary) {
         l_or_t = "t";
     } else {
         P2_z_t = z;
+
+        # reset the "side" state machine.
+        l_or_t = "l";
         
         # once we have a l/t pair and both sides of the segment defined, 
         # we compute and output the segment
         if (P1_z_l != "" && P1_z_t != "") {
+            # drop zero width segments, they are only for jumps
+            if (phi1 == phi2) next;
+
             # each cutting plane is defined by P1-3. P1-2 are corners of the 
             # segment, P3 is at r=0 with the "average" z to get a nice cut.
             P3_z_l = (P1_z_l + P2_z_l) / 2;
@@ -130,11 +140,7 @@ match($0, /z = ([-0-9.]+)/, ary) {
                 print(" tx=\"" n_x_t "\" ty=\"" n_y_t "\" tz=\"" n_z_t "\" ");
                 print("/>");
             }
-            
         }
-        
-        # reset the "side" state machine.
-        l_or_t = "l";
     }
 }
 
@@ -149,6 +155,13 @@ END {
         offset = offsets[seg] - shift;
         for (place in places) {
             printf(places[place], seg, offset);
+            print("");
+        }
+    }
+    print("");
+    for (seg in offsets) {
+        for (logical in logicals) {
+            printf(logicals[logical], seg, seg, seg);
             print("");
         }
     }
