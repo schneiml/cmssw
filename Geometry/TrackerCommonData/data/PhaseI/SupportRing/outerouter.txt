@@ -2,8 +2,18 @@ def = <CutTubs name="PixelForwardOuterDiskOuterRing%d" rMin="[OuterRingRMin]" rM
 place = <PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskOuterRing%d"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + %f*mm"/></PosPart>
 logical = <LogicalPart name="PixelForwardOuterDiskOuterRing%d" category="support"><rSolid name="PixelForwardOuterDiskOuterRing%d"/><rMaterial name="materials:C_C_OuterOuterRing"/></LogicalPart>
 
+def = <CutTubs name="PixelForwardOuterDiskCFOuterRing%d" rMin="[OuterRingCFRMin]" rMax="[OuterRingCFRMax]" 
+place = <PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFOuterRing%d"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + %f*mm"/></PosPart>
+logical = <LogicalPart name="PixelForwardOuterDiskCFOuterRing%d" category="support"><rSolid name="PixelForwardOuterDiskCFOuterRing%d"/><rMaterial name="materials:FPix_CFSkin_OuterOuterRing"/></LogicalPart>
+
 Segments (r = 167): 
 y = inf
+ x = 4 (phi = 1.5468419401639386)
+  z = -308
+  z = -298
+ x = -10 (phi = 1.6307124090408036)
+  z = -310
+  z = -291
  x = -10 (phi = 1.6307124090408036)
   z = -317
   z = -291
@@ -27,7 +37,16 @@ y = -124 (phi =? 3.9784098817744558)
  x = -111 (phi = 3.9853360536248923)
   z = -329
   z = -294
- x = -15 (phi = 4.622447406614442)
+ x = -22 (phi = 4.580268409408425)
   z = -335
   z = -304
+ x = -9 (phi = 4.658470643497945)
+  z = -330
+  z = -305
+ x = -9 (phi = 4.658470643497945)
+  z = -330
+  z = -310
+ x = -4 (phi = 4.6884345937537315)
+  z = -325
+  z = -313
 y = -inf
