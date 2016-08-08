@@ -27,6 +27,7 @@
 #include "Geometry/TrackerCommonData/plugins/DDTrackerXYZPosAlgo.h"
 #include "Geometry/TrackerCommonData/plugins/DDPixFwdDiskAlgo.h"
 #include "Geometry/TrackerCommonData/plugins/DDPixBarLayerUpgradeAlgo.h"
+#include "Geometry/TrackerCommonData/plugins/DDCutTubsFromPoints.h"
 #include "DetectorDescription/Algorithm/interface/DDAlgorithmFactory.h"
 
 DEFINE_EDM_PLUGIN (DDAlgorithmFactory, DDPixBarLayerAlgo,   "track:DDPixBarLayerAlgo");
@@ -54,5 +55,6 @@ DEFINE_EDM_PLUGIN (DDAlgorithmFactory, DDTrackerPhiAlgo,    "track:DDTrackerPhiA
 DEFINE_EDM_PLUGIN (DDAlgorithmFactory, DDTrackerRingAlgo,   "track:DDTrackerRingAlgo");
 DEFINE_EDM_PLUGIN (DDAlgorithmFactory, DDTrackerZPosAlgo,   "track:DDTrackerZPosAlgo");
 DEFINE_EDM_PLUGIN (DDAlgorithmFactory, DDTrackerXYZPosAlgo, "track:DDTrackerXYZPosAlgo");
-DEFINE_EDM_PLUGIN (DDAlgorithmFactory, DDPixFwdDiskAlgo, "track:DDPixFwdDiskAlgo");
+DEFINE_EDM_PLUGIN (DDAlgorithmFactory, DDPixFwdDiskAlgo,    "track:DDPixFwdDiskAlgo");
 DEFINE_EDM_PLUGIN (DDAlgorithmFactory, DDPixBarLayerUpgradeAlgo, "track:DDPixBarLayerUpgradeAlgo");
+DEFINE_EDM_PLUGIN (DDAlgorithmFactory, DDCutTubsFromPoints, "track:DDCutTubsFromPoints");
