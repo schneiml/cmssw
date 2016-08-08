@@ -23,10 +23,10 @@
 <SolidSection label="pixfwdOuterDisk2.xml">
   <Tubs name="PixelForwardOuterDiskInnerRing"  startPhi="0." deltaPhi="360*deg"
    rMin="[InnerRingRMin]" rMax="[InnerRingRMax]" dz="[InnerRingHalfWidth]" />
-
+<!--
   <Tubs name="PixelForwardOuterDiskOuterRing"  startPhi="0." deltaPhi="360*deg"
    rMin="[OuterRingRMin]" rMax="[OuterRingRMax]" dz="[OuterRingHalfWidth]" />
-
+-->
   <Tubs name="PixelForwardOuterDiskCFInnerRing"  startPhi="0." deltaPhi="360*deg"
    rMin="[InnerRingCFRMin]" rMax="[InnerRingCFRMax]" dz="[InnerRingHalfWidth]" />
 
@@ -105,6 +105,22 @@
   <Numeric name="AnchorRadius"     value="127.5*mm"/>
   <String  name="RotationName"     value="pixfwdOuterDisk2:PixOuter"/>
   <String  name="FlagString"       value="YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY"/>
+</Algorithm>
+
+<Algorithm name="track:DDCutTubsFromPoints">
+  <rParent name="pixfwdDisks:PixelForwardDisk2"/>
+  <String  name="SolidName"        value="PixelForwardOuterDiskOuterRing"/> 
+  <Numeric name="rMin"             value="[OuterRingRMin]"/>
+  <Numeric name="rMax"             value="[OuterRingRMax]"/>
+  <Vector  name="Phi" type="numeric" nEntries="13">
+  1.547*rad,1.631*rad,1.631*rad,2.112*rad,2.787*rad,3.022*rad,3.202*rad,3.676*rad,3.985*rad,4.580*rad,4.658*rad,4.658*rad,4.688*rad
+  </Vector>
+  <Vector  name="z_l" type="numeric" nEntries="13">
+   -308*mm,  -310*mm,  -317*mm,  -324*mm,  -331*mm,  -329*mm,  -318*mm,  -323*mm,  -329*mm,  -335*mm,  -330*mm,  -330*mm,  -325*mm
+  </Vector>
+  <Vector  name="z_t" type="numeric" nEntries="13">
+   -298*mm,  -291*mm,  -291*mm,  -291*mm,  -300*mm,  -303*mm,  -291*mm,  -291*mm,  -294*mm,  -304*mm,  -305*mm,  -310*mm,  -313*mm
+  </Vector>
 </Algorithm>
 
 </DDDefinition>
