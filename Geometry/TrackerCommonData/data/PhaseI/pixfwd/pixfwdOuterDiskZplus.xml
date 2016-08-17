@@ -17,6 +17,7 @@
 </ConstantsSection>
 
 <!-- support ring solids -->
+
 <!-- each Algorithm creates on composite (union) solid that describes a cut
      ring according to the given outline. The z_l and z_t arrays describe the 
      -Z and +Z sides by giving the Z value for each of the values of the Phi
@@ -180,7 +181,7 @@
   <Numeric name="NumberOfBlades"   value="34"/>
   <Numeric name="BladeAngle"       value="-20*deg"/>
   <Numeric name="BladeTilt"        value="0*deg"/>
-  <Numeric name="BladeCommonZ"     value="-0.050*mm"/> <!-- -3.75*mm-->
+  <Numeric name="BladeCommonZ"     value="-0.050*mm-4*mm-0.875*mm"/> <!-- compensation for corrected envelope -->
 <!--    <Vector  name="BladeZShift" type="numeric" nEntries="34">
    9.92*mm, 12.42*mm,14.92*mm,17.42*mm,19.92*mm,22.42*mm,24.92*mm,27.42*mm,
    7.42*mm, 9.92*mm, 12.42*mm,14.92*mm,17.42*mm,19.92*mm,22.42*mm,24.92*mm,27.42*mm,
