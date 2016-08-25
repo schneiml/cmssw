@@ -5,7 +5,7 @@ from DQM.SiPixelPhase1Common.SpecificationBuilder_cfi import Specification, pare
 SiPixelPhase1Geometry = cms.PSet(
   # Blades are numbered from 1 to n_inner_ring_blades for the inner ring, and 
   # from n_inner_ring_blades+1 to <max_blade> for the outer ring
-  n_inner_ring_blades = cms.int32(22), 
+  n_inner_ring_blades = cms.int32(12), 
 
   # module geometry. The phase1 detector has only one sort, so this is easy.
   # the values are assumed to be 0-based, unlike most others.
