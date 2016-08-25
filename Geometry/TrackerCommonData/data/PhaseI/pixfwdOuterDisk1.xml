@@ -21,430 +21,68 @@
  
 
 <SolidSection label="pixfwdOuterDisk1.xml">
+  <Tubs name="PixelForwardOuterDiskInnerRing"  startPhi="0." deltaPhi="360*deg"
+   rMin="[InnerRingRMin]" rMax="[InnerRingRMax]" dz="[InnerRingHalfWidth]" />
 
-<!-- Begin generated code -->
+  <Tubs name="PixelForwardOuterDiskOuterRing"  startPhi="0." deltaPhi="360*deg"
+   rMin="[OuterRingRMin]" rMax="[OuterRingRMax]" dz="[OuterRingHalfWidth]" />
 
-<!-- offset=-301.75 -->
-<CutTubs name="PixelForwardOuterDiskOuterRing1" rMin="[OuterRingRMin]" rMax="[OuterRingRMax]"
- dz="7.25*mm" 
- startPhi="1.5468419401639386*rad" 
- deltaPhi="0.0838705*rad" 
- lx="0.141376" ly="0.00254234" lz="-0.989953" 
- tx="0.447083" ty="0.00803981" tz="0.894456" 
-/>
-<!-- offset=-301.75 -->
-<CutTubs name="PixelForwardOuterDiskCFOuterRing1" rMin="[OuterRingCFRMin]" rMax="[OuterRingCFRMax]" 
- dz="7.25*mm" 
- startPhi="1.5468419401639386*rad" 
- deltaPhi="0.0838705*rad" 
- lx="0.141376" ly="0.00254234" lz="-0.989953" 
- tx="0.447083" ty="0.00803981" tz="0.894456" 
-/>
-<!-- offset=-305.75 -->
-<CutTubs name="PixelForwardOuterDiskOuterRing2" rMin="[OuterRingRMin]" rMax="[OuterRingRMax]"
- dz="14.75*mm" 
- startPhi="1.6307124090408036*rad" 
- deltaPhi="0.481057*rad" 
- lx="0.083715" ly="0.0259369" lz="-0.996152" 
- tx="0" ty="0" tz="1" 
-/>
-<!-- offset=-305.75 -->
-<CutTubs name="PixelForwardOuterDiskCFOuterRing2" rMin="[OuterRingCFRMin]" rMax="[OuterRingCFRMax]" 
- dz="14.75*mm" 
- startPhi="1.6307124090408036*rad" 
- deltaPhi="0.481057*rad" 
- lx="0.083715" ly="0.0259369" lz="-0.996152" 
- tx="0" ty="0" tz="1" 
-/>
-<!-- offset=-311.5 -->
-<CutTubs name="PixelForwardOuterDiskOuterRing3" rMin="[OuterRingRMin]" rMax="[OuterRingRMax]"
- dz="16*mm" 
- startPhi="2.1117690481992404*rad" 
- deltaPhi="0.675128*rad" 
- lx="0.0403104" ly="0.048617" lz="-0.998004" 
- tx="-0.0517603" ty="-0.0624264" tz="0.996706" 
-/>
-<!-- offset=-311.5 -->
-<CutTubs name="PixelForwardOuterDiskCFOuterRing3" rMin="[OuterRingCFRMin]" rMax="[OuterRingCFRMax]" 
- dz="16*mm" 
- startPhi="2.1117690481992404*rad" 
- deltaPhi="0.675128*rad" 
- lx="0.0403104" ly="0.048617" lz="-0.998004" 
- tx="-0.0517603" ty="-0.0624264" tz="0.996706" 
-/>
-<!-- offset=-315.75 -->
-<CutTubs name="PixelForwardOuterDiskOuterRing4" rMin="[OuterRingRMin]" rMax="[OuterRingRMax]"
- dz="14.25*mm" 
- startPhi="2.7868965634002443*rad" 
- deltaPhi="0.234647*rad" 
- lx="-0.0120135" ly="-0.0496564" lz="-0.998694" 
- tx="-0.017991" ty="-0.0743633" tz="0.997069" 
-/>
-<!-- offset=-315.75 -->
-<CutTubs name="PixelForwardOuterDiskCFOuterRing4" rMin="[OuterRingCFRMin]" rMax="[OuterRingCFRMax]" 
- dz="14.25*mm" 
- startPhi="2.7868965634002443*rad" 
- deltaPhi="0.234647*rad" 
- lx="-0.0120135" ly="-0.0496564" lz="-0.998694" 
- tx="-0.017991" ty="-0.0743633" tz="0.997069" 
-/>
-<!-- offset=-310.25 -->
-<CutTubs name="PixelForwardOuterDiskOuterRing5" rMin="[OuterRingRMin]" rMax="[OuterRingRMax]"
- dz="13.25*mm" 
- startPhi="3.0215440320400044*rad" 
- deltaPhi="0.179965*rad" 
- lx="-0.0103448" ly="-0.343962" lz="-0.938927" 
- tx="0.0111603" ty="0.371078" tz="0.928535" 
-/>
-<!-- offset=-310.25 -->
-<CutTubs name="PixelForwardOuterDiskCFOuterRing5" rMin="[OuterRingCFRMin]" rMax="[OuterRingCFRMax]" 
- dz="13.25*mm" 
- startPhi="3.0215440320400044*rad" 
- deltaPhi="0.179965*rad" 
- lx="-0.0103448" ly="-0.343962" lz="-0.938927" 
- tx="0.0111603" ty="0.371078" tz="0.928535" 
-/>
-<!-- offset=-305.75 -->
-<CutTubs name="PixelForwardOuterDiskOuterRing6" rMin="[OuterRingRMin]" rMax="[OuterRingRMax]"
- dz="14.75*mm" 
- startPhi="3.2015087358357*rad" 
- deltaPhi="0.474086*rad" 
- lx="-0.018616" ly="0.060835" lz="-0.997974" 
- tx="0" ty="0" tz="1" 
-/>
-<!-- offset=-305.75 -->
-<CutTubs name="PixelForwardOuterDiskCFOuterRing6" rMin="[OuterRingCFRMin]" rMax="[OuterRingCFRMax]" 
- dz="14.75*mm" 
- startPhi="3.2015087358357*rad" 
- deltaPhi="0.474086*rad" 
- lx="-0.018616" ly="0.060835" lz="-0.997974" 
- tx="0" ty="0" tz="1" 
-/>
-<!-- offset=-309.25 -->
-<CutTubs name="PixelForwardOuterDiskOuterRing7" rMin="[OuterRingRMin]" rMax="[OuterRingRMax]"
- dz="16.75*mm" 
- startPhi="3.675594419325634*rad" 
- deltaPhi="0.309742*rad" 
- lx="-0.0735321" ly="0.0892985" lz="-0.993287" 
- tx="0.036952" ty="-0.044875" tz="0.998309" 
-/>
-<!-- offset=-309.25 -->
-<CutTubs name="PixelForwardOuterDiskCFOuterRing7" rMin="[OuterRingCFRMin]" rMax="[OuterRingCFRMax]" 
- dz="16.75*mm" 
- startPhi="3.675594419325634*rad" 
- deltaPhi="0.309742*rad" 
- lx="-0.0735321" ly="0.0892985" lz="-0.993287" 
- tx="0.036952" ty="-0.044875" tz="0.998309" 
-/>
-<!-- offset=-315.5 -->
-<CutTubs name="PixelForwardOuterDiskOuterRing8" rMin="[OuterRingRMin]" rMax="[OuterRingRMax]"
- dz="16.5*mm" 
- startPhi="3.9853360536248923*rad" 
- deltaPhi="0.594932*rad" 
- lx="-0.0556169" ly="0.0254793" lz="-0.998127" 
- tx="0.092388" ty="-0.0423249" tz="0.994823" 
-/>
-<!-- offset=-315.5 -->
-<CutTubs name="PixelForwardOuterDiskCFOuterRing8" rMin="[OuterRingCFRMin]" rMax="[OuterRingCFRMax]" 
- dz="16.5*mm" 
- startPhi="3.9853360536248923*rad" 
- deltaPhi="0.594932*rad" 
- lx="-0.0556169" ly="0.0254793" lz="-0.998127" 
- tx="0.092388" ty="-0.0423249" tz="0.994823" 
-/>
-<!-- offset=-318.5 -->
-<CutTubs name="PixelForwardOuterDiskOuterRing9" rMin="[OuterRingRMin]" rMax="[OuterRingRMax]"
- dz="14*mm" 
- startPhi="4.580268409408425*rad" 
- deltaPhi="0.0782022*rad" 
- lx="0.35608" ly="-0.0332182" lz="-0.933865" 
- tx="0.0760367" ty="-0.00709336" tz="0.99708" 
-/>
-<!-- offset=-318.5 -->
-<CutTubs name="PixelForwardOuterDiskCFOuterRing9" rMin="[OuterRingCFRMin]" rMax="[OuterRingCFRMax]" 
- dz="14*mm" 
- startPhi="4.580268409408425*rad" 
- deltaPhi="0.0782022*rad" 
- lx="0.35608" ly="-0.0332182" lz="-0.933865" 
- tx="0.0760367" ty="-0.00709336" tz="0.99708" 
-/>
-<!-- offset=-319.5 -->
-<CutTubs name="PixelForwardOuterDiskOuterRing10" rMin="[OuterRingRMin]" rMax="[OuterRingRMax]"
- dz="8*mm" 
- startPhi="4.658470643497945*rad" 
- deltaPhi="0.029964*rad" 
- lx="0.706303" ly="-0.0275148" lz="-0.707375" 
- tx="0.513819" ty="-0.0200164" tz="0.857665" 
-/>
-<!-- offset=-319.5 -->
-<CutTubs name="PixelForwardOuterDiskCFOuterRing10" rMin="[OuterRingCFRMin]" rMax="[OuterRingCFRMax]" 
- dz="8*mm" 
- startPhi="4.658470643497945*rad" 
- deltaPhi="0.029964*rad" 
- lx="0.706303" ly="-0.0275148" lz="-0.707375" 
- tx="0.513819" ty="-0.0200164" tz="0.857665" 
-/>
+  <Tubs name="PixelForwardOuterDiskCFInnerRing"  startPhi="0." deltaPhi="360*deg"
+   rMin="[InnerRingCFRMin]" rMax="[InnerRingCFRMax]" dz="[InnerRingHalfWidth]" />
 
-
-
-
-<!-- offset=-471.25 -->
-<CutTubs name="PixelForwardOuterDiskInnerRing1" rMin="[InnerRingRMin]" rMax="[InnerRingRMax]"
- dz="7.75*mm" 
- startPhi="1.524851670986777*rad" 
- deltaPhi="0.103353*rad" 
- lx="0.664861" ly="0.00381084" lz="-0.746958" 
- tx="0.486143" ty="0.00278647" tz="0.873875" 
-/>
-<!-- offset=-471.25 -->
-<CutTubs name="PixelForwardOuterDiskCFInnerRing1" rMin="[InnerRingCFRMin]" rMax="[InnerRingCFRMax]"
- dz="7.75*mm" 
- startPhi="1.524851670986777*rad" 
- deltaPhi="0.103353*rad" 
- lx="0.664861" ly="0.00381084" lz="-0.746958" 
- tx="0.486143" ty="0.00278647" tz="0.873875" 
-/>
-<!-- offset=-472.25 -->
-<CutTubs name="PixelForwardOuterDiskInnerRing2" rMin="[InnerRingRMin]" rMax="[InnerRingRMax]"
- dz="11.25*mm" 
- startPhi="1.6282044414316963*rad" 
- deltaPhi="0.318834*rad" 
- lx="0.0353332" ly="0.00778349" lz="-0.999345" 
- tx="0" ty="0" tz="1" 
-/>
-<!-- offset=-472.25 -->
-<CutTubs name="PixelForwardOuterDiskCFInnerRing2" rMin="[InnerRingCFRMin]" rMax="[InnerRingCFRMax]"
- dz="11.25*mm" 
- startPhi="1.6282044414316963*rad" 
- deltaPhi="0.318834*rad" 
- lx="0.0353332" ly="0.00778349" lz="-0.999345" 
- tx="0" ty="0" tz="1" 
-/>
-<!-- offset=-476.5 -->
-<CutTubs name="PixelForwardOuterDiskInnerRing3" rMin="[InnerRingRMin]" rMax="[InnerRingRMax]"
- dz="11*mm" 
- startPhi="1.94703833743227*rad" 
- deltaPhi="0.539509*rad" 
- lx="0.119191" ly="0.0898586" lz="-0.988797" 
- tx="-0.152142" ty="-0.114701" tz="0.98168" 
-/>
-<!-- offset=-476.5 -->
-<CutTubs name="PixelForwardOuterDiskCFInnerRing3" rMin="[InnerRingCFRMin]" rMax="[InnerRingCFRMax]"
- dz="11*mm" 
- startPhi="1.94703833743227*rad" 
- deltaPhi="0.539509*rad" 
- lx="0.119191" ly="0.0898586" lz="-0.988797" 
- tx="-0.152142" ty="-0.114701" tz="0.98168" 
-/>
-<!-- offset=-480.75 -->
-<CutTubs name="PixelForwardOuterDiskInnerRing4" rMin="[InnerRingRMin]" rMax="[InnerRingRMax]"
- dz="10.75*mm" 
- startPhi="2.486547057855438*rad" 
- deltaPhi="0.375559*rad" 
- lx="0.013861" ly="0.0274731" lz="-0.999526" 
- tx="0" ty="0" tz="1" 
-/>
-<!-- offset=-480.75 -->
-<CutTubs name="PixelForwardOuterDiskCFInnerRing4" rMin="[InnerRingCFRMin]" rMax="[InnerRingCFRMax]"
- dz="10.75*mm" 
- startPhi="2.486547057855438*rad" 
- deltaPhi="0.375559*rad" 
- lx="0.013861" ly="0.0274731" lz="-0.999526" 
- tx="0" ty="0" tz="1" 
-/>
-<!-- offset=-475.75 -->
-<CutTubs name="PixelForwardOuterDiskInnerRing5" rMin="[InnerRingRMin]" rMax="[InnerRingRMax]"
- dz="9.75*mm" 
- startPhi="2.862106196471391*rad" 
- deltaPhi="0.256496*rad" 
- lx="-0.0759951" ly="-0.498648" lz="-0.863467" 
- tx="0.0509678" ty="0.334429" tz="0.941042" 
-/>
-<!-- offset=-475.75 -->
-<CutTubs name="PixelForwardOuterDiskCFInnerRing5" rMin="[InnerRingCFRMin]" rMax="[InnerRingCFRMax]"
- dz="9.75*mm" 
- startPhi="2.862106196471391*rad" 
- deltaPhi="0.256496*rad" 
- lx="-0.0759951" ly="-0.498648" lz="-0.863467" 
- tx="0.0509678" ty="0.334429" tz="0.941042" 
-/>
-<!-- offset=-470 -->
-<CutTubs name="PixelForwardOuterDiskInnerRing6" rMin="[InnerRingRMin]" rMax="[InnerRingRMax]"
- dz="8.5*mm" 
- startPhi="3.118602122566372*rad" 
- deltaPhi="0.204866*rad" 
- lx="0.0044533" ly="-0.0559388" lz="-0.998424" 
- tx="-0.0044533" ty="0.0559388" tz="0.998424" 
-/>
-<!-- offset=-470 -->
-<CutTubs name="PixelForwardOuterDiskCFInnerRing6" rMin="[InnerRingCFRMin]" rMax="[InnerRingCFRMax]"
- dz="8.5*mm" 
- startPhi="3.118602122566372*rad" 
- deltaPhi="0.204866*rad" 
- lx="0.0044533" ly="-0.0559388" lz="-0.998424" 
- tx="-0.0044533" ty="0.0559388" tz="0.998424" 
-/>
-<!-- offset=-472 -->
-<CutTubs name="PixelForwardOuterDiskInnerRing7" rMin="[InnerRingRMin]" rMax="[InnerRingRMax]"
- dz="11*mm" 
- startPhi="3.323468395317247*rad" 
- deltaPhi="0.295861*rad" 
- lx="-0.0499087" ly="0.145801" lz="-0.988054" 
- tx="0" ty="0" tz="1" 
-/>
-<!-- offset=-472 -->
-<CutTubs name="PixelForwardOuterDiskCFInnerRing7" rMin="[InnerRingCFRMin]" rMax="[InnerRingCFRMax]"
- dz="11*mm" 
- startPhi="3.323468395317247*rad" 
- deltaPhi="0.295861*rad" 
- lx="-0.0499087" ly="0.145801" lz="-0.988054" 
- tx="0" ty="0" tz="1" 
-/>
-<!-- offset=-478 -->
-<CutTubs name="PixelForwardOuterDiskInnerRing8" rMin="[InnerRingRMin]" rMax="[InnerRingRMax]"
- dz="12*mm" 
- startPhi="3.619328966256596*rad" 
- deltaPhi="0.495504*rad" 
- lx="-0.151397" ly="0.170718" lz="-0.973619" 
- tx="0.151397" ty="-0.170718" tz="0.973619" 
-/>
-<!-- offset=-478 -->
-<CutTubs name="PixelForwardOuterDiskCFInnerRing8" rMin="[InnerRingCFRMin]" rMax="[InnerRingCFRMax]"
- dz="12*mm" 
- startPhi="3.619328966256596*rad" 
- deltaPhi="0.495504*rad" 
- lx="-0.151397" ly="0.170718" lz="-0.973619" 
- tx="0.151397" ty="-0.170718" tz="0.973619" 
-/>
-<!-- offset=-485.5 -->
-<CutTubs name="PixelForwardOuterDiskInnerRing9" rMin="[InnerRingRMin]" rMax="[InnerRingRMax]"
- dz="11.5*mm" 
- startPhi="4.114832527399525*rad" 
- deltaPhi="0.482359*rad" 
- lx="-0.0897849" ly="0.0334244" lz="-0.9954" 
- tx="0.133911" ty="-0.0498514" tz="0.989739" 
-/>
-<!-- offset=-485.5 -->
-<CutTubs name="PixelForwardOuterDiskCFInnerRing9" rMin="[InnerRingCFRMin]" rMax="[InnerRingCFRMax]"
- dz="11.5*mm" 
- startPhi="4.114832527399525*rad" 
- deltaPhi="0.482359*rad" 
- lx="-0.0897849" ly="0.0334244" lz="-0.9954" 
- tx="0.133911" ty="-0.0498514" tz="0.989739" 
-/>
-<!-- offset=-488.75 -->
-<CutTubs name="PixelForwardOuterDiskInnerRing10" rMin="[InnerRingRMin]" rMax="[InnerRingRMax]"
- dz="7.25*mm" 
- startPhi="4.597191835627937*rad" 
- deltaPhi="0.1727*rad" 
- lx="0.371103" ly="-0.0107082" lz="-0.92853" 
- tx="0.514124" ty="-0.0148351" tz="0.857587" 
-/>
-<!-- offset=-488.75 -->
-<CutTubs name="PixelForwardOuterDiskCFInnerRing10" rMin="[InnerRingCFRMin]" rMax="[InnerRingCFRMax]"
- dz="7.25*mm" 
- startPhi="4.597191835627937*rad" 
- deltaPhi="0.1727*rad" 
- lx="0.371103" ly="-0.0107082" lz="-0.92853" 
- tx="0.514124" ty="-0.0148351" tz="0.857587" 
-/>
-<!-- END -->
-
+  <Tubs name="PixelForwardOuterDiskCFOuterRing"  startPhi="0." deltaPhi="360*deg"
+   rMin="[OuterRingCFRMin]" rMax="[OuterRingCFRMax]" dz="[OuterRingHalfWidth]" />
 </SolidSection>
  
 <LogicalPartSection label="pixfwdOuterDisk1.xml">
+ <LogicalPart name="PixelForwardOuterDiskInnerRing" category="support">
+  <rSolid name="PixelForwardOuterDiskInnerRing"/>
+  <rMaterial name="materials:C_C_OuterInnerRing"/>
+ </LogicalPart>
 
-<LogicalPart name="PixelForwardOuterDiskOuterRing4" category="support"><rSolid name="PixelForwardOuterDiskOuterRing4"/><rMaterial name="materials:C_C_OuterOuterRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskCFOuterRing4" category="support"><rSolid name="PixelForwardOuterDiskCFOuterRing4"/><rMaterial name="materials:FPix_CFSkin_OuterOuterRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskOuterRing5" category="support"><rSolid name="PixelForwardOuterDiskOuterRing5"/><rMaterial name="materials:C_C_OuterOuterRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskCFOuterRing5" category="support"><rSolid name="PixelForwardOuterDiskCFOuterRing5"/><rMaterial name="materials:FPix_CFSkin_OuterOuterRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskOuterRing6" category="support"><rSolid name="PixelForwardOuterDiskOuterRing6"/><rMaterial name="materials:C_C_OuterOuterRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskCFOuterRing6" category="support"><rSolid name="PixelForwardOuterDiskCFOuterRing6"/><rMaterial name="materials:FPix_CFSkin_OuterOuterRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskOuterRing7" category="support"><rSolid name="PixelForwardOuterDiskOuterRing7"/><rMaterial name="materials:C_C_OuterOuterRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskCFOuterRing7" category="support"><rSolid name="PixelForwardOuterDiskCFOuterRing7"/><rMaterial name="materials:FPix_CFSkin_OuterOuterRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskOuterRing8" category="support"><rSolid name="PixelForwardOuterDiskOuterRing8"/><rMaterial name="materials:C_C_OuterOuterRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskCFOuterRing8" category="support"><rSolid name="PixelForwardOuterDiskCFOuterRing8"/><rMaterial name="materials:FPix_CFSkin_OuterOuterRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskOuterRing9" category="support"><rSolid name="PixelForwardOuterDiskOuterRing9"/><rMaterial name="materials:C_C_OuterOuterRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskCFOuterRing9" category="support"><rSolid name="PixelForwardOuterDiskCFOuterRing9"/><rMaterial name="materials:FPix_CFSkin_OuterOuterRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskOuterRing10" category="support"><rSolid name="PixelForwardOuterDiskOuterRing10"/><rMaterial name="materials:C_C_OuterOuterRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskCFOuterRing10" category="support"><rSolid name="PixelForwardOuterDiskCFOuterRing10"/><rMaterial name="materials:FPix_CFSkin_OuterOuterRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskOuterRing1" category="support"><rSolid name="PixelForwardOuterDiskOuterRing1"/><rMaterial name="materials:C_C_OuterOuterRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskCFOuterRing1" category="support"><rSolid name="PixelForwardOuterDiskCFOuterRing1"/><rMaterial name="materials:FPix_CFSkin_OuterOuterRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskOuterRing2" category="support"><rSolid name="PixelForwardOuterDiskOuterRing2"/><rMaterial name="materials:C_C_OuterOuterRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskCFOuterRing2" category="support"><rSolid name="PixelForwardOuterDiskCFOuterRing2"/><rMaterial name="materials:FPix_CFSkin_OuterOuterRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskOuterRing3" category="support"><rSolid name="PixelForwardOuterDiskOuterRing3"/><rMaterial name="materials:C_C_OuterOuterRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskCFOuterRing3" category="support"><rSolid name="PixelForwardOuterDiskCFOuterRing3"/><rMaterial name="materials:FPix_CFSkin_OuterOuterRing"/></LogicalPart>
+ <LogicalPart name="PixelForwardOuterDiskOuterRing" category="support">
+  <rSolid name="PixelForwardOuterDiskOuterRing"/>
+  <rMaterial name="materials:C_C_OuterOuterRing"/>
+ </LogicalPart>
 
-<LogicalPart name="PixelForwardOuterDiskInnerRing4" category="support"><rSolid name="PixelForwardOuterDiskInnerRing4"/><rMaterial name="materials:C_C_OuterInnerRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskCFInnerRing4" category="support"><rSolid name="PixelForwardOuterDiskCFInnerRing4"/><rMaterial name="materials:FPix_CFSkin_OuterInnerRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskInnerRing5" category="support"><rSolid name="PixelForwardOuterDiskInnerRing5"/><rMaterial name="materials:C_C_OuterInnerRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskCFInnerRing5" category="support"><rSolid name="PixelForwardOuterDiskCFInnerRing5"/><rMaterial name="materials:FPix_CFSkin_OuterInnerRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskInnerRing6" category="support"><rSolid name="PixelForwardOuterDiskInnerRing6"/><rMaterial name="materials:C_C_OuterInnerRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskCFInnerRing6" category="support"><rSolid name="PixelForwardOuterDiskCFInnerRing6"/><rMaterial name="materials:FPix_CFSkin_OuterInnerRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskInnerRing7" category="support"><rSolid name="PixelForwardOuterDiskInnerRing7"/><rMaterial name="materials:C_C_OuterInnerRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskCFInnerRing7" category="support"><rSolid name="PixelForwardOuterDiskCFInnerRing7"/><rMaterial name="materials:FPix_CFSkin_OuterInnerRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskInnerRing8" category="support"><rSolid name="PixelForwardOuterDiskInnerRing8"/><rMaterial name="materials:C_C_OuterInnerRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskCFInnerRing8" category="support"><rSolid name="PixelForwardOuterDiskCFInnerRing8"/><rMaterial name="materials:FPix_CFSkin_OuterInnerRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskInnerRing9" category="support"><rSolid name="PixelForwardOuterDiskInnerRing9"/><rMaterial name="materials:C_C_OuterInnerRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskCFInnerRing9" category="support"><rSolid name="PixelForwardOuterDiskCFInnerRing9"/><rMaterial name="materials:FPix_CFSkin_OuterInnerRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskInnerRing10" category="support"><rSolid name="PixelForwardOuterDiskInnerRing10"/><rMaterial name="materials:C_C_OuterInnerRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskCFInnerRing10" category="support"><rSolid name="PixelForwardOuterDiskCFInnerRing10"/><rMaterial name="materials:FPix_CFSkin_OuterInnerRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskInnerRing1" category="support"><rSolid name="PixelForwardOuterDiskInnerRing1"/><rMaterial name="materials:C_C_OuterInnerRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskCFInnerRing1" category="support"><rSolid name="PixelForwardOuterDiskCFInnerRing1"/><rMaterial name="materials:FPix_CFSkin_OuterInnerRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskInnerRing2" category="support"><rSolid name="PixelForwardOuterDiskInnerRing2"/><rMaterial name="materials:C_C_OuterInnerRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskCFInnerRing2" category="support"><rSolid name="PixelForwardOuterDiskCFInnerRing2"/><rMaterial name="materials:FPix_CFSkin_OuterInnerRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskInnerRing3" category="support"><rSolid name="PixelForwardOuterDiskInnerRing3"/><rMaterial name="materials:C_C_OuterInnerRing"/></LogicalPart>
-<LogicalPart name="PixelForwardOuterDiskCFInnerRing3" category="support"><rSolid name="PixelForwardOuterDiskCFInnerRing3"/><rMaterial name="materials:FPix_CFSkin_OuterInnerRing"/></LogicalPart>
+ <LogicalPart name="PixelForwardOuterDiskCFInnerRing" category="support">
+  <rSolid name="PixelForwardOuterDiskCFInnerRing"/>
+  <rMaterial name="materials:FPix_CFSkin_OuterInnerRing"/>
+ </LogicalPart>
+
+ <LogicalPart name="PixelForwardOuterDiskCFOuterRing" category="support">
+  <rSolid name="PixelForwardOuterDiskCFOuterRing"/>
+  <rMaterial name="materials:FPix_CFSkin_OuterOuterRing"/>
+ </LogicalPart>
+
 
 </LogicalPartSection>
 
 
 <PosPartSection label="pixfwdOuterDisk1.xml">
+  <PosPart copyNumber="1">
+    <rParent name="pixfwdDisks:PixelForwardDisk1"/>
+    <rChild name="pixfwdOuterDisk1:PixelForwardOuterDiskInnerRing"/>
+    <Translation x="0.*mm" y="0.*mm" z="[InnerRingZ]"/>
+  </PosPart>
 
-<!-- width: 44 -->
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskOuterRing4"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + -2.750000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFOuterRing4"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + -2.750000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskOuterRing5"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + 2.750000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFOuterRing5"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + 2.750000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskOuterRing6"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + 7.250000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFOuterRing6"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + 7.250000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskOuterRing7"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + 3.750000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFOuterRing7"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + 3.750000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskOuterRing8"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + -2.500000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFOuterRing8"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + -2.500000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskOuterRing9"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + -5.500000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFOuterRing9"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + -5.500000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskOuterRing10"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + -6.500000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFOuterRing10"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + -6.500000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskOuterRing1"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + 11.250000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFOuterRing1"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + 11.250000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskOuterRing2"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + 7.250000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFOuterRing2"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + 7.250000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskOuterRing3"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + 1.500000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFOuterRing3"/><Translation x="0.*mm" y="0.*mm" z="[OuterRingZ] + 1.500000*mm"/></PosPart>
+  <PosPart copyNumber="1">
+    <rParent name="pixfwdDisks:PixelForwardDisk1"/>
+    <rChild name="pixfwdOuterDisk1:PixelForwardOuterDiskOuterRing"/>
+    <Translation x="0.*mm" y="0.*mm" z="[OuterRingZ]"/>
+  </PosPart>
 
-<!-- width: 38 -->
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskInnerRing4"/><Translation x="0.*mm" y="0.*mm" z="[InnerRingZ] + -0.750000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFInnerRing4"/><Translation x="0.*mm" y="0.*mm" z="[InnerRingZ] + -0.750000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskInnerRing5"/><Translation x="0.*mm" y="0.*mm" z="[InnerRingZ] + 4.250000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFInnerRing5"/><Translation x="0.*mm" y="0.*mm" z="[InnerRingZ] + 4.250000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskInnerRing6"/><Translation x="0.*mm" y="0.*mm" z="[InnerRingZ] + 10.000000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFInnerRing6"/><Translation x="0.*mm" y="0.*mm" z="[InnerRingZ] + 10.000000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskInnerRing7"/><Translation x="0.*mm" y="0.*mm" z="[InnerRingZ] + 8.000000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFInnerRing7"/><Translation x="0.*mm" y="0.*mm" z="[InnerRingZ] + 8.000000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskInnerRing8"/><Translation x="0.*mm" y="0.*mm" z="[InnerRingZ] + 2.000000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFInnerRing8"/><Translation x="0.*mm" y="0.*mm" z="[InnerRingZ] + 2.000000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskInnerRing9"/><Translation x="0.*mm" y="0.*mm" z="[InnerRingZ] + -5.500000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFInnerRing9"/><Translation x="0.*mm" y="0.*mm" z="[InnerRingZ] + -5.500000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskInnerRing10"/><Translation x="0.*mm" y="0.*mm" z="[InnerRingZ] + -8.750000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFInnerRing10"/><Translation x="0.*mm" y="0.*mm" z="[InnerRingZ] + -8.750000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskInnerRing1"/><Translation x="0.*mm" y="0.*mm" z="[InnerRingZ] + 8.750000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFInnerRing1"/><Translation x="0.*mm" y="0.*mm" z="[InnerRingZ] + 8.750000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskInnerRing2"/><Translation x="0.*mm" y="0.*mm" z="[InnerRingZ] + 7.750000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFInnerRing2"/><Translation x="0.*mm" y="0.*mm" z="[InnerRingZ] + 7.750000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskInnerRing3"/><Translation x="0.*mm" y="0.*mm" z="[InnerRingZ] + 3.500000*mm"/></PosPart>
-<PosPart copyNumber="1"><rParent name="pixfwdDisks:PixelForwardDisk1"/><rChild name="PixelForwardOuterDiskCFInnerRing3"/><Translation x="0.*mm" y="0.*mm" z="[InnerRingZ] + 3.500000*mm"/></PosPart>
+  <PosPart copyNumber="1">
+    <rParent name="pixfwdDisks:PixelForwardDisk1"/>
+    <rChild name="pixfwdOuterDisk1:PixelForwardOuterDiskCFInnerRing"/>
+    <Translation x="0.*mm" y="0.*mm" z="[InnerRingZ]"/>
+  </PosPart>
 
+  <PosPart copyNumber="1">
+    <rParent name="pixfwdDisks:PixelForwardDisk1"/>
+    <rChild name="pixfwdOuterDisk1:PixelForwardOuterDiskCFOuterRing"/>
+    <Translation x="0.*mm" y="0.*mm" z="[OuterRingZ]"/>
+  </PosPart>
 </PosPartSection>
 
 <!-- Blades -->
