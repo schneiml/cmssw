@@ -35,23 +35,55 @@
  <Constant name="WedgeTop"           value="[WedgeBot]+2.*([WedgeH]*tan([WedgeAngle]))"/>
 </ConstantsSection>
 
+<RotationSection label="pixfwdbladeInnerZminus.xml">
+  <Rotation name="RAwayIP" thetaX="90*deg"  phiX="180*deg+[WedgeAngle]" 
+                             thetaY="90*deg"  phiY="90*deg+[WedgeAngle]" 
+                             thetaZ="180*deg" phiZ="0*deg"/>
+  <Rotation name="RFacingIP"   thetaX="90*deg"  phiX="-[WedgeAngle]" 
+                             thetaY="90*deg"  phiY="90*deg-[WedgeAngle]" 
+                             thetaZ="0*deg"   phiZ="0*deg"/>
+</RotationSection>
+
 <SolidSection label="pixfwdbladeInnerZminus.xml">
-  <Trapezoid name="PixelForwardBlade"      dz="[ModuleT]+[BladeBaseT]/2."
+  <!-- used to cut off the outer corners to not overlap the support ring.
+       Parameters uncritical, except for dy, which is determined experimentally. -->
+  <Box name="PixelForwardBladeCut_"        dx="[ModuleW]/2*10"     dy="[ModuleL]/2 + 2.*mm" 
+                                           dz="[ModuleT]+[BladeBaseT]/2." />
+
+  <Trapezoid name="PixelForwardBlade_"     dz="[ModuleT]+[BladeBaseT]/2."
                                            bl1="[WedgeBot]/2." bl2="[WedgeBot]/2." h1="[WedgeH]/2."
                                            tl1="[WedgeTop]/2." tl2="[WedgeTop]/2." h2="[WedgeH]/2."
                                            alp1="0*deg"        alp2="0*deg"        theta="0*deg"   phi="0*deg" />
-  <Trapezoid name="PixelForwardBladeBase"  dz="[BladeBaseT]/2"
+  <Trapezoid name="PixelForwardBladeBase_" dz="[BladeBaseT]/2"
                                            bl1="[WedgeBot]/2." bl2="[WedgeBot]/2." h1="[WedgeH]/2."
                                            tl1="[WedgeTop]/2." tl2="[WedgeTop]/2." h2="[WedgeH]/2."
                                            alp1="0*deg"        alp2="0*deg"        theta="0*deg"   phi="0*deg" />
-  <Trapezoid name="TPGBladeBase"           dz="[TPGBladeBaseT]/2"
+  <Trapezoid name="TPGBladeBase_"          dz="[TPGBladeBaseT]/2"
                                            bl1="[WedgeBot]/2." bl2="[WedgeBot]/2." h1="[WedgeH]/2."
                                            tl1="[WedgeTop]/2." tl2="[WedgeTop]/2." h2="[WedgeH]/2."
                                            alp1="0*deg"        alp2="0*deg"        theta="0*deg"   phi="0*deg" />
-  <Trapezoid name="CarbonFiberSkin"        dz="[CarbonFiberSkinT]/2"
+  <Trapezoid name="CarbonFiberSkin_"       dz="[CarbonFiberSkinT]/2"
                                            bl1="[WedgeBot]/2." bl2="[WedgeBot]/2." h1="[WedgeH]/2."
                                            tl1="[WedgeTop]/2." tl2="[WedgeTop]/2." h2="[WedgeH]/2."
                                            alp1="0*deg"        alp2="0*deg"        theta="0*deg"   phi="0*deg" />
+  <IntersectionSolid name="PixelForwardBlade" firstSolid="PixelForwardBlade_" secondSolid="PixelForwardBladeCut_">
+    <!-- Module2 placement slightly offset to only cut the outer (+r) corner. --> 
+    <Translation x="-[ModuleX]+[DetectorShiftX]" y="[ModuleY]-1.*mm" z="0*mm" />
+    <rRotation name="pixfwdbladeInnerZplus:RAwayIP"/>
+  </IntersectionSolid>
+  <IntersectionSolid name="PixelForwardBladeBase" firstSolid="PixelForwardBladeBase_" secondSolid="PixelForwardBladeCut_">
+    <Translation x="-[ModuleX]+[DetectorShiftX]" y="[ModuleY]-1.*mm" z="0*mm" />
+    <rRotation name="pixfwdbladeInnerZplus:RAwayIP"/>
+  </IntersectionSolid>
+  <IntersectionSolid name="TPGBladeBase" firstSolid="TPGBladeBase_" secondSolid="PixelForwardBladeCut_">
+    <Translation x="-[ModuleX]+[DetectorShiftX]" y="[ModuleY]-1.*mm" z="0*mm" />
+    <rRotation name="pixfwdbladeInnerZplus:RAwayIP"/>
+  </IntersectionSolid>
+
+  <IntersectionSolid name="CarbonFiberSkin" firstSolid="CarbonFiberSkin_" secondSolid="PixelForwardBladeCut_">
+    <Translation x="-[ModuleX]+[DetectorShiftX]" y="[ModuleY]-1.*mm" z="0*mm" />
+    <rRotation name="pixfwdbladeInnerZplus:RAwayIP"/>
+  </IntersectionSolid>
   <Box name="PixelForwardModule"        dx="[ModuleW]/2"     dy="[ModuleL]/2" 
                                         dz="[ModuleT]/2" />
   <Box name="PixelForwardWafer"         dx="[SensitiveW]/2.+[SideWidth]"     dy="[SensitiveL]/2.+[SideWidth]" 
@@ -123,15 +155,6 @@
  </LogicalPart>
 </LogicalPartSection>
 
-
-<RotationSection label="pixfwdbladeInnerZminus.xml">
-  <Rotation name="RAwayIP" thetaX="90*deg"  phiX="180*deg+[WedgeAngle]" 
-                             thetaY="90*deg"  phiY="90*deg+[WedgeAngle]" 
-                             thetaZ="180*deg" phiZ="0*deg"/>
-  <Rotation name="RFacingIP"   thetaX="90*deg"  phiX="-[WedgeAngle]" 
-                             thetaY="90*deg"  phiY="90*deg-[WedgeAngle]" 
-                             thetaZ="0*deg"   phiZ="0*deg"/>
- </RotationSection>
 
 <PosPartSection label="pixfwdbladeInnerZminus.xml">
  <PosPart copyNumber="1">
