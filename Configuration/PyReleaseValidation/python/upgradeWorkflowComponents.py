@@ -7,6 +7,7 @@ upgradeKeys = {}
 upgradeKeys[2017] = [
     '2017',
     '2017PU',
+    '2017NewFPix'
 ]
 
 upgradeKeys[2023] = [
@@ -56,6 +57,12 @@ upgradeProperties[2017] = {
         'Era' : 'Run2_2017',
         'ScenToRun' : ['GenSimFull','DigiFull','RecoFull','HARVESTFull'],
     },
+    '2017NewFPix' : {
+        'Geom' : 'Extended2017NewFPix',
+        'GT' : 'auto:phase1_2017_realistic',
+        'Era' : 'Run2_2017',
+        'ScenToRun' : ['GenSimFull','DigiFull','RecoFull','HARVESTFull'],
+    },    
 }
 
 upgradeProperties[2017]['2017PU'] = deepcopy(upgradeProperties[2017]['2017'])
@@ -82,7 +89,7 @@ upgradeProperties[2023] = {
         'Custom' : 'SLHCUpgradeSimulations/Configuration/combinedCustoms.cust_2023tilted',
         'Era' : 'Phase2C2',
         'ScenToRun' : ['GenSimFull','DigiFull','RecoFullGlobal', 'HARVESTFullGlobal'],
-    }    
+    },
 }
 
 
