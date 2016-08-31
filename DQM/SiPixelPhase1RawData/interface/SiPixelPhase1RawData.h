@@ -16,15 +16,10 @@ using edm::DetSetVector;
 
 class SiPixelPhase1RawData : public SiPixelPhase1Base {
   enum {
-    FEDPRESENT,
     NERRORS,
     FIFOFULL,
     TBMMESSAGE,
     TBMTYPE,
-    EVENTNUMBER,
-    EVENTSIZE,
-    CHANNEL_NERRORS,
-    CHANNEL_LASTERROR,
     TYPE_NERRORS
   };
 
