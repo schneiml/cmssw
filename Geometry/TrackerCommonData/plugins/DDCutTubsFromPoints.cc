@@ -5,6 +5,7 @@
 
 #include <cmath>
 #include <string>
+#include <set>
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "DetectorDescription/Core/interface/DDCurrentNamespace.h"
@@ -62,6 +63,29 @@ static double square(double x) {
 
 
 void DDCutTubsFromPoints::execute(DDCompactView& cpv) {
+
+  // FIXME: list of segments that cause the "crossing cutted planes" error.
+  // These will simply be omitted. We could also try to detect the condition
+  // mathematically but since this is a very ugly workaround that should
+  // anyways disappear once this is fixed on the Geant side...
+  std::set<std::string> blacklist = {
+    "PixelForwardInnerDiskOuterRing_seg_1",
+    "PixelForwardInnerDiskOuterRing_seg_9",
+    "PixelForwardInnerDiskCFOuterRing_seg_1",
+    "PixelForwardInnerDiskCFOuterRing_seg_9",
+    "PixelForwardInnerDiskInnerRing_seg_7",
+    "PixelForwardOuterDiskOuterRing_seg_1",
+    "PixelForwardInnerDiskCFInnerRing_seg_7",
+    "PixelForwardOuterDiskCFOuterRing_seg_1",
+    "PixelForwardOuterDiskOuterRing_seg_9",
+    "PixelForwardOuterDiskOuterRing_seg_10",
+    "PixelForwardOuterDiskCFOuterRing_seg_9",
+    "PixelForwardOuterDiskCFOuterRing_seg_10",
+    "PixelForwardOuterDiskInnerRing_seg_1",
+    "PixelForwardOuterDiskInnerRing_seg_10",
+    "PixelForwardOuterDiskCFInnerRing_seg_1",
+    "PixelForwardOuterDiskCFInnerRing_seg_10"
+  };
 
   // radius for plane calculations
   // We use r_max here, since P3 later has a Z that is always more inside
@@ -138,6 +162,7 @@ void DDCutTubsFromPoints::execute(DDCompactView& cpv) {
       n_x_l /= norm;
       n_y_l /= norm;
       n_z_l /= norm;
+      //double norm_l = sqrt(square(n_x_l) + square(n_y_l) + square(n_z_l));
 
       // same game for the t side.
       double D1_z_t = P1_z_t - P3_z_t;
@@ -151,6 +176,7 @@ void DDCutTubsFromPoints::execute(DDCompactView& cpv) {
       n_x_t /= norm;
       n_y_t /= norm;
       n_z_t /= norm;
+      //double norm_t = sqrt(square(n_x_t) + square(n_y_t) + square(n_z_t));
 
       // the cuttubs wants a delta phi
       double dphi = phi2 - phi1;
@@ -160,8 +186,19 @@ void DDCutTubsFromPoints::execute(DDCompactView& cpv) {
       DDSolid seg = DDSolidFactory::cuttubs(segname, dz, r_min, r_max, phi1, dphi,
                                             n_x_l, n_y_l, n_z_l,
                                             n_x_t, n_y_t, n_z_t); 
-      segments.push_back(seg);
-      offsets.push_back(offset);
+      if (blacklist.find(segname.name()) == blacklist.end()) {
+        segments.push_back(seg);
+        offsets.push_back(offset);
+      }
+      // XML output for debugging
+      //std::cout << std::fixed << std::setprecision(12) 
+        //<< "+++ <CutTubs name=\"" << segname.name() 
+        //<< "\" rMin=\"" << r_min << "\" rMax=\"" << r_max 
+        //<< "\" dz=\"" << dz
+        //<< "\" startPhi=\"" << phi1 << "\" deltaPhi=\"" << dphi 
+        //<< "\" lx=\"" << n_x_l << "\" ly=\"" << n_y_l << "\" lz=\"" << n_z_l 
+        //<< "\" tx=\"" << n_x_t << "\" ty=\"" << n_y_t << "\" tz=\"" << n_z_t << "\"/>"
+        //<< "<!-- norm: " << norm_l << " " << norm_t << " -->" << "\n";
     }
     s1 = s2;
   }
