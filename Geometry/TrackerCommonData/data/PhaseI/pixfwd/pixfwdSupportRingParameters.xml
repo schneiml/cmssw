@@ -16,7 +16,7 @@
        Z, so there is only one description each. -->
 
 
-  <Constant name="InnerDiskOuterRingRMin"        value="114.85*mm"/>
+  <Constant name="InnerDiskOuterRingRMin"        value="114.85*mm + 0.8*mm"/> <!-- incorrect, but avoids overlap. -->
   <Constant name="InnerDiskOuterRingRMax"        value="[InnerDiskOuterRingRMin]+2.50*mm"/>
   <Constant name="InnerDiskOuterRingCFRMin"        value="[InnerDiskOuterRingRMax]"/>
   <Constant name="InnerDiskOuterRingCFRMax"        value="[InnerDiskOuterRingCFRMin]+0.5*mm"/>
