@@ -19,16 +19,17 @@ process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
 # line, e.g.:
 # cmsRun runP_GenericComponent.py comp="XYZ"
 
-_ALLOWED_LABELS = ['BeamPipe', 'Tracker', 'PixBar',
+_ALLOWED_LABELS = ['BeamPipe', 'Tracker', 'PixBar','Pixel',
                    'PixFwdMinus', 'PixFwdPlus',
                    'TIB', 'TOB', 'TIDB', 'TIDF',
                    'TEC', 'TkStrct', 'ECAL', 'InnerServices']
 
 _LABELS2COMPS = {'BeamPipe': 'BEAM',
                  'Tracker': 'Tracker',
+                 'Pixel':   ['PixelBarrel', 'PixelForwardZplus', 'PixelForwardZminus'],
                  'PixBar':  'PixelBarrel',
-                 'PixFwdMinus': 'PixelForwardZMinus',
-                 'PixFwdPlus':  'PixelForwardZPlus',
+                 'PixFwdMinus': 'PixelForwardZminus',
+                 'PixFwdPlus':  'PixelForwardZplus',
                  'TIB':         'TIB',
                  'TOB':         'TOB',
                  'TIDB':        'TIDB',
@@ -72,7 +73,7 @@ _components = _LABELS2COMPS[options.label]
 #Geometry
 #
 if options.geom == 'phaseI':
-  process.load("Configuration.Geometry.GeometryExtended2017_cff")
+  process.load("Configuration.Geometry.GeometryExtended2017NewFPix_cff")
 elif options.geom == 'run2':
   process.load("Configuration.Geometry.GeometryExtended2016_cff")
 #process.load("Geometry.TrackerNumberingBuilder.trackerNumberingGeometry_cfi")
