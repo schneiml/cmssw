@@ -62,7 +62,7 @@ void MaterialBudget(TString detector) {
   if(
      theDetector!="TIB" && theDetector!="TIDF" && theDetector!="TIDB" && theDetector!="InnerServices"
      && theDetector!="TOB" && theDetector!="TEC" && theDetector!="TkStrct" 
-     && theDetector!="PixBar" && theDetector!="PixFwdPlus" && theDetector!="PixFwdMinus" 
+     && theDetector!="PixBar" && theDetector!="PixFwdPlus" && theDetector!="PixFwdMinus" && theDetector!="PixFwd" 
      && theDetector!="Tracker" && theDetector!="TrackerSum"
      && theDetector!="Pixel" && theDetector!="Strip"
      && theDetector!="InnerTracker"
