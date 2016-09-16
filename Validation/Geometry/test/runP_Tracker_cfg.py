@@ -19,15 +19,11 @@ process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
 # line, e.g.:
 # cmsRun runP_GenericComponent.py comp="XYZ"
 
-_ALLOWED_LABELS = ['BeamPipe', 'Tracker', 'PixBar','Pixel',
-                   'PixFwdMinus', 'PixFwdPlus',
-                   'TIB', 'TOB', 'TIDB', 'TIDF',
-                   'TEC', 'TkStrct', 'ECAL', 'InnerServices']
-
 _LABELS2COMPS = {'BeamPipe': 'BEAM',
                  'Tracker': 'Tracker',
                  'Pixel':   ['PixelBarrel', 'PixelForwardZplus', 'PixelForwardZminus'],
                  'PixBar':  'PixelBarrel',
+                 'PixFwd':  ['PixelForwardZplus', 'PixelForwardZminus', 'PixelForward'],
                  'PixFwdMinus': 'PixelForwardZminus',
                  'PixFwdPlus':  'PixelForwardZplus',
                  'TIB':         'TIB',
@@ -37,6 +33,7 @@ _LABELS2COMPS = {'BeamPipe': 'BEAM',
                  'TEC':         'TEC',
                  'InnerServices': ['TIBTIDServicesF', 'TIBTIDServicesB'],
                  'TkStrct': ['TrackerOuterCylinder', 'TrackerBulkhead']}
+_ALLOWED_LABELS = _LABELS2COMPS.keys()
 
 options = VarParsing('analysis')
 options.register('geom',        #name
