@@ -302,7 +302,7 @@ void createPlots(TString plot) {
   can.Update();
   //  can.SaveAs( Form( "%s/%s_%s.eps",  theDirName.Data(), theDetector.Data(), plot.Data() ) );
   //  can.SaveAs( Form( "%s/%s_%s.gif",  theDirName.Data(), theDetector.Data(), plot.Data() ) );
-  //  can.SaveAs( Form( "%s/%s_%s.pdf",  theDirName.Data(), theDetector.Data(), plot.Data() ) );
+  can.SaveAs( Form( "%s/%s_%s.pdf",  theDirName.Data(), theDetector.Data(), plot.Data() ) );
   can.SaveAs( Form( "%s/%s_%s.png",  theDirName.Data(), theDetector.Data(), plot.Data() ) );
   //
   
@@ -542,7 +542,7 @@ void create2DPlots(TString plot) {
 
   //  can.SaveAs( Form( "%s/%s_%s_bw.eps",  theDirName.Data(), theDetector.Data(), plot.Data() ) );
   //  can.SaveAs( Form( "%s/%s_%s_bw.gif",  theDirName.Data(), theDetector.Data(), plot.Data() ) );
-  //  can.SaveAs( Form( "%s/%s_%s_bw.pdf",  theDirName.Data(), theDetector.Data(), plot.Data() ) );
+  can.SaveAs( Form( "%s/%s_%s_bw.pdf",  theDirName.Data(), theDetector.Data(), plot.Data() ) );
   can.SaveAs( Form( "%s/%s_%s_bw.png",  theDirName.Data(), theDetector.Data(), plot.Data() ) );
   //
   
@@ -658,7 +658,7 @@ void createRatioPlots(TString plot) {
   can.Update();
   //  can.SaveAs( Form( "%s/%s_%s.eps",  theDirName.Data(), theDetector.Data(), plot.Data() ) );
   //  can.SaveAs( Form( "%s/%s_%s.gif",  theDirName.Data(), theDetector.Data(), plot.Data() ) );
-  //  can.SaveAs( Form( "%s/%s_%s.pdf",  theDirName.Data(), theDetector.Data(), plot.Data() ) );
+  can.SaveAs( Form( "%s/%s_%s.pdf",  theDirName.Data(), theDetector.Data(), plot.Data() ) );
   can.SaveAs( Form( "%s/%s_%s.png",  theDirName.Data(), theDetector.Data(), plot.Data() ) );
   //
   
