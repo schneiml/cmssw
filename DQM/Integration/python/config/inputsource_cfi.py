@@ -51,7 +51,7 @@ if not options.runkey.strip():
 runType.setRunType(options.runkey.strip())
 
 # Input source
-nextLumiTimeoutMillis = 90000
+nextLumiTimeoutMillis = 10000
 endOfRunKills = True
 
 if options.scanOnce:
@@ -64,7 +64,7 @@ source = cms.Source("DQMStreamerReader",
     SelectEvents = cms.untracked.vstring('*'),
     streamLabel = cms.untracked.string('streamDQM'),
     scanOnce = cms.untracked.bool(options.scanOnce),
-    minEventsPerLumi = cms.untracked.int32(1),
+    minEventsPerLumi = cms.untracked.int32(100),
     delayMillis = cms.untracked.uint32(500),
     nextLumiTimeoutMillis = cms.untracked.int32(nextLumiTimeoutMillis),
     skipFirstLumis = cms.untracked.bool(options.skipFirstLumis),
