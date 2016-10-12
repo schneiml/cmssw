@@ -17,7 +17,10 @@ SiPixelPhase1Geometry = cms.PSet(
 
   # "time geometry" parameters
   max_lumisection = cms.int32(1000),
-  max_bunchcrossing = cms.int32(3600)
+  max_bunchcrossing = cms.int32(3600),
+
+  # to select a different cabling map (for pilotBlade)
+  CablingMapLabel = cms.string(""),
 
   # other geometry parameters (n_layers, n_ladders per layer, etc.) are inferred.
   # there are lots of geometry assuptions in the code.

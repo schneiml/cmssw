@@ -24,10 +24,10 @@ PerModule.enabled = True
 
 siPixelPhase1OnlineDQM_source = cms.Sequence(SiPixelPhase1DigisAnalyzer
                                             + SiPixelPhase1ClustersAnalyzer
-                                            + SiPixelPhase1RawDataAnalyzer
+#                                            + SiPixelPhase1RawDataAnalyzer
                                             )
 
 siPixelPhase1OnlineDQM_harvesting = cms.Sequence(SiPixelPhase1DigisHarvester 
                                                 + SiPixelPhase1ClustersHarvester
-                                                + SiPixelPhase1RawDataHarvester
+#                                                + SiPixelPhase1RawDataHarvester
                                                 )
