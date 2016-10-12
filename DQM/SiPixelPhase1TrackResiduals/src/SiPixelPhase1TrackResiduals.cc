@@ -11,6 +11,7 @@
 
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 
 
 SiPixelPhase1TrackResiduals::SiPixelPhase1TrackResiduals(const edm::ParameterSet& iConfig) :
