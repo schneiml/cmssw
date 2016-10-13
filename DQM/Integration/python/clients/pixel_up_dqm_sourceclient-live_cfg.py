@@ -3,11 +3,7 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("PIXELDQMLIVE")
 
 process.MessageLogger = cms.Service("MessageLogger",
-    debugModules = cms.untracked.vstring('siPixelDigis', 
-                                         #'siPixelClusters', 
-                                         'SiPixelRawDataErrorSource', 
-                                         'SiPixelDigiSource', 
-                                         'sipixelEDAClient'),
+    debugModules = cms.untracked.vstring(),
     cout = cms.untracked.PSet(threshold = cms.untracked.string('ERROR')),
     destinations = cms.untracked.vstring('cout')
 )
@@ -63,36 +59,36 @@ process.load("DQM.Integration.config.FrontierCondition_GT_cfi")
 #from Configuration.AlCa.GlobalTag import GlobalTag as gtCustomise
 #process.GlobalTag = gtCustomise(process.GlobalTag, 'auto:run2_data', '')
 
+#-----------------------
+#  Reconstruction Modules
+#-----------------------
+# Real data raw to digi
+process.load("EventFilter.SiPixelRawToDigi.SiPixelRawToDigi_cfi")
+process.siPixelDigis.IncludeErrors = True
+
+# Local Reconstruction
+process.load("RecoLocalTracker.SiPixelClusterizer.SiPixelClusterizer_cfi")
+
 #----------------------
 # Pilot Blade
 #----------------------
 process.load('DPGAnalysis.PilotBladeStudy.PilotBladeSetup_cfi')
 
-process.bysipixelclustmulteventfilter = cms.EDFilter('BySiPixelClusterMultiplicityEventFilter',
-				       multiplicityConfig = cms.PSet(
-							  collectionName = cms.InputTag("PBClusters"),
-							  moduleThreshold = cms.untracked.int32(-1),
-							  useQuality = cms.untracked.bool(False),
-							  qualityLabel = cms.untracked.string("")
-							  ),
-				       cut = cms.string("mult > 0")
-				       )
-
-process.PBClusterFilter_step = cms.Path(process.bysipixelclustmulteventfilter)
-process.RECOoutput.SelectEvents = cms.untracked.PSet(SelectEvents = cms.vstring("PBClusterFilter_step"))
+# process.CablingMapDBReader.connect = 'sqlite_file:../../../../DPGAnalysis/PilotBladeStudy/test/SiPixelFedCablingMap_FED1240_v2.db'
+process.CablingMapDBReader.toGet[0].tag = cms.string('SiPixelFedCablingMap_FED1240_v2') 
 
 process.GlobalTag.toGet = cms.VPSet(
          cms.PSet(record = cms.string('TrackerAlignmentRcd'),
                   tag =  cms.string('Alignments'),
-                  connect = cms.string('sqlite_file:./DPGAnalysis/PilotBladeStudy/test/tracker_alignment_80X_dataRun2_Prompt_v8.db')
+                  connect = cms.string('sqlite_file:../../../../DPGAnalysis/PilotBladeStudy/test/tracker_alignment_80X_dataRun2_Prompt_v8.db')
                   ),
          cms.PSet(record = cms.string('TrackerAlignmentErrorExtendedRcd'),
                   tag =  cms.string('AlignmentErrorsExtended'),
-                  connect = cms.string('sqlite_file:./DPGAnalysis/PilotBladeStudy/test/tracker_alignment_80X_dataRun2_Prompt_v8.db')
+                  connect = cms.string('sqlite_file:../../../../DPGAnalysis/PilotBladeStudy/test/tracker_alignment_80X_dataRun2_Prompt_v8.db')
                   ),
          cms.PSet(record = cms.string('TrackerSurfaceDeformationRcd'),
                   tag =  cms.string('AlignmentSurfaceDeformations'),
-                  connect = cms.string('sqlite_file:./DPGAnalysis/PilotBladeStudy/test/tracker_alignment_80X_dataRun2_Prompt_v8.db')
+                  connect = cms.string('sqlite_file:../../../../DPGAnalysis/PilotBladeStudy/test/tracker_alignment_80X_dataRun2_Prompt_v8.db')
                   )
          )
 
@@ -133,58 +129,15 @@ process.PBRecHits = cms.EDProducer("SiPixelRecHitConverter",
   VerboseLevel = cms.untracked.int32(0),
 )
 
-#-----------------------
-#  Reconstruction Modules
-#-----------------------
-# Real data raw to digi
-process.load("EventFilter.SiPixelRawToDigi.SiPixelRawToDigi_cfi")
-process.siPixelDigis.IncludeErrors = True
+# Phase1 DQM
+process.load("DQM.SiPixelPhase1Config.SiPixelPhase1OnlineDQM_cff")
 
-# Local Reconstruction
-process.load("RecoLocalTracker.SiPixelClusterizer.SiPixelClusterizer_cfi")
-
-#----------------------------------
-# High Pileup Configuration Changes
-#----------------------------------
-#if (process.runType.getRunType() == process.runType.hpu_run):
-#    process.DQMEventStreamHttpReader.SelectEvents = cms.untracked.PSet(
-#        SelectEvents = cms.vstring('HLT_600Tower*','HLT_L1*','HLT_Jet*','HLT_*Cosmic*','HLT_HT*','HLT_MinBias_*','HLT_Physics*', 'HLT_ZeroBias*','HLT_HcalNZS*'))
-
-
+process.SiPixelPhase1Geometry.CablingMapLabel = "pilotBlade"
 process.siPixelDigis.InputLabel   = cms.InputTag("rawDataCollector")
-#--------------------------------
-# Heavy Ion Configuration Changes
-#--------------------------------
-if (process.runType.getRunType() == process.runType.hi_run):
-    QTestfile = 'DQM/SiPixelMonitorClient/test/sipixel_tier0_qualitytest_heavyions.xml'
-    process.load('Configuration.StandardSequences.ReconstructionHeavyIons_cff')
-    process.load('Configuration.StandardSequences.RawToDigi_Repacked_cff')
-    process.siPixelDigis.InputLabel   = cms.InputTag("rawDataRepacker")
-#    process.DQMEventStreamHttpReader.SelectEvents = cms.untracked.PSet(
-#        SelectEvents = cms.vstring('HLT_HI*'))
+process.SiPixelPhase1ClustersAnalyzer.src = "PBClusters"
+process.SiPixelPhase1DigisAnalyzer.src = "PBDigis"
+process.SiPixelPhase1RawDataAnalyzer.src = "PBDigis"
 
-#--------------------------
-# Pixel DQM Source and Client
-#--------------------------
-process.load("DQM.SiPixelCommon.SiPixelP5DQM_source_cff")
-process.load("DQM.SiPixelCommon.SiPixelP5DQM_client_cff")
-
-process.qTester = cms.EDAnalyzer("QualityTester",
-    qtList = cms.untracked.FileInPath(QTestfile),
-    prescaleFactor = cms.untracked.int32(1),
-    getQualityTestsFromFile = cms.untracked.bool(True),
-    verboseQT = cms.untracked.bool(False),
-    qtestOnEndLumi = cms.untracked.bool(True),
-    qtestOnEndRun = cms.untracked.bool(True)
-)
-
-process.sipixelEDAClientP5.inputSource = cms.untracked.string("rawDataCollector")
-process.sipixelDaqInfo.daqSource   = cms.untracked.string("rawDataCollector")
-process.SiPixelRawDataErrorSource.inputSource  = cms.untracked.string("rawDataCollector")
-if (process.runType.getRunType() == process.runType.hi_run):
-        process.sipixelEDAClientP5.inputSource = cms.untracked.string("rawDataRepacker")
-        process.sipixelDaqInfo.daqSource   = cms.untracked.string("rawDataRepacker")
-        process.SiPixelRawDataErrorSource.inputSource  = cms.untracked.string("rawDataRepacker")
 #--------------------------
 # Service
 #--------------------------
@@ -202,31 +155,18 @@ process.hltTriggerTypeFilter = cms.EDFilter("HLTTriggerTypeFilter",
 #--------------------------
 # Scheduling
 #--------------------------
-process.SiPixelDigiSource.layOn = True
-process.SiPixelDigiSource.diskOn = True
-process.DQMmodules = cms.Sequence(process.dqmEnv*process.qTester*process.dqmSaver)
-
-if (process.runType.getRunType() == process.runType.hi_run):
-    process.Reco = cms.Sequence(process.siPixelDigis*process.pixeltrackerlocalreco)
-    process.SiPixelClusterSource.src = cms.InputTag("siPixelClustersPreSplitting")
-
-else:
-    process.Reco = cms.Sequence(process.siPixelDigis*process.siPixelClusters)
+process.DQMmodules = cms.Sequence(process.dqmEnv*process.dqmSaver)
 
 process.p = cms.Path(
     process.PBDigis
   * process.PBClusters
-  * process.bysipixelclustmulteventfilter
-
-
+  * process.DQMmodules
+  * process.siPixelPhase1OnlineDQM_source
+  * process.siPixelPhase1OnlineDQM_harvesting
 )
     
 ### process customizations included here
 from DQM.Integration.config.online_customizations_cfi import *
 process = customise(process)
-
-#--------------------------------------------------
-# Heavy Ion Specific Fed Raw Data Collection Label
-#--------------------------------------------------
 
 print "Running with run type = ", process.runType.getRunType()
