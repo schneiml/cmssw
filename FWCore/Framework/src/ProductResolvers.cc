@@ -282,6 +282,7 @@ namespace edm {
   
   void DataManagingProductResolver::resetProductData_(bool deleteEarly) {
     if(theStatus_ == ProductStatus::ProductSet) {
+      ProductData* pd = new ProductData(productData_);
       productData_.resetProductData();
     }
     if(deleteEarly) {
