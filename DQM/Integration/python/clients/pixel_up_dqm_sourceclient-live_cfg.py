@@ -130,6 +130,8 @@ process.PBRecHits = cms.EDProducer("SiPixelRecHitConverter",
 )
 
 # Phase1 DQM
+from DQM.SiPixelPhase1Common.HistogramManager_cfi import *
+DefaultHisto.enabled = False
 process.load("DQM.SiPixelPhase1Config.SiPixelPhase1OnlineDQM_cff")
 
 process.SiPixelPhase1Geometry.CablingMapLabel = "pilotBlade"
@@ -137,6 +139,84 @@ process.siPixelDigis.InputLabel   = cms.InputTag("rawDataCollector")
 process.SiPixelPhase1ClustersAnalyzer.src = "PBClusters"
 process.SiPixelPhase1DigisAnalyzer.src = "PBDigis"
 process.SiPixelPhase1RawDataAnalyzer.src = "PBDigis"
+
+# turn on and configure specific histograms
+
+# digis
+process.SiPixelPhase1DigisADC.enabled = True
+process.SiPixelPhase1DigisADC.specs = cms.VPSet(
+  StandardSpecification2DProfile
+)
+
+process.SiPixelPhase1DigisNdigis.enabled = True
+process.SiPixelPhase1DigisNdigis.specs = cms.VPSet(
+  StandardSpecification2DProfile_Num
+)
+
+process.SiPixelPhase1DigisNdigisPerFED.enabled = True
+process.SiPixelPhase1DigisNdigisPerFED.specs = cms.VPSet(
+	Specification().groupBy("FED/Event")
+		   .reduce("COUNT")
+		   .groupBy("FED")
+		   .groupBy("", "EXTEND_Y")
+		   .save(),
+)
+
+process.SiPixelPhase1DigisEvents.enabled = True
+process.SiPixelPhase1DigisHitmap.enabled = True
+
+# clusters
+process.SiPixelPhase1ClustersCharge.enabled = True
+process.SiPixelPhase1ClustersCharge.bookUndefined = False
+process.SiPixelPhase1ClustersCharge.specs = cms.VPSet(
+  StandardSpecification2DProfile,
+  Specification(PerModule).groupBy("PXForward/PXDisk/DetId").save() 
+)
+
+process.SiPixelPhase1ClustersSize.enabled = True
+process.SiPixelPhase1ClustersSize.bookUndefined = False
+process.SiPixelPhase1ClustersSize.specs = cms.VPSet(
+  StandardSpecification2DProfile,
+  Specification(PerModule).groupBy("PXForward/PXDisk/DetId").save() 
+)
+
+process.SiPixelPhase1ClustersNClusters.enabled = True
+process.SiPixelPhase1ClustersNClusters.bookUndefined = False
+process.SiPixelPhase1ClustersNClusters.specs = cms.VPSet(
+  StandardSpecification2DProfile_Num,
+  Specification(PerModule).groupBy("PXForward/PXDisk/DetId/Event")
+                          .reduce("COUNT")
+                          .groupBy("PXForward/PXDisk/DetId").save() 
+)
+
+process.SiPixelPhase1ClustersPositionB.enabled = True
+process.SiPixelPhase1ClustersPositionB.range_min = -80
+process.SiPixelPhase1ClustersPositionB.range_max = 80
+process.SiPixelPhase1ClustersPositionB.specs = cms.VPSet(
+  Specification().groupBy("").save()
+)
+
+process.SiPixelPhase1ClustersPositionF.enabled = True
+process.SiPixelPhase1ClustersPositionF.range_min = -15
+process.SiPixelPhase1ClustersPositionF.range_max = 15
+process.SiPixelPhase1ClustersPositionF.range_nbins = 1000
+process.SiPixelPhase1ClustersPositionF.range_y_min = -15
+process.SiPixelPhase1ClustersPositionF.range_y_max = 15
+process.SiPixelPhase1ClustersPositionF.range_y_nbins = 1000
+process.SiPixelPhase1ClustersPositionF.specs = cms.VPSet(
+  Specification().groupBy("PXForward").save(),
+  Specification().groupBy("PXForward/PXDisk").save()
+)
+
+# errors
+process.SiPixelPhase1RawDataNErrors.enabled = True
+process.SiPixelPhase1RawDataNErrors.specs = cms.VPSet(
+  Specification().groupBy("PXForward/PXBlade").groupBy("PXForward", "EXTEND_X").save(),
+  Specification().groupBy("FEDChannel").groupBy("", "EXTEND_X").save()
+)
+
+process.SiPixelPhase1RawDataTypeNErrors.enabled = True
+
 
 #--------------------------
 # Service
