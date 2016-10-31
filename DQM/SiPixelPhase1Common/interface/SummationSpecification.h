@@ -22,13 +22,14 @@ struct SummationStep {
   // to allow fill() to exectute it very quickly.
   // For step2 stuff (after the first SAVE), we can also keep strings, since 
   // step2 will only be executed once by an executor.
-  enum Type  {NO_TYPE, GROUPBY, EXTEND_X, EXTEND_Y, COUNT, REDUCE, SAVE, CUSTOM};
+  enum Type  {NO_TYPE, GROUPBY, EXTEND_X, EXTEND_Y, COUNT, REDUCE, SAVE, CUSTOM,
+             USE_X, USE_Y, USE_Z, PROFILE};
   Type type = NO_TYPE;
   // STAGE1 is DQM step1, STAGE2 step2. STAGE1_2 is somewhere in between, it runs
   // in the analyze()-method (step1) but does a sort of harvesting (per-event).
   // STAGE1_2 is for ndigis-like counters.
   // FIRST is the first group-by, which is special.
-  enum Stage {NO_STAGE, FIRST, STAGE1, STAGE1_2, STAGE2};
+  enum Stage {NO_STAGE, FIRST, STAGE1, STAGE2};
   Stage stage = NO_STAGE;
 
   std::vector<GeometryInterface::Column> columns;
