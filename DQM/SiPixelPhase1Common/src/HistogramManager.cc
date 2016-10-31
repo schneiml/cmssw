@@ -51,104 +51,15 @@ void HistogramManager::addSpec(SummationSpecification spec) {
   fastpath.push_back(nullptr);
 }
 
-// note that this will be pretty hot. Ideally it should be malloc-free.
-// if fastpath is non-null, it is use instead of looking up the map entry,
-// else it will be set to the map entry for the next lookup.
-void HistogramManager::executeStep1Spec(
-    double x, double y, GeometryInterface::Values& significantvalues,
-    SummationSpecification& s, Table& t, SummationStep::Stage stage,
-    AbstractHistogram*& fastpath) {
-  int dimensions = this->dimensions;
-  double z = 0; // quantity for profiles
-  for (unsigned int i = 0; i < s.steps.size(); i++) {
-    auto& step = s.steps[i];
-    if (step.stage == stage) {
-      switch (step.type) {
-        case SummationStep::SAVE:
-          break;  // this happens automatically
-        case SummationStep::COUNT: {
-          // Two cases here: COUNT/EXTEND where this is a noop,
-          // COUNT/GROUPBY per event where this triggers a counter.
-          x = 0.0;
-          y = 0.0;
-          dimensions = 0;
-          if (s.steps.at(i + 1).stage == SummationStep::STAGE1_2) {
-            if (!fastpath)
-              fastpath = &t[significantvalues];  // PERF: [] might be bad.
-            fastpath->count++;
-            return;  // no more filling to be done
-          }
-          break;
-        }
-        case SummationStep::EXTEND_X:
-          assert((x == 0.0 && dimensions != 1) ||
-                 (y == 0.0 && dimensions == 1) ||
-                 !"Illegal EXTEND in step1");
-          if (dimensions == 1) y = x;
-          x = significantvalues[step.columns.at(0)];
-
-          significantvalues.erase(step.columns.at(0));
-          dimensions = dimensions < 2 ? dimensions+1 : dimensions;
-          break;
-        case SummationStep::EXTEND_Y:
-          y = significantvalues[step.columns.at(0)];
-          significantvalues.erase(step.columns.at(0));
-          // EXTEND_Y on 2D data implies Profile (or bug)
-          dimensions = dimensions == 2 ? 3 : 2; // 3 for 2D profile
-          break;
-        case SummationStep::GROUPBY: {
-          assert(
-              stage == SummationStep::STAGE1_2 ||
-              !"Only COUNT/GROUPBY with per-event harvesting allowed in step1");
-          dimensions = 1;
-          if (!fastpath)
-            x = (double)t[significantvalues]
-                    .count;  // PERF: redundant lookup, caller has it.
-          else
-            x = (double)fastpath->count;  // we expect to get that from the per
-                                          // event harvesting.
-          fastpath =
-              nullptr;  // we change significantvalues, so this becomes invalid.
-          t[significantvalues].count = 0;
-          new_vals.clear();
-          for (auto c : step.columns) new_vals.put(significantvalues.get(c));
-          significantvalues.values.swap(new_vals.values);
-          break;
-        }
-        case SummationStep::REDUCE:
-          // assert(step.arg == "MEAN")
-          z = y = x;
-          x = 0.0;
-          dimensions = 2; // Profile always needs 2D (or 3D) fill
-          break;
-        case SummationStep::CUSTOM:
-        case SummationStep::NO_TYPE:
-          assert(!"Illegal step; booking should have caught this.");
-      }
-    }
-  }
-  if (!fastpath) {
-    auto histo = t.find(significantvalues);  // avoid modification
-    if (histo == t.end() || (!histo->second.th1 && !histo->second.me)) {
-      // No histogram was booked.
-      assert(!bookUndefined || !"All histograms were booked but one is missing."
-      "The geometry in the GeometryInterface probably does not match the data.");
-      // else, ignore the sample.
-      return;
-    }
-    fastpath = &(histo->second);
-  }
-  if (dimensions == 0)
-    fastpath->fill(0);
-  else if (dimensions == 1)
-    fastpath->fill(x);
-  else if (dimensions == 2)
-    fastpath->fill(x, y);
-  else /* dimensions == 3 */
-    fastpath->fill(x, y, z);
-
-}
-
+// This is the hottest function in the HistogramManager. Make sure it does not 
+// allocate memory or other expensive things.
+// Currently the GeometryInterface::extract (some virtual calls) and the map
+// lookups should be the most expensive things, but they should only happen if
+// the module changed from the last call; an optimization that fails when row/
+// col are used. 
+// fillInternal (called from here) does more lookups on the geometry, if EXTEND
+// is used; we do not attempt the optimization there since in most cases row/
+// col are involved.
 void HistogramManager::fill(double x, double y, DetId sourceModule,
                             const edm::Event* sourceEvent, int col, int row) {
   if (!enabled) return;
@@ -158,6 +69,7 @@ void HistogramManager::fill(double x, double y, DetId sourceModule,
   if (col != this->iq.col || row != this->iq.row ||
       sourceModule != this->iq.sourceModule ||
       sourceEvent != this->iq.sourceEvent ||
+      // TODO: add the RawData fake DetId here
       sourceModule == DetId(0)  // Hack for eventrate-like things, since the
                                 // sourceEvent ptr might not change.
       ) {
@@ -168,17 +80,26 @@ void HistogramManager::fill(double x, double y, DetId sourceModule,
   for (unsigned int i = 0; i < specs.size(); i++) {
     auto& s = specs[i];
     auto& t = tables[i];
-    // Try cached colums from last fill().
     if (!cached) {
       significantvalues[i].clear();
       geometryInterface.extractColumns(s.steps[0].columns, iq,
                                        significantvalues[i]);
       fastpath[i] = nullptr;
     }
-    // copy the signifcant values here, since they might be modified.
-    significantvalues_scratch = significantvalues[i];
-    executeStep1Spec(x, y, significantvalues_scratch, s, t, SummationStep::STAGE1,
-                     fastpath[i]);
+    
+    if (!fastpath[i]) {
+      auto histo = t.find(significantvalues);
+      assert(histo != t.end() || !"Histogram not booked! "
+             "Probably inconsistent geometry description.")
+
+      fastpath = &(*histo);
+    }
+    if (s.steps[0].type == SummationSpecification::COUNT) {
+      fastpath->count++;
+      fastpath->iq_sample = iq;
+    } else {
+      fillInternal(x, y, this->dimensions, iq, s.steps.begin()+1, s.steps.end(), *fastpath);
+    }
   }
 }
 void HistogramManager::fill(double x, DetId sourceModule,
@@ -192,59 +113,91 @@ void HistogramManager::fill(DetId sourceModule, const edm::Event* sourceEvent,
   fill(0.0, 0.0, sourceModule, sourceEvent, col, row);
 }
 
+void HistogramManager::fillInternal(double x, double y, int n_parameters,
+  GeometryInterface::InterestingQuantities const& iq,
+  std::vector<SummationSpecification::Step>::iterator first,
+  std::vector<SummationSpecification::Step>::iterator last,
+  AbstractHistogram& dest) {
+
+  double fx = 0, fy = 0, fz = 0;
+  int tot_parameters = n_parameters;
+  for (auto it = first; it != last; ++it) {
+    if (it->stage != SummationSpecification::STAGE1) break;
+    // The specification builder precomputes where x and y go, this loop will
+    // always do 3 iterations to set x, y, z. The builder does not know how 
+    // many parameters we have, so we have to check that and count the total.
+    switch (it->type) {
+      case SummationSpecification::USE_X:
+        if (it->arg[0] == '1' && n_parameters >= 1) fx = x;
+        if (it->arg[0] == '2' && n_parameters >= 2) fx = y;
+        break;
+      case SummationSpecification::USE_Y:
+        if (it->arg[0] == '1' && n_parameters >= 1) fy = x;
+        if (it->arg[0] == '2' && n_parameters >= 2) fy = y;
+        break;
+      case SummationSpecification::USE_Z:
+        if (it->arg[0] == '1' && n_parameters >= 1) fz = x;
+        if (it->arg[0] == '2' && n_parameters >= 2) fz = y;
+        break;
+      case SummationSpecification::EXTEND_X:
+        fx = GeometryInterface::extract(it->columns[0], iq).second;
+        tot_parameters++;
+        break;
+      case SummationSpecification::EXTEND_Y:
+        fy = GeometryInterface::extract(it->columns[0], iq).second;
+        tot_parameters++;
+        break;
+      case SummationSpecification:PROFILE:
+        break; // profile does not make a difference here, only in booking
+      default:
+        assert(!"illegal step in STAGE1!");
+    }
+  }
+
+  switch(tot_parameters) {
+    case 1:
+      dest.me->Fill(fx);
+      break;
+    case 2:
+      dest.me->Fill(fx, fy);
+      break;
+    case 3:
+      dest.me->Fill(fx, fy, fz);
+    default:
+      assert(!"More than 3 dimensions should never occur.");
+  }
+}
+
+
 // This is only used for ndigis-like counting. It could be more optimized, but
 // is probably fine for a per-event thing.
-void HistogramManager::executePerEventHarvesting() {
-  // We have a masive problem here regarding semantics: for geometrical structure,
-  // we always want to see all the counters, even if they are 0. The counters are
-  // all created during booking and then kept, all fine.
-  // For time-based things however, we do not know the range before we see the
-  // data, so we cannot book the counters beforehand. Also, it does not make sense
-  // to record 0 counts: a event can only be in one Lumisection, it does not make
-  // sense to record it as a 0 count for all others.
-  // The hacky solution is to check that the quantity was UNDEFINED in booking,
-  // which indicates sth. event-dependent, and in this case ignore the UNDEFINED
-  // counters and delete the defined ones, that they don't pollute later events.
+void HistogramManager::executePerEventHarvesting(const edm::Event* sourceEvent) {
   if (!enabled) return;
   for (unsigned int i = 0; i < specs.size(); i++) {
     auto& s = specs[i];
     auto& t = tables[i];
-    bool range_undefined = false;
+    assert(s.steps.size() >= 2 && s.steps[1].type == SummationSpecification::GROUPBY
+          || !"Incomplete spec (but this cannot be caught in Python)");
     for (auto e : t) {
-      // There are two types of entries: counters and histograms. We only want
-      // ctrs here.
-      // TODO: not fully correct, if we have e.g. EXTEND/COUNT/GROUPBY.
+      // TODO: this is terribly risky. It works if there is a differnt number
+      // of columns in COUNT and GROUPBY each or if the columns are identical,
+      // but not in other, possible cases. Solution: separate table for ctrs.
       if (e.first.values.size() == s.steps[0].columns.size()) {
-        // this is actually useless, since we will use the fast path. But better
-        // for consistence.
-        significantvalues[i].values = e.first.values;
+        // the iq on the counter can only be a _sample_, since many modules
+        // could be grouped on one counter. Even worse, the sourceEvent ptr
+        // could be dangling if the counter was not touched in this event, so
+        // we replace it. row/col are most likely useless as well.
+        auto iq = e.second.iq_sample;
+        iq.sourceEvent = sourceEvent;
 
-        bool defined = true;
-        for (auto v : e.first.values)
-          defined &= (v.second != GeometryInterface::UNDEFINED);
-        if (!defined) {
-          range_undefined = true;
-          continue;
-        }
-
-        auto fastpath = &e.second;
-        // copy the signifcant values here, since they might be modified.
-        // (unlikely, again for consistence)
-        significantvalues_scratch = significantvalues[i];
-        executeStep1Spec(0.0, 0.0, significantvalues_scratch, s, t,
-                         SummationStep::STAGE1_2, fastpath);
-      }
-    }
-    if (range_undefined) {
-      for (auto it = t.begin(); it != t.end(); ++it) {
-        if (it->first.values.size() == s.steps[0].columns.size()) {
-          bool defined = true;
-          for (auto v : it->first.values)
-            defined &= (v.second != GeometryInterface::UNDEFINED);
-          if (defined) {
-            it = t.erase(it);
-          }
-        }
+        significantvalues[i].clear();
+        geometryInterface.extractColumns(s.steps[1].columns, iq,
+                                         significantvalues[i]);
+        auto histo = t.find(significantvalues);
+        assert(histo != t.end() || !"Histogram not booked! (per-event) "
+               "Probably inconsistent geometry description.")
+        fillInternal(histo->count, 0, 1, iq, s.steps.begin()+2, s.steps.end(), *histo);
+        histo->count = 0;
       }
     }
   }
@@ -274,47 +227,33 @@ std::string HistogramManager::makePath(
   return top_folder_name + "/" + dir.str();
 }
 
-std::pair<GeometryInterface::Values, std::string> HistogramManager::makeName(
-    SummationSpecification const& s,
+std::string HistogramManager::makeName(SummationSpecification const& s,
     GeometryInterface::InterestingQuantities const& iq) {
   std::string name = this->name;
-  GeometryInterface::Values significantvalues;
-  geometryInterface.extractColumns(s.steps[0].columns, iq, significantvalues);
   for (SummationStep step : s.steps) {
-    if (step.stage == SummationStep::STAGE1 ||
-        step.stage == SummationStep::STAGE1_2) {
+    if (step.stage == SummationStep::FIRST || step.stage == SummationStep::STAGE1) {
       switch (step.type) {
-        case SummationStep::SAVE:
-          break;  // this happens automatically
         case SummationStep::COUNT:
           name = "num_" + name;
           break;
         case SummationStep::EXTEND_X:
         case SummationStep::EXTEND_Y: {
           GeometryInterface::Column col0 =
-              significantvalues.get(step.columns.at(0)).first;
+              geometryInterface.extract(step.columns[0]i, iq).first;
           std::string colname = geometryInterface.pretty(col0);
           name = name + "_per_" + colname;
-          significantvalues.erase(col0);
           break;
         }
-        case SummationStep::GROUPBY: {
-          GeometryInterface::Values new_vals;
-          for (auto c : step.columns) new_vals.put(significantvalues.get(c));
-          significantvalues = new_vals;
-          break;
-        }
-        case SummationStep::REDUCE:
+        default:
+          // Maybe PROFILE is worth showing.
           break; // not visible in name
-        case SummationStep::CUSTOM:
-        case SummationStep::NO_TYPE:
-          assert(!"Illegal step; booking should have caught this.");
       }
     }
   }
-  return std::make_pair(significantvalues, name);
+  return name;
 }
 
+#if 0
 void HistogramManager::book(DQMStore::IBooker& iBooker,
                             edm::EventSetup const& iSetup) {
   if (!geometryInterface.loaded()) {
@@ -842,3 +781,4 @@ void HistogramManager::executeHarvesting(DQMStore::IBooker& iBooker,
     }      // for each step
   }        // for each spec
 }
+#endif
