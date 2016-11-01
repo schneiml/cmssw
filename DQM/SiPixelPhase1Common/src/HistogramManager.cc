@@ -253,7 +253,7 @@ std::string HistogramManager::makeName(SummationSpecification const& s,
   return name;
 }
 
-#if 0
+
 void HistogramManager::book(DQMStore::IBooker& iBooker,
                             edm::EventSetup const& iSetup) {
   if (!geometryInterface.loaded()) {
@@ -261,137 +261,32 @@ void HistogramManager::book(DQMStore::IBooker& iBooker,
   }
   if (!enabled) return;
 
+  struct MEInfo {
+    int dimensions = 1;
+    double range_x_min = 1e12;
+    double range_x_max = -1e12;
+    double range_y_min = 1e12;
+    double range_y_max = -1e12;
+    double range_z_min = 1e12; // z range carried around but unused
+    double range_z_max = -1e12;
+    int range_x_nbins = 0;
+    int range_y_nbins = 0;
+    int range_z_nbins = 0;
+    std::string name, title, xlabel, ylabel, zlabel;
+    bool do_profile = false;
+  }
+  std::map<GeometryInterface::Values, MEInfo> toBeBooked;
+
   for (unsigned int i = 0; i < specs.size(); i++) {
     auto& s = specs[i];
     auto& t = tables[i];
-    for (auto iq : geometryInterface.allModules()) {
+    auto firststep = s.steps.begin();
+    if (firststep.type != SummationSpecification::GROUPBY) ++firststep;
       GeometryInterface::Values significantvalues;
-      geometryInterface.extractColumns(s.steps[0].columns, iq,
-                                       significantvalues);
-      bool do_profile = false;
-      auto dimensions = this->dimensions;
-      std::string title = this->title;
-      std::string xlabel = this->xlabel;
-      std::string ylabel = this->ylabel;
-      int range_x_nbins = this->range_nbins;
-      double range_x_min = this->range_min, range_x_max = this->range_max;
-      int range_y_nbins = this->range_y_nbins;
-      double range_y_min = this->range_y_min, range_y_max = this->range_y_max;
-      GeometryInterface::Value observed_x = GeometryInterface::UNDEFINED;
-      GeometryInterface::Value observed_y = GeometryInterface::UNDEFINED;
-      for (SummationStep step : s.steps) {
-        if (step.stage == SummationStep::STAGE1 ||
-            step.stage == SummationStep::STAGE1_2) {
-          switch (step.type) {
-            case SummationStep::SAVE:
-              break;  // this happens automatically
-            case SummationStep::COUNT: {
-              dimensions = 0;
-              title = "Count of " + title;
-              ylabel = "#" + xlabel;
-              xlabel = "";
-              range_x_nbins = range_y_nbins = 1;
-              range_x_min = range_y_min = 0;
-              range_x_max = range_y_max = 1;
-              AbstractHistogram& ctr = t[significantvalues];
-              ctr.kind = MonitorElement::DQM_KIND_INT;
-              ctr.count = 0;
-              break;
-            }
-            case SummationStep::EXTEND_X: {
-              GeometryInterface::Column col0 =
-                  significantvalues.get(step.columns.at(0)).first;
-              std::string colname = geometryInterface.pretty(col0);
-              title = title + " per " + colname;
-              if (dimensions == 1) {
-                ylabel = xlabel;
-                range_y_min = range_x_min;
-                range_y_max = range_x_max;
-                range_y_nbins = range_x_nbins;
-                observed_y = observed_x;
-              }
-              dimensions = dimensions == 0 ? 1 : 2;
-              xlabel = colname;
-              observed_x = significantvalues.get(col0).second;
-              if (geometryInterface.minValue(col0[0]) != GeometryInterface::UNDEFINED) {
-                range_x_min = geometryInterface.minValue(col0[0]) - 0.5;
-                range_x_max = geometryInterface.maxValue(col0[0]) + 0.5;
-                range_x_nbins = int(range_x_max - range_x_min);
-              } else {
-                range_x_min = range_x_max = GeometryInterface::UNDEFINED;
-                range_x_nbins = 0;
-              }
-              significantvalues.erase(col0);
-              break;
-            }
-            case SummationStep::EXTEND_Y: {
-              GeometryInterface::Column col0 =
-                  significantvalues.get(step.columns.at(0)).first;
-              std::string colname = geometryInterface.pretty(col0);
-              assert(dimensions != 2 || !"2D to 2D reduce NYI in step1");
-              dimensions = 2;
-              title = title + " per " + colname;
-              if (do_profile) { // we loose the Z- (former Y-) label here
-                title = title + " (Z: " + ylabel + ")";
-              }
-              observed_y = significantvalues.get(col0).second;
-              ylabel = colname;
-              if (geometryInterface.minValue(col0[0]) != GeometryInterface::UNDEFINED) {
-                range_y_min = geometryInterface.minValue(col0[0]) - 0.5;
-                range_y_max = geometryInterface.maxValue(col0[0]) + 0.5;
-                range_y_nbins = int(range_y_max - range_y_min);
-              } else {
-                range_y_min = range_y_max = GeometryInterface::UNDEFINED;
-                range_y_nbins = 0;
-              }
-              significantvalues.erase(col0);
-              break;
-            }
-            case SummationStep::GROUPBY: {
-              assert(dimensions == 0 || !"Only COUNT/GROUPBY with per-event harvesting allowed in step1");
-              dimensions = 1;
-              GeometryInterface::Values new_vals;
-              for (auto c : step.columns)
-                new_vals.put(significantvalues.get(c));
-              range_x_nbins = this->range_nbins;
-              range_x_min = this->range_min;
-              range_x_max = this->range_max;
-              xlabel = ylabel + " per Event";
-              if (s.steps[0].columns.size() > 0)
-                xlabel =
-                    xlabel + " and " +
-                    geometryInterface.pretty(
-                        significantvalues
-                            .get(s.steps[0]
-                                     .columns[s.steps[0].columns.size() - 1])
-                            .first);
-              ylabel = "#Entries";
-              significantvalues = new_vals;
-              break;
-            }
-            case SummationStep::REDUCE: {
-              assert(step.arg == "MEAN" || !"Only profiles in step 1");
-              assert(dimensions == 1 || !"Profile needs a 1D mean");
-              assert(do_profile == false || !"Already doing a profile!");
-              title = "Profile of " + title;
-              do_profile = true;
-              ylabel = xlabel;
-              range_y_nbins = range_x_nbins;
-              range_y_min = range_x_min;
-              range_y_max = range_x_max;
-              range_x_nbins = 1;
-              range_x_min = 0;
-              range_x_max = 1;
-              dimensions = 0;
-              break;
-            }
-            case SummationStep::CUSTOM:
-            case SummationStep::NO_TYPE:
-              assert(!"Operation not supported in step1. Try save() before to switch to Harvesting.");
-          }
-        }
-      }
 
+    for (auto iq : geometryInterface.allModules()) {
+      geometryInterface.extractColumns(firststep.columns, iq,
+                                       significantvalues);
       if (!bookUndefined) {
         // skip if any column is UNDEFINED
         bool ok = true;
@@ -400,97 +295,121 @@ void HistogramManager::book(DQMStore::IBooker& iBooker,
         if (!ok) continue;
       }
 
-      AbstractHistogram& histo = t[significantvalues];
+      auto histo = toBeBooked.find(significantvalues);
+      if (histo == t.end()) {
+        // create new histo
+        MEInfo& mei = toBeBooked[significantvalues]; 
+        mei.name = makeName(s, iq);
+        mei.title = this->title;
 
-      // track min and max values for all modules to get Geometry-dependent
-      // things (e.g. #Ladders per Layer) right
-      if (observed_x != GeometryInterface::UNDEFINED) {
-        if (observed_x > histo.range_x_max) histo.range_x_max = observed_x;
-        if (observed_x < histo.range_x_min) histo.range_x_min = observed_x;
-      }
-      if (observed_y != GeometryInterface::UNDEFINED) {
-        if (observed_y > histo.range_y_max) histo.range_y_max = observed_y;
-        if (observed_y < histo.range_y_min) histo.range_y_min = observed_y;
-      }
-
-      if (int(range_x_min) != GeometryInterface::UNDEFINED)
-        histo.range_x_min = range_x_min;
-      if (int(range_x_max) != GeometryInterface::UNDEFINED)
-        histo.range_x_max = range_x_max;
-      if (int(range_y_min) != GeometryInterface::UNDEFINED)
-        histo.range_y_min = range_y_min;
-      if (int(range_y_max) != GeometryInterface::UNDEFINED)
-        histo.range_y_max = range_y_max;
-
-      histo.range_x_nbins = range_x_nbins;
-      histo.range_y_nbins = range_y_nbins;
-
-      // PERF: no need to do this for each module, could be skipped if set 
-      histo.name = makeName(s, iq).second;
-      histo.title = title;
-      histo.xlabel = xlabel;
-      histo.ylabel = ylabel;
-
-      if (dimensions == 0 || dimensions == 1) {
-        if (!do_profile) {
-          histo.kind = MonitorElement::DQM_KIND_TH1F;
-        } else {
-          histo.kind = MonitorElement::DQM_KIND_TPROFILE;
+        // refer to fillInternal() for the actual execution
+        // compute labels, title, type, user-set ranges here
+        int n_parameters = this->dimensions;
+        int tot_parameters = this->dimensions;
+#define SET_AXIS(to, from) \
+                mei.to##label = this->from##label; \
+                mei.range_##to##_min = this->range_##from##_min; \
+                mei.range_##to##_max = this->range_##from##_max; \
+                mei.range_##to##_nbins = this->range_##from##_nbins
+        for (auto it = firststep; it != s.steps.end(); ++it) {
+          if (it->stage != SummationSpecification::STAGE1) break;
+          switch (it->type) {
+            case SummationSpecification::USE_X:
+              if (it->arg[0] == '1' && n_parameters >= 1) { SET_AXIS(x, x); }
+              if (it->arg[0] == '2' && n_parameters >= 2) { SET_AXIS(x, y); }
+              break;
+            case SummationSpecification::USE_Y:
+              if (it->arg[0] == '1' && n_parameters >= 1) { SET_AXIS(y, x); }
+              if (it->arg[0] == '2' && n_parameters >= 2) { SET_AXIS(y, y); }
+              break;
+            case SummationSpecification::USE_Z:
+              if (it->arg[0] == '1' && n_parameters >= 1) { SET_AXIS(z, x); }
+              if (it->arg[0] == '2' && n_parameters >= 2) { SET_AXIS(z, y); }
+              break;
+            case SummationSpecification::EXTEND_X:
+              mei.xlabel = geometryInterface.pretty(geometryInterface.extract(it->columns[0], iq).first);
+              tot_parameters++;
+              break;
+            case SummationSpecification::EXTEND_Y:
+              mei.ylabel = geometryInterface.pretty(geometryInterface.extract(it->columns[0], iq).first);
+              tot_parameters++;
+              break;
+            case SummationSpecification:PROFILE:
+              mei.do_profile = true;
+              break;
+            default:
+              assert(!"illegal step in STAGE1! (booking)");
+          }
         }
-      } else if (dimensions == 2) {
-        if (!do_profile) {
-          histo.kind = MonitorElement::DQM_KIND_TH2F;
-        } else {
-          histo.kind = MonitorElement::DQM_KIND_TPROFILE2D;
+        mei.dimensions = tot_parameters;
+      } 
+      // only update range
+      MEInfo& mei = toBeBooked[significantvalues]; 
+      double val;
+
+      for (auto it = firststep; it != s.steps.end(); ++it) {
+        if (it->stage != SummationSpecification::STAGE1) break;
+        switch (it->type) {
+          case SummationSpecification::EXTEND_X:
+            val = geometryInterface.extract(it->columns[0], iq).second;
+            mei.range_x_min = std::min(mei.range_x_min, val);
+            mei.range_x_max = std::max(mei.range_x_min, val);
+            break;
+          case SummationSpecification::EXTEND_Y:
+            val = geometryInterface.extract(it->columns[0], iq).second;
+            mei.range_y_min = std::min(mei.range_y_min, val);
+            mei.range_y_max = std::max(mei.range_y_min, val);
+            break;
+          case SummationSpecification:PROFILE:
+            mei.do_profile = true;
+            break;
+          default:
+            assert(!"illegal step in STAGE1! (booking)");
         }
       }
-      assert(histo.kind != MonitorElement::DQM_KIND_INVALID);
     }
-    // above, we only saved all the parameters, but did not book yet. This is
-    // needed since we determine the ranges iteratively, but we need to know
-    // them precisely for booking; they cannot be changed later.
-    for (auto& e : t) {
-      AbstractHistogram& h = e.second;
-
+    
+    // Now do the actual booking.
+    for (auto const& e : toBeBooked) {
+      AbstractHistogram& h = t[e.first];
       iBooker.setCurrentFolder(makePath(e.first));
+      MEInfo const& mei = e.second;
 
-      if (h.range_x_nbins == 0) {
-        h.range_x_min -= 0.5;
-        h.range_x_max += 0.5;
-        h.range_x_nbins = int(h.range_x_max - h.range_x_min);
+      if (mei.range_x_nbins == 0) {
+        mei.range_x_min -= 0.5;
+        mei.range_x_max += 0.5;
+        mei.range_x_nbins = int(mei.range_x_max - mei.range_x_min);
       }
-      if (h.range_y_nbins == 0) {
-        h.range_y_min -= 0.5;
-        h.range_y_max += 0.5;
-        h.range_y_nbins = int(h.range_y_max - h.range_y_min);
+      if (mei.range_y_nbins == 0) {
+        mei.range_y_min -= 0.5;
+        mei.range_y_max += 0.5;
+        mei.range_y_nbins = int(mei.range_y_max - mei.range_y_min);
       }
 
-      if (h.kind == MonitorElement::DQM_KIND_TH1F) {
-        h.me = iBooker.book1D(h.name, (h.title + ";" + h.xlabel).c_str(),
-                       h.range_x_nbins, h.range_x_min, h.range_x_max);
-      } else if (h.kind == MonitorElement::DQM_KIND_TH2F) {
-        h.me = iBooker.book2D(h.name, (h.title + ";" + h.xlabel + ";" + h.ylabel).c_str(),
-                       h.range_x_nbins, h.range_x_min, h.range_x_max,
-                       h.range_y_nbins, h.range_y_min, h.range_y_max);
-      } else if (h.kind == MonitorElement::DQM_KIND_TPROFILE) {
-        h.me = iBooker.bookProfile(h.name, (h.title + ";" + h.xlabel + ";" + h.ylabel).c_str(),
-                       h.range_x_nbins, h.range_x_min, h.range_x_max, -(1./0.), 1./0.);
-      } else if (h.kind == MonitorElement::DQM_KIND_TPROFILE2D) {
-        h.me = iBooker.bookProfile2D(h.name, (h.title + ";" + h.xlabel + ";" + h.ylabel).c_str(),
-                       h.range_x_nbins, h.range_x_min, h.range_x_max,
-                       h.range_y_nbins, h.range_y_min, h.range_y_max,
+      if (mei.dimensions == 1) {
+        h.me = iBooker.book1D(mei.name, (mei.title + ";" + mei.xlabel).c_str(),
+                       mei.range_x_nbins, mei.range_x_min, mei.range_x_max);
+      } else if (mei.dimensions == 2 && !mei.do_profile) {
+        h.me = iBooker.book2D(mei.name, (mei.title + ";" + mei.xlabel + ";" + mei.ylabel).c_str(),
+                       mei.range_x_nbins, mei.range_x_min, mei.range_x_max,
+                       mei.range_y_nbins, mei.range_y_min, mei.range_y_max);
+      } else if (mei.dimensions == 2 && mei.do_profile) {
+        h.me = iBooker.bookProfile(mei.name, (mei.title + ";" + mei.xlabel + ";" + mei.ylabel).c_str(),
+                       mei.range_x_nbins, mei.range_x_min, mei.range_x_max, -(1./0.), 1./0.);
+      } else if (mei.dimensions == 3 && mei.do_profile) {
+        h.me = iBooker.bookProfile2D(mei.name, (mei.title + ";" + mei.xlabel + ";" + mei.ylabel).c_str(),
+                       mei.range_x_nbins, mei.range_x_min, mei.range_x_max,
+                       mei.range_y_nbins, mei.range_y_min, mei.range_y_max,
                        0.0, 0.0); // Z range is ignored if min==max
-      } else if (h.kind == MonitorElement::DQM_KIND_INT) {
-        // counter, nothing to do
-        continue; // avoid the getTH1 below
       } else {
         assert(!"Illegal Histogram kind.");
       }
-
       h.th1 = h.me->getTH1();
     }
   }
 }
+
+
 
 void HistogramManager::executePerLumiHarvesting(DQMStore::IBooker& iBooker,
                                                 DQMStore::IGetter& iGetter,
@@ -509,7 +428,24 @@ void HistogramManager::executePerLumiHarvesting(DQMStore::IBooker& iBooker,
   }
 }
 
+void HistogramManager::loadFromDQMStore(SummationSpecification& s, Table& t,
+                                        DQMStore::IGetter& iGetter) {
+}
 
+void HistogramManager::executeSave(SummationStep& step, Table& t,
+                                   DQMStore::IBooker& iBooker) {
+}
+
+void HistogramManager::executeGroupBy(SummationStep& step, Table& t) {
+}
+
+void HistogramManager::executeReduce(SummationStep& step, Table& t) {
+}
+
+void HistogramManager::executeExtend(SummationStep& step, Table& t, bool isX) {
+}
+
+#if 0
 
 void HistogramManager::loadFromDQMStore(SummationSpecification& s, Table& t,
                                         DQMStore::IGetter& iGetter) {
@@ -735,6 +671,8 @@ void HistogramManager::executeExtend(SummationStep& step, Table& t, bool isX) {
   t.swap(out);
 }
 
+#endif
+
 void HistogramManager::executeHarvesting(DQMStore::IBooker& iBooker,
                                          DQMStore::IGetter& iGetter) {
   if (!enabled) return;
@@ -781,4 +719,3 @@ void HistogramManager::executeHarvesting(DQMStore::IBooker& iBooker,
     }      // for each step
   }        // for each spec
 }
-#endif
