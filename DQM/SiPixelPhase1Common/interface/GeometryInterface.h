@@ -128,9 +128,9 @@ class GeometryInterface {
     return std::make_pair(col, UNDEFINED);
   }
 
-  Value extract(ID id, DetId did, edm::Event* ev = nullptr, int col = 0,
-                int row = 0) {
-    InterestingQuantities iq = {did, ev, col, row};
+  Value extract(ID id, DetId did, edm::Event* ev = nullptr, int16_t col = 0,
+                int16_t row = 0) {
+    InterestingQuantities iq = {ev, did, col, row};
     return extractors[id](iq);
   }
 
