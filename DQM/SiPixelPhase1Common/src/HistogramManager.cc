@@ -89,8 +89,12 @@ void HistogramManager::fill(double x, double y, DetId sourceModule,
     
     if (!fastpath[i]) {
       auto histo = t.find(significantvalues[i]);
-      assert(histo != t.end() || !"Histogram not booked! "
-             "Probably inconsistent geometry description.");
+      if (histo == t.end()) {
+        if (!bookUndefined) return;
+        std::cout << "+++ path " << makePath(significantvalues[i]) << "\n";
+        std::cout << "+++ name " << t.begin()->second.th1->GetName() << "\n";
+        assert(!"Histogram not booked! Probably inconsistent geometry description.");
+      }
 
       fastpath[i] = &(histo->second);
     }
@@ -163,7 +167,10 @@ void HistogramManager::fillInternal(double x, double y, int n_parameters,
       break;
     case 3:
       dest.me->Fill(fx, fy, fz);
+      break;
     default:
+      std::cout << "+++ got " << tot_parameters << " dimensions\n";
+      std::cout << "+++ name " << dest.th1->GetName() << "\n";
       assert(!"More than 3 dimensions should never occur.");
   }
 }
@@ -194,8 +201,12 @@ void HistogramManager::executePerEventHarvesting(const edm::Event* sourceEvent) 
         geometryInterface.extractColumns(s.steps[1].columns, iq,
                                          significantvalues[i]);
         auto histo = t.find(significantvalues[i]);
-        assert(histo != t.end() || !"Histogram not booked! (per-event) "
-               "Probably inconsistent geometry description.");
+        if (histo == t.end()) {
+          if (!bookUndefined) continue;
+          std::cout << "+++ path " << makePath(significantvalues[i]) << "\n";
+          std::cout << "+++ name " << t.begin()->second.th1->GetName() << "\n";
+          assert(!"Histogram not booked! (per-event) Probably inconsistent geometry description.");
+        }
         fillInternal(histo->second.count, 0, 1, iq, s.steps.begin()+2, s.steps.end(), histo->second);
         histo->second.count = 0;
       }
@@ -280,15 +291,28 @@ void HistogramManager::book(DQMStore::IBooker& iBooker,
   for (unsigned int i = 0; i < specs.size(); i++) {
     auto& s = specs[i];
     auto& t = tables[i];
+    toBeBooked.clear();
+    bool bookCounters = false;
+
     auto firststep = s.steps.begin();
     int n_parameters = this->dimensions;
     if (firststep->type != SummationStep::GROUPBY) {
       ++firststep;
       n_parameters = 1;
+      bookCounters = true;
     }
     GeometryInterface::Values significantvalues;
 
     for (auto iq : geometryInterface.allModules()) {
+
+      if (bookCounters) {
+        // add an entry for the counting step if present
+        // TODO: use a independent table here.
+        geometryInterface.extractColumns(s.steps[0].columns, iq,
+                                         significantvalues);
+        t[significantvalues].iq_sample = iq;
+      }
+
       geometryInterface.extractColumns(firststep->columns, iq,
                                        significantvalues);
       if (!bookUndefined) {
