@@ -185,7 +185,7 @@ void HistogramManager::executePerEventHarvesting(const edm::Event* sourceEvent) 
     auto& t = tables[i];
     assert((s.steps.size() >= 2 && s.steps[1].type == SummationStep::GROUPBY)
           || !"Incomplete spec (but this cannot be caught in Python)");
-    for (auto e : t) {
+    for (auto& e : t) {
       // TODO: this is terribly risky. It works if there is a differnt number
       // of columns in COUNT and GROUPBY each or if the columns are identical,
       // but not in other, possible cases. Solution: separate table for ctrs.
@@ -207,8 +207,8 @@ void HistogramManager::executePerEventHarvesting(const edm::Event* sourceEvent) 
           std::cout << "+++ name " << t.begin()->second.th1->GetName() << "\n";
           assert(!"Histogram not booked! (per-event) Probably inconsistent geometry description.");
         }
-        fillInternal(histo->second.count, 0, 1, iq, s.steps.begin()+2, s.steps.end(), histo->second);
-        histo->second.count = 0;
+        fillInternal(e.second.count, 0, 1, iq, s.steps.begin()+2, s.steps.end(), histo->second);
+        e.second.count = 0;
       }
     }
   }
@@ -337,7 +337,7 @@ void HistogramManager::book(DQMStore::IBooker& iBooker,
                 mei.to##label = this->from##label; \
                 mei.range_##to##_min = this->range_##from##_min; \
                 mei.range_##to##_max = this->range_##from##_max; \
-                mei.range_##to##_nbins = this->range_##from##_nbins
+                mei.range_##to##_nbins = this->range_##from##_nbins 
         for (auto it = firststep+1; it != s.steps.end(); ++it) {
           if (it->stage != SummationStep::STAGE1) break;
           switch (it->type) {
@@ -353,13 +353,24 @@ void HistogramManager::book(DQMStore::IBooker& iBooker,
               if (it->arg[0] == '1' && n_parameters >= 1) { SET_AXIS(z, x); }
               if (it->arg[0] == '2' && n_parameters >= 2) { SET_AXIS(z, y); }
               break;
-            case SummationStep::EXTEND_X:
-              mei.xlabel = geometryInterface.pretty(geometryInterface.extract(it->columns[0], iq).first);
-              tot_parameters++;
+            case SummationStep::EXTEND_X: {
+              assert(mei.range_x_nbins == 0);
+              auto col = geometryInterface.extract(it->columns[0], iq).first;
+              mei.xlabel = geometryInterface.pretty(col);
+              if(geometryInterface.minValue(col[0]) != GeometryInterface::UNDEFINED)
+                mei.range_x_min = geometryInterface.minValue(col[0]);
+              if(geometryInterface.maxValue(col[0]) != GeometryInterface::UNDEFINED)
+                mei.range_x_max = geometryInterface.maxValue(col[0]);
+              tot_parameters++; }
               break;
-            case SummationStep::EXTEND_Y:
-              mei.ylabel = geometryInterface.pretty(geometryInterface.extract(it->columns[0], iq).first);
-              tot_parameters++;
+            case SummationStep::EXTEND_Y: {
+              auto col = geometryInterface.extract(it->columns[0], iq).first;
+              mei.ylabel = geometryInterface.pretty(col);
+              if(geometryInterface.minValue(col[0]) != GeometryInterface::UNDEFINED)
+                mei.range_y_min = geometryInterface.minValue(col[0]);
+              if(geometryInterface.maxValue(col[0]) != GeometryInterface::UNDEFINED)
+                mei.range_y_max = geometryInterface.maxValue(col[0]);
+              tot_parameters++; }
               break;
             case SummationStep::PROFILE:
               mei.do_profile = true;
@@ -374,21 +385,27 @@ void HistogramManager::book(DQMStore::IBooker& iBooker,
       MEInfo& mei = toBeBooked[significantvalues]; 
       double val;
 
-      for (auto it = firststep; it != s.steps.end(); ++it) {
+      for (auto it = firststep+1; it != s.steps.end(); ++it) {
         if (it->stage != SummationStep::STAGE1) break;
         switch (it->type) {
           case SummationStep::EXTEND_X:
             val = geometryInterface.extract(it->columns[0], iq).second;
+            if (val == GeometryInterface::UNDEFINED) break;
             mei.range_x_min = std::min(mei.range_x_min, val);
-            mei.range_x_max = std::max(mei.range_x_min, val);
+            mei.range_x_max = std::max(mei.range_x_max, val);
             break;
           case SummationStep::EXTEND_Y:
             val = geometryInterface.extract(it->columns[0], iq).second;
+            if (val == GeometryInterface::UNDEFINED) break;
             mei.range_y_min = std::min(mei.range_y_min, val);
-            mei.range_y_max = std::max(mei.range_y_min, val);
+            mei.range_y_max = std::max(mei.range_y_max, val);
             break;
           case SummationStep::PROFILE:
             mei.do_profile = true;
+            break;
+          case SummationStep::USE_X:
+          case SummationStep::USE_Y:
+          case SummationStep::USE_Z:
             break;
           default:
             assert(!"illegal step in STAGE1! (booking)");
@@ -422,7 +439,7 @@ void HistogramManager::book(DQMStore::IBooker& iBooker,
                        mei.range_y_nbins, mei.range_y_min, mei.range_y_max);
       } else if (mei.dimensions == 2 && mei.do_profile) {
         h.me = iBooker.bookProfile(mei.name, (mei.title + ";" + mei.xlabel + ";" + mei.ylabel).c_str(),
-                       mei.range_x_nbins, mei.range_x_min, mei.range_x_max, -(1./0.), 1./0.);
+                       mei.range_x_nbins, mei.range_x_min, mei.range_x_max, 0.0, 0.0);
       } else if (mei.dimensions == 3 && mei.do_profile) {
         h.me = iBooker.bookProfile2D(mei.name, (mei.title + ";" + mei.xlabel + ";" + mei.ylabel).c_str(),
                        mei.range_x_nbins, mei.range_x_min, mei.range_x_max,

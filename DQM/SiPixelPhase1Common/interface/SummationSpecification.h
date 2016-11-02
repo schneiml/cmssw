@@ -22,8 +22,19 @@ struct SummationStep {
   // to allow fill() to exectute it very quickly.
   // For step2 stuff (after the first SAVE), we can also keep strings, since 
   // step2 will only be executed once by an executor.
-  enum Type  {NO_TYPE, GROUPBY, EXTEND_X, EXTEND_Y, COUNT, REDUCE, SAVE, CUSTOM,
-             USE_X, USE_Y, USE_Z, PROFILE};
+  enum Type  {NO_TYPE  = 0, 
+              GROUPBY  = 1, 
+              EXTEND_X = 2, 
+              EXTEND_Y = 3,
+              COUNT    = 4, 
+              REDUCE   = 5, 
+              SAVE     = 6, 
+              CUSTOM   = 7,
+              USE_X    = 8, 
+              USE_Y    = 9,
+              USE_Z    = 10, 
+              PROFILE  = 11
+  };
   Type type = NO_TYPE;
   // STAGE1 is DQM step1, STAGE2 step2. STAGE1_2 is somewhere in between, it runs
   // in the analyze()-method (step1) but does a sort of harvesting (per-event).
