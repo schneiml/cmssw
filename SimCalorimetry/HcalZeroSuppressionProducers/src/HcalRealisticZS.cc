@@ -138,8 +138,8 @@ void HcalRealisticZS::produce(edm::Event& e, const edm::EventSetup& eventSetup)
   // create empty output
   std::unique_ptr<HBHEUpgradeDigiCollection> zs_hbheUpgrade(new HBHEUpgradeDigiCollection);
   std::unique_ptr<HFUpgradeDigiCollection> zs_hfUpgrade(new HFUpgradeDigiCollection);
-  std::unique_ptr<QIE10DigiCollection> zs_hfQIE10(new QIE10DigiCollection);
-  std::unique_ptr<QIE11DigiCollection> zs_hbheQIE11(new QIE11DigiCollection);
+  std::unique_ptr<QIE10DigiCollection> zs_hfQIE10(new QIE10DigiCollection(hfQIE10->samples()));
+  std::unique_ptr<QIE11DigiCollection> zs_hbheQIE11(new QIE11DigiCollection(hbheQIE11->samples()));
   
   //run the algorithm
 
