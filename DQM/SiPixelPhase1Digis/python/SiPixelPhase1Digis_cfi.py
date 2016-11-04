@@ -4,6 +4,7 @@ import FWCore.ParameterSet.Config as cms
 from DQM.SiPixelPhase1Common.HistogramManager_cfi import *
 
 SiPixelPhase1DigisADC = DefaultHisto.clone(
+  enabled = True,
   name = "adc",
   title = "Digi ADC values",
   xlabel = "adc readout",
@@ -11,13 +12,29 @@ SiPixelPhase1DigisADC = DefaultHisto.clone(
   range_max = 300,
   range_nbins = 300,
   specs = cms.VPSet(
-    StandardSpecificationTrend,
-    StandardSpecification2DProfile,
-    *StandardSpecifications1D
+    Specification().groupBy("PXBarrel|PXForward/PXLayer|PXDisk/PXRing|/PXLadder|PXBlade/PXBModule|PXPanel")
+                   .save()
+                   .reduce("MEAN")
+                   .groupBy("PXBarrel|PXForward/PXLayer|PXDisk/PXRing|", "EXTEND_X")
+                   .saveAll(),
+    Specification().groupBy("PXBarrel|PXForward/PXLayer|PXDisk/PXRing|/PXLadder|PXBlade")
+                   .save()
+                   .reduce("MEAN")
+                   .groupBy("PXBarrel|PXForward/PXLayer|PXDisk/PXRing|", "SUM")
+                   .saveAll(),
+    Specification().groupBy("PXBarrel|PXForward/PXLayer|PXDisk/PXRing|/signedLadder|PXBlade/signedModule|PXPanel")
+                   .groupBy("PXBarrel|PXForward/PXLayer|PXDisk/PXRing|/signedLadder|PXBlade", "EXTEND_X")
+                   .groupBy("PXBarrel|PXForward/PXLayer|PXDisk/PXRing|", "EXTEND_Y")
+                   .reduce("MEAN")
+                   .save()
+    #StandardSpecificationTrend,
+    #StandardSpecification2DProfile,
+    #*StandardSpecifications1D
   )
 )
 
 SiPixelPhase1DigisNdigis = DefaultHisto.clone(
+  enabled = True,
   name = "digis", # 'Count of' added automatically
   title = "Digis",
   xlabel = "digis",
@@ -26,9 +43,34 @@ SiPixelPhase1DigisNdigis = DefaultHisto.clone(
   range_nbins = 30,
   dimensions = 0, # this is a count
   specs = cms.VPSet(
-    StandardSpecificationTrend_Num,
-    StandardSpecification2DProfile_Num,
-    *StandardSpecifications1D_Num
+    Specification().groupBy("PXBarrel|PXForward/PXLayer|PXDisk/PXRing|/signedLadder|PXBlade/signedModule|PXPanel")
+                   .groupBy("PXBarrel|PXForward/PXLayer|PXDisk/PXRing|/signedLadder|PXBlade", "EXTEND_X")
+                   .groupBy("PXBarrel|PXForward/PXLayer|PXDisk/PXRing|", "EXTEND_Y")
+                   .save()
+                   .groupBy("PXBarrel|PXForward/PXLayer|PXDisk")
+                   .saveAll(),
+    Specification().groupBy("PXBarrel|PXForward/PXLayer|PXDisk/PXRing|/PXBModule|PXPanel")
+                   .groupBy("PXBarrel|PXForward/PXLayer|PXDisk/PXRing|", "EXTEND_X")
+                   .save()
+                   .groupBy("PXBarrel|PXForward/PXDisk|/PXRing|", "SUM")
+                   .save(),
+    Specification().groupBy("signedModule|PXDisk/PXRing|PXLayer/PXPanel|/Event")
+                   .reduce("COUNT")
+                   .groupBy("PXBarrel|PXForward/PXLayer|/signedModule|PXDisk")
+                   .groupBy("PXBarrel|PXForward/PXLayer|", "EXTEND_X")
+                   .reduce("MEAN")
+                   .save()
+                   .groupBy("PXBarrel|PXForward", "SUM")
+                   .save(),
+    Specification().groupBy("PXBarrel|PXForward/PXLayer|/signedModule|PXDisk")
+                   .groupBy("PXBarrel|PXForward/PXLayer|", "EXTEND_X")
+                   .save()
+                   .groupBy("PXBarrel|PXForward", "SUM")
+                   .save()
+
+    #StandardSpecificationTrend_Num,
+    #StandardSpecification2DProfile_Num,
+    #*StandardSpecifications1D_Num
   )
 )
 
