@@ -92,7 +92,7 @@ void HistogramManager::fill(double x, double y, DetId sourceModule,
     if (!fastpath[i]) {
       auto histo = t.find(significantvalues[i]);
       if (histo == t.end()) {
-        if (!bookUndefined) return;
+        if (!bookUndefined) continue;
         edm::LogError("HistogramManager") << "Missing Histogram!\n"
           << "path " << makePath(significantvalues[i]) << "\n"
           << "name " << tables[i].begin()->second.th1->GetName() << "\n";
