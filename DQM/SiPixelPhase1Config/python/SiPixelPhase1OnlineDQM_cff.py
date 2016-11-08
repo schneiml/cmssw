@@ -5,12 +5,14 @@ from DQM.SiPixelPhase1Common.HistogramManager_cfi import *
 StandardSpecifications1D.append(
     Specification(PerLayer1D).groupBy("PXBarrel|PXForward/PXLayer|PXDisk/OnlineBlock") # per-layer with history for online
                              .groupBy("PXBarrel|PXForward/PXLayer|PXDisk", "EXTEND_Y")
+                             .save()
                              .custom()
                              .save()
 )
 StandardSpecifications1D.append(
     Specification().groupBy("PXBarrel|PXForward/OnlineBlock") # per-layer with history for online
                    .groupBy("PXBarrel|PXForward", "EXTEND_Y")
+                   .save()
                    .custom()
                    .save()
 )
@@ -20,6 +22,7 @@ StandardSpecifications1D_Num.append(
                              .reduce("COUNT")
                              .groupBy("PXBarrel|PXForward/PXLayer|PXDisk/OnlineBlock") 
                              .groupBy("PXBarrel|PXForward/PXLayer|PXDisk", "EXTEND_Y")
+                             .save()
                              .custom()
                              .save()
 )
@@ -28,6 +31,7 @@ StandardSpecifications1D_Num.append(
                    .reduce("COUNT")
                    .groupBy("PXBarrel|PXForward/OnlineBlock") 
                    .groupBy("PXBarrel|PXForward", "EXTEND_Y")
+                   .save()
                    .custom()
                    .save()
 )
