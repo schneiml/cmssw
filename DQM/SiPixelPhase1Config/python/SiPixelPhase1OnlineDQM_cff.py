@@ -48,18 +48,15 @@ DefaultHisto.perLumiHarvesting = True
 from DQM.SiPixelPhase1Digis.SiPixelPhase1Digis_cfi import *
 SiPixelPhase1DigisAnalyzer.src = cms.InputTag("siPixelDigis") # adapt for real data
 
-SiPixelPhase1DigisHarvester = cms.EDAnalyzer("SiPixelPhase1OnlineHarvester",
-    histograms = SiPixelPhase1DigisConf,
-    geometry = SiPixelPhase1Geometry
-)
-
 # Cluster (track-independent) monitoring
 from DQM.SiPixelPhase1Clusters.SiPixelPhase1Clusters_cfi import *
 
-SiPixelPhase1ClustersHarvester = cms.EDAnalyzer("SiPixelPhase1OnlineHarvester",
-    histograms = SiPixelPhase1ClustersConf,
-    geometry = SiPixelPhase1Geometry
-)
+# We could overwrite the Harvesters like this, and use the custom() steps to
+# perform resetting of histograms.
+#SiPixelPhase1ClustersHarvester = cms.EDAnalyzer("SiPixelPhase1OnlineHarvester",
+#    histograms = SiPixelPhase1ClustersConf,
+#    geometry = SiPixelPhase1Geometry
+#)
 
 
 # Raw data errors
