@@ -97,6 +97,7 @@ void GeometryInterface::loadFromTopology(edm::EventSetup const& iSetup, const ed
     auto disk = pxdisk(iq);
     if (disk == UNDEFINED) return UNDEFINED;
     auto endcap = pxendcap(iq);
+    if (disk != 3) return UNDEFINED; //HACK to hide no-PB, saves space.
     return endcap == 1 ? -disk : disk;
   };
 
