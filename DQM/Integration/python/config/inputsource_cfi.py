@@ -51,7 +51,7 @@ if not options.runkey.strip():
 runType.setRunType(options.runkey.strip())
 
 # Input source
-nextLumiTimeoutMillis = 100000
+nextLumiTimeoutMillis = 10000
 endOfRunKills = True
 
 if options.scanOnce:

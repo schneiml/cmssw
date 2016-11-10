@@ -28,8 +28,8 @@ process.load("DQMServices.Components.DQMEnvironment_cfi")
 # DQM Live Environment
 #-----------------------------
 process.load("DQM.Integration.config.environment_cfi")
-process.dqmEnv.subSystemFolder    = "Pixel"
-process.dqmSaver.tag = "Pixel"
+process.dqmEnv.subSystemFolder    = "PixelPilot"
+process.dqmSaver.tag = "PixelPilot"
 
 process.DQMStore.referenceFileName = '/dqmdata/dqm/reference/pixel_reference_pp.root'
 if (process.runType.getRunType() == process.runType.hi_run):
@@ -137,6 +137,8 @@ DefaultHisto.enabled = False
 # Caution: this disables a lot of safety checks.
 # But it is reasonable here, bc we don't want to see Barrel etc.
 DefaultHisto.bookUndefined = False 
+
+DefaultHisto.topFolderName = "PixelPilot" 
 
 # maximum Lumisection number for trends. This is a hard limit, higher ends up in overflow.
 SiPixelPhase1Geometry.max_lumisection = 500 
