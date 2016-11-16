@@ -7,9 +7,9 @@ SiPixelPhase1DigisADC = DefaultHisto.clone(
   name = "adc",
   title = "Digi ADC values",
   xlabel = "adc readout",
-  range_min = 0,
-  range_max = 300,
-  range_nbins = 300,
+  range_min = -0.5,
+  range_max = 255.5,
+  range_nbins = 256,
   specs = cms.VPSet(
     StandardSpecificationTrend,
     StandardSpecification2DProfile,

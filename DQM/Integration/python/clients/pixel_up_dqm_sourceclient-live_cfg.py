@@ -28,8 +28,8 @@ process.load("DQMServices.Components.DQMEnvironment_cfi")
 # DQM Live Environment
 #-----------------------------
 process.load("DQM.Integration.config.environment_cfi")
-process.dqmEnv.subSystemFolder    = "PixelPilot"
-process.dqmSaver.tag = "PixelPilot"
+process.dqmEnv.subSystemFolder    = "ScanPixelPilot"
+process.dqmSaver.tag = "ScanPixelPilot"
 
 process.DQMStore.referenceFileName = '/dqmdata/dqm/reference/pixel_reference_pp.root'
 if (process.runType.getRunType() == process.runType.hi_run):
@@ -137,11 +137,12 @@ DefaultHisto.enabled = False
 # Caution: this disables a lot of safety checks.
 # But it is reasonable here, bc we don't want to see Barrel etc.
 DefaultHisto.bookUndefined = False 
+DefaultHisto.topFolderName = "ScanPixelPilot" 
 
 DefaultHisto.topFolderName = "PixelPilot" 
 
 # maximum Lumisection number for trends. This is a hard limit, higher ends up in overflow.
-SiPixelPhase1Geometry.max_lumisection = 500 
+SiPixelPhase1Geometry.max_lumisection = 5000 
 # #LS per line in the "overlaid curves"
 SiPixelPhase1Geometry.onlineblock = 10 
 # number of lines
@@ -253,7 +254,9 @@ process.SiPixelPhase1DigisHitmap.specs = cms.VPSet(
 
 # clusters
 process.SiPixelPhase1ClustersCharge.enabled = True
-process.SiPixelPhase1ClustersCharge.bookUndefined = False
+process.SiPixelPhase1ClustersCharge.range_min = 0
+process.SiPixelPhase1ClustersCharge.range_max = 100e3
+process.SiPixelPhase1ClustersCharge.range_nbins = 100
 process.SiPixelPhase1ClustersCharge.specs = cms.VPSet(
   StandardSpecification2DProfile,
   normalPerModule,
@@ -262,7 +265,9 @@ process.SiPixelPhase1ClustersCharge.specs = cms.VPSet(
 )
 
 process.SiPixelPhase1ClustersSize.enabled = True
-process.SiPixelPhase1ClustersSize.bookUndefined = False
+process.SiPixelPhase1ClustersSize.range_min = 0.5
+process.SiPixelPhase1ClustersSize.range_max = 15.5
+process.SiPixelPhase1ClustersSize.range_nbins = 15
 process.SiPixelPhase1ClustersSize.specs = cms.VPSet(
   StandardSpecification2DProfile,
   normalPerModule,
@@ -271,7 +276,6 @@ process.SiPixelPhase1ClustersSize.specs = cms.VPSet(
 )
 
 process.SiPixelPhase1ClustersNClusters.enabled = True
-process.SiPixelPhase1ClustersNClusters.bookUndefined = False
 process.SiPixelPhase1ClustersNClusters.specs = cms.VPSet(
   StandardSpecification2DProfile_Num,
   normalPerModule_Num,
@@ -322,6 +326,8 @@ process.hltTriggerTypeFilter = cms.EDFilter("HLTTriggerTypeFilter",
     SelectedTriggerType = cms.int32(1)
 )
 
+process.load("DPGAnalysis.PilotBladeOccupancyFilter.PilotBladeOccupancyFilter_cfi")
+
 #--------------------------
 # Scheduling
 #--------------------------
@@ -330,6 +336,8 @@ process.DQMmodules = cms.Sequence(process.dqmEnv*process.dqmSaver)
 process.p = cms.Path(
     process.PBDigis
   * process.PBClusters
+  * process.siPixelDigis
+  * process.PilotBladeOccupancyFilter
   * process.DQMmodules
   * process.siPixelPhase1OnlineDQM_source
   * process.siPixelPhase1OnlineDQM_harvesting
