@@ -116,7 +116,7 @@ PilotBladeOccupancyFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSe
    edm::Handle<edm::DetSetVector<SiPixelCluster>> clusters;
    iEvent.getByToken(clusterToken_, clusters);
    if (clustersCut_ && !clusters.isValid()) {
-     std::cout << "+++ clusters cut but no digis collection!\n";
+     std::cout << "+++ clusters cut but no clusters collection!\n";
      return false; 
    }
 

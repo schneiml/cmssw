@@ -3,7 +3,9 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("PIXELDQMLIVE")
 
 process.MessageLogger = cms.Service("MessageLogger",
-    debugModules = cms.untracked.vstring(),
+    debugModules = cms.untracked.vstring('siPixelDigis', 
+                                         'siPixelClusters', 
+                                         ),
     cout = cms.untracked.PSet(threshold = cms.untracked.string('ERROR')),
     destinations = cms.untracked.vstring('cout')
 )
@@ -28,8 +30,8 @@ process.load("DQMServices.Components.DQMEnvironment_cfi")
 # DQM Live Environment
 #-----------------------------
 process.load("DQM.Integration.config.environment_cfi")
-process.dqmEnv.subSystemFolder    = "ScanPixelPilot"
-process.dqmSaver.tag = "ScanPixelPilot"
+process.dqmEnv.subSystemFolder    = "ReducedScanPixelPilot"
+process.dqmSaver.tag = "ReducedScanPixelPilot"
 
 process.DQMStore.referenceFileName = '/dqmdata/dqm/reference/pixel_reference_pp.root'
 if (process.runType.getRunType() == process.runType.hi_run):
@@ -137,7 +139,7 @@ DefaultHisto.enabled = False
 # Caution: this disables a lot of safety checks.
 # But it is reasonable here, bc we don't want to see Barrel etc.
 DefaultHisto.bookUndefined = False 
-DefaultHisto.topFolderName = "ScanPixelPilot" 
+DefaultHisto.topFolderName = "ReducedScanPixelPilot" 
 
 DefaultHisto.topFolderName = "PixelPilot" 
 
@@ -249,6 +251,14 @@ process.SiPixelPhase1DigisHitmap.specs = cms.VPSet(
                    .save(),
     Specification(PerModule).groupBy("PXForward/PXDisk/DetId/row")
                    .groupBy("PXForward/PXDisk/DetId", "EXTEND_X")
+                   .save(),
+    Specification(PerModule).groupBy("PXForward/PXDisk/DetId/OnlineBlock/col")
+                   .groupBy("PXForward/PXDisk/DetId/OnlineBlock", "EXTEND_X")
+                   .groupBy("PXForward/PXDisk/DetId", "EXTEND_Y")
+                   .save(),
+    Specification(PerModule).groupBy("PXForward/PXDisk/DetId/OnlineBlock/row")
+                   .groupBy("PXForward/PXDisk/DetId/OnlineBlock", "EXTEND_X")
+                   .groupBy("PXForward/PXDisk/DetId", "EXTEND_Y")
                    .save()
 )
 
@@ -256,7 +266,7 @@ process.SiPixelPhase1DigisHitmap.specs = cms.VPSet(
 process.SiPixelPhase1ClustersCharge.enabled = True
 process.SiPixelPhase1ClustersCharge.range_min = 0
 process.SiPixelPhase1ClustersCharge.range_max = 100e3
-process.SiPixelPhase1ClustersCharge.range_nbins = 100
+process.SiPixelPhase1ClustersCharge.range_nbins = 50
 process.SiPixelPhase1ClustersCharge.specs = cms.VPSet(
   StandardSpecification2DProfile,
   normalPerModule,
@@ -327,6 +337,8 @@ process.hltTriggerTypeFilter = cms.EDFilter("HLTTriggerTypeFilter",
 )
 
 process.load("DPGAnalysis.PilotBladeOccupancyFilter.PilotBladeOccupancyFilter_cfi")
+process.PilotBladeOccupancyFilter.minclusters = 0
+process.PilotBladeOccupancyFilter.mindigis = 200
 
 #--------------------------
 # Scheduling
@@ -336,8 +348,9 @@ process.DQMmodules = cms.Sequence(process.dqmEnv*process.dqmSaver)
 process.p = cms.Path(
     process.PBDigis
   * process.PBClusters
-  * process.siPixelDigis
-  * process.PilotBladeOccupancyFilter
+#  * process.siPixelDigis
+#  * process.siPixelClusters
+#  * process.PilotBladeOccupancyFilter
   * process.DQMmodules
   * process.siPixelPhase1OnlineDQM_source
   * process.siPixelPhase1OnlineDQM_harvesting
