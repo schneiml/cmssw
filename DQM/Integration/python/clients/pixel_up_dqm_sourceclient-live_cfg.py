@@ -15,10 +15,10 @@ QTestfile = 'DQM/SiPixelMonitorClient/test/sipixel_qualitytest_config.xml'
 # Event Source
 #-----------------------------
 # for live online DQM in P5
-process.load("DQM.Integration.config.inputsource_cfi")
+#process.load("DQM.Integration.config.inputsource_cfi")
 
 # for testing in lxplus
-#process.load("DQM.Integration.config.fileinputsource_cfi")
+process.load("DQM.Integration.config.fileinputsource_cfi")
 
 ##
 #----------------------------
@@ -56,10 +56,11 @@ process.load("Configuration.StandardSequences.GeometryRecoDB_cff")
 # GLOBALTAG
 #-------------------------------------------------
 # Condition for P5 cluster
-process.load("DQM.Integration.config.FrontierCondition_GT_cfi")
+#process.load("DQM.Integration.config.FrontierCondition_GT_cfi")
 # Condition for lxplus: change and possibly customise the GT
-#from Configuration.AlCa.GlobalTag import GlobalTag as gtCustomise
-#process.GlobalTag = gtCustomise(process.GlobalTag, 'auto:run2_data', '')
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
 
 #-----------------------
 #  Reconstruction Modules
@@ -136,10 +137,9 @@ process.PBRecHits = cms.EDProducer("SiPixelRecHitConverter",
 # first, we load the global  defaults and overwrite what needs to be changed
 from DQM.SiPixelPhase1Common.HistogramManager_cfi import *
 DefaultHisto.enabled = False
-# Caution: this disables a lot of safety checks.
-# But it is reasonable here, bc we don't want to see Barrel etc.
-DefaultHisto.bookUndefined = False 
 DefaultHisto.topFolderName = "PixelPilot" 
+DefaultHistoDigiCluster.topFolderName = "PixelPilot" 
+DefaultHistoTrack.topFolderName = "PixelPilot" 
 
 # maximum Lumisection number for trends. This is a hard limit, higher ends up in overflow.
 SiPixelPhase1Geometry.max_lumisection = 5000 
@@ -163,53 +163,51 @@ process.SiPixelPhase1RawDataAnalyzer.src = "PBDigis"
 # some Histogram Specifications we want to use later
 
 onlineLiveSpec = ( # online "overlaid curves"
-  Specification(PerModule).groupBy("PXForward/PXDisk/DetId/OnlineBlock")
-		  .groupBy("PXForward/PXDisk/DetId", "EXTEND_Y")
+  Specification(PerModule).groupBy("PXForward/PXDisk/PXModuleName/OnlineBlock")
+		  .groupBy("PXForward/PXDisk/PXModuleName", "EXTEND_Y")
 		  .save()
-		  .custom()
 		  .groupBy("PXForward/PXDisk")
 		  .save()
 )
 onlineLiveSpec_Num = (
-  Specification(PerModule).groupBy("PXForward/PXDisk/DetId/OnlineBlock/Event")
+  Specification(PerModule).groupBy("PXForward/PXDisk/PXModuleName/OnlineBlock/Event")
                   .reduce("COUNT")
-                  .groupBy("PXForward/PXDisk/DetId/OnlineBlock")
-		  .groupBy("PXForward/PXDisk/DetId", "EXTEND_Y")
+                  .groupBy("PXForward/PXDisk/PXModuleName/OnlineBlock")
+		  .groupBy("PXForward/PXDisk/PXModuleName", "EXTEND_Y")
 		  .save()
-		  .custom()
 		  .groupBy("PXForward/PXDisk")
 		  .save()
 )
 
 onlineTrendSpec = (
-  Specification(PerModule).groupBy("PXForward/PXDisk/DetId/Lumisection")
+  Specification(PerModule).groupBy("PXForward/PXDisk/PXModuleName/Lumisection")
                   .reduce("MEAN")
-		  .groupBy("PXForward/PXDisk/DetId", "EXTEND_X")
+		  .groupBy("PXForward/PXDisk/PXModuleName", "EXTEND_X")
 		  .save()
 		  .groupBy("PXForward/PXDisk")
 		  .save()
 )
 
 onlineTrendSpec_Num = (
-  Specification(PerModule).groupBy("PXForward/PXDisk/DetId/Lumisection/Event")
+  Specification(PerModule).groupBy("PXForward/PXDisk/PXModuleName/Lumisection/Event")
                   .reduce("COUNT")
-                  .groupBy("PXForward/PXDisk/DetId/Lumisection")
+                  .groupBy("PXForward/PXDisk/PXModuleName/Lumisection")
                   .reduce("MEAN")
-		  .groupBy("PXForward/PXDisk/DetId", "EXTEND_X")
+		  .groupBy("PXForward/PXDisk/PXModuleName", "EXTEND_X")
 		  .save()
 		  .groupBy("PXForward/PXDisk")
 		  .save()
 )
  
 normalPerModule = (
-  Specification(PerModule).groupBy("PXForward/PXDisk/DetId").save()
+  Specification(PerModule).groupBy("PXForward/PXDisk/PXModuleName").save()
                           .groupBy("PXForward/PXDisk").save()
 )
 
 normalPerModule_Num = (
-  Specification(PerModule).groupBy("PXForward/PXDisk/DetId/Event")
+  Specification(PerModule).groupBy("PXForward/PXDisk/PXModuleName/Event")
                           .reduce("COUNT")
-                          .groupBy("PXForward/PXDisk/DetId").save()
+                          .groupBy("PXForward/PXDisk/PXModuleName").save()
                           .groupBy("PXForward/PXDisk").save()
 )
 
@@ -220,6 +218,7 @@ process.SiPixelPhase1DigisADC.enabled = True
 process.SiPixelPhase1DigisADC.specs = VPSet(
   StandardSpecification2DProfile,
   normalPerModule,
+  onlineLiveSpec,
 )
 
 process.SiPixelPhase1DigisNdigis.enabled = True
@@ -241,23 +240,23 @@ process.SiPixelPhase1DigisEvents.enabled = True
 
 process.SiPixelPhase1DigisHitmap.enabled = True
 process.SiPixelPhase1DigisHitmap.specs = VPSet(
-    Specification(PerModule).groupBy("PXForward/PXDisk/DetId/row/col")
-                   .groupBy("PXForward/PXDisk/DetId/row", "EXTEND_Y")
-                   .groupBy("PXForward/PXDisk/DetId", "EXTEND_X")
+    Specification(PerModule).groupBy("PXForward/PXDisk/PXModuleName/row/col")
+                   .groupBy("PXForward/PXDisk/PXModuleName/row", "EXTEND_Y")
+                   .groupBy("PXForward/PXDisk/PXModuleName", "EXTEND_X")
                    .save(),
-    Specification(PerModule).groupBy("PXForward/PXDisk/DetId/col")
-                   .groupBy("PXForward/PXDisk/DetId", "EXTEND_X")
+    Specification(PerModule).groupBy("PXForward/PXDisk/PXModuleName/col")
+                   .groupBy("PXForward/PXDisk/PXModuleName", "EXTEND_X")
                    .save(),
-    Specification(PerModule).groupBy("PXForward/PXDisk/DetId/row")
-                   .groupBy("PXForward/PXDisk/DetId", "EXTEND_X")
+    Specification(PerModule).groupBy("PXForward/PXDisk/PXModuleName/row")
+                   .groupBy("PXForward/PXDisk/PXModuleName", "EXTEND_X")
                    .save(),
-    Specification(PerModule).groupBy("PXForward/PXDisk/DetId/OnlineBlock/col")
-                   .groupBy("PXForward/PXDisk/DetId/OnlineBlock", "EXTEND_X")
-                   .groupBy("PXForward/PXDisk/DetId", "EXTEND_Y")
+    Specification(PerModule).groupBy("PXForward/PXDisk/PXModuleName/OnlineBlock/col")
+                   .groupBy("PXForward/PXDisk/PXModuleName/OnlineBlock", "EXTEND_X")
+                   .groupBy("PXForward/PXDisk/PXModuleName", "EXTEND_Y")
                    .save(),
-    Specification(PerModule).groupBy("PXForward/PXDisk/DetId/OnlineBlock/row")
-                   .groupBy("PXForward/PXDisk/DetId/OnlineBlock", "EXTEND_X")
-                   .groupBy("PXForward/PXDisk/DetId", "EXTEND_Y")
+    Specification(PerModule).groupBy("PXForward/PXDisk/PXModuleName/OnlineBlock/row")
+                   .groupBy("PXForward/PXDisk/PXModuleName/OnlineBlock", "EXTEND_X")
+                   .groupBy("PXForward/PXDisk/PXModuleName", "EXTEND_Y")
                    .save()
 )
 
