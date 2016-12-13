@@ -86,7 +86,7 @@ process.dqmSaver.path = "."
 process.dqmSaver.producer = 'DQM'
 process.dqmSaver.backupLumiCount = 15
 
-TAG = "PixelPhase1"
+TAG = "PixelPhase1MC"
 process.dqmEnv.subSystemFolder = TAG
 process.dqmSaver.tag = TAG
 
@@ -126,6 +126,8 @@ process.load("RecoLocalTracker.SiPixelClusterizer.SiPixelClusterizer_cfi")
 from DQM.SiPixelPhase1Common.HistogramManager_cfi import *
 DefaultHisto.enabled = True
 DefaultHisto.topFolderName = TAG 
+DefaultHistoDigiCluster.topFolderName = TAG 
+DefaultHistoTrack.topFolderName = TAG 
 
 # maximum Lumisection number for trends. This is a hard limit, higher ends up in overflow.
 SiPixelPhase1Geometry.max_lumisection = 1000 
