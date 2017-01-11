@@ -1,8 +1,19 @@
 import FWCore.ParameterSet.Config as cms
 
-from Configuration.StandardSequences.Eras import eras
+import DQM.Integration.config.fileinputsource_cfi
 
-process = cms.Process('PIXELDQMDEV',eras.Run2_2017)
+# this should be an option
+phase = 0
+
+from Configuration.StandardSequences.Eras import eras
+if phase == 0:
+  process = cms.Process('PIXELDQMDEV',eras.Run2_2016)
+if phase == 1:
+  process = cms.Process('PIXELDQMDEV',eras.Run2_2017)
+if phase == 2:
+  # TODO
+  pass
+  #process = cms.Process('PIXELDQMDEV',eras.Run2_2017)
 
 process.MessageLogger = cms.Service("MessageLogger",
     debugModules = cms.untracked.vstring( 
@@ -20,31 +31,7 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 # dataset /RelValMinBias_13/CMSSW_8_1_0_pre16-81X_upgrade2017_realistic_v22-v1/GEN-SIM-DIGI-RAW
-readFiles = cms.untracked.vstring()
-secFiles = cms.untracked.vstring() 
-process.source = cms.Source ("PoolSource",fileNames = readFiles, secondaryFileNames = secFiles)
-readFiles.extend( [
-'/store/relval/CMSSW_8_1_0/RelValMinBias_13/GEN-SIM-DIGI-RAW/81X_upgrade2017_realistic_v26-v1/10000/02C9F429-AABA-E611-9AB8-0CC47A4D760A.root',
-'/store/relval/CMSSW_8_1_0/RelValMinBias_13/GEN-SIM-DIGI-RAW/81X_upgrade2017_realistic_v26-v1/10000/08ED9E2E-A4BA-E611-B1F0-0CC47A4D764C.root',
-'/store/relval/CMSSW_8_1_0/RelValMinBias_13/GEN-SIM-DIGI-RAW/81X_upgrade2017_realistic_v26-v1/10000/0A5CA0B2-A3BA-E611-8B9D-0CC47A7C345E.root',
-'/store/relval/CMSSW_8_1_0/RelValMinBias_13/GEN-SIM-DIGI-RAW/81X_upgrade2017_realistic_v26-v1/10000/22965EB6-A3BA-E611-A927-0025905A6092.root',
-'/store/relval/CMSSW_8_1_0/RelValMinBias_13/GEN-SIM-DIGI-RAW/81X_upgrade2017_realistic_v26-v1/10000/38BF2B36-A4BA-E611-85DE-0025905A60E4.root',
-'/store/relval/CMSSW_8_1_0/RelValMinBias_13/GEN-SIM-DIGI-RAW/81X_upgrade2017_realistic_v26-v1/10000/40C5B389-A6BA-E611-87D9-0025905A60A0.root',
-'/store/relval/CMSSW_8_1_0/RelValMinBias_13/GEN-SIM-DIGI-RAW/81X_upgrade2017_realistic_v26-v1/10000/4435E7D5-A3BA-E611-AE74-0CC47A4D76AC.root',
-'/store/relval/CMSSW_8_1_0/RelValMinBias_13/GEN-SIM-DIGI-RAW/81X_upgrade2017_realistic_v26-v1/10000/607BCDDD-A3BA-E611-A21E-0025905B858A.root',
-'/store/relval/CMSSW_8_1_0/RelValMinBias_13/GEN-SIM-DIGI-RAW/81X_upgrade2017_realistic_v26-v1/10000/6645C8D6-A3BA-E611-8749-0CC47A745250.root',
-'/store/relval/CMSSW_8_1_0/RelValMinBias_13/GEN-SIM-DIGI-RAW/81X_upgrade2017_realistic_v26-v1/10000/6C16DD35-A4BA-E611-A350-0025905AA9CC.root',
-'/store/relval/CMSSW_8_1_0/RelValMinBias_13/GEN-SIM-DIGI-RAW/81X_upgrade2017_realistic_v26-v1/10000/AA91A495-A5BA-E611-865A-0025905A60F8.root',
-'/store/relval/CMSSW_8_1_0/RelValMinBias_13/GEN-SIM-DIGI-RAW/81X_upgrade2017_realistic_v26-v1/10000/AE7345B6-A3BA-E611-8F22-0025905A6092.root',
-'/store/relval/CMSSW_8_1_0/RelValMinBias_13/GEN-SIM-DIGI-RAW/81X_upgrade2017_realistic_v26-v1/10000/BAE69AD7-A3BA-E611-BBC1-0025905B85B8.root',
-'/store/relval/CMSSW_8_1_0/RelValMinBias_13/GEN-SIM-DIGI-RAW/81X_upgrade2017_realistic_v26-v1/10000/C0D32B38-ABBA-E611-8006-0025905A608A.root',
-'/store/relval/CMSSW_8_1_0/RelValMinBias_13/GEN-SIM-DIGI-RAW/81X_upgrade2017_realistic_v26-v1/10000/C68CF5BB-A3BA-E611-8AD9-0025905A60E4.root',
-'/store/relval/CMSSW_8_1_0/RelValMinBias_13/GEN-SIM-DIGI-RAW/81X_upgrade2017_realistic_v26-v1/10000/CA653743-A3BA-E611-8801-0CC47A7C3404.root',
-'/store/relval/CMSSW_8_1_0/RelValMinBias_13/GEN-SIM-DIGI-RAW/81X_upgrade2017_realistic_v26-v1/10000/D4A381EF-AABA-E611-910D-0025905A60E4.root',
-'/store/relval/CMSSW_8_1_0/RelValMinBias_13/GEN-SIM-DIGI-RAW/81X_upgrade2017_realistic_v26-v1/10000/DC3FCE9F-AABA-E611-B436-0025905B85BA.root' ] );
-
-secFiles.extend( [
-               ] )
+process.source = DQM.Integration.config.fileinputsource_cfi.source
 
 
 #----------------------------
@@ -59,7 +46,7 @@ dqmRunConfigDefaults = {
     'userarea': cms.PSet(
         type = cms.untracked.string("userarea"),
         collectorPort = cms.untracked.int32(9190),
-        collectorHost = cms.untracked.string('lxplus032'),
+        collectorHost = cms.untracked.string('lxplus064'),
     ),
 }
 
@@ -106,7 +93,12 @@ process.load("Configuration.StandardSequences.GeometryRecoDB_cff")
 #-------------------------------------------------
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase1_2017_realistic', '')
+if phase == 0:
+  process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data_promptlike', '')
+if phase == 1:
+  process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase1_2017_realistic', '')
+if phase == 2:
+  process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase1_2017_realistic', '')
 
 #-----------------------
 #  Reconstruction Modules
@@ -148,7 +140,7 @@ process.load("DQM.SiPixelPhase1Config.SiPixelPhase1OfflineDQM_harvesting_cff")
 # this also loads the plugins. After that, some values cannot be changed any more, since they were copied around.
 
 # Now change things back to Phase1 MC
-SiPixelPhase1Geometry.n_inner_ring_blades = 22
+SiPixelPhase1Geometry.upgradePhase = phase
 
 
 #process.load('RecoTracker.Configuration.RecoTracker_cff')
