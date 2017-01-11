@@ -56,6 +56,8 @@ void SiPixelPhase1TrackEfficiency::analyze(const edm::Event& iEvent, const edm::
 
     bool isBpixtrack = false, isFpixtrack = false;
     int nStripHits = 0;
+    auto const & trajParams = track.extra()->trajParams();
+    assert(trajParams.size()==track.recHitsSize());
 
     // first, look at the full track to see whether it is good
     auto hb = track.recHitsBegin();
@@ -98,9 +100,7 @@ void SiPixelPhase1TrackEfficiency::analyze(const edm::Event& iEvent, const edm::
       if (pixhit) {
         lp = pixhit->localPosition();
       } else {
-        TrajectoryStateCombiner tsc;
-        TrajectoryStateOnSurface tsos = tsc(measurement.forwardPredictedState(), measurement.backwardPredictedState());
-        lp = tsos.localPosition();
+        lp = trajParams[h].position();
       }
 
       MeasurementPoint mp = topol.measurementPosition(lp);
