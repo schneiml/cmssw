@@ -97,8 +97,11 @@ void GeometryInterface::loadFromTopology(edm::EventSetup const& iSetup, const ed
 
   auto pxbarrel  = [] (InterestingQuantities const& iq) { return iq.sourceModule.subdetId() == PixelSubdetector::PixelBarrel ? 0 : UNDEFINED; };
   auto pxforward = [] (InterestingQuantities const& iq) { return iq.sourceModule.subdetId() == PixelSubdetector::PixelEndcap ? 0 : UNDEFINED; };
+  auto pxall     = [] (InterestingQuantities const& iq) { return 0 ; };
   addExtractor(intern("PXBarrel"),  pxbarrel,  0, 0);
   addExtractor(intern("PXForward"), pxforward, 0, 0);
+  addExtractor(intern("PXAll"),     pxall,     0, 0);
+
 
   // Redefine the disk numbering to use the sign
   auto pxendcap = extractors[intern("PXEndcap")];
@@ -426,4 +429,3 @@ std::string GeometryInterface::formatValue(Column col, Value val) {
   if (val == UNDEFINED) value = "_UNDEFINED";
   return format_value[std::make_pair(col, val)] = name+value;
 }
-

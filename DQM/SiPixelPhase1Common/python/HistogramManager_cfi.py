@@ -104,7 +104,6 @@ DefaultHistoTrack.topFolderName= cms.string("PixelPhase1/Tracks")
 DefaultHistoReadout=DefaultHisto.clone()
 DefaultHistoReadout.topFolderName= cms.string("PixelPhase1/FED/Readout")
 
-# Commonly used specifications. 
 StandardSpecifications1D = [
     # The column names are either defined in the GeometryInterface.cc or read from TrackerTopology.
     # Endcap names side by side. The "/" separates columns and also defines how the output folders are nested.
@@ -261,7 +260,11 @@ StandardSpecificationInclusive_Num = [#to count inclusively objects in substruct
     Specification().groupBy("PXForward/Event")
                    .reduce("COUNT")
                    .groupBy("PXForward")
-                   .save()
+                   .save(),
+    Specification().groupBy("PXAll/Event")
+                   .reduce("COUNT")
+                   .groupBy("PXAll")
+                   .save(),
 ]
 
 StandardSpecificationTrend_Num = [
@@ -292,6 +295,13 @@ StandardSpecificationTrend_Num = [
                    .reduce("MEAN")
                    .groupBy("PXForward", "EXTEND_X")
                    .save(),
+
+    Specification().groupBy("PXAll/Event")
+                    .reduce("COUNT")
+                    .groupBy("PXAll/Lumisection")
+                    .reduce("MEAN")
+                    .groupBy("PXAll", "EXTEND_X" )
+                    .save()
 ]
 
 
@@ -324,4 +334,3 @@ def VPSet(*args):
             e = list(a)
         l = l+e
     return cms.VPSet(l)
-
