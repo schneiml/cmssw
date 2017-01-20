@@ -65,6 +65,7 @@ void HistogramManager::addSpec(SummationSpecification spec) {
 void HistogramManager::fill(double x, double y, DetId sourceModule,
                             const edm::Event* sourceEvent, int col, int row) {
   if (!enabled) return;
+  if (!checktrigger()) {return;}
 
   // We only need to check the module here, since the fastpath is only used to
   // determine which plot is filled (not which bin inside) and fillInternal
@@ -686,4 +687,37 @@ void HistogramManager::executeHarvesting(DQMStore::IBooker& iBooker,
       }
     }
   }
+}
+
+// Pushing new trigger flag objects into list
+void HistogramManager::addTriggerFlag( GenericTriggerEventFlag* x )
+{
+  flaglist.emplace_back( x );
+}
+
+// Methods required for trigger flags
+void HistogramManager::initTriggerFlag( const edm::Run& iRun, const edm::EventSetup& iSetup )
+{
+   for( auto& flag : flaglist ){
+      if( flag->on() ){ flag->initRun( iRun, iSetup ); }
+   }
+}
+
+// Storing event pointers and eventsetup pointer for flag checking
+void HistogramManager::storeEventSetup( const edm::Event* ev, const edm::EventSetup* es )
+{
+  evtpointer = ev;
+  evtsetuppointer = es;
+}
+
+// checking functions, currently all flags must be passed, return false otherwise
+bool HistogramManager::checktrigger( )
+{
+  if( !evtpointer->isRealData() ) { return true; } // constant true for MC samples
+  for( auto& flag : flaglist ){
+    if( flag->on() && !flag->accept( *evtpointer, *evtsetuppointer ) ){
+      return false;
+    }
+  }
+  return true;
 }
