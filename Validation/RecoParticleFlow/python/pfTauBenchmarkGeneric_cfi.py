@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
 
-pfTauBenchmarkGeneric = cms.EDAnalyzer("GenericBenchmarkAnalyzer",
+pfTauBenchmarkGeneric = DQMStep1Analyzer("GenericBenchmarkAnalyzer",
     OutputFile = cms.untracked.string('benchmark.root'),
     InputTruthLabel = cms.InputTag(''),
     minEta = cms.double(-1),

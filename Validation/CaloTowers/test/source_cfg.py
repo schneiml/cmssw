@@ -37,7 +37,7 @@ process.FEVT = cms.OutputModule("PoolOutputModule",
      fileName = cms.untracked.string("HcalValHarvestingEDM.root")
 )
 
-process.hcalTowerAnalyzer = cms.EDAnalyzer("CaloTowersValidation",
+process.hcalTowerAnalyzer = DQMStep1Analyzer("CaloTowersValidation",
     outputFile               = cms.untracked.string('CaloTowersValidationRelVal.root'),
     CaloTowerCollectionLabel = cms.untracked.InputTag('towerMaker'),
     hcalselector             = cms.untracked.string('all'),
@@ -51,7 +51,7 @@ process.hcalNoiseRates = cms.EDAnalyzer('NoiseRates',
     minHitEnergy = cms.untracked.double(1.5)
 )
 
-process.hcalRecoAnalyzer = cms.EDAnalyzer("HcalRecHitsValidation",
+process.hcalRecoAnalyzer = DQMStep1Analyzer("HcalRecHitsValidation",
     outputFile                = cms.untracked.string('HcalRecHitValidationRelVal.root'),
 
     HBHERecHitCollectionLabel = cms.untracked.InputTag("hbhereco"),

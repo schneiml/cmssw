@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-hcalHitValid = cms.EDAnalyzer("HcalHitValidation",
+hcalHitValid = DQMStep1Analyzer("HcalHitValidation",
       ModuleLabel   = cms.untracked.string('g4SimHits'),
       HitCollection = cms.untracked.string('HcalHits'),
       LayerInfo     = cms.untracked.string('HcalInfoLayer'),

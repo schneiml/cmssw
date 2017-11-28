@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
 ## define pat electron analyzer
-analyzePatElectron = cms.EDAnalyzer("PatElectronAnalyzer",
+analyzePatElectron = DQMStep1Analyzer("PatElectronAnalyzer",
     ## choose mode to run in:
     ## 0 : genMatch, 1 : tagAndProbe
     mode = cms.uint32(0),

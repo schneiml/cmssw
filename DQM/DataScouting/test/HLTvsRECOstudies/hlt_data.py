@@ -39066,7 +39066,7 @@ process.hltPreDQMFEDIntegrity = cms.EDFilter( "HLTPrescaler",
     L1GtReadoutRecordTag = cms.InputTag( "hltGtDigis" ),
     offset = cms.uint32( 0 )
 )
-process.hltCSCMonitorModule = cms.EDAnalyzer( "CSCMonitorModule",
+process.hltCSCMonitorModule = DQMStep1Analyzer( "CSCMonitorModule",
     BOOKING_XML_FILE = cms.FileInPath( "DQM/CSCMonitorModule/data/emuDQMBooking.xml" ),
     EventProcessor = cms.untracked.PSet(
       PROCESS_EFF_PARAMETERS = cms.untracked.bool( False ),
@@ -39170,7 +39170,7 @@ process.hltEEHltTask = cms.EDAnalyzer( "EEHltTask",
     prefixME = cms.untracked.string( "EcalEndcap" ),
     EcalElectronicsIdCollection2 = cms.InputTag( 'hltEcalRawToRecHitByproductProducer','EcalIntegrityBlockSizeErrors' )
 )
-process.hltESFEDIntegrityTask = cms.EDAnalyzer( "ESFEDIntegrityTask",
+process.hltESFEDIntegrityTask = DQMStep1Analyzer( "ESFEDIntegrityTask",
     FEDRawDataCollection = cms.InputTag( "rawDataCollector" ),
     ESDCCCollections = cms.InputTag( "NotUsed" ),
     ESKChipCollections = cms.InputTag( "NotUsed" ),
@@ -39190,7 +39190,7 @@ process.hltHcalDataIntegrityMonitor = cms.EDAnalyzer( "HcalDataIntegrityTask",
     debug = cms.untracked.int32( 0 ),
     AllowedCalibTypes = cms.untracked.vint32( 0, 1, 2, 3, 4, 5, 6, 7 )
 )
-process.hltL1tfed = cms.EDAnalyzer( "L1TFED",
+process.hltL1tfed = DQMStep1Analyzer( "L1TFED",
     verbose = cms.untracked.bool( False ),
     DQMStore = cms.untracked.bool( True ),
     rawTag = cms.InputTag( "rawDataCollector" ),
@@ -39199,7 +39199,7 @@ process.hltL1tfed = cms.EDAnalyzer( "L1TFED",
     disableROOToutput = cms.untracked.bool( True ),
     L1FEDS = cms.vint32( 745, 760, 780, 812, 813 )
 )
-process.hltSiPixelHLTSource = cms.EDAnalyzer( "SiPixelHLTSource",
+process.hltSiPixelHLTSource = DQMStep1Analyzer( "SiPixelHLTSource",
     saveFile = cms.untracked.bool( False ),
     outputFile = cms.string( "Pixel_DQM_HLT.root" ),
     slowDown = cms.untracked.bool( False ),
@@ -39207,7 +39207,7 @@ process.hltSiPixelHLTSource = cms.EDAnalyzer( "SiPixelHLTSource",
     RawInput = cms.InputTag( "rawDataCollector" ),
     DirName = cms.untracked.string( "Pixel/FEDIntegrity_EvF" )
 )
-process.hltSiStripFEDCheck = cms.EDAnalyzer( "SiStripFEDCheckPlugin",
+process.hltSiStripFEDCheck = DQMStep1Analyzer( "SiStripFEDCheckPlugin",
     PrintDebugMessages = cms.untracked.bool( False ),
     CheckChannelStatus = cms.untracked.bool( False ),
     DoPayloadChecks = cms.untracked.bool( False ),
@@ -39219,7 +39219,7 @@ process.hltSiStripFEDCheck = cms.EDAnalyzer( "SiStripFEDCheckPlugin",
     CheckChannelPacketCodes = cms.untracked.bool( False ),
     DirName = cms.untracked.string( "SiStrip/FEDIntegrity_EvF" )
 )
-process.hltRPCFEDIntegrity = cms.EDAnalyzer( "RPCFEDIntegrity",
+process.hltRPCFEDIntegrity = DQMStep1Analyzer( "RPCFEDIntegrity",
     MaximumFEDID = cms.untracked.int32( 792 ),
     RPCRawCountsInputTag = cms.untracked.InputTag( "hltMuonRPCDigis" ),
     MinimumFEDID = cms.untracked.int32( 790 ),

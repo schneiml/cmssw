@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-analyzePatJets = cms.EDAnalyzer("PatJetAnalyzer",
+analyzePatJets = DQMStep1Analyzer("PatJetAnalyzer",
   src  = cms.InputTag("cleanPatJets"),                              
   corrLevel = cms.string("L3Absolute")
 )                               

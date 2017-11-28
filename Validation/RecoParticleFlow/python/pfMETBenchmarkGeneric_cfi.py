@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 met = 'pfMet'
 
-pfMETBenchmarkGeneric = cms.EDAnalyzer("GenericBenchmarkAnalyzer",
+pfMETBenchmarkGeneric = DQMStep1Analyzer("GenericBenchmarkAnalyzer",
     InputTruthLabel = cms.InputTag('genMetTrue'),
     InputRecoLabel = cms.InputTag( met ),
     InputCaloLabel = cms.InputTag( 'met' ),

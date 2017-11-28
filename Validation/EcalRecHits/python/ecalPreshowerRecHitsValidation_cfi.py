@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-ecalPreshowerRecHitsValidation = cms.EDAnalyzer("EcalPreshowerRecHitsValidation",
+ecalPreshowerRecHitsValidation = DQMStep1Analyzer("EcalPreshowerRecHitsValidation",
     EErechitCollection = cms.InputTag("ecalRecHit","EcalRecHitsEE"),
     ESrechitCollection = cms.InputTag("ecalPreshowerRecHit","EcalRecHitsES"),
     EEuncalibrechitCollection = cms.InputTag("ecalMultiFitUncalibRecHit","EcalUncalibRecHitsEE"),

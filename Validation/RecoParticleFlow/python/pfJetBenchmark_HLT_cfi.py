@@ -4,7 +4,7 @@ pfJets = 'hltICone5PFJets'
 #pfJets = 'iterativeCone5PFJets'
 #pfJets = 'ak4PFJets'
 
-pfJetBenchmark = cms.EDAnalyzer("PFJetBenchmarkAnalyzer",
+pfJetBenchmark = DQMStep1Analyzer("PFJetBenchmarkAnalyzer",
     OutputFile = cms.untracked.string('JetBenchmark.root'),
     InputTruthLabel = cms.InputTag('ak4GenJets'),
     maxEta = cms.double(5.0),

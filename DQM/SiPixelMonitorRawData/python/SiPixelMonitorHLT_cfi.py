@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-SiPixelHLTSource = cms.EDAnalyzer("SiPixelHLTSource",
+SiPixelHLTSource = DQMStep1Analyzer("SiPixelHLTSource",
     DirName = cms.untracked.string('Pixel/FEDIntegrity/'),
     RawInput = cms.InputTag("rawDataCollector"),
     ErrorInput = cms.InputTag("siPixelDigis"),

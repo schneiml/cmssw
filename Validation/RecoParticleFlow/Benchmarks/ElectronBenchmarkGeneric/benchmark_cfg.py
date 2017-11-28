@@ -43,7 +43,7 @@ process.pfNoPileUp = cms.EDProducer("TPPileUpPFCandidatesOnPFCandidates",
 )
 
 
-process.pfElectronBenchmarkGeneric = cms.EDAnalyzer("GenericBenchmarkAnalyzer",
+process.pfElectronBenchmarkGeneric = DQMStep1Analyzer("GenericBenchmarkAnalyzer",
     maxDeltaPhi = cms.double(0.5),
     BenchmarkLabel = cms.string('PFlowElectrons'),
     OnlyTwoJets = cms.bool(False),

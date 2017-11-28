@@ -10,7 +10,7 @@ process.source = cms.Source("PoolSource",
 
 process.MessageLogger = cms.Service("MessageLogger")
 
-process.analyzeZjetsElectrons = cms.EDAnalyzer("PatZjetsElectronAnalyzer",
+process.analyzeZjetsElectrons = DQMStep1Analyzer("PatZjetsElectronAnalyzer",
   src = cms.untracked.InputTag("cleanLayer1Electrons")
 )
 

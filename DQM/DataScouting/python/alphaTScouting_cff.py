@@ -4,7 +4,7 @@ scoutingAlphaTVariables = cms.EDProducer("AlphaTVarProducer",
     inputJetTag = cms.InputTag("hltCaloJetIDPassed"),
 )
 
-scoutingAlphaTVarAnalyzer = cms.EDAnalyzer("AlphaTVarAnalyzer",
+scoutingAlphaTVarAnalyzer = DQMStep1Analyzer("AlphaTVarAnalyzer",
   modulePath=cms.untracked.string("AlphaT"),
   alphaTVarCollectionName=cms.untracked.InputTag("scoutingAlphaTVariables")
   )

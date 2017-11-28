@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 import math
 
-eleConvRejectionValidation = cms.EDAnalyzer("ElectronConversionRejectionValidator",
+eleConvRejectionValidation = DQMStep1Analyzer("ElectronConversionRejectionValidator",
     Name = cms.untracked.string('eleConvRejectionValidation'),
     isRunCentrally = cms.bool(False),
     OutputFileName = cms.string('ValidationHistos.root'),

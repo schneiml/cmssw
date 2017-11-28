@@ -20,7 +20,7 @@ electronMcSignalHistosCfg = cms.PSet(
   EfficiencyFlag = cms.bool(True), StatOverflowFlag = cms.bool(False)
 )
 
-electronMcSignalValidator = cms.EDAnalyzer("ElectronMcSignalValidator",
+electronMcSignalValidator = DQMStep1Analyzer("ElectronMcSignalValidator",
 
   Verbosity = cms.untracked.int32(0),
   FinalStep = cms.string("AtRunEnd"),

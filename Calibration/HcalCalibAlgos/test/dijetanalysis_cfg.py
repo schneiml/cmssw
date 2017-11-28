@@ -49,7 +49,7 @@ process.HitsReCalibration = cms.EDProducer("HitReCalibrator",
     hoInput = cms.InputTag("DiJProd","DiJetsHORecHitCollection")
 )
 
-process.DiJetAnalysis = cms.EDAnalyzer("DiJetAnalyzer",
+process.DiJetAnalysis = DQMStep1Analyzer("DiJetAnalyzer",
     hbheInput = cms.InputTag("HitsReCalibration","DiJetsHBHEReRecHitCollection"),
     HistOutFile = cms.untracked.string('hi.root'),
     hfInput = cms.InputTag("HitsReCalibration","DiJetsHFReRecHitCollection"),

@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 jets = 'iterativeCone5PFJets'
 
-pfJetBenchmarkGeneric = cms.EDAnalyzer("GenericBenchmarkAnalyzer",
+pfJetBenchmarkGeneric = DQMStep1Analyzer("GenericBenchmarkAnalyzer",
     OutputFile = cms.untracked.string('jetBenchmarkGeneric.root'),
     InputTruthLabel = cms.InputTag('ak4GenJets'),
     minEta = cms.double(-1),

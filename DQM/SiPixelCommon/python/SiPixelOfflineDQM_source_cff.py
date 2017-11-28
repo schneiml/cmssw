@@ -110,7 +110,7 @@ SiPixelHitEfficiencySource_HeavyIons = SiPixelHitEfficiencySource.clone(
 
 
 #DQM service
-dqmInfo = cms.EDAnalyzer("DQMEventInfo",
+dqmInfo = DQMStep1Analyzer("DQMEventInfo",
     subSystemFolder = cms.untracked.string('Pixel')
 )
 

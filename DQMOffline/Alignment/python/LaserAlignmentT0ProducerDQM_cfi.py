@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-LaserAlignmentT0ProducerDQM = cms.EDAnalyzer( "LaserAlignmentT0ProducerDQM",
+LaserAlignmentT0ProducerDQM = DQMStep1Analyzer( "LaserAlignmentT0ProducerDQM",
   # specify the input digi collections to run on
   DigiProducerList = cms.VPSet(
     cms.PSet(

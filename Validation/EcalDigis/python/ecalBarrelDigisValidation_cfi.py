@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-ecalBarrelDigisValidation = cms.EDAnalyzer("EcalBarrelDigisValidation",
+ecalBarrelDigisValidation = DQMStep1Analyzer("EcalBarrelDigisValidation",
     EBdigiCollection = cms.InputTag("simEcalDigis","ebDigis"),
     verbose = cms.untracked.bool(False)
 )

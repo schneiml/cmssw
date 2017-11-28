@@ -15,7 +15,7 @@ process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
 
 process.load("RecoJets.JetAssociationProducers.ic5JetVertexCompatibility_cfi")
 
-process.pileupJetAnalyzer = cms.EDAnalyzer("PileupJetAnalyzer",
+process.pileupJetAnalyzer = DQMStep1Analyzer("PileupJetAnalyzer",
 	jetTracksAssoc = cms.InputTag("ic5JetTracksAssociatorAtVertex"),
 	jetTagLabel = cms.InputTag("ic5JetVertexCompatibility"),
 	signalFraction = cms.double(0.5),

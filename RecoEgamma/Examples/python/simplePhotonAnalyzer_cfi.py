@@ -3,7 +3,7 @@ import FWCore.ParameterSet.Config as cms
 #
 #  Author: N. Marinelli, U. of Notre Dame, US
 #
-simplePhotonAnalyzer = cms.EDAnalyzer("SimplePhotonAnalyzer",
+simplePhotonAnalyzer = DQMStep1Analyzer("SimplePhotonAnalyzer",
     phoProducer = cms.string('photons'),
     mcProducer = cms.string('generatorSmeared'),
     endcapEcalHits = cms.InputTag("ecalRecHit","EcalRecHitsEE"),

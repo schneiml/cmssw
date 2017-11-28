@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-dqmLumiMonitor = cms.EDAnalyzer("DQMLumiMonitor",
+dqmLumiMonitor = DQMStep1Analyzer("DQMLumiMonitor",
     ModuleName          = cms.string('Info'),
     FolderName          = cms.string('Lumi'),
     PixelClusterInputTag = cms.InputTag('siPixelClusters'),

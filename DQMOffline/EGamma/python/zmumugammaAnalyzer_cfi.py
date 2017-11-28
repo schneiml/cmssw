@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 
 
-zmumugammaAnalysis = cms.EDAnalyzer("ZToMuMuGammaAnalyzer",
+zmumugammaAnalysis = DQMStep1Analyzer("ZToMuMuGammaAnalyzer",
                                     
     ComponentName = cms.string('zmumugammaAnalysis'),
     analyzerName = cms.string('zmumugammaGedValidation'),

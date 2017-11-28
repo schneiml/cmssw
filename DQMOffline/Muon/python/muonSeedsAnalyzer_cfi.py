@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 from RecoMuon.TrackingTools.MuonServiceProxy_cff import *
 
-muonSeedsAnalyzer = cms.EDAnalyzer("MuonSeedsAnalyzer",
+muonSeedsAnalyzer = DQMStep1Analyzer("MuonSeedsAnalyzer",
                                    MuonServiceProxy,
                                    SeedCollection = cms.InputTag("ancientMuonSeed"),
                                    

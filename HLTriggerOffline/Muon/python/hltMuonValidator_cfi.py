@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-hltMuonValidator = cms.EDAnalyzer("HLTMuonValidator",
+hltMuonValidator = DQMStep1Analyzer("HLTMuonValidator",
 
     hltProcessName = cms.string("HLT"),
     hltPathsToCheck = cms.vstring(

@@ -123,7 +123,7 @@ Add a `VPSet` with one clone of a `DefaultHisto` per histogram you want to use. 
 
 The `VPSet` alone will not do anything. Add it to the configuration of your plugin:
 
-    SiPixelPhase1DigisAnalyzer = cms.EDAnalyzer("SiPixelPhase1Digis",
+    SiPixelPhase1DigisAnalyzer = DQMStep1Analyzer("SiPixelPhase1Digis",
             src = cms.InputTag("simSiPixelDigis"), 
             histograms = SiPixelPhase1DigisConf,
             geometry = SiPixelPhase1Geometry

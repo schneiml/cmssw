@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-hltMuonOfflineAnalyzer = cms.EDAnalyzer("HLTMuonOfflineAnalyzer",
+hltMuonOfflineAnalyzer = DQMStep1Analyzer("HLTMuonOfflineAnalyzer",
 
     ## Used when fetching triggerSummary and triggerResults
     hltProcessName = cms.string("HLT"),

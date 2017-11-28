@@ -32,7 +32,7 @@ process.TFileService = cms.Service("TFileService",
 
 # the analyzer itself - empty parameter set 
 #
-process.test = cms.EDAnalyzer("BasicGenJetTester",
+process.test = DQMStep1Analyzer("BasicGenJetTester",
     qcut = cms.double(40.),
 #    src = cms.InputTag("ak5GenJets")
 )

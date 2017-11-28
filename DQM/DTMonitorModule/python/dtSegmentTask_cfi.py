@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-dtSegmentAnalysisMonitor = cms.EDAnalyzer("DTSegmentAnalysisTask",
+dtSegmentAnalysisMonitor = DQMStep1Analyzer("DTSegmentAnalysisTask",
                                           # switch for verbosity
                                           debug = cms.untracked.bool(False),
                                           # label of 4D segments

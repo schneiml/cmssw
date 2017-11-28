@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 
 #'tauGenJets'
-caloTauBenchmarkGeneric = cms.EDAnalyzer("GenericBenchmarkAnalyzer",
+caloTauBenchmarkGeneric = DQMStep1Analyzer("GenericBenchmarkAnalyzer",
     OutputFile = cms.untracked.string('benchmark.root'),
     InputTruthLabel = cms.InputTag(''),
     minEta = cms.double(-1),

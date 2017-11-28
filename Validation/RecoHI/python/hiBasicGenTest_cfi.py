@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-hiBasicGenTest = cms.EDAnalyzer("HiBasicGenTest",
+hiBasicGenTest = DQMStep1Analyzer("HiBasicGenTest",
                                 generatorLabel = cms.InputTag('generatorSmeared'),
                                 outputFile = cms.string('')
 )

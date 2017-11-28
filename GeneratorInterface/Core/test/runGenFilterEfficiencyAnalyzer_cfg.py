@@ -12,7 +12,7 @@ process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring('file:gen.root')
 )
 
-process.dummy = cms.EDAnalyzer("GenFilterEfficiencyAnalyzer",
+process.dummy = DQMStep1Analyzer("GenFilterEfficiencyAnalyzer",
                                genFilterInfoTag = cms.InputTag("genFilterEfficiencyProducer")
 )
 

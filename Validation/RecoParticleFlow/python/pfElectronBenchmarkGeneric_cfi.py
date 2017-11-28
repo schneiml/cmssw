@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
 
-pfElectronBenchmarkGeneric = cms.EDAnalyzer("GenericBenchmarkAnalyzer",
+pfElectronBenchmarkGeneric = DQMStep1Analyzer("GenericBenchmarkAnalyzer",
     OutputFile = cms.untracked.string('benchmark.root'),
     InputTruthLabel = cms.InputTag(''),
     minEta = cms.double(-1),

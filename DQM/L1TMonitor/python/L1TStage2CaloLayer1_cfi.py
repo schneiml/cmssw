@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-l1tStage2CaloLayer1 = cms.EDAnalyzer("L1TStage2CaloLayer1",
+l1tStage2CaloLayer1 = DQMStep1Analyzer("L1TStage2CaloLayer1",
     ecalTPSourceRecd = cms.InputTag("l1tCaloLayer1Digis"),
     hcalTPSourceRecd = cms.InputTag("l1tCaloLayer1Digis"),
     ecalTPSourceSent = cms.InputTag("ecalDigis","EcalTriggerPrimitives"),

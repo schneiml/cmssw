@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-pfTauBenchmarkElecRejection = cms.EDAnalyzer("PFTauElecRejectionBenchmarkAnalyzer",
+pfTauBenchmarkElecRejection = DQMStep1Analyzer("PFTauElecRejectionBenchmarkAnalyzer",
     OutputFile = cms.untracked.string('tauBenchmarkElecRejection.root'),
     InputTruthLabel = cms.InputTag('generatorSmeared'),
     BenchmarkLabel = cms.string('PFTauElecRejection'), 

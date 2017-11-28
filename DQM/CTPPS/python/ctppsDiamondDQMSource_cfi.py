@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-ctppsDiamondDQMSource = cms.EDAnalyzer("CTPPSDiamondDQMSource",
+ctppsDiamondDQMSource = DQMStep1Analyzer("CTPPSDiamondDQMSource",
     tagStatus = cms.InputTag("ctppsDiamondRawToDigi", "TimingDiamond"),
     tagDigi = cms.InputTag("ctppsDiamondRawToDigi", "TimingDiamond"),
     tagFEDInfo = cms.InputTag("ctppsDiamondRawToDigi", "TimingDiamond"),

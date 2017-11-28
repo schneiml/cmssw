@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-TTbarAnalyzeSpinCorr = cms.EDAnalyzer("TTbarSpinCorrHepMCAnalyzer",
+TTbarAnalyzeSpinCorr = DQMStep1Analyzer("TTbarSpinCorrHepMCAnalyzer",
                                       genEventInfoProductTag = cms.InputTag("generator"),
                                       genParticlesTag = cms.InputTag("genParticles")
                                       )
@@ -17,7 +17,7 @@ analyzeTopKinematics = cms.EDAnalyzer('TTbar_Kinematics',
                                       )
 
 ## analyze genjets
-analyzeGenJets = cms.EDAnalyzer("TTbar_GenJetAnalyzer",
+analyzeGenJets = DQMStep1Analyzer("TTbar_GenJetAnalyzer",
                                 jets = cms.InputTag('ak4GenJets' ),
                                 genEventInfoProductTag = cms.InputTag("generator")
                                 )
@@ -72,9 +72,9 @@ genParticlesNeutrinos = cms.EDProducer("GenParticlePruner",
                                        )
 
 ## analyze gen leptons
-analyzeGenMuons = cms.EDAnalyzer("TTbar_GenLepAnalyzer", leptons = cms.InputTag('genParticlesMuons' ))
-analyzeGenElecs = cms.EDAnalyzer("TTbar_GenLepAnalyzer", leptons = cms.InputTag('genParticlesElectrons' ))
-analyzeGenNtrns = cms.EDAnalyzer("TTbar_GenLepAnalyzer", leptons = cms.InputTag('genParticlesNeutrinos' ))
+analyzeGenMuons = DQMStep1Analyzer("TTbar_GenLepAnalyzer", leptons = cms.InputTag('genParticlesMuons' ))
+analyzeGenElecs = DQMStep1Analyzer("TTbar_GenLepAnalyzer", leptons = cms.InputTag('genParticlesElectrons' ))
+analyzeGenNtrns = DQMStep1Analyzer("TTbar_GenLepAnalyzer", leptons = cms.InputTag('genParticlesNeutrinos' ))
 
 
 

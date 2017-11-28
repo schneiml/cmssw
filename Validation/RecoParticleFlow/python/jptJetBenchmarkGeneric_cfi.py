@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 jets = 'JetPlusTrackZSPCorJetIcone5'
 
-jptJetBenchmarkGeneric = cms.EDAnalyzer("GenericBenchmarkAnalyzer",
+jptJetBenchmarkGeneric = DQMStep1Analyzer("GenericBenchmarkAnalyzer",
     OutputFile = cms.untracked.string('jetBenchmarkGeneric.root'),
     InputTruthLabel = cms.InputTag('ak4GenJets'),
     minEta = cms.double(-1),

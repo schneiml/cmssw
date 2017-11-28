@@ -3,7 +3,7 @@ import FWCore.ParameterSet.Config as cms
 #
 #  Author: N. Marinelli, U. of Notre Dame, US
 #
-convertedPhotonAnalyzer = cms.EDAnalyzer("SimpleConvertedPhotonAnalyzer",
+convertedPhotonAnalyzer = DQMStep1Analyzer("SimpleConvertedPhotonAnalyzer",
     convertedPhotonCollection = cms.string('conversions'),
     phoProducer = cms.string('photonWithConversions'),
     HistOutFile = cms.untracked.string('analyzer.root'),

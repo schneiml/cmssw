@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-EcalEleCalibMon = cms.EDAnalyzer("DQMSourceEleCalib",
+EcalEleCalibMon = DQMStep1Analyzer("DQMSourceEleCalib",
     # product to monitor
     AlCaStreamEBTag = cms.InputTag("alCaIsolatedElectrons","alcaBarrelHits"),
 #    SaveToFile = cms.untracked.bool(True),

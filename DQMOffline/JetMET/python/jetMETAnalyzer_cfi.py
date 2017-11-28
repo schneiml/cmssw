@@ -5,7 +5,7 @@ from DQMOffline.JetMET.jetDQMConfig_cff import *      # parameters for all jet a
 from DQMOffline.JetMET.metDQMConfig_cff import *      # parameters for all met analyzers
 from DQMOffline.JetMET.jetMETDQMCleanup_cff import *  # parameters for event cleanup
 
-jetMETAnalyzer = cms.EDAnalyzer("JetMETAnalyzer",
+jetMETAnalyzer = DQMStep1Analyzer("JetMETAnalyzer",
 
     #
     # Output files

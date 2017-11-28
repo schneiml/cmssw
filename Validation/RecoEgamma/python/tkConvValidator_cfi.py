@@ -35,7 +35,7 @@ tpSelecForFakeRate.minHit = 0
 
 
 
-tkConversionValidation = cms.EDAnalyzer("TkConvValidator",
+tkConversionValidation = DQMStep1Analyzer("TkConvValidator",
     Name = cms.untracked.string('tkConversionValidation'),
     isRunCentrally = cms.bool(False),
     OutputFileName = cms.string('ValidationHistos.root'),

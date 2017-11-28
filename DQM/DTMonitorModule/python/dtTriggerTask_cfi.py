@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-dtTriggerMonitor = cms.EDAnalyzer("DTLocalTriggerTask",
+dtTriggerMonitor = DQMStep1Analyzer("DTLocalTriggerTask",
     # set static booking (all the detector)
     staticBooking = cms.untracked.bool(True),
     # labels of DDU/TM data and 4D segments

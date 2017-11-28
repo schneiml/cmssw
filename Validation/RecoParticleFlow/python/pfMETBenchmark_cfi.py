@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 pfMET = 'pfMet'
 
-pfMETBenchmark = cms.EDAnalyzer("PFMETBenchmarkAnalyzer",
+pfMETBenchmark = DQMStep1Analyzer("PFMETBenchmarkAnalyzer",
     OutputFile = cms.untracked.string('METBenchmark.root'),
     InputTruthLabel = cms.InputTag('genParticles'),
     InputCaloLabel = cms.InputTag('met'),

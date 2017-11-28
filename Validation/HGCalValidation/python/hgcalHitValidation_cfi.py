@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-hgcalHitValidation = cms.EDAnalyzer("HGCalHitValidation",
+hgcalHitValidation = DQMStep1Analyzer("HGCalHitValidation",
                                     geometrySource = cms.untracked.vstring("HGCalEESensitive",
                                                                            "HGCalHESiliconSensitive",
                                                                            "Hcal"),

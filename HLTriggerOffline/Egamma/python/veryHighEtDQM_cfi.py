@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-veryHighEtDQM = cms.EDAnalyzer("EmDQM",
+veryHighEtDQM = DQMStep1Analyzer("EmDQM",
     genEtaAcc = cms.double(2.5),
     genEtAcc = cms.double(2.0),
     reqNum = cms.uint32(1),
