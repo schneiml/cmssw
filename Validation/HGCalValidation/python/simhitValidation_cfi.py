@@ -1,6 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
-hgcalSimHitValidationEE = DQMStep1Module('HGCalSimHitValidation',
+from DQMServices.Core.DQMEDAnalyzer import DQMEDAnalyzer
+hgcalSimHitValidationEE = DQMEDAnalyzer('HGCalSimHitValidation',
                                          DetectorName = cms.string("HGCalEESensitive"),
                                          CaloHitSource = cms.string("HGCHitsEE"),
                                          TimeSlices    = cms.vdouble(25,1000),
