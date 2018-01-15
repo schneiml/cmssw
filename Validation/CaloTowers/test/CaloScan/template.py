@@ -42,11 +42,11 @@ process.VtxSmeared.SigmaX = 0.00001
 process.VtxSmeared.SigmaY = 0.00001
 process.VtxSmeared.SigmaZ = 0.00001
 
-process.HcalSimHitsAnalyser = cms.EDAnalyzer("HcalSimHitsValidation",
+process.HcalSimHitsAnalyser = DQMStep1Module('HcalSimHitsValidation',
     outputFile = cms.untracked.string('HcalSimHitsValidation.root')
 )   
 
-process.hcalDigiAnalyzer = cms.EDAnalyzer("HcalDigisValidation",
+process.hcalDigiAnalyzer = DQMStep1Module('HcalDigisValidation',
     outputFile		      = cms.untracked.string('HcalDigisValidationRelVal.root'),
     digiLabel   = cms.string("hcalDigis"),
     mode        = cms.untracked.string('multi'),
@@ -57,7 +57,7 @@ process.hcalDigiAnalyzer = cms.EDAnalyzer("HcalDigisValidation",
     dataTPs     = cms.InputTag("simHcalTriggerPrimitiveDigis")
 )   
 
-process.hcalRecoAnalyzer = cms.EDAnalyzer("HcalRecHitsValidation",
+process.hcalRecoAnalyzer = DQMStep1Module('HcalRecHitsValidation',
     outputFile                = cms.untracked.string('HcalRecHitValidationRelVal.root'),
     HBHERecHitCollectionLabel = cms.untracked.InputTag("hbhereco"),
     HFRecHitCollectionLabel   = cms.untracked.InputTag("hfreco"),
@@ -68,7 +68,7 @@ process.hcalRecoAnalyzer = cms.EDAnalyzer("HcalRecHitsValidation",
     mc                        = cms.untracked.string('yes')  # default !
 )
 
-process.hcalTowerAnalyzer = cms.EDAnalyzer("CaloTowersValidation",
+process.hcalTowerAnalyzer = DQMStep1Module('CaloTowersValidation',
     outputFile               = cms.untracked.string('CaloTowersValidationRelVal.root'),
     CaloTowerCollectionLabel = cms.untracked.InputTag('towerMaker'),
     hcalselector             = cms.untracked.string('all'),

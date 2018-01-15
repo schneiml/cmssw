@@ -253,7 +253,7 @@ for step in seedInputTag.iterkeys():
         locals()[label].SeedCandMax = trajCandPerSeedMax[step]
 
 # DQM Services
-dqmInfoTracking = cms.EDAnalyzer("DQMEventInfo",
+dqmInfoTracking = DQMStep1Module('DQMEventInfo',
     subSystemFolder = cms.untracked.string('Tracking')
 )
 

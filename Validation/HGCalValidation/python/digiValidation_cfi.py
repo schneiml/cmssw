@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-hgcalDigiValidationEE = cms.EDAnalyzer('HGCalDigiValidation',
+hgcalDigiValidationEE = DQMStep1Module('HGCalDigiValidation',
                                        DetectorName  = cms.string("HGCalEESensitive"),
                                        DigiSource    = cms.InputTag("mix", "HGCDigisEE"),
                                        ifHCAL        = cms.bool(False),

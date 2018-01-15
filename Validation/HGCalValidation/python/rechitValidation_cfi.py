@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-hgcalRecHitValidationEE = cms.EDAnalyzer('HGCalRecHitValidation',
+hgcalRecHitValidationEE = DQMStep1Module('HGCalRecHitValidation',
                                          DetectorName = cms.string("HGCalEESensitive"),
                                          RecHitSource = cms.InputTag("HGCalRecHit", "HGCEERecHits"),
                                          ifHCAL       = cms.bool(False),
