@@ -68,8 +68,14 @@ except:
   print "Querying DAS for files..."
   readFiles = cms.untracked.vstring()
   secFiles = cms.untracked.vstring()
-  # this outputs all results, which can be a lot...
-  read, sec = filesFromDASQuery("file run=%d dataset=%s" % (options.runNumber, dataset), option=" --limit 10000 ")
+  if options.runNumber == 1:
+    # MC data, needs query w/o run
+    read, sec = filesFromDASQuery("file,run,lumi dataset=%s" % dataset)
+    # and since the query returns more columns, another cleanup...
+    read = [f.split()[0] for f in read]
+  else:
+    # this outputs all results, which can be a lot...
+    read, sec = filesFromDASQuery("file run=%d dataset=%s" % (options.runNumber, dataset), option=" --limit 10000 ")
   readFiles.extend(read)
   secFiles.extend(sec)
 
