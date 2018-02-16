@@ -469,11 +469,11 @@ void L1TStage2CaloLayer2Offline::fillJets(edm::Event const& e, const unsigned in
 }
 
 //
-// -------------------------------------- endLuminosityBlock --------------------------------------------
+// -------------------------------------- dqmEndLuminosityBlock --------------------------------------------
 //
-void L1TStage2CaloLayer2Offline::endLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& eSetup)
+void L1TStage2CaloLayer2Offline::dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& eSetup)
 {
-  edm::LogInfo("L1TStage2CaloLayer2Offline") << "L1TStage2CaloLayer2Offline::endLuminosityBlock" << std::endl;
+  edm::LogInfo("L1TStage2CaloLayer2Offline") << "L1TStage2CaloLayer2Offline::dqmEndLuminosityBlock" << std::endl;
 }
 
 //

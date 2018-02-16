@@ -222,7 +222,7 @@ dEdxAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup 
 
 // ------------ method called when ending the processing of a luminosity block  ------------
 void 
-dEdxAnalyzer::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+dEdxAnalyzer::dqmEndLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
 

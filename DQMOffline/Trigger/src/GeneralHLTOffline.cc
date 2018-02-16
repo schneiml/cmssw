@@ -59,7 +59,7 @@ class GeneralHLTOffline : public DQMEDAnalyzer {
   void dqmBeginRun(edm::Run const& iRun,edm::EventSetup const& iSetup) override;
   void beginLuminosityBlock(edm::LuminosityBlock const&,
                                     edm::EventSetup const&) override;
-  void endLuminosityBlock(edm::LuminosityBlock const&,
+  void dqmEndLuminosityBlock(edm::LuminosityBlock const&,
                                   edm::EventSetup const&) override;
   virtual void setupHltMatrix(DQMStore::IBooker & iBooker, const std::string &, int);
   virtual void fillHltMatrix(const std::string &,
@@ -618,7 +618,7 @@ void GeneralHLTOffline::beginLuminosityBlock(edm::LuminosityBlock const&,
 }
 
 void
-GeneralHLTOffline::endLuminosityBlock(edm::LuminosityBlock const&,
+GeneralHLTOffline::dqmEndLuminosityBlock(edm::LuminosityBlock const&,
                                       edm::EventSetup const&) {
 }
 

@@ -1172,7 +1172,7 @@ DigiTask::DigiTask(edm::ParameterSet const& ps):
 	DQTask::beginLuminosityBlock(lb, es);
 }
 
-/* virtual */ void DigiTask::endLuminosityBlock(edm::LuminosityBlock const& lb,
+/* virtual */ void DigiTask::dqmEndLuminosityBlock(edm::LuminosityBlock const& lb,
 	edm::EventSetup const& es)
 {
 	if (_ptype!=fOnline)
@@ -1270,7 +1270,7 @@ DigiTask::DigiTask(edm::ParameterSet const& ps):
 	_xNChs.reset();
 
 	//	in the end always do the DQTask::endLumi
-	DQTask::endLuminosityBlock(lb, es);
+	DQTask::dqmEndLuminosityBlock(lb, es);
 }
 
 DEFINE_FWK_MODULE(DigiTask);

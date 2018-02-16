@@ -39,7 +39,7 @@ class SiStripMonitorDigi : public DQMEDAnalyzer {
   void analyze(const edm::Event&, const edm::EventSetup&) override;
   void endRun(const edm::Run&, const edm::EventSetup&) override;
   void beginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) override;
-  void endLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) override;
+  void dqmEndLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) override;
   void bookHistograms(DQMStore::IBooker &, edm::Run const &, edm::EventSetup const &) override;
   void dqmBeginRun(const edm::Run& r, const edm::EventSetup& c) override;
 

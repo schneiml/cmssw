@@ -61,7 +61,7 @@ private:
   void endRun(edm::Run const&, edm::EventSetup const&) override;
   void beginLuminosityBlock(edm::LuminosityBlock const&,
                                     edm::EventSetup const&) override;
-  void endLuminosityBlock(edm::LuminosityBlock const&,
+  void dqmEndLuminosityBlock(edm::LuminosityBlock const&,
                                   edm::EventSetup const&) override;
 
   // This is a kludge method to infer the filled bunches from the cluster count;  

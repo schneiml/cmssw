@@ -267,11 +267,11 @@ TPComparisonTask::TPComparisonTask(edm::ParameterSet const& ps):
 	}
 }
 
-/* virtual */ void TPComparisonTask::endLuminosityBlock(
+/* virtual */ void TPComparisonTask::dqmEndLuminosityBlock(
 	edm::LuminosityBlock const& lb, edm::EventSetup const& es)
 {
 	//	in the end always
-	DQTask::endLuminosityBlock(lb, es);
+	DQTask::dqmEndLuminosityBlock(lb, es);
 }
 
 DEFINE_FWK_MODULE(TPComparisonTask);

@@ -38,7 +38,7 @@ class EcalPileUpDepMonitor: public DQMEDAnalyzer{
   /// Analyze
   void analyze(const edm::Event&, const edm::EventSetup&) override;
   void bookHistograms(DQMStore::IBooker &, edm::Run const &, edm::EventSetup const &) override;
-  void endLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) override;
+  void dqmEndLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) override;
 
  private:
 	

@@ -75,12 +75,12 @@ void ElectronDqmAnalyzerBase::endRun( edm::Run const &, edm::EventSetup const & 
    }
  }
 
-void ElectronDqmAnalyzerBase::endLuminosityBlock( edm::LuminosityBlock const &, edm::EventSetup const & )
+void ElectronDqmAnalyzerBase::dqmEndLuminosityBlock( edm::LuminosityBlock const &, edm::EventSetup const & )
  {
   if (finalStep_=="AtLumiEnd")
    {
     if (finalDone_)
-     { edm::LogWarning("ElectronDqmAnalyzerBase::endLuminosityBlock")<<"finalize() already called" ; }
+     { edm::LogWarning("ElectronDqmAnalyzerBase::dqmEndLuminosityBlock")<<"finalize() already called" ; }
     finalDone_ = true ;
    }
  } /**/

@@ -694,7 +694,7 @@ void QcdLowPtDQM::filldNdeta(const TH3F *AlphaTracklets,
   }
 }
 
-void QcdLowPtDQM::endLuminosityBlock(const LuminosityBlock &l,
+void QcdLowPtDQM::dqmEndLuminosityBlock(const LuminosityBlock &l,
                                      const EventSetup &iSetup) {
   // Update various histograms.
   repSummary_->Fill(1.);

@@ -111,10 +111,10 @@ UMNioTask::UMNioTask(edm::ParameterSet const& ps):
 		_cTotalChargeProfile.fill(it->id(), _currentLS, sumQ);
 	}
 }
-/* virtual */ void UMNioTask::endLuminosityBlock(edm::LuminosityBlock const& lb,
+/* virtual */ void UMNioTask::dqmEndLuminosityBlock(edm::LuminosityBlock const& lb,
 	edm::EventSetup const& es)
 {
-	DQTask::endLuminosityBlock(lb, es);
+	DQTask::dqmEndLuminosityBlock(lb, es);
 }
 
 DEFINE_FWK_MODULE(UMNioTask);

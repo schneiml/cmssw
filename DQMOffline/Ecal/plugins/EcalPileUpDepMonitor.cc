@@ -435,7 +435,7 @@ void EcalPileUpDepMonitor::analyze(const edm::Event& e, const edm::EventSetup&)
 }
 
 void
-EcalPileUpDepMonitor::endLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&)
+EcalPileUpDepMonitor::dqmEndLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&)
 {
 }
 

@@ -159,7 +159,7 @@ SiPixelDigiSource::beginLuminosityBlock(const edm::LuminosityBlock& lb, edm::Eve
 }
 
 void 
-SiPixelDigiSource::endLuminosityBlock(const edm::LuminosityBlock& lb, edm::EventSetup const&)
+SiPixelDigiSource::dqmEndLuminosityBlock(const edm::LuminosityBlock& lb, edm::EventSetup const&)
 {
   int thisls = lb.id().luminosityBlock();
 

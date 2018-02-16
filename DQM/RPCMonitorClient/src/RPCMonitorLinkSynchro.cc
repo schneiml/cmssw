@@ -24,7 +24,7 @@ RPCMonitorLinkSynchro::RPCMonitorLinkSynchro( const edm::ParameterSet& cfg)
 
 RPCMonitorLinkSynchro::~RPCMonitorLinkSynchro(){ }
 
-void RPCMonitorLinkSynchro::endLuminosityBlock(const edm::LuminosityBlock& ls, const edm::EventSetup& es)
+void RPCMonitorLinkSynchro::dqmEndLuminosityBlock(const edm::LuminosityBlock& ls, const edm::EventSetup& es)
 {
 
   RPCLinkSynchroHistoMaker hm(theSynchroStat);

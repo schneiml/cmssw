@@ -215,9 +215,9 @@ void SUSY_HLT_Razor::analyze(edm::Event const& e, edm::EventSetup const& eSetup)
 
 }
 
-void SUSY_HLT_Razor::endLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& eSetup)
+void SUSY_HLT_Razor::dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& eSetup)
 {
-  edm::LogInfo("SUSY_HLT_Razor") << "SUSY_HLT_Razor::endLuminosityBlock" << std::endl;
+  edm::LogInfo("SUSY_HLT_Razor") << "SUSY_HLT_Razor::dqmEndLuminosityBlock" << std::endl;
 }
 
 

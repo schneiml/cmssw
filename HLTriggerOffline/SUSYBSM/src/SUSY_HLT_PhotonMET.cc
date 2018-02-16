@@ -103,9 +103,9 @@ void SUSY_HLT_PhotonMET::analyze(edm::Event const& e, edm::EventSetup const& eSe
   }
 }
 
-void SUSY_HLT_PhotonMET::endLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& eSetup)
+void SUSY_HLT_PhotonMET::dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& eSetup)
 {
-  edm::LogInfo("SUSY_HLT_PhotonMET") << "SUSY_HLT_PhotonMET::endLuminosityBlock" << std::endl;
+  edm::LogInfo("SUSY_HLT_PhotonMET") << "SUSY_HLT_PhotonMET::dqmEndLuminosityBlock" << std::endl;
 }
 
 

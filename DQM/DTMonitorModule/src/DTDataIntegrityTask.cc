@@ -1690,7 +1690,7 @@ void DTDataIntegrityTask::beginLuminosityBlock(const edm::LuminosityBlock& ls, c
 
 }
 
-void DTDataIntegrityTask::endLuminosityBlock(const edm::LuminosityBlock& ls, const edm::EventSetup& es) {
+void DTDataIntegrityTask::dqmEndLuminosityBlock(const edm::LuminosityBlock& ls, const edm::EventSetup& es) {
 
   int lumiBlock = ls.luminosityBlock();
 

@@ -36,7 +36,13 @@ DQMEDAnalyzer::globalBeginRunSummary(edm::Run const&,
   return nullptr;
 }
 
-void DQMEDAnalyzer::endLuminosityBlockSummary(edm::LuminosityBlock const &iLumi ,
+void DQMEDAnalyzer::endLuminosityBlock(edm::LuminosityBlock const& iLumi,
+                                       edm::EventSetup const& iSetup)
+{
+  dqmEndLuminosityBlock(iLumi, iSetup);
+}
+
+void DQMEDAnalyzer::endLuminosityBlockSummary(edm::LuminosityBlock const &iLumi,
                                               edm::EventSetup const &iSetup,
                                               dqmDetails::NoCache*) const {
   DQMStore * store = edm::Service<DQMStore>().operator->();

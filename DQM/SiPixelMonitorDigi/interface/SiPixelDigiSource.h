@@ -57,7 +57,7 @@
        void bookHistograms(DQMStore::IBooker &, edm::Run const &, edm::EventSetup const &) override;
 
        void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
-       void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+       void dqmEndLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
 
        virtual void buildStructure(edm::EventSetup const&);
        virtual void bookMEs(DQMStore::IBooker &, const edm::EventSetup& iSetup);

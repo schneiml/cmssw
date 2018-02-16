@@ -41,6 +41,7 @@ public:
   static std::shared_ptr<dqmDetails::NoCache> globalBeginLuminosityBlockSummary(edm::LuminosityBlock const&,
                                                                     edm::EventSetup const&,
                                                                     LuminosityBlockContext const*);
+  void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
   void endLuminosityBlockSummary(edm::LuminosityBlock const&,
                                          edm::EventSetup const&,
                                          dqmDetails::NoCache*) const final;
@@ -49,6 +50,7 @@ public:
                                               LuminosityBlockContext const*,
                                               dqmDetails::NoCache*);
   uint32_t streamId() const {return stream_id_;}
+  virtual void dqmEndLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) {}
   virtual void dqmBeginRun(edm::Run const&, edm::EventSetup const&) {}
   virtual void bookHistograms(DQMStore::IBooker &i, edm::Run const&, edm::EventSetup const&) = 0;
 

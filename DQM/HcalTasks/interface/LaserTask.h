@@ -37,7 +37,7 @@ class LaserTask : public hcaldqm::DQTask
 					this->_dump();
 			}
 		}
-		void endLuminosityBlock(edm::LuminosityBlock const&,
+		void dqmEndLuminosityBlock(edm::LuminosityBlock const&,
 			edm::EventSetup const&) override;
 
 	protected:

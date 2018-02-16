@@ -444,7 +444,7 @@ RawTask::RawTask(edm::ParameterSet const& ps):
 	
 }
 
-/* virtual */ void RawTask::endLuminosityBlock(edm::LuminosityBlock const& lb,
+/* virtual */ void RawTask::dqmEndLuminosityBlock(edm::LuminosityBlock const& lb,
 	edm::EventSetup const& es)
 {
 	if (_ptype!=fOnline)
@@ -518,7 +518,7 @@ RawTask::RawTask(edm::ParameterSet const& ps):
 	_xOrnMsmLS.reset(); _xEvnMsmLS.reset(); _xBcnMsmLS.reset(); _xBadQLS.reset();
 
 	//	in the end always do the DQTask::endLumi
-	DQTask::endLuminosityBlock(lb, es);
+	DQTask::dqmEndLuminosityBlock(lb, es);
 }
 
 DEFINE_FWK_MODULE(RawTask);

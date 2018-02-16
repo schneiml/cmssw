@@ -119,7 +119,7 @@ class L1TBPTX : public DQMEDAnalyzer {
     void dqmBeginRun(const edm::Run&, const edm::EventSetup&) override;
 
     void beginLuminosityBlock(edm::LuminosityBlock const& lumiBlock, edm::EventSetup const& c) override;
-    void endLuminosityBlock  (edm::LuminosityBlock const& lumiBlock, edm::EventSetup const& c) override;
+    void dqmEndLuminosityBlock  (edm::LuminosityBlock const& lumiBlock, edm::EventSetup const& c) override;
 
 
   // Private Methods

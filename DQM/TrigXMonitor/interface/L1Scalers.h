@@ -22,7 +22,7 @@ class L1Scalers : public DQMEDAnalyzer {
                       edm::EventSetup const &) override;
   void analyze(const edm::Event &e, const edm::EventSetup &c) override;
   /// DQM Client Diagnostic should be performed here:
-  void endLuminosityBlock(const edm::LuminosityBlock &lumiSeg,
+  void dqmEndLuminosityBlock(const edm::LuminosityBlock &lumiSeg,
                           const edm::EventSetup &c) override;
 
  private:

@@ -694,10 +694,10 @@ void SUSY_HLT_SingleLepton::analyze(const edm::Event &e, const edm::EventSetup &
   }
 }
 
-void SUSY_HLT_SingleLepton::endLuminosityBlock(const edm::LuminosityBlock &lumiSeg,
+void SUSY_HLT_SingleLepton::dqmEndLuminosityBlock(const edm::LuminosityBlock &lumiSeg,
                                                const edm::EventSetup &eSetup){
   edm::LogInfo("SUSY_HLT_SingleLepton")
-    << "SUSY_HLT_SingleLepton::endLuminosityBlock\n";
+    << "SUSY_HLT_SingleLepton::dqmEndLuminosityBlock\n";
 }
 
 void SUSY_HLT_SingleLepton::endRun(const edm::Run &run, const edm::EventSetup &eSetup){

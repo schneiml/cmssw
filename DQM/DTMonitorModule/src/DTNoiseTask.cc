@@ -289,7 +289,7 @@ void DTNoiseTask::bookHistograms(DQMStore::IBooker & ibooker,
 
 }
 
-void DTNoiseTask::endLuminosityBlock(const LuminosityBlock& lumiSeg, const EventSetup& setup) {
+void DTNoiseTask::dqmEndLuminosityBlock(const LuminosityBlock& lumiSeg, const EventSetup& setup) {
   LogVerbatim("DTNoiseTask") << "[DTNoiseTask]: End LS, update rates in all histos" << endl;
 
   // update the rate of all histos (usefull for histos with few entries: they are not updated very often

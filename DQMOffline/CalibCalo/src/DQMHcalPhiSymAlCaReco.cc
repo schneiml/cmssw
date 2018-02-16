@@ -490,7 +490,7 @@ void DQMHcalPhiSymAlCaReco::analyze(const Event& iEvent,
 
 
 //--------------------------------------------------------
-void DQMHcalPhiSymAlCaReco::endLuminosityBlock(const LuminosityBlock& lumiSeg, 
+void DQMHcalPhiSymAlCaReco::dqmEndLuminosityBlock(const LuminosityBlock& lumiSeg, 
                                           const EventSetup& context) {
 }
 //--------------------------------------------------------

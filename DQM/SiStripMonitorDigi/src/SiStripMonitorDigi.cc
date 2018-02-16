@@ -283,7 +283,7 @@ void SiStripMonitorDigi::beginLuminosityBlock(const edm::LuminosityBlock& lb, co
 }
 
 //--------------------------------------------------------------------------------------------
-void SiStripMonitorDigi::endLuminosityBlock(const edm::LuminosityBlock& lb, const edm::EventSetup& es) {
+void SiStripMonitorDigi::dqmEndLuminosityBlock(const edm::LuminosityBlock& lb, const edm::EventSetup& es) {
 
   if ( subdetswitchtotdigifailureon && isStableBeams && !SBTransitionDone )
     {
