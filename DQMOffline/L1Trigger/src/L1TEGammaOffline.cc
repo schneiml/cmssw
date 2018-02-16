@@ -76,7 +76,7 @@ void L1TEGammaOffline::dqmBeginRun(edm::Run const & iRun, edm::EventSetup const 
 {
   edm::LogInfo("L1TEGammaOffline") << "L1TEGammaOffline::beginRun" << std::endl;
   bool changed(true);
-  if (!hltConfig_.init(iRun, iSetup, triggerProcess_, changed)) {
+  if (not hltConfig_.init(iRun, iSetup, triggerProcess_, changed)) {
     edm::LogError("L1TStage2CaloLayer2Offline")
         << " HLT config extraction failure with process name "
         << triggerProcess_<< std::endl;
@@ -114,7 +114,7 @@ void L1TEGammaOffline::analyze(edm::Event const& e, edm::EventSetup const& eSetu
 
   edm::Handle<edm::TriggerResults> triggerResultHandle;
   e.getByToken(triggerResultsInputTag_, triggerResultHandle);
-  if (!triggerResultHandle.isValid()) {
+  if (not triggerResultHandle.isValid()) {
     edm::LogWarning("L1TEGammaOffline") << "invalid edm::TriggerResults handle" << std::endl;
     return;
   }
@@ -122,7 +122,7 @@ void L1TEGammaOffline::analyze(edm::Event const& e, edm::EventSetup const& eSetu
 
   edm::Handle<trigger::TriggerEvent> triggerEventHandle;
   e.getByToken(triggerInputTag_, triggerEventHandle);
-  if (!triggerEventHandle.isValid()) {
+  if (not triggerEventHandle.isValid()) {
     edm::LogWarning("L1TEGammaOffline") << "invalid trigger::TriggerEvent handle" << std::endl;
     return;
   }
@@ -130,7 +130,7 @@ void L1TEGammaOffline::analyze(edm::Event const& e, edm::EventSetup const& eSetu
 
   edm::Handle < reco::VertexCollection > vertexHandle;
   e.getByToken(thePVCollection_, vertexHandle);
-  if (!vertexHandle.isValid()) {
+  if (not vertexHandle.isValid()) {
     edm::LogWarning("L1TEGammaOffline") << "invalid collection: vertex " << std::endl;
     return;
   }
@@ -138,7 +138,7 @@ void L1TEGammaOffline::analyze(edm::Event const& e, edm::EventSetup const& eSetu
   unsigned int nVertex = vertexHandle->size();
   dqmoffline::l1t::fillWithinLimits(h_nVertex_, nVertex);
 
-  if(!dqmoffline::l1t::passesAnyTriggerFromList(triggerIndices_, triggerResults_)){
+  if(not dqmoffline::l1t::passesAnyTriggerFromList(triggerIndices_, triggerResults_)){
     return;
   }
   // L1T
@@ -154,7 +154,7 @@ void L1TEGammaOffline::fillElectrons(edm::Event const& e, const unsigned int nVe
   edm::Handle < reco::GsfElectronCollection > gsfElectrons;
   e.getByToken(theGsfElectronCollection_, gsfElectrons);
 
-  if (!gsfElectrons.isValid()) {
+  if (not gsfElectrons.isValid()) {
     edm::LogWarning("L1TEGammaOffline") << "invalid collection: GSF electrons " << std::endl;
     return;
   }
@@ -162,11 +162,11 @@ void L1TEGammaOffline::fillElectrons(edm::Event const& e, const unsigned int nVe
     LogDebug("L1TEGammaOffline") << "empty collection: GSF electrons " << std::endl;
     return;
   }
-  if (!l1EGamma.isValid()) {
+  if (not l1EGamma.isValid()) {
     edm::LogWarning("L1TEGammaOffline") << "invalid collection: L1 EGamma " << std::endl;
     return;
   }
-  if (!findTagAndProbePair(gsfElectrons)) {
+  if (not findTagAndProbePair(gsfElectrons)) {
     LogDebug("L1TEGammaOffline") << "Could not find a tag & probe pair" << std::endl;
     return; //continue to next event
   }
@@ -191,7 +191,7 @@ void L1TEGammaOffline::fillElectrons(edm::Event const& e, const unsigned int nVe
 
   }
 
-  if (!foundMatch) {
+  if (not foundMatch) {
     LogDebug("L1TEGammaOffline") << "Could not find a matching L1 EGamma " << std::endl;
     return;
   }
@@ -293,7 +293,7 @@ void L1TEGammaOffline::fillElectrons(edm::Event const& e, const unsigned int nVe
  * Seeded by L1SingleEG, unprescaled required
  *
  * Tag & probe selection
- * Electron required to be within ECAL fiducial volume (|η|<1.4442 ||
+ * Electron required to be within ECAL fiducial volume (|η|<1.4442 or
  * 1.566<|η|<2.5).
  * 60 < m(ee) < 120 GeV.
  * Opposite charge requirement.
@@ -320,18 +320,18 @@ bool L1TEGammaOffline::findTagAndProbePair(edm::Handle<reco::GsfElectronCollecti
       auto probeAbsEta = std::abs(probeElectron.eta());
 
       // EB-EE transition region
-      bool isEBEEGap = tagElectron.isEBEEGap() || probeElectron.isEBEEGap();
-      bool passesEta = !isEBEEGap && tagAbsEta < 2.5 && probeAbsEta < 2.5;
+      bool isEBEEGap = tagElectron.isEBEEGap() or probeElectron.isEBEEGap();
+      bool passesEta = !isEBEEGap and tagAbsEta < 2.5 and probeAbsEta < 2.5;
       bool passesCharge = tagElectron.charge() == -probeElectron.charge();
 
       // https://github.com/ikrav/cmssw/blob/egm_id_80X_v1/RecoEgamma/ElectronIdentification/plugins/cuts/GsfEleFull5x5SigmaIEtaIEtaCut.cc#L45
-      bool tagPassesMediumID = passesMediumEleId(tagElectron) && tagElectron.et() > 30.;
+      bool tagPassesMediumID = passesMediumEleId(tagElectron) and tagElectron.et() > 30.;
       bool probePassesLooseID = passesLooseEleId(probeElectron);
-      bool passesInvariantMass = combined.M() > 60 && combined.M() < 120;
+      bool passesInvariantMass = combined.M() > 60 and combined.M() < 120;
       bool tagMatchesHLTObject = matchesAnHLTObject(tagElectron.eta(), tagElectron.phi());
 
-      if (passesEta && passesInvariantMass && passesCharge && tagPassesMediumID &&
-          probePassesLooseID && tagMatchesHLTObject) {
+      if (passesEta and passesInvariantMass and passesCharge and tagPassesMediumID and
+          probePassesLooseID and tagMatchesHLTObject) {
         foundBoth = true;
         tagElectron_ = tagElectron;
         probeElectron_ = probeElectron;
@@ -357,25 +357,25 @@ bool L1TEGammaOffline::passesLooseEleId(reco::GsfElectron const& electron) const
   const float eSCoverP = electron.eSuperClusterOverP();
   const float eOverP = std::abs(1.0 - eSCoverP) * ecal_energy_inverse;
 
-  if (electron.isEB() && eOverP > 0.241)
+  if (electron.isEB() and eOverP > 0.241)
     return false;
-  if (electron.isEE() && eOverP > 0.14)
+  if (electron.isEE() and eOverP > 0.14)
     return false;
-  if (electron.isEB() && std::abs(electron.deltaEtaSuperClusterTrackAtVtx()) > 0.00477)
+  if (electron.isEB() and std::abs(electron.deltaEtaSuperClusterTrackAtVtx()) > 0.00477)
     return false;
-  if (electron.isEE() && std::abs(electron.deltaEtaSuperClusterTrackAtVtx()) > 0.00868)
+  if (electron.isEE() and std::abs(electron.deltaEtaSuperClusterTrackAtVtx()) > 0.00868)
     return false;
-  if (electron.isEB() && std::abs(electron.deltaPhiSuperClusterTrackAtVtx()) > 0.222)
+  if (electron.isEB() and std::abs(electron.deltaPhiSuperClusterTrackAtVtx()) > 0.222)
     return false;
-  if (electron.isEE() && std::abs(electron.deltaPhiSuperClusterTrackAtVtx()) > 0.213)
+  if (electron.isEE() and std::abs(electron.deltaPhiSuperClusterTrackAtVtx()) > 0.213)
     return false;
-  if (electron.isEB() && electron.scSigmaIEtaIEta() > 0.011)
+  if (electron.isEB() and electron.scSigmaIEtaIEta() > 0.011)
     return false;
-  if (electron.isEE() && electron.scSigmaIEtaIEta() > 0.0314)
+  if (electron.isEE() and electron.scSigmaIEtaIEta() > 0.0314)
     return false;
-  if (electron.isEB() && electron.hadronicOverEm() > 0.298)
+  if (electron.isEB() and electron.hadronicOverEm() > 0.298)
     return false;
-  if (electron.isEE() && electron.hadronicOverEm() > 0.101)
+  if (electron.isEE() and electron.hadronicOverEm() > 0.101)
     return false;
   return true;
 }
@@ -392,25 +392,25 @@ bool L1TEGammaOffline::passesMediumEleId(reco::GsfElectron const& electron) cons
   const float eSCoverP = electron.eSuperClusterOverP();
   const float eOverP = std::abs(1.0 - eSCoverP) * ecal_energy_inverse;
 
-  if (electron.isEB() && eOverP < 0.134)
+  if (electron.isEB() and eOverP < 0.134)
     return false;
-  if (electron.isEE() && eOverP > 0.13)
+  if (electron.isEE() and eOverP > 0.13)
     return false;
-  if (electron.isEB() && std::abs(electron.deltaEtaSuperClusterTrackAtVtx()) > 0.00311)
+  if (electron.isEB() and std::abs(electron.deltaEtaSuperClusterTrackAtVtx()) > 0.00311)
     return false;
-  if (electron.isEE() && std::abs(electron.deltaEtaSuperClusterTrackAtVtx()) > 0.00609)
+  if (electron.isEE() and std::abs(electron.deltaEtaSuperClusterTrackAtVtx()) > 0.00609)
     return false;
-  if (electron.isEB() && std::abs(electron.deltaPhiSuperClusterTrackAtVtx()) > 0.103)
+  if (electron.isEB() and std::abs(electron.deltaPhiSuperClusterTrackAtVtx()) > 0.103)
     return false;
-  if (electron.isEE() && std::abs(electron.deltaPhiSuperClusterTrackAtVtx()) > 0.045)
+  if (electron.isEE() and std::abs(electron.deltaPhiSuperClusterTrackAtVtx()) > 0.045)
     return false;
-  if (electron.isEB() && electron.scSigmaIEtaIEta() > 0.00998)
+  if (electron.isEB() and electron.scSigmaIEtaIEta() > 0.00998)
     return false;
-  if (electron.isEE() && electron.scSigmaIEtaIEta() > 0.0298)
+  if (electron.isEE() and electron.scSigmaIEtaIEta() > 0.0298)
     return false;
-  if (electron.isEB() && electron.hadronicOverEm() > 0.253)
+  if (electron.isEB() and electron.hadronicOverEm() > 0.253)
     return false;
-  if (electron.isEE() && electron.hadronicOverEm() > 0.0878)
+  if (electron.isEE() and electron.hadronicOverEm() > 0.0878)
     return false;
   return true;
 }
@@ -424,7 +424,7 @@ bool L1TEGammaOffline::matchesAnHLTObject(double eta, double phi) const{
   const trigger::TriggerObjectCollection hltObjects = getTriggerObjects(hltFilters, triggerEvent_);
   const trigger::TriggerObjectCollection matchedObjects = getMatchedTriggerObjects(eta, phi, 0.3, hltObjects);
 
-  return matchedObjects.size() > 0;
+  return !matchedObjects.empty();
 }
 
 void L1TEGammaOffline::fillPhotons(edm::Event const& e, const unsigned int nVertex)
@@ -436,11 +436,11 @@ void L1TEGammaOffline::fillPhotons(edm::Event const& e, const unsigned int nVert
   edm::Handle < reco::PhotonCollection > photons;
   e.getByToken(thePhotonCollection_, photons);
 
-  if (!photons.isValid()) {
+  if (not photons.isValid()) {
     edm::LogWarning("L1TEGammaOffline") << "invalid collection: reco::Photons " << std::endl;
     return;
   }
-  if (!l1EGamma.isValid()) {
+  if (not l1EGamma.isValid()) {
      edm::LogWarning("L1TEGammaOffline") << "invalid collection: L1 EGamma " << std::endl;
     return;
   }
@@ -469,7 +469,7 @@ void L1TEGammaOffline::fillPhotons(edm::Event const& e, const unsigned int nVert
 
   }
 
-  if (!foundMatch) {
+  if (not foundMatch) {
     LogDebug("L1TEGammaOffline") << "Could not find a matching L1 EGamma " << std::endl;
     return;
   }
