@@ -14,7 +14,7 @@ class DQMEDAnalyzer : public edm::one::EDAnalyzer<edm::one::WatchRuns, edm::one:
 {
 public:
   DQMEDAnalyzer() = default;
-  ~DQMEDAnalyzer() = default;
+  ~DQMEDAnalyzer() override = default;
   DQMEDAnalyzer(DQMEDAnalyzer const&) = delete;
   DQMEDAnalyzer(DQMEDAnalyzer &&) = delete;
 
