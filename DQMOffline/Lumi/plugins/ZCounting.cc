@@ -657,11 +657,11 @@ bool ZCounting::ele_tag_selection(double pt, double abseta){
   return true;
 }
 //
-// -------------------------------------- endLuminosityBlock --------------------------------------------
+// -------------------------------------- dqmEndLuminosityBlock --------------------------------------------
 //
-void ZCounting::endLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& eSetup)
+void ZCounting::dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& eSetup)
 {
-  edm::LogInfo("ZCounting") <<  "ZCounting::endLuminosityBlock" << std::endl;
+  edm::LogInfo("ZCounting") <<  "ZCounting::dqmEndLuminosityBlock" << std::endl;
 }
 
 //

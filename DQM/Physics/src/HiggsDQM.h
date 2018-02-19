@@ -54,7 +54,7 @@ class HiggsDQM : public DQMEDAnalyzer {
   void analyze(edm::Event const& e, edm::EventSetup const& eSetup) override;
   void beginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
                             edm::EventSetup const& context) override;
-  void endLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
+  void dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
                           edm::EventSetup const& c) override;
   void endRun(edm::Run const& run, edm::EventSetup const& eSetup) override;
 

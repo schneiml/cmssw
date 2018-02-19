@@ -55,7 +55,7 @@ std::string ElectronDqmAnalyzerBase::newName( const std::string & name )
   return oss.str() ;
  }
 
-void ElectronDqmAnalyzerBase::dqmBeginRun( edm::Run const & , edm::EventSetup const & ) 
+void ElectronDqmAnalyzerBase::dqmBeginRun( edm::Run const & , edm::EventSetup const & )
  {
  }
 
@@ -68,28 +68,28 @@ void ElectronDqmAnalyzerBase::endRun( edm::Run const &, edm::EventSetup const & 
     finalDone_ = true ;
 
     // --- transfert from endJob()
-    if (outputFile_!="")
-     { 
+    if (not outputFile_.empty())
+     {
 //     edm::LogWarning("ElectronDqmAnalyzerBase::endRun")<<"finalize() already called" ;
 	 } /**/
    }
  }
 
-void ElectronDqmAnalyzerBase::endLuminosityBlock( edm::LuminosityBlock const &, edm::EventSetup const & )
+void ElectronDqmAnalyzerBase::dqmEndLuminosityBlock( edm::LuminosityBlock const &, edm::EventSetup const & )
  {
   if (finalStep_=="AtLumiEnd")
    {
     if (finalDone_)
-     { edm::LogWarning("ElectronDqmAnalyzerBase::endLuminosityBlock")<<"finalize() already called" ; }
+     { edm::LogWarning("ElectronDqmAnalyzerBase::dqmEndLuminosityBlock")<<"finalize() already called" ; }
     finalDone_ = true ;
    }
  } /**/
 
-void ElectronDqmAnalyzerBase::bookHistograms( DQMStore::IBooker & ibooker_, edm::Run const &, edm::EventSetup const &) 
+void ElectronDqmAnalyzerBase::bookHistograms( DQMStore::IBooker & ibooker_, edm::Run const &, edm::EventSetup const &)
 {
  edm::LogInfo("DQMAnalyzeBase::bookHistograms") << std::endl;
- 
-} 
+
+}
 
 MonitorElement * ElectronDqmAnalyzerBase::bookH1
  ( DQMStore::IBooker & iBooker, const std::string & name, const std::string & title,
@@ -99,8 +99,8 @@ MonitorElement * ElectronDqmAnalyzerBase::bookH1
  {
   iBooker.setCurrentFolder(outputInternalPath_);
   MonitorElement * me = iBooker.book1D(newName(name),title,nchX,lowX,highX) ;
-  if (titleX!="") { me->getTH1F()->GetXaxis()->SetTitle(titleX.c_str()) ; }
-  if (titleY!="") { me->getTH1F()->GetYaxis()->SetTitle(titleY.c_str()) ; }
+  if (not titleX.empty()) { me->getTH1F()->GetXaxis()->SetTitle(titleX.c_str()) ; }
+  if (not titleY.empty()) { me->getTH1F()->GetYaxis()->SetTitle(titleY.c_str()) ; }
   if (TString(option)!="") { me->getTH1F()->SetOption(option) ; }
   if (bookStatOverflowFlag_) {me->getTH1()->StatOverflows(kTRUE) ; }
   return me ;
@@ -115,8 +115,8 @@ MonitorElement * ElectronDqmAnalyzerBase::bookH1withSumw2
   iBooker.setCurrentFolder(outputInternalPath_);
   MonitorElement * me = iBooker.book1D(newName(name),title,nchX,lowX,highX) ;
   if (me->getTH1F()->GetSumw2N() == 0) me->getTH1F()->Sumw2() ;
-  if (titleX!="") { me->getTH1F()->GetXaxis()->SetTitle(titleX.c_str()) ; }
-  if (titleY!="") { me->getTH1F()->GetYaxis()->SetTitle(titleY.c_str()) ; }
+  if (not titleX.empty()) { me->getTH1F()->GetXaxis()->SetTitle(titleX.c_str()) ; }
+  if (not titleY.empty()) { me->getTH1F()->GetYaxis()->SetTitle(titleY.c_str()) ; }
   if (TString(option)!="") { me->getTH1F()->SetOption(option) ; }
   if (bookStatOverflowFlag_) {me->getTH1()->StatOverflows(kTRUE) ; }
   return me ;
@@ -131,8 +131,8 @@ MonitorElement * ElectronDqmAnalyzerBase::bookH2
  {
   iBooker.setCurrentFolder(outputInternalPath_);
   MonitorElement * me = iBooker.book2D(newName(name),title,nchX,lowX,highX,nchY,lowY,highY) ;
-  if (titleX!="") { me->getTH2F()->GetXaxis()->SetTitle(titleX.c_str()) ; }
-  if (titleY!="") { me->getTH2F()->GetYaxis()->SetTitle(titleY.c_str()) ; }
+  if (not titleX.empty()) { me->getTH2F()->GetXaxis()->SetTitle(titleX.c_str()) ; }
+  if (not titleY.empty()) { me->getTH2F()->GetYaxis()->SetTitle(titleY.c_str()) ; }
   if (TString(option)!="") { me->getTH2F()->SetOption(option) ; }
   if (bookStatOverflowFlag_) {me->getTH1()->StatOverflows(kTRUE) ; }
  return me ;
@@ -148,8 +148,8 @@ MonitorElement * ElectronDqmAnalyzerBase::bookH2withSumw2
   iBooker.setCurrentFolder(outputInternalPath_);
   MonitorElement * me = iBooker.book2D(newName(name),title,nchX,lowX,highX,nchY,lowY,highY) ;
   if (me->getTH2F()->GetSumw2N() == 0) me->getTH2F()->Sumw2() ;
-  if (titleX!="") { me->getTH2F()->GetXaxis()->SetTitle(titleX.c_str()) ; }
-  if (titleY!="") { me->getTH2F()->GetYaxis()->SetTitle(titleY.c_str()) ; }
+  if (not titleX.empty()) { me->getTH2F()->GetXaxis()->SetTitle(titleX.c_str()) ; }
+  if (not titleY.empty()) { me->getTH2F()->GetYaxis()->SetTitle(titleY.c_str()) ; }
   if (TString(option)!="") { me->getTH2F()->SetOption(option) ; }
   if (bookStatOverflowFlag_) {me->getTH1()->StatOverflows(kTRUE) ; }
   return me ;
@@ -164,8 +164,8 @@ MonitorElement * ElectronDqmAnalyzerBase::bookP1
  {
   iBooker.setCurrentFolder(outputInternalPath_);
   MonitorElement * me = iBooker.bookProfile(newName(name),title,nchX,lowX,highX,lowY,highY," ") ;
-  if (titleX!="") { me->getTProfile()->GetXaxis()->SetTitle(titleX.c_str()) ; }
-  if (titleY!="") { me->getTProfile()->GetYaxis()->SetTitle(titleY.c_str()) ; }
+  if (not titleX.empty()) { me->getTProfile()->GetXaxis()->SetTitle(titleX.c_str()) ; }
+  if (not titleY.empty()) { me->getTProfile()->GetYaxis()->SetTitle(titleY.c_str()) ; }
   if (TString(option)!="") { me->getTProfile()->SetOption(option) ; }
   if (bookStatOverflowFlag_) {me->getTH1()->StatOverflows(kTRUE) ; }
   return me ;

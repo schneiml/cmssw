@@ -567,9 +567,9 @@ void HiggsDQM::analyze(const edm::Event& e, const edm::EventSetup& eSetup) {
 //
 // -- End Luminosity Block
 //
-void HiggsDQM::endLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
+void HiggsDQM::dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
                                   edm::EventSetup const& eSetup) {
-  //  cout<<"Entering HiggsDQM::endLuminosityBlock: "<<endl;
+  //  cout<<"Entering HiggsDQM::dqmEndLuminosityBlock: "<<endl;
 
   edm::LogInfo("HiggsDQM") << "[HiggsDQM]: End of LS transition, performing "
                               "the DQM client operation";
@@ -583,7 +583,7 @@ void HiggsDQM::endLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
       << endl
       << "====================================================== " << endl;
 
-  //  cout<<"...leaving HiggsDQM::endLuminosityBlock. "<<endl;
+  //  cout<<"...leaving HiggsDQM::dqmEndLuminosityBlock. "<<endl;
 }
 //
 // -- End Run

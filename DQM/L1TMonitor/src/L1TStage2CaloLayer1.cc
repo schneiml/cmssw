@@ -351,7 +351,7 @@ void L1TStage2CaloLayer1::beginLuminosityBlock(const edm::LuminosityBlock&, cons
   }
 }
 
-void L1TStage2CaloLayer1::endLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup&) {
+void L1TStage2CaloLayer1::dqmEndLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup&) {
   auto id = static_cast<double>(lumi.id().luminosityBlock()); // uint64_t
 
   if ( maxEvtLinkErrorsECALCurrentLumi_ > 0 ) {

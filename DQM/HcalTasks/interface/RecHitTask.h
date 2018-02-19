@@ -33,7 +33,7 @@ class RecHitTask : public hcaldqm::DQTask
 			edm::Run const&, edm::EventSetup const&) override;
 		void beginLuminosityBlock(edm::LuminosityBlock const&,
 			edm::EventSetup const&) override;
-		void endLuminosityBlock(edm::LuminosityBlock const&,
+		void dqmEndLuminosityBlock(edm::LuminosityBlock const&,
 			edm::EventSetup const&) override;
 
 	protected:

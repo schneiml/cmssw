@@ -229,15 +229,15 @@ void L1TBPTX::beginLuminosityBlock(LuminosityBlock const& lumiBlock, EventSetup 
 }
 
 //_____________________________________________________________________
-// Function: endLuminosityBlock
+// Function: dqmEndLuminosityBlock
 // * Fills LS by LS ration of trigger out of sync
 //_____________________________________________________________________
-void L1TBPTX::endLuminosityBlock(LuminosityBlock const& lumiBlock, EventSetup const& c) {
+void L1TBPTX::dqmEndLuminosityBlock(LuminosityBlock const& lumiBlock, EventSetup const& c) {
   
   //______________________________________________________________________________
   // Monitoring efficiencies
   //______________________________________________________________________________  
-  if(m_verbose){cout << "[L1TBPTX] Called endLuminosityBlock." << endl;}
+  if(m_verbose){cout << "[L1TBPTX] Called dqmEndLuminosityBlock." << endl;}
 
   // If this LS is valid (i.e. all events recorded with stable beams)
   if(m_currentLSValid && m_beamConfig.isValid()){

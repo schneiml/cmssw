@@ -353,7 +353,7 @@ void DTSegmentAnalysisTask::fillHistos(DTChamberId chamberId,
 }
 
 
-void DTSegmentAnalysisTask::endLuminosityBlock(LuminosityBlock const& lumiSeg, EventSetup const& eSetup) {
+void DTSegmentAnalysisTask::dqmEndLuminosityBlock(LuminosityBlock const& lumiSeg, EventSetup const& eSetup) {
 
   hNevtPerLS->updateTimeSlot(lumiSeg.luminosityBlock(), nEventsInLS);
   // book sector time-evolution histos

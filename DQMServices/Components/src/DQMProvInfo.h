@@ -32,8 +32,8 @@ class DQMProvInfo : public DQMEDAnalyzer {
   void beginLuminosityBlock(const edm::LuminosityBlock& l,
                             const edm::EventSetup& c) override;
   void analyze(const edm::Event& e, const edm::EventSetup& c) override;
-  void endLuminosityBlock(const edm::LuminosityBlock& l,
-                          const edm::EventSetup& c) override;
+  void dqmEndLuminosityBlock(const edm::LuminosityBlock& l,
+                             const edm::EventSetup& c) override;
 
  private:
   void bookHistogramsLhcInfo(DQMStore::IBooker &);

@@ -851,7 +851,7 @@ RecHitTask::RecHitTask(edm::ParameterSet const& ps):
 	DQTask::beginLuminosityBlock(lb, es);
 }
 
-/* virtual */ void RecHitTask::endLuminosityBlock(edm::LuminosityBlock const& 
+/* virtual */ void RecHitTask::dqmEndLuminosityBlock(edm::LuminosityBlock const& 
 	lb, edm::EventSetup const& es)
 {
 	if (_ptype!=fOnline)
@@ -935,7 +935,7 @@ RecHitTask::RecHitTask(edm::ParameterSet const& ps):
 	}
 
 	//	in the end always do the DQTask::endLumi
-	DQTask::endLuminosityBlock(lb, es);
+	DQTask::dqmEndLuminosityBlock(lb, es);
 }
 
 DEFINE_FWK_MODULE(RecHitTask);

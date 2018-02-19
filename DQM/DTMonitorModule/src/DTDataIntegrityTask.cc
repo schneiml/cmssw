@@ -36,12 +36,12 @@ DTDataIntegrityTask::DTDataIntegrityTask(const edm::ParameterSet& ps) : nevents(
   checkUros = ps.getUntrackedParameter<bool>("checkUros",true);
 
   if (checkUros) {
-	fedToken = consumes<DTuROSFEDDataCollection>(ps.getParameter<InputTag>("dtFEDlabel")); 
+	fedToken = consumes<DTuROSFEDDataCollection>(ps.getParameter<InputTag>("dtFEDlabel"));
 	FEDIDmin = FEDNumbering::MINDTUROSFEDID;
 	FEDIDmax = FEDNumbering::MAXDTUROSFEDID;
 	}
   else { dduToken = consumes<DTDDUCollection>(ps.getParameter<InputTag>("dtDDULabel"));
-         ros25Token = consumes<DTROS25Collection>(ps.getParameter<InputTag>("dtROS25Label")); 
+         ros25Token = consumes<DTROS25Collection>(ps.getParameter<InputTag>("dtROS25Label"));
   	 FEDIDmin = FEDNumbering::MINDTFEDID;
   	 FEDIDmax = FEDNumbering::MAXDTFEDID;
 	}
@@ -91,7 +91,7 @@ DTDataIntegrityTask::~DTDataIntegrityTask() {
   - Inside each ROS folder the ROS histos and the ROBn folder
   - Inside each ROB folder one occupancy plot and the TimeBoxes
   with the chosen granularity (simply change the histo name)
- 
+
   uROS (starting 2018):
   - 3 uROS Summary plots: WheelNEG (FED1369), Wheel0 (FED1370), WheelPOS (FED1371)
   - One folder for each FED
@@ -116,7 +116,7 @@ void DTDataIntegrityTask::bookHistograms(DQMStore::IBooker & ibooker, edm::Run c
   if (checkUros){ //uROS starting on 2018
   // static booking of the histograms
 
-  if(mode == 0 || mode ==2){
+  if(mode == 0 or mode ==2){
   for(int fed = FEDIDmin; fed <= FEDIDmax; ++fed) { // loop over the FEDs in the readout
 
     bookHistos(ibooker, string("FED"), fed);
@@ -129,10 +129,10 @@ void DTDataIntegrityTask::bookHistograms(DQMStore::IBooker & ibooker, edm::Run c
    }
   } //Not in HLT or SM mode
   } //uROS
- 
+
   else{ //Legacy ROS
 
-  if(mode == 0 || mode ==2){
+  if(mode == 0 or mode ==2){
   // static booking of the histograms
 
   for(int fed = FEDIDmin; fed <= FEDIDmax; ++fed) { // loop over the FEDs in the readout
@@ -163,11 +163,11 @@ void DTDataIntegrityTask::bookHistos(DQMStore::IBooker & ibooker, const int fedM
 
   hFEDEntry = ibooker.book1D("FEDEntries","# entries per DT FED",nFED,fedMin,fedMax+1);
 
-  if(!checkUros){
+  if(not checkUros){
   hFEDFatal = ibooker.book1D("FEDFatal","# fatal errors DT FED",nFED,fedMin,fedMax+1);
   hFEDNonFatal = ibooker.book1D("FEDNonFatal","# NON fatal errors DT FED",nFED,fedMin,fedMax+1);
 
-  if(mode == 3 || mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
+  if(mode == 3 or mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
 
   ibooker.setCurrentFolder(topFolder(false));
   hTTSSummary = ibooker.book2D("TTSSummary","Summary Status TTS",nFED,fedMin,fedMax+1,9,1,10);
@@ -223,8 +223,8 @@ void DTDataIntegrityTask::bookHistos(DQMStore::IBooker & ibooker, string folder,
     histoTitle = "Event Lenght (Bytes) FED " +  fed_s;
     (fedHistos[histoType])[fed] = ibooker.book1D(histoName,histoTitle,501,0,30000);
 
-    if(mode == 3 || mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
- 
+    if(mode == 3 or mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
+
     histoType = "uROSStatus";
     histoName = "FED" + fed_s + "_" + histoType;
     (fedHistos[histoType])[fed] = ibooker.book2D(histoName,histoName,12,0,12,12,1,13);
@@ -255,14 +255,14 @@ void DTDataIntegrityTask::bookHistos(DQMStore::IBooker & ibooker, string folder,
     histo->setBinLabel(10,"uROS 10",2);
     histo->setBinLabel(11,"uROS 11",2);
     histo->setBinLabel(12,"uROS 12",2);
-    
+
     if(mode > 0) return; //Info for Online only
 
     histoType = "FEDAvgEvLenghtvsLumi";
     histoName = "FED" + fed_s + "_" + histoType;
     histoTitle = "Avg Event Lenght (Bytes) vs LumiSec FED " +  fed_s;
     (fedTimeHistos[histoType])[fed] = new DTTimeEvolutionHisto(ibooker,histoName,histoTitle,200,10,true,0);
-    
+
     histoType = "TTSValues";
     histoName = "FED" + fed_s + "_" + histoType;
     (fedHistos[histoType])[fed] = ibooker.book1D(histoName,histoName,8,0,8);
@@ -285,14 +285,14 @@ void DTDataIntegrityTask::bookHistos(DQMStore::IBooker & ibooker, string folder,
     histoName = "FED" + fed_s + "_BXID";
     histoTitle = "Distrib. BX ID (FED" + fed_s + ")";
     (fedHistos[histoType])[fed] = ibooker.book1D(histoName,histoTitle,3600,0,3600);
-    
+
   }
 
   // uROS Histograms
   if ( folder == "FED" ) { // The summary of the error of the ROS on the same FED
     ibooker.setCurrentFolder(topFolder(false));
 
-    if(mode == 3 || mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
+    if(mode == 3 or mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
 
     histoType = "uROSSummary";
     histoName = "FED" + fed_s + "_uROSSummary";
@@ -368,7 +368,7 @@ void DTDataIntegrityTask::bookHistos(DQMStore::IBooker & ibooker, string folder,
     histoTitle = "Event Lenght (Bytes) FED " +  dduID_s;
     (fedHistos[histoType])[code.getDDUID()] = ibooker.book1D(histoName,histoTitle,501,0,16032);
 
-    if(mode == 3 || mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
+    if(mode == 3 or mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
 
     histoType = "ROSStatus";
     histoName = "FED" + dduID_s + "_" + histoType;
@@ -458,7 +458,7 @@ void DTDataIntegrityTask::bookHistos(DQMStore::IBooker & ibooker, string folder,
   if ( folder == "ROS_S" ) { // The summary of the error of the ROS on the same FED
     ibooker.setCurrentFolder(topFolder(false));
 
-    if(mode == 3 || mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
+    if(mode == 3 or mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
 
     histoType = "ROSSummary";
     histoName = "FED" + dduID_s + "_ROSSummary";
@@ -506,7 +506,7 @@ void DTDataIntegrityTask::bookHistos(DQMStore::IBooker & ibooker, string folder,
   if ( folder == "ROS" ) {
     ibooker.setCurrentFolder(topFolder(false) + "FED" + dduID_s + "/" + folder + rosID_s);
 
-    if(mode == 3 || mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
+    if(mode == 3 or mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
 
     histoType = "ROSError";
     histoName = "FED" + dduID_s + "_" + folder + rosID_s + "_ROSError";
@@ -648,7 +648,7 @@ void DTDataIntegrityTask::bookHistos(DQMStore::IBooker & ibooker, string folder,
   if ( folder == "SC" ) {
     // The plots are per wheel
     ibooker.setCurrentFolder(topFolder(false) + "FED" + dduID_s);
-    if(mode == 3 || mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
+    if(mode == 3 or mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
 
     // SC data Size
     histoType = "SCSizeVsROSSize";
@@ -662,7 +662,7 @@ void DTDataIntegrityTask::bookHistos(DQMStore::IBooker & ibooker, string folder,
 
 
 void DTDataIntegrityTask::bookHistosROS25(DQMStore::IBooker & ibooker, DTROChainCoding code) {
-  
+
   bookHistos(ibooker, string("ROS"), code);
 
     if(mode < 1)
@@ -734,7 +734,7 @@ void DTDataIntegrityTask::bookHistosuROS(DQMStore::IBooker & ibooker, const int 
         int linkUp = linkDown+23;  string linkUp_s = to_string(linkUp);
         string histoName = "FED" + fed_s + "_" + "uROS" + uRos_s + "_"+histoType;
         string histoTitle = histoName + " (Link " + linkDown_s +"-"+ linkUp_s + " error summary)";
- 	keyHisto = (TDCError+counter)*1000 + (fed-FEDIDmin)*100 + (uRos-1); 
+ 	keyHisto = (TDCError+counter)*1000 + (fed-FEDIDmin)*100 + (uRos-1);
     	urosHistos[keyHisto] = ibooker.book2D(histoName,histoTitle,24,0,24,24,0,24);
     	MonitorElement* histo = urosHistos[keyHisto];
 	// TDC error bins
@@ -794,7 +794,7 @@ void DTDataIntegrityTask::processuROS(DTuROSROSData & data, int fed, int uRos){
       LogTrace("DTRawToDigi|DTDQM|DTMonitorModule|DTDataIntegrityTask")
         << "[DTDataIntegrityTask]: " << neventsuROS << " events analyzed by processuROS" << endl;
 
-  if(mode == 3 || mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
+  if(mode == 3 or mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
 
   MonitorElement* uROSSummary = nullptr;
   uROSSummary = summaryHistos["uROSSummary"][fed];
@@ -802,7 +802,7 @@ void DTDataIntegrityTask::processuROS(DTuROSROSData & data, int fed, int uRos){
   MonitorElement* uROSStatus = nullptr;
   uROSStatus = fedHistos["uROSStatus"][fed];
 
-  if(!uROSSummary) {
+  if(not uROSSummary) {
     LogError("DTRawToDigi|DTDQM|DTMonitorModule|DTDataIntegrityTask") <<
         "Trying to access non existing ME at FED " << fed  <<
         std::endl;
@@ -818,9 +818,9 @@ void DTDataIntegrityTask::processuROS(DTuROSROSData & data, int fed, int uRos){
     uROSError1 = urosHistos[(uROSError+1)*1000 + (fed-FEDIDmin)*100 + (uRos-1)];
     uROSError2 = urosHistos[(uROSError+2)*1000 + (fed-FEDIDmin)*100 + (uRos-1)];
 
-    if ((!uROSError2) || (!uROSError1) || (!uROSError0) ) {
+    if ((not uROSError2) or (not uROSError1) or (not uROSError0) ) {
       LogError("DTRawToDigi|DTDQM|DTMonitorModule|DTDataIntegrityTask") <<
-        "Trying to access non existing ME at uROS " << uRos  << 
+        "Trying to access non existing ME at uROS " << uRos  <<
         std::endl;
      return;
     }
@@ -840,7 +840,7 @@ void DTDataIntegrityTask::processuROS(DTuROSROSData & data, int fed, int uRos){
 	}
       }
    }
-   
+
 
 // Fill the ROSSummary (1 per FED) histo
     if(sumOKs!=0) uROSSummary->Fill(12, uRos); //bins start at 1 despite labeling
@@ -922,19 +922,19 @@ void DTDataIntegrityTask::processuROS(DTuROSROSData & data, int fed, int uRos){
         << " TDC error code not known " << error << endl;
     }
 
-   uROSSummary->Fill(tdcError_ROSSummary,uRos); 
+   uROSSummary->Fill(tdcError_ROSSummary,uRos);
 
    if(mode<=2){
      if (link<24)  	uROSError0->Fill(tdcError_ROSError,link);
      else if (link<48)  uROSError1->Fill(tdcError_ROSError,link-23);
      else if (link<72)  uROSError2->Fill(tdcError_ROSError,link-47);
-     
+
      if(mode<=1){
 	if (link<24) urosHistos[(TDCError+0)*1000 + (fed-FEDIDmin)*100 + (uRos-1)]->Fill(tdcError_TDCHisto+6*(tdc-1),link);
 	else if (link<48) urosHistos[(TDCError+1)*1000 + (fed-FEDIDmin)*100 + (uRos-1)]->Fill(tdcError_TDCHisto+6*(tdc-1),link-23);
 	else if (link<72) urosHistos[(TDCError+2)*1000 + (fed-FEDIDmin)*100 + (uRos-1)]->Fill(tdcError_TDCHisto+6*(tdc-1),link-47);
      }
-   }	
+   }
   } //loop on errors
 
 
@@ -942,7 +942,7 @@ void DTDataIntegrityTask::processuROS(DTuROSROSData & data, int fed, int uRos){
   int ttsCodeValue = -1;
 
   int value = (data.getuserWord() & 0xF);
-  switch(value) { 
+  switch(value) {
   case 0:{ //disconnected
     ttsCodeValue = 0;
     break;
@@ -983,10 +983,10 @@ void DTDataIntegrityTask::processuROS(DTuROSROSData & data, int fed, int uRos){
      // Plot the event lenght //NOHLT
         int uRosEventLenght = (data.gettrailer() & 0xFFFFF)*8;
               urosTimeHistos[(fed-FEDIDmin)*100 + (uRos-1)]->accumulateValueTimeSlot(uRosEventLenght);
-     
+
               if(uRosEventLenght > 5000) uRosEventLenght = 5000;
               urosHistos[uROSEventLenght*1000 + (fed-FEDIDmin)*100 + (uRos-1)]->Fill(uRosEventLenght);
-  }                      
+  }
 
 }
 
@@ -1004,7 +1004,7 @@ void DTDataIntegrityTask::processROS25(DTROS25Data & data, int ddu, int ros) {
   code.setDDU(ddu);
   code.setROS(ros);
 
-  if(mode == 3 || mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
+  if(mode == 3 or mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
 
   MonitorElement* ROSSummary = summaryHistos["ROSSummary"][code.getDDUID()];
 
@@ -1012,7 +1012,7 @@ void DTDataIntegrityTask::processROS25(DTROS25Data & data, int ddu, int ros) {
   MonitorElement* ROSError = nullptr;
   if(mode <= 2) ROSError = rosHistos["ROSError"][code.getROSID()];
 
-  if ( (mode<=2) && (!ROSError) ) {
+  if ( (mode<=2) and (not ROSError) ) {
     LogError("DTRawToDigi|DTDQM|DTMonitorModule|DTDataIntegrityTask") <<
 	"Trying to access non existing ME at ROSID " << code.getROSID() <<
 	std::endl;
@@ -1097,7 +1097,7 @@ void DTDataIntegrityTask::processROS25(DTROS25Data & data, int ddu, int ros) {
 	hasEvIdMis = true;
 	if (mode <= 2) channelsInCEROS((*debug_it).cerosIdCerosStatus(),(*debug_it).evIdMis(),evIdMisBins);
       }
-    } else if ((*debug_it).debugType() == 4 &&
+    } else if ((*debug_it).debugType() == 4 and
 	       (*debug_it).cerosIdRosStatus()){
       debugROSSummary = 13;
       debugROSError   = 10;
@@ -1268,7 +1268,7 @@ void DTDataIntegrityTask::processROS25(DTROS25Data & data, int ddu, int ros) {
   }
 
   // Read SC data
-  if (mode < 1 && getSCInfo) {
+  if (mode < 1 and getSCInfo) {
     // NumberOf16bitWords counts the # of words + 1 subheader
     // the SC includes the SC "private header" and the ROS header and trailer (= NumberOf16bitWords +3)
     rosHistos["SCSizeVsROSSize"][code.getSCID()]->Fill(ros,data.getSCTrailer().wordCount());
@@ -1284,11 +1284,11 @@ void DTDataIntegrityTask::processFED(DTuROSFEDData  & data, int fed){
     LogTrace("DTRawToDigi|DTDQM|DTMonitorModule|DTDataIntegrityTask")
       << "[DTDataIntegrityTask]: " << neventsFED << " events analyzed by processFED" << endl;
 
-  if(fed < FEDIDmin || fed > FEDIDmax) return;
+  if(fed < FEDIDmin or fed > FEDIDmax) return;
 
   hFEDEntry->Fill(fed);
 
-  if(mode == 3 || mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
+  if(mode == 3 or mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
 
   //1D HISTOS: EVENT LENGHT from trailer
   int fedEvtLenght = data.getevtlgth()*8;  //1 word = 8 bytes
@@ -1300,15 +1300,15 @@ void DTDataIntegrityTask::processFED(DTuROSFEDData  & data, int fed){
   fedTimeHistos["FEDAvgEvLenghtvsLumi"][fed]->accumulateValueTimeSlot(fedEvtLenght);
 
   // fill the distribution of the BX ids
-  fedHistos["BXID"][fed]->Fill(data.getBXId()); 
+  fedHistos["BXID"][fed]->Fill(data.getBXId());
 
  // size of the list of ROS in the Read-Out
   fedHistos["uROSList"][fed]->Fill(data.getnslots());
 
   // Fill the status summary of the TTS
-  
+
   //1D HISTO WITH TTS VALUES form trailer (7 bins = 7 values)
-     
+
   int ttsCodeValue = -1;
   int value = data.getTTS();
   switch(value) {
@@ -1347,7 +1347,7 @@ void DTDataIntegrityTask::processFED(DTuROSFEDData  & data, int fed){
   }
   }
   if(mode < 1) fedHistos["TTSValues"][fed]->Fill(ttsCodeValue);
- 
+
 }
 // *****************End uROS ******************//
 
@@ -1362,21 +1362,21 @@ void DTDataIntegrityTask::processFED(DTDDUData & data, const std::vector<DTROS25
 
   DTROChainCoding code;
   code.setDDU(ddu);
-  if(code.getDDUID() < FEDIDmin || code.getDDUID() > FEDIDmax) return;
+  if(code.getDDUID() < FEDIDmin or code.getDDUID() > FEDIDmax) return;
 
   hFEDEntry->Fill(code.getDDUID());
 
-  FEDTrailer trailer = data.getDDUTrailer();
-  FEDHeader header = data.getDDUHeader();
+  const FEDTrailer& trailer = data.getDDUTrailer();
+  const FEDHeader& header = data.getDDUHeader();
 
   // check consistency of header and trailer
-  if(!header.check()) {
+  if(not header.check()) {
     // error code 7
     hFEDFatal->Fill(code.getDDUID());
     hCorruptionSummary->Fill(code.getDDUID(), 7);
   }
 
-  if(!trailer.check()) {
+  if(not trailer.check()) {
     // error code 8
     hFEDFatal->Fill(code.getDDUID());
     hCorruptionSummary->Fill(code.getDDUID(), 8);
@@ -1389,7 +1389,7 @@ void DTDataIntegrityTask::processFED(DTDDUData & data, const std::vector<DTROS25
     hCorruptionSummary->Fill(code.getDDUID(), 6);
   }
 
-  if(mode == 3 || mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
+  if(mode == 3 or mode ==1) return; //Avoid duplication of Info in FEDIntegrity_EvF
 
   const DTDDUSecondStatusWord& secondWord = data.getSecondStatusWord();
 
@@ -1429,11 +1429,11 @@ void DTDataIntegrityTask::processFED(DTDDUData & data, const std::vector<DTROS25
       ttsSummaryBin = 8;
       knownOrigin = true;
     }
-    if(secondWord.outputFifoFull() || secondWord.inputFifoFull() || secondWord.fifoFull()) { // DDU Full
+    if(secondWord.outputFifoFull() or secondWord.inputFifoFull() or secondWord.fifoFull()) { // DDU Full
       ttsSummaryBin = 5;
       knownOrigin = true;
     }
-    if(!knownOrigin) ttsSummaryBin = 9; // Error in DDU logic
+    if(not knownOrigin) ttsSummaryBin = 9; // Error in DDU logic
 
     break;
   }
@@ -1444,11 +1444,11 @@ void DTDataIntegrityTask::processFED(DTDDUData & data, const std::vector<DTROS25
       ttsSummaryBin = 3;
       knownOrigin = true;
     }
-    if(secondWord.outputFifoAlmostFull() || secondWord.inputFifoAlmostFull() || secondWord.fifoAlmostFull() ){ // DDU PAF
+    if(secondWord.outputFifoAlmostFull() or secondWord.inputFifoAlmostFull() or secondWord.fifoAlmostFull() ){ // DDU PAF
       ttsSummaryBin = 4;
       knownOrigin = true;
     }
-    if(!knownOrigin) ttsSummaryBin = 9; // Error in DDU logic
+    if(not knownOrigin) ttsSummaryBin = 9; // Error in DDU logic
     break;
   }
   case 8:{ //ready
@@ -1505,7 +1505,7 @@ void DTDataIntegrityTask::processFED(DTDDUData & data, const std::vector<DTROS25
       hROSStatus->Fill(7,channel,(*fsw_it).errorFromROS());
     }
     // check that the enabled channel was also in the read-out
-    if((*fsw_it).channelEnabled() == 1 &&
+    if((*fsw_it).channelEnabled() == 1 and
        rosPositions.find(channel) == rosPositions.end()) {
       if(mode <= 2) hROSStatus->Fill(9,channel,1);
       // error code 1
@@ -1520,12 +1520,12 @@ void DTDataIntegrityTask::processFED(DTDDUData & data, const std::vector<DTROS25
   // cross checks between FED and ROS data
   // check the BX ID against the ROSs
   set<int> rosBXIds = rosBxIdsPerFED[ddu];
-  if((rosBXIds.size() > 1 || rosBXIds.find(header.bxID()) == rosBXIds.end()) && !rosBXIds.empty() ) { // in this case look for faulty ROSs
+  if((rosBXIds.size() > 1 or rosBXIds.find(header.bxID()) == rosBXIds.end()) and !rosBXIds.empty() ) { // in this case look for faulty ROSs
     for(vector<DTROS25Data>::const_iterator rosControlData = rosData.begin();
 	rosControlData != rosData.end(); ++rosControlData) { // loop over the ROS data
       for (vector<DTROSDebugWord>::const_iterator debug_it = (*rosControlData).getROSDebugs().begin();
 	   debug_it != (*rosControlData).getROSDebugs().end(); debug_it++) { // Loop over ROS debug words
-	if ((*debug_it).debugType() == 0 && (*debug_it).debugMessage() != header.bxID()) { // check the BX
+	if ((*debug_it).debugType() == 0 and (*debug_it).debugMessage() != header.bxID()) { // check the BX
 	  int ros = (*rosControlData).getROSID();
 	  // fill the error bin
 	  if(mode <= 2) hROSStatus->Fill(11,ros-1);
@@ -1550,7 +1550,7 @@ void DTDataIntegrityTask::processFED(DTDDUData & data, const std::vector<DTROS25
 
   // check the L1A ID against the ROSs
   set<int> rosL1AIds = rosL1AIdsPerFED[ddu];
-  if((rosL1AIds.size() > 1 || rosL1AIds.find(header.lvl1ID()-1) == rosL1AIds.end()) && !rosL1AIds.empty() ){ // in this case look for faulty ROSs
+  if((rosL1AIds.size() > 1 or rosL1AIds.find(header.lvl1ID()-1) == rosL1AIds.end()) and !rosL1AIds.empty() ){ // in this case look for faulty ROSs
     //If L1A_ID error identify which ROS has wrong L1A
     for (vector<DTROS25Data>::const_iterator rosControlData = rosData.begin();
 	 rosControlData != rosData.end(); rosControlData++) { // loop over the ROS data
@@ -1599,10 +1599,10 @@ void DTDataIntegrityTask::processFED(DTDDUData & data, const std::vector<DTROS25
     if(fifoAlmostFull & 0x1){
       hFIFOStatus->Fill(3+i,1);
     }
-    if(!(inputFifoFull & 0x1) && !(inputFifoAlmostFull & 0x1)){
+    if(!(inputFifoFull & 0x1) and !(inputFifoAlmostFull & 0x1)){
       hFIFOStatus->Fill(i,2);
     }
-    if(!(fifoFull & 0x1) && !(fifoAlmostFull & 0x1)){
+    if(!(fifoFull & 0x1) and !(fifoAlmostFull & 0x1)){
       hFIFOStatus->Fill(3+i,2);
     }
     inputFifoFull >>= 1;
@@ -1617,7 +1617,7 @@ void DTDataIntegrityTask::processFED(DTDDUData & data, const std::vector<DTROS25
   if(outputFifoAlmostFull){
     hFIFOStatus->Fill(6,1);
   }
-  if(!outputFifoFull && !outputFifoAlmostFull){
+  if(not outputFifoFull and !outputFifoAlmostFull){
     hFIFOStatus->Fill(6,2);
   }
 
@@ -1657,7 +1657,7 @@ std::string DTDataIntegrityTask::topFolder(bool isFEDIntegrity) const {
 
   string folder = isFEDIntegrity ? fedIntegrityFolder : "DT/00-DataIntegrity/";
 
-  if (mode == 0 || mode == 2)
+  if (mode == 0 or mode == 2)
     folder = "DT/00-DataIntegrity/"; //Move everything from FEDIntegrity except for SM and HLT modes
 
   return folder;
@@ -1690,7 +1690,7 @@ void DTDataIntegrityTask::beginLuminosityBlock(const edm::LuminosityBlock& ls, c
 
 }
 
-void DTDataIntegrityTask::endLuminosityBlock(const edm::LuminosityBlock& ls, const edm::EventSetup& es) {
+void DTDataIntegrityTask::dqmEndLuminosityBlock(const edm::LuminosityBlock& ls, const edm::EventSetup& es) {
 
   int lumiBlock = ls.luminosityBlock();
 
@@ -1755,16 +1755,16 @@ void DTDataIntegrityTask::analyze(const edm::Event& e, const edm::EventSetup& c)
     for(unsigned int j=0; j <fedCol->size();++j){
     fedData = fedCol->at(j);
     int fed = fedData.getfed(); //argument should be void
-    if (fed>FEDIDmax || fed<FEDIDmin) {
+    if (fed>FEDIDmax or fed<FEDIDmin) {
 	LogError("DTRawToDigi|DTDQM|DTMonitorModule|DTDataIntegrityTask") << "[DTDataIntegrityTask]: analyze, FED ID " << fed <<" not expected."  << endl;
 	continue;
 	}
     processFED(fedData, fed);
-    
+
     for(int slot=1; slot<=DOCESLOTS; ++slot)
     {
         urosData = fedData.getuROS(slot);
-	if(fedData.getslotsize(slot)==0 || urosData.getslot()==-1) continue;
+	if(fedData.getslotsize(slot)==0 or urosData.getslot()==-1) continue;
         processuROS(urosData,fed,slot);
       }
     }
@@ -1793,7 +1793,7 @@ void DTDataIntegrityTask::analyze(const edm::Event& e, const edm::EventSetup& c)
 
   DTDDUData dduData;
   std::vector<DTROS25Data> ros25Data;
-  if(dduProduct.isValid() && ros25Product.isValid()) {
+  if(dduProduct.isValid() and ros25Product.isValid()) {
     for(unsigned int i=0; i<dduProduct->size(); ++i)
     {
       dduData = dduProduct->at(i);
@@ -1801,7 +1801,7 @@ void DTDataIntegrityTask::analyze(const edm::Event& e, const edm::EventSetup& c)
       // FIXME: passing id variable is not needed anymore - change processFED interface for next release!
       FEDHeader header = dduData.getDDUHeader();
       int id = header.sourceID();
-      if (id>FEDIDmax || id<FEDIDmin) continue; //SIM uses extra FEDs not monitored
+      if (id>FEDIDmax or id<FEDIDmin) continue; //SIM uses extra FEDs not monitored
 
       processFED(dduData, ros25Data, id);
       for(unsigned int j=0; j < ros25Data.size(); ++j) {

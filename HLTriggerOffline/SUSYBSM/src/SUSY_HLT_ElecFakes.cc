@@ -115,9 +115,9 @@ void SUSY_HLT_ElecFakes::analyze(edm::Event const& e, edm::EventSetup const& eSe
 }
 
 
-void SUSY_HLT_ElecFakes::endLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& eSetup)
+void SUSY_HLT_ElecFakes::dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& eSetup)
 {
-  edm::LogInfo("SUSY_HLT_ElecFakes") << "SUSY_HLT_ElecFakes::endLuminosityBlock" << std::endl;
+  edm::LogInfo("SUSY_HLT_ElecFakes") << "SUSY_HLT_ElecFakes::dqmEndLuminosityBlock" << std::endl;
 }
 
 
