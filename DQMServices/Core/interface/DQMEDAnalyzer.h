@@ -18,6 +18,9 @@ public:
   DQMEDAnalyzer(DQMEDAnalyzer const&) = delete;
   DQMEDAnalyzer(DQMEDAnalyzer &&) = delete;
 
+  void beginJob() override final { };
+  void endJob() override final { };
+
   void beginRun(edm::Run const& run, edm::EventSetup const& setup) final
   {
     dqmBeginRun(run, setup);
@@ -31,10 +34,10 @@ public:
       run.moduleCallingContext()->moduleDescription()->id());
   }
 
-  void endRun(edm::Run const& run, edm::EventSetup const& setup) override
+  void endRun(edm::Run const& run, edm::EventSetup const& setup) override final
   { }
 
-  void beginLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& setup) override
+  void beginLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& setup) override final
   { }
 
   void endLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& setup) final
@@ -46,8 +49,10 @@ public:
         lumi.moduleCallingContext()->moduleDescription()->id());
   }
 
+  virtual void dqmBeginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) {}
   virtual void dqmEndLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) {}
   virtual void dqmBeginRun(edm::Run const&, edm::EventSetup const&) {}
+  virtual void dqmEndRun(edm::Run const&, edm::EventSetup const&) {}
   virtual void bookHistograms(DQMStore::IBooker &i, edm::Run const&, edm::EventSetup const&) = 0;
 };
 
