@@ -46,8 +46,8 @@ class TrackEfficiencyMonitor : public DQMEDAnalyzer {
       typedef reco::TrackCollection TrackCollection;
       explicit TrackEfficiencyMonitor(const edm::ParameterSet&);
       ~TrackEfficiencyMonitor() override;
-      virtual void beginJob(void);
-      virtual void endJob(void);
+      virtual void dqmBeginJob(void);
+      virtual void dqmEndJob(void);
       void analyze(const edm::Event&, const edm::EventSetup&) override;
 
       void bookHistograms(DQMStore::IBooker &, edm::Run const &, edm::EventSetup const &) override;

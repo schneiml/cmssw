@@ -39,9 +39,9 @@ class dEdxAnalyzer : public DQMEDAnalyzer {
   
   static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
   
-  void beginJob() override;
+  void dqmBeginJob() override;
   void analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) override;
-  void endJob() override ;
+  void dqmEndJob() override ;
 
   double mass(double P, double I);
   
