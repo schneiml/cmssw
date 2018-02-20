@@ -85,7 +85,7 @@ void DTResolutionAnalysisTask::bookHistograms(DQMStore::IBooker & ibooker,
 
 
 
-void DTResolutionAnalysisTask::beginLuminosityBlock(const LuminosityBlock& lumiSeg,
+void DTResolutionAnalysisTask::dqmBeginLuminosityBlock(const LuminosityBlock& lumiSeg,
 						    const EventSetup& context) {
 
   edm::LogVerbatim ("DTDQM|DTMonitorModule|DTResolutionAnalysisTask") << "[DTResolutionTask]: Begin of LS transition"<<endl;

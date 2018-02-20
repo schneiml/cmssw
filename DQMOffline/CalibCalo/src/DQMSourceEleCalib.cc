@@ -78,7 +78,7 @@ void DQMSourceEleCalib::bookHistograms(DQMStore::IBooker & ibooker, edm::Run con
 }
 
 //--------------------------------------------------------
-void DQMSourceEleCalib::beginLuminosityBlock(const LuminosityBlock& lumiSeg, 
+void DQMSourceEleCalib::dqmBeginLuminosityBlock(const LuminosityBlock& lumiSeg, 
      const EventSetup& context) {
   
 }

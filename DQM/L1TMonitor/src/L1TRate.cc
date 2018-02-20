@@ -198,7 +198,7 @@ void L1TRate::dqmBeginRun(edm::Run const&, edm::EventSetup const&){
   if (m_verbose) {cout << "[L1TRate:] Called beginRun." << endl;}
 }
 //_____________________________________________________________________
-void L1TRate::beginLuminosityBlock(LuminosityBlock const& lumiBlock, EventSetup const& c) {
+void L1TRate::dqmBeginLuminosityBlock(LuminosityBlock const& lumiBlock, EventSetup const& c) {
 
   if (m_verbose) {cout << "[L1TRate:] Called beginLuminosityBlock at LS=" << lumiBlock.id().luminosityBlock() << endl;}
 

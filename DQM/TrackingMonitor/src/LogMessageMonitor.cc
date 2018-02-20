@@ -271,7 +271,7 @@ LogMessageMonitor::beginJob()
 */
 // ------------ method called once each job just after ending the event loop  ------------
 void 
-LogMessageMonitor::endJob() 
+LogMessageMonitor::dqmEndJob() 
 {
     bool outputMEsInRootFile   = conf_.getParameter<bool>("OutputMEsInRootFile");
     std::string outputFileName = conf_.getParameter<std::string>("OutputFileName");
@@ -292,13 +292,13 @@ LogMessageMonitor::beginRun(const edm::Run& iRun, const edm::EventSetup& iSetup)
 */
 // ------------ method called when ending the processing of a run  ------------
 void 
-LogMessageMonitor::endRun(edm::Run const&, edm::EventSetup const&)
+LogMessageMonitor::dqmEndRun(edm::Run const&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when starting to processes a luminosity block  ------------
 void 
-LogMessageMonitor::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+LogMessageMonitor::dqmBeginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
 

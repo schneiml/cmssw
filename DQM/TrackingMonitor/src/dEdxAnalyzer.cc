@@ -45,7 +45,7 @@ dEdxAnalyzer::~dEdxAnalyzer()
 
 // ------------ method called once each job just after ending the event loop  ------------
 void 
-dEdxAnalyzer::endJob() 
+dEdxAnalyzer::dqmEndJob() 
 {
     bool outputMEsInRootFile   = conf_.getParameter<bool>("OutputMEsInRootFile");
     std::string outputFileName = conf_.getParameter<std::string>("OutputFileName");
@@ -153,7 +153,7 @@ void dEdxAnalyzer::bookHistograms(DQMStore::IBooker & ibooker,
 
 }
 
-void dEdxAnalyzer::beginJob()
+void dEdxAnalyzer::dqmBeginJob()
 {
 }
 
@@ -216,7 +216,7 @@ void dEdxAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSet
  
 
 void 
-dEdxAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+dEdxAnalyzer::dqmBeginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
 

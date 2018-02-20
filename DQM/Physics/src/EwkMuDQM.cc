@@ -310,7 +310,7 @@ void EwkMuDQM::bookHistograms(DQMStore::IBooker & ibooker,
   phEta_ = ibooker.book1D("phEta", chtitle, 100, -2.5, 2.5);
 }
 
-void EwkMuDQM::endRun(const Run& r, const EventSetup& iSet) {}
+void EwkMuDQM::dqmEndRun(const Run& r, const EventSetup& iSet) {}
 
 void EwkMuDQM::analyze(const Event& ev, const EventSetup& iSet) {
 

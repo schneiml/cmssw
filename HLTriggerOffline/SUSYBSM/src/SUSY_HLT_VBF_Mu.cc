@@ -84,10 +84,10 @@ void SUSY_HLT_VBF_Mu::bookHistograms(DQMStore::IBooker & ibooker_, edm::Run cons
   bookHistos(ibooker_);
 }
 
-void SUSY_HLT_VBF_Mu::beginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
+void SUSY_HLT_VBF_Mu::dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
 				       edm::EventSetup const& context)
 {
-  edm::LogInfo("SUSY_HLT_VBF_Mu") << "SUSY_HLT_VBF_Mu::beginLuminosityBlock" << std::endl;
+  edm::LogInfo("SUSY_HLT_VBF_Mu") << "SUSY_HLT_VBF_Mu::dqmBeginLuminosityBlock" << std::endl;
 }
 
 
@@ -382,9 +382,9 @@ void SUSY_HLT_VBF_Mu::dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
 }
 
 
-void SUSY_HLT_VBF_Mu::endRun(edm::Run const& run, edm::EventSetup const& eSetup)
+void SUSY_HLT_VBF_Mu::dqmEndRun(edm::Run const& run, edm::EventSetup const& eSetup)
 {
-    edm::LogInfo("SUSY_HLT_VBF_Mu") << "SUSY_HLT_VBF_Mu::endRun" << std::endl;
+    edm::LogInfo("SUSY_HLT_VBF_Mu") << "SUSY_HLT_VBF_Mu::dqmEndRun" << std::endl;
 }
 
 void SUSY_HLT_VBF_Mu::bookHistos(DQMStore::IBooker & ibooker_)

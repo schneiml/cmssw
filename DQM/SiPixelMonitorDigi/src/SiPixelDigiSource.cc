@@ -99,7 +99,7 @@ SiPixelDigiSource::~SiPixelDigiSource()
 
 
 void 
-SiPixelDigiSource::beginLuminosityBlock(const edm::LuminosityBlock& lb, edm::EventSetup const&)
+SiPixelDigiSource::dqmBeginLuminosityBlock(const edm::LuminosityBlock& lb, edm::EventSetup const&)
 {
 
   

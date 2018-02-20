@@ -41,7 +41,7 @@ L1TdeGCT::~L1TdeGCT() {}
 void L1TdeGCT::dqmBeginRun(edm::Run const& iRun, edm::EventSetup const& evSetup)
 {}
 
-void L1TdeGCT::beginLuminosityBlock(const edm::LuminosityBlock& iLumi, const edm::EventSetup& evSetup)
+void L1TdeGCT::dqmBeginLuminosityBlock(const edm::LuminosityBlock& iLumi, const edm::EventSetup& evSetup)
 {}
 
 void L1TdeGCT::bookHistograms(DQMStore::IBooker &ibooker, edm::Run const&, edm::EventSetup const&){

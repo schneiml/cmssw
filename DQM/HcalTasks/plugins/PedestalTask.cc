@@ -815,7 +815,7 @@ PedestalTask::PedestalTask(edm::ParameterSet const& ps):
 	DQTask::beginLuminosityBlock(lb, es);
 }
 
-/* virtual */ void PedestalTask::endRun(edm::Run const& r,
+/* virtual */ void PedestalTask::dqmEndRun(edm::Run const& r,
 	edm::EventSetup const&)
 {
 	if (_ptype==fLocal)

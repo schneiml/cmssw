@@ -100,9 +100,9 @@ void L1TEGammaOffline::bookHistograms(DQMStore::IBooker & ibooker, edm::Run cons
 //
 // -------------------------------------- beginLuminosityBlock --------------------------------------------
 //
-void L1TEGammaOffline::beginLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& context)
+void L1TEGammaOffline::dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& context)
 {
-  edm::LogInfo("L1TEGammaOffline") << "L1TEGammaOffline::beginLuminosityBlock" << std::endl;
+  edm::LogInfo("L1TEGammaOffline") << "L1TEGammaOffline::dqmBeginLuminosityBlock" << std::endl;
 }
 
 //
@@ -553,9 +553,9 @@ void L1TEGammaOffline::dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiSeg
 //
 // -------------------------------------- endRun --------------------------------------------
 //
-void L1TEGammaOffline::endRun(edm::Run const& run, edm::EventSetup const& eSetup)
+void L1TEGammaOffline::dqmEndRun(edm::Run const& run, edm::EventSetup const& eSetup)
 {
-  edm::LogInfo("L1TEGammaOffline") << "L1TEGammaOffline::endRun" << std::endl;
+  edm::LogInfo("L1TEGammaOffline") << "L1TEGammaOffline::dqmEndRun" << std::endl;
 }
 
 //

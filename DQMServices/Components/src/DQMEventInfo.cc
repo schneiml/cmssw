@@ -127,7 +127,7 @@ void DQMEventInfo::bookHistograms(DQMStore::IBooker & ibooker,
 }
 
 
-void DQMEventInfo::beginLuminosityBlock(const edm::LuminosityBlock& l, const edm::EventSetup& c)
+void DQMEventInfo::dqmBeginLuminosityBlock(const edm::LuminosityBlock& l, const edm::EventSetup& c)
 {
   lumisecId_->Fill(l.id().luminosityBlock());
 }

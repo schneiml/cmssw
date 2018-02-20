@@ -200,7 +200,7 @@ void L1TBPTX::dqmBeginRun(const edm::Run&, const edm::EventSetup&){
 //_____________________________________________________________________
 // Function: beginLuminosityBlock
 //_____________________________________________________________________
-void L1TBPTX::beginLuminosityBlock(LuminosityBlock const& lumiBlock, EventSetup const& c) {
+void L1TBPTX::dqmBeginLuminosityBlock(LuminosityBlock const& lumiBlock, EventSetup const& c) {
 
   if (m_verbose){cout << "[L1TBPTX] Called beginLuminosityBlock." << endl;}
 

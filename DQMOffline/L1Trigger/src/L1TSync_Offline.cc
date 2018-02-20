@@ -300,7 +300,7 @@ void L1TSync_Offline::bookHistograms(DQMStore::IBooker &ibooker, const edm::Run&
  //_____________________________________________________________________
  // Function: beginLuminosityBlock
  //_____________________________________________________________________
- void L1TSync_Offline::beginLuminosityBlock(LuminosityBlock const& lumiBlock, EventSetup const& c) {
+ void L1TSync_Offline::dqmBeginLuminosityBlock(LuminosityBlock const& lumiBlock, EventSetup const& c) {
  
    if (m_verbose){cout << "[L1TSync_Offline] Called beginLuminosityBlock." << endl;}
  

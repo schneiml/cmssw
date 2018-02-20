@@ -184,7 +184,7 @@ void DTDigiTask::bookHistograms(DQMStore::IBooker & ibooker, edm::Run const & ru
 }
 
 
-void DTDigiTask::beginLuminosityBlock(LuminosityBlock const& lumiSeg, EventSetup const& context) {
+void DTDigiTask::dqmBeginLuminosityBlock(LuminosityBlock const& lumiSeg, EventSetup const& context) {
 
   LogTrace("DTDQM|DTMonitorModule|DTDigiTask") << "[DTDigiTask]: Begin of LS transition" << endl;
 

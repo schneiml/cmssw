@@ -61,7 +61,7 @@ DTChamberEfficiencyTask::~DTChamberEfficiencyTask(){
   edm::LogVerbatim ("DTDQM|DTMonitorModule|DTChamberEfficiencyTask") << "[DTChamberEfficiencyTask] Destructor called!";
 }
 
-void DTChamberEfficiencyTask::beginLuminosityBlock(LuminosityBlock const& lumiSeg, EventSetup const& context) {
+void DTChamberEfficiencyTask::dqmBeginLuminosityBlock(LuminosityBlock const& lumiSeg, EventSetup const& context) {
 
   edm::LogVerbatim ("DTDQM|DTMonitorModule|DTChamberEfficiencyTask")<<"[DTChamberEfficiencyTask]: Begin of LS transition";
 

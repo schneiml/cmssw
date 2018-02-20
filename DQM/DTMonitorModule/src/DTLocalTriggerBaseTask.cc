@@ -125,7 +125,7 @@ void DTLocalTriggerBaseTask::bookHistograms(DQMStore::IBooker & ibooker, edm::Ru
 }
 
 
-void DTLocalTriggerBaseTask::beginLuminosityBlock(const LuminosityBlock& lumiSeg, const EventSetup& context) {
+void DTLocalTriggerBaseTask::dqmBeginLuminosityBlock(const LuminosityBlock& lumiSeg, const EventSetup& context) {
 
   nEventsInLS=0;
   nLumis++;

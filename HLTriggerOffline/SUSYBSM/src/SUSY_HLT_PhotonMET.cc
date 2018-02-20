@@ -36,10 +36,10 @@ void SUSY_HLT_PhotonMET::bookHistograms(DQMStore::IBooker & ibooker_, edm::Run c
   bookHistos(ibooker_);
 }
 
-void SUSY_HLT_PhotonMET::beginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
+void SUSY_HLT_PhotonMET::dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
                                               edm::EventSetup const& context)
 {
-  edm::LogInfo("SUSY_HLT_PhotonMET") << "SUSY_HLT_PhotonMET::beginLuminosityBlock" << std::endl;
+  edm::LogInfo("SUSY_HLT_PhotonMET") << "SUSY_HLT_PhotonMET::dqmBeginLuminosityBlock" << std::endl;
 }
 
 void SUSY_HLT_PhotonMET::analyze(edm::Event const& e, edm::EventSetup const& eSetup)
@@ -109,9 +109,9 @@ void SUSY_HLT_PhotonMET::dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiS
 }
 
 
-void SUSY_HLT_PhotonMET::endRun(edm::Run const& run, edm::EventSetup const& eSetup)
+void SUSY_HLT_PhotonMET::dqmEndRun(edm::Run const& run, edm::EventSetup const& eSetup)
 {
-  edm::LogInfo("SUSY_HLT_PhotonMET") << "SUSY_HLT_PhotonMET::endRun" << std::endl;
+  edm::LogInfo("SUSY_HLT_PhotonMET") << "SUSY_HLT_PhotonMET::dqmEndRun" << std::endl;
 }
 
 void SUSY_HLT_PhotonMET::bookHistos(DQMStore::IBooker & ibooker_)

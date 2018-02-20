@@ -389,7 +389,7 @@ void L1ExtraDQM::dqmBeginRun(edm::Run const& iRun, edm::EventSetup const& evSetu
 
 }
 
-void L1ExtraDQM::beginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup& evSetup){
+void L1ExtraDQM::dqmBeginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup& evSetup){
 
 }
 
@@ -746,7 +746,7 @@ void L1ExtraDQM::analyze(const edm::Event& iEvent, const edm::EventSetup& evSetu
 }
 
 
-void L1ExtraDQM::endRun(const edm::Run& run, const edm::EventSetup& evSetup) {
+void L1ExtraDQM::dqmEndRun(const edm::Run& run, const edm::EventSetup& evSetup) {
 
     // delete if event setup has changed only FIXME
   

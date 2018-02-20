@@ -42,7 +42,7 @@ void L1TStage2RegionalMuonCandComp::fillDescriptions(edm::ConfigurationDescripti
 
 void L1TStage2RegionalMuonCandComp::dqmBeginRun(const edm::Run& r, const edm::EventSetup& c) {}
 
-void L1TStage2RegionalMuonCandComp::beginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) {}
+void L1TStage2RegionalMuonCandComp::dqmBeginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) {}
 
 void L1TStage2RegionalMuonCandComp::bookHistograms(DQMStore::IBooker& ibooker, const edm::Run&, const edm::EventSetup&) {
 

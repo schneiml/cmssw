@@ -65,10 +65,10 @@ void SUSY_HLT_DoubleEle_Hadronic::bookHistograms(DQMStore::IBooker & ibooker_, e
     bookHistos(ibooker_);
 }
 
-void SUSY_HLT_DoubleEle_Hadronic::beginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
+void SUSY_HLT_DoubleEle_Hadronic::dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
                                                         edm::EventSetup const& context)
 {
-    edm::LogInfo("SUSY_HLT_DoubleEle_Hadronic") << "SUSY_HLT_DoubleEle_Hadronic::beginLuminosityBlock" << std::endl;
+    edm::LogInfo("SUSY_HLT_DoubleEle_Hadronic") << "SUSY_HLT_DoubleEle_Hadronic::dqmBeginLuminosityBlock" << std::endl;
 }
 
 
@@ -224,9 +224,9 @@ void SUSY_HLT_DoubleEle_Hadronic::dqmEndLuminosityBlock(edm::LuminosityBlock con
 }
 
 
-void SUSY_HLT_DoubleEle_Hadronic::endRun(edm::Run const& run, edm::EventSetup const& eSetup)
+void SUSY_HLT_DoubleEle_Hadronic::dqmEndRun(edm::Run const& run, edm::EventSetup const& eSetup)
 {
-    edm::LogInfo("SUSY_HLT_DoubleEle_Hadronic") << "SUSY_HLT_DoubleEle_Hadronic::endRun" << std::endl;
+    edm::LogInfo("SUSY_HLT_DoubleEle_Hadronic") << "SUSY_HLT_DoubleEle_Hadronic::dqmEndRun" << std::endl;
 }
 
 void SUSY_HLT_DoubleEle_Hadronic::bookHistos(DQMStore::IBooker & ibooker_)

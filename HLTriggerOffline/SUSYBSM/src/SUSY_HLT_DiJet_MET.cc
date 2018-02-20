@@ -67,10 +67,10 @@ void SUSY_HLT_DiJet_MET::dqmBeginRun(edm::Run const &run, edm::EventSetup const 
   bookHistos(ibooker_);
 }
 
-void SUSY_HLT_DiJet_MET::beginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
+void SUSY_HLT_DiJet_MET::dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
   edm::EventSetup const& context)
 {
-   edm::LogInfo("SUSY_HLT_DiJet_MET") << "SUSY_HLT_DiJet_MET::beginLuminosityBlock" << std::endl;
+   edm::LogInfo("SUSY_HLT_DiJet_MET") << "SUSY_HLT_DiJet_MET::dqmBeginLuminosityBlock" << std::endl;
 }
 
 
@@ -231,9 +231,9 @@ void SUSY_HLT_DiJet_MET::dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiS
 }
 
 
-void SUSY_HLT_DiJet_MET::endRun(edm::Run const& run, edm::EventSetup const& eSetup)
+void SUSY_HLT_DiJet_MET::dqmEndRun(edm::Run const& run, edm::EventSetup const& eSetup)
 {
-  edm::LogInfo("SUSY_HLT_DiJet_MET") << "SUSY_HLT_DiJet_MET::endRun" << std::endl;
+  edm::LogInfo("SUSY_HLT_DiJet_MET") << "SUSY_HLT_DiJet_MET::dqmEndRun" << std::endl;
 }
 
 void SUSY_HLT_DiJet_MET::bookHistos(DQMStore::IBooker & ibooker_)

@@ -39,7 +39,7 @@ void L1TGMT::dqmBeginRun(const edm::Run& r, const edm::EventSetup& c)
 {
 }
 
-void L1TGMT::beginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&)
+void L1TGMT::dqmBeginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&)
 {
   //empty
 }

@@ -311,7 +311,7 @@ void L1TGT::dqmBeginRun(edm::Run const& iRrun, edm::EventSetup const& evSetup) {
 }
 
 
-void L1TGT::beginLuminosityBlock(const edm::LuminosityBlock& iLumi, const edm::EventSetup& evSetup) {
+void L1TGT::dqmBeginLuminosityBlock(const edm::LuminosityBlock& iLumi, const edm::EventSetup& evSetup) {
 
 
 }

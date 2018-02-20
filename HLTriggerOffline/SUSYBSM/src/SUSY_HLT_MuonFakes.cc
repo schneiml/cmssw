@@ -54,10 +54,10 @@ void SUSY_HLT_MuonFakes::dqmBeginRun(edm::Run const &run, edm::EventSetup const 
   bookHistos(ibooker_);
 }
 
-void SUSY_HLT_MuonFakes::beginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
+void SUSY_HLT_MuonFakes::dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
   edm::EventSetup const& context)
 {
-   edm::LogInfo("SUSY_HLT_MuonFakes") << "SUSY_HLT_MuonFakes::beginLuminosityBlock" << std::endl;
+   edm::LogInfo("SUSY_HLT_MuonFakes") << "SUSY_HLT_MuonFakes::dqmBeginLuminosityBlock" << std::endl;
 }
 
 
@@ -119,9 +119,9 @@ void SUSY_HLT_MuonFakes::dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiS
 }
 
 
-void SUSY_HLT_MuonFakes::endRun(edm::Run const& run, edm::EventSetup const& eSetup)
+void SUSY_HLT_MuonFakes::dqmEndRun(edm::Run const& run, edm::EventSetup const& eSetup)
 {
-  edm::LogInfo("SUSY_HLT_MuonFakes") << "SUSY_HLT_MuonFakes::endRun" << std::endl;
+  edm::LogInfo("SUSY_HLT_MuonFakes") << "SUSY_HLT_MuonFakes::dqmEndRun" << std::endl;
 }
 
 void SUSY_HLT_MuonFakes::bookHistos(DQMStore::IBooker & ibooker_)

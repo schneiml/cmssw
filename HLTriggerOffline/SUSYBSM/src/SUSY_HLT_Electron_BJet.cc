@@ -61,10 +61,10 @@ void SUSY_HLT_Electron_BJet::bookHistograms(DQMStore::IBooker & ibooker_, edm::R
     bookHistos(ibooker_);
 }
 
-void SUSY_HLT_Electron_BJet::beginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
+void SUSY_HLT_Electron_BJet::dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
                                                         edm::EventSetup const& context)
 {
-    edm::LogInfo("SUSY_HLT_Electron_BJet") << "SUSY_HLT_Electron_BJet::beginLuminosityBlock" << std::endl;
+    edm::LogInfo("SUSY_HLT_Electron_BJet") << "SUSY_HLT_Electron_BJet::dqmBeginLuminosityBlock" << std::endl;
 }
 
 
@@ -136,9 +136,9 @@ void SUSY_HLT_Electron_BJet::dqmEndLuminosityBlock(edm::LuminosityBlock const& l
 }
 
 
-void SUSY_HLT_Electron_BJet::endRun(edm::Run const& run, edm::EventSetup const& eSetup)
+void SUSY_HLT_Electron_BJet::dqmEndRun(edm::Run const& run, edm::EventSetup const& eSetup)
 {
-    edm::LogInfo("SUSY_HLT_Electron_BJet") << "SUSY_HLT_Electron_BJet::endRun" << std::endl;
+    edm::LogInfo("SUSY_HLT_Electron_BJet") << "SUSY_HLT_Electron_BJet::dqmEndRun" << std::endl;
 }
 
 void SUSY_HLT_Electron_BJet::bookHistos(DQMStore::IBooker & ibooker_)

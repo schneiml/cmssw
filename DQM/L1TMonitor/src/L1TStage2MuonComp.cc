@@ -40,7 +40,7 @@ void L1TStage2MuonComp::fillDescriptions(edm::ConfigurationDescriptions& descrip
 
 void L1TStage2MuonComp::dqmBeginRun(const edm::Run& r, const edm::EventSetup& c) {}
 
-void L1TStage2MuonComp::beginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) {}
+void L1TStage2MuonComp::dqmBeginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) {}
 
 void L1TStage2MuonComp::bookHistograms(DQMStore::IBooker& ibooker, const edm::Run&, const edm::EventSetup&) {
 

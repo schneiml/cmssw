@@ -74,7 +74,7 @@ void L1TRCT::dqmBeginRun(const edm::Run& r, const edm::EventSetup& c){
   //
 }
 
-void L1TRCT::beginLuminosityBlock(const edm::LuminosityBlock& l, const edm::EventSetup& c){
+void L1TRCT::dqmBeginLuminosityBlock(const edm::LuminosityBlock& l, const edm::EventSetup& c){
   //
   //lumisecId_->Fill(l.id().luminosityBlock());
 }

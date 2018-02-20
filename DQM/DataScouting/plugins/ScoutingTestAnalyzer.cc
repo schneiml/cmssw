@@ -57,7 +57,7 @@ void ScoutingTestAnalyzer::analyze( const edm::Event & iEvent, const edm::EventS
 
 /* Method called at the end of the Run. Ideal to finalise stuff within the 
  * DQM infrastructure, which is entirely Run based. */
-void ScoutingTestAnalyzer::endRun( edm::Run const &, edm::EventSetup const & ) {
+void ScoutingTestAnalyzer::dqmEndRun( edm::Run const &, edm::EventSetup const & ) {
   std::string collection_name = m_pfJetsCollectionTag.label();
   /* This function is specific of this class and allows us to make a 
    * projection in one line 

@@ -902,7 +902,7 @@ void Vx3DHLTAnalyzer::printFitParams (const vector<double>& fitResults)
 }
 
 
-void Vx3DHLTAnalyzer::beginLuminosityBlock (const LuminosityBlock& lumiBlock, const EventSetup& iSetup)
+void Vx3DHLTAnalyzer::dqmBeginLuminosityBlock (const LuminosityBlock& lumiBlock, const EventSetup& iSetup)
 {
   // @@@ If statement to avoid problems with non-sequential lumisections @@@
   if ((lumiCounter == 0) && (lumiBlock.luminosityBlock() > lastLumiOfFit))

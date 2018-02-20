@@ -174,13 +174,13 @@ HiggsDQM::~HiggsDQM() {
 //
 // -- Begin  Luminosity Block
 //
-void HiggsDQM::beginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
+void HiggsDQM::dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
                                     edm::EventSetup const& context) {
-  // cout<<"Entering HiggsDQM::beginLuminosityBlock: "<<endl;
+  // cout<<"Entering HiggsDQM::dqmBeginLuminosityBlock: "<<endl;
 
   edm::LogInfo("HiggsDQM") << "[HiggsDQM]: Begin of LS transition";
 
-  // cout<<"...leaving HiggsDQM::beginLuminosityBlock. "<<endl;
+  // cout<<"...leaving HiggsDQM::dqmBeginLuminosityBlock. "<<endl;
 }
 //
 //  -- Book histograms
@@ -588,14 +588,14 @@ void HiggsDQM::dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
 //
 // -- End Run
 //
-void HiggsDQM::endRun(edm::Run const& run, edm::EventSetup const& eSetup) {
-  //  cout<<"Entering HiggsDQM::endRun: "<<endl;
+void HiggsDQM::dqmEndRun(edm::Run const& run, edm::EventSetup const& eSetup) {
+  //  cout<<"Entering HiggsDQM::dqmEndRun: "<<endl;
 
   // edm::LogVerbatim ("HiggsDQM") <<"[HiggsDQM]: End of Run, saving  DQM output
   // ";
   // int iRun = run.run();
 
-  //  cout<<"...leaving HiggsDQM::endRun. "<<endl;
+  //  cout<<"...leaving HiggsDQM::dqmEndRun. "<<endl;
 }
 
 // Local Variables:

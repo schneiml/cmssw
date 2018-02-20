@@ -1684,7 +1684,7 @@ void DTDataIntegrityTask::channelsInROS(int cerosMask, vector<int>& channels){
   return;
 }
 
-void DTDataIntegrityTask::beginLuminosityBlock(const edm::LuminosityBlock& ls, const edm::EventSetup& es) {
+void DTDataIntegrityTask::dqmBeginLuminosityBlock(const edm::LuminosityBlock& ls, const edm::EventSetup& es) {
 
   nEventsLS = 0;
 

@@ -194,7 +194,7 @@ bool EwkMuLumiMonitorDQM::IsMuMatchedToHLTMu(
   return (nPass > 0);
 }
 
-void EwkMuLumiMonitorDQM::endRun(const Run& r, const EventSetup&) {
+void EwkMuLumiMonitorDQM::dqmEndRun(const Run& r, const EventSetup&) {
 
   LogVerbatim("") << "\n>>>>>> Z/W SELECTION SUMMARY BEGIN >>>>>>>>>>>>>>>";
   LogVerbatim("") << "Total numer of events analyzed: " << nall << " [events]";

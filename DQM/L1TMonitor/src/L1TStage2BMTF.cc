@@ -29,7 +29,7 @@ void L1TStage2BMTF::dqmBeginRun(const edm::Run& iRrun, const edm::EventSetup& ev
 {
 }
 
-void L1TStage2BMTF::beginLuminosityBlock(const edm::LuminosityBlock& iLumi, const edm::EventSetup& eveSetup)
+void L1TStage2BMTF::dqmBeginLuminosityBlock(const edm::LuminosityBlock& iLumi, const edm::EventSetup& eveSetup)
 {
 }
 

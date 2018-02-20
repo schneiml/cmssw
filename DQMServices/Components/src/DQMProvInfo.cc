@@ -221,7 +221,7 @@ void DQMProvInfo::bookHistogramsProvInfo(DQMStore::IBooker& iBooker) {
   workingDir_ = iBooker.bookString("workingDir", gSystem->pwd());
 }
 
-void DQMProvInfo::beginLuminosityBlock(const edm::LuminosityBlock& l,
+void DQMProvInfo::dqmBeginLuminosityBlock(const edm::LuminosityBlock& l,
                                        const edm::EventSetup& c) {
   // By default we set the Physics Declared bit to false at the beginning of
   // every LS

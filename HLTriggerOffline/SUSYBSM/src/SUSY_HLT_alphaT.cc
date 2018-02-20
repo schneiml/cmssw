@@ -70,10 +70,10 @@ void SUSY_HLT_alphaT::dqmBeginRun(edm::Run const &run, edm::EventSetup const &e)
   bookHistos(ibooker_);
 }
 
-void SUSY_HLT_alphaT::beginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
+void SUSY_HLT_alphaT::dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
   edm::EventSetup const& context)
 {
-   edm::LogInfo("SUSY_HLT_alphaT") << "SUSY_HLT_alphaT::beginLuminosityBlock" << std::endl;
+   edm::LogInfo("SUSY_HLT_alphaT") << "SUSY_HLT_alphaT::dqmBeginLuminosityBlock" << std::endl;
 }
 
 
@@ -232,9 +232,9 @@ void SUSY_HLT_alphaT::dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
 }
 
 
-void SUSY_HLT_alphaT::endRun(edm::Run const& run, edm::EventSetup const& eSetup)
+void SUSY_HLT_alphaT::dqmEndRun(edm::Run const& run, edm::EventSetup const& eSetup)
 {
-  edm::LogInfo("SUSY_HLT_alphaT") << "SUSY_HLT_alphaT::endRun" << std::endl;
+  edm::LogInfo("SUSY_HLT_alphaT") << "SUSY_HLT_alphaT::dqmEndRun" << std::endl;
 }
 
 void SUSY_HLT_alphaT::bookHistos(DQMStore::IBooker & ibooker_)

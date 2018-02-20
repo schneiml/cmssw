@@ -347,7 +347,7 @@ void L1TRPCTF::analyze(const Event& e, const EventSetup& c)
   
 }
 
-void L1TRPCTF::beginLuminosityBlock(const edm::LuminosityBlock& l, 
+void L1TRPCTF::dqmBeginLuminosityBlock(const edm::LuminosityBlock& l, 
                                     const edm::EventSetup& c){
 //    m_rpcDigiWithBX0=0;
 //    m_rpcDigiWithBXnon0=0;

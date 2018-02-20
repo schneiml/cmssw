@@ -59,18 +59,18 @@ void ElectronDqmAnalyzerBase::dqmBeginRun( edm::Run const & , edm::EventSetup co
  {
  }
 
-void ElectronDqmAnalyzerBase::endRun( edm::Run const &, edm::EventSetup const & )
+void ElectronDqmAnalyzerBase::dqmEndRun( edm::Run const &, edm::EventSetup const & )
  {
   if (finalStep_=="AtRunEnd")
    {
     if (finalDone_)
-     { edm::LogWarning("ElectronDqmAnalyzerBase::endRun")<<"finalize() already called" ; }
+     { edm::LogWarning("ElectronDqmAnalyzerBase::dqmEndRun")<<"finalize() already called" ; }
     finalDone_ = true ;
 
     // --- transfert from endJob()
     if (not outputFile_.empty())
      {
-//     edm::LogWarning("ElectronDqmAnalyzerBase::endRun")<<"finalize() already called" ;
+//     edm::LogWarning("ElectronDqmAnalyzerBase::dqmEndRun")<<"finalize() already called" ;
 	 } /**/
    }
  }

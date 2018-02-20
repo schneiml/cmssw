@@ -270,11 +270,11 @@ void SiStripMonitorDigi::dqmBeginRun(const edm::Run& run, const edm::EventSetup&
 }
 
 //--------------------------------------------------------------------------------------------
-void SiStripMonitorDigi::endRun(const edm::Run&, const edm::EventSetup&){
+void SiStripMonitorDigi::dqmEndRun(const edm::Run&, const edm::EventSetup&){
 }
 
 //--------------------------------------------------------------------------------------------
-void SiStripMonitorDigi::beginLuminosityBlock(const edm::LuminosityBlock& lb, const edm::EventSetup& es){
+void SiStripMonitorDigi::dqmBeginLuminosityBlock(const edm::LuminosityBlock& lb, const edm::EventSetup& es){
   if (subdetswitchtotdigifailureon) {
     isStableBeams = false;
     //integrate stats over several LS to prevent eventual low trigger rates

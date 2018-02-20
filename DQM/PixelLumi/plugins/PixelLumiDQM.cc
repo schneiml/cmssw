@@ -430,14 +430,14 @@ PixelLumiDQM::dqmBeginRun(edm::Run const&, edm::EventSetup const&)
 
 // ------------ Method called when ending the processing of a run.  ------------
 void
-PixelLumiDQM::endRun(edm::Run const&, edm::EventSetup const&)
+PixelLumiDQM::dqmEndRun(edm::Run const&, edm::EventSetup const&)
 {
 }
 
 
 // ------------ Method called when starting to process a luminosity block.  ------------
 void
-PixelLumiDQM::beginLuminosityBlock(edm::LuminosityBlock const&lumiBlock,
+PixelLumiDQM::dqmBeginLuminosityBlock(edm::LuminosityBlock const&lumiBlock,
            edm::EventSetup const&)
 {
   // Only reset and fill every fResetIntervalInLumiSections (default is 1 LS)

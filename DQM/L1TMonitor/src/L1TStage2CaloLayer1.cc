@@ -339,7 +339,7 @@ void L1TStage2CaloLayer1::updateMismatch(const edm::Event& e, int mismatchType) 
   }
 }
 
-void L1TStage2CaloLayer1::beginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) {
+void L1TStage2CaloLayer1::dqmBeginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) {
   // Ugly way to loop backwards through the last 20 mismatches
   auto h = last20Mismatches_->getTH2F();
   for (size_t ibin=1, imatch=lastMismatchIndex_; ibin<=20; ibin++, imatch=(imatch+19)%20) {

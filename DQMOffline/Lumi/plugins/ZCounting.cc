@@ -175,9 +175,9 @@ void ZCounting::bookHistograms(DQMStore::IBooker & ibooker_, edm::Run const &, e
 //
 // -------------------------------------- beginLuminosityBlock --------------------------------------------
 //
-void ZCounting::beginLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& context) 
+void ZCounting::dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& context) 
 {
-  edm::LogInfo("ZCounting") <<  "ZCounting::beginLuminosityBlock" << std::endl;
+  edm::LogInfo("ZCounting") <<  "ZCounting::dqmBeginLuminosityBlock" << std::endl;
 }
 
 

@@ -216,7 +216,7 @@ TrackingMonitor::~TrackingMonitor()
 }
 
 
-void TrackingMonitor::beginJob(void) 
+void TrackingMonitor::dqmBeginJob(void) 
 {
 
     
@@ -717,7 +717,7 @@ void TrackingMonitor::beginRun(const edm::Run& iRun, const edm::EventSetup& iSet
 
 // - BeginLumi
 // ---------------------------------------------------------------------------------//
-void TrackingMonitor::beginLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup&  eSetup) {
+void TrackingMonitor::dqmBeginLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup&  eSetup) {
 
   if (doLumiAnalysis) {
     if ( NumberOfTracks_lumiFlag ) NumberOfTracks_lumiFlag -> Reset();
@@ -1095,7 +1095,7 @@ void TrackingMonitor::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 }
 
 
-void TrackingMonitor::endRun(const edm::Run&, const edm::EventSetup&) 
+void TrackingMonitor::dqmEndRun(const edm::Run&, const edm::EventSetup&) 
 {
 }
 

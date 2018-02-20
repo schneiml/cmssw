@@ -129,9 +129,9 @@ void L1TTauOffline::bookHistograms(DQMStore::IBooker & ibooker, edm::Run const &
 //
 // -------------------------------------- beginLuminosityBlock --------------------------------------------
 //
-void L1TTauOffline::beginLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& context)
+void L1TTauOffline::dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& context)
 {
-  edm::LogInfo("L1TTauOffline") << "L1TTauOffline::beginLuminosityBlock" << std::endl;
+  edm::LogInfo("L1TTauOffline") << "L1TTauOffline::dqmBeginLuminosityBlock" << std::endl;
 }
 
 //
@@ -309,9 +309,9 @@ void L1TTauOffline::dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiSeg, e
 //
 // -------------------------------------- endRun --------------------------------------------
 //
-void L1TTauOffline::endRun(edm::Run const& run, edm::EventSetup const& eSetup)
+void L1TTauOffline::dqmEndRun(edm::Run const& run, edm::EventSetup const& eSetup)
 {
-  edm::LogInfo("L1TTauOffline") << "L1TTauOffline::endRun" << std::endl;
+  edm::LogInfo("L1TTauOffline") << "L1TTauOffline::dqmEndRun" << std::endl;
 }
 
 //

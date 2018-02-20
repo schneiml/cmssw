@@ -365,7 +365,7 @@ void DTSegmentAnalysisTask::dqmEndLuminosityBlock(LuminosityBlock const& lumiSeg
 }
 
 
-void DTSegmentAnalysisTask::beginLuminosityBlock(LuminosityBlock const& lumiSeg, EventSetup const& eSetup) {
+void DTSegmentAnalysisTask::dqmBeginLuminosityBlock(LuminosityBlock const& lumiSeg, EventSetup const& eSetup) {
   nEventsInLS = 0;
 }
 

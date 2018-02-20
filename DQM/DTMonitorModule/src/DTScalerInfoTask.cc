@@ -47,7 +47,7 @@ void DTScalerInfoTask::dqmBeginRun(const edm::Run& run, const edm::EventSetup& c
 }
 
 
-void DTScalerInfoTask::beginLuminosityBlock(const LuminosityBlock& lumiSeg, const EventSetup& context) {
+void DTScalerInfoTask::dqmBeginLuminosityBlock(const LuminosityBlock& lumiSeg, const EventSetup& context) {
 
   nEventsInLS=0;
 

@@ -124,7 +124,7 @@ namespace hcaldqm
 		this->_resetMonitors(f100LS);
 	}
 
-	/* virtual */ void DQTask::beginLuminosityBlock(
+	/* virtual */ void DQTask::dqmBeginLuminosityBlock(
 		edm::LuminosityBlock const& lb,
 		edm::EventSetup const& es)
 	{

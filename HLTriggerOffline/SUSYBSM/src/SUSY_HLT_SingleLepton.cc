@@ -335,9 +335,9 @@ void SUSY_HLT_SingleLepton::bookHistograms(DQMStore::IBooker &ibooker,
   ibooker.cd();
 }
 
-void SUSY_HLT_SingleLepton::beginLuminosityBlock(const edm::LuminosityBlock &lumiSeg,
+void SUSY_HLT_SingleLepton::dqmBeginLuminosityBlock(const edm::LuminosityBlock &lumiSeg,
                                                  const edm::EventSetup &context){
-  edm::LogInfo("SUSY_HLT_SingleLepton") << "SUSY_HLT_SingleLepton::beginLuminosityBlock\n";
+  edm::LogInfo("SUSY_HLT_SingleLepton") << "SUSY_HLT_SingleLepton::dqmBeginLuminosityBlock\n";
 }
 
 void SUSY_HLT_SingleLepton::analyze(const edm::Event &e, const edm::EventSetup &eSetup){
@@ -700,8 +700,8 @@ void SUSY_HLT_SingleLepton::dqmEndLuminosityBlock(const edm::LuminosityBlock &lu
     << "SUSY_HLT_SingleLepton::dqmEndLuminosityBlock\n";
 }
 
-void SUSY_HLT_SingleLepton::endRun(const edm::Run &run, const edm::EventSetup &eSetup){
-  edm::LogInfo("SUSY_HLT_SingleLepton") << "SUSY_HLT_SingleLepton::endRun\n";
+void SUSY_HLT_SingleLepton::dqmEndRun(const edm::Run &run, const edm::EventSetup &eSetup){
+  edm::LogInfo("SUSY_HLT_SingleLepton") << "SUSY_HLT_SingleLepton::dqmEndRun\n";
 }
 
 //define this as a plug-in

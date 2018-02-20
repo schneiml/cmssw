@@ -73,10 +73,10 @@ void SUSY_HLT_Muon_Hadronic::dqmBeginRun(edm::Run const &run, edm::EventSetup co
   bookHistos(ibooker_);
 }
 
-void SUSY_HLT_Muon_Hadronic::beginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
+void SUSY_HLT_Muon_Hadronic::dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
   edm::EventSetup const& context)
 {
-   edm::LogInfo("SUSY_HLT_Muon_Hadronic") << "SUSY_HLT_Muon_Hadronic::beginLuminosityBlock" << std::endl;
+   edm::LogInfo("SUSY_HLT_Muon_Hadronic") << "SUSY_HLT_Muon_Hadronic::dqmBeginLuminosityBlock" << std::endl;
 }
 
 
@@ -249,9 +249,9 @@ void SUSY_HLT_Muon_Hadronic::dqmEndLuminosityBlock(edm::LuminosityBlock const& l
 }
 
 
-void SUSY_HLT_Muon_Hadronic::endRun(edm::Run const& run, edm::EventSetup const& eSetup)
+void SUSY_HLT_Muon_Hadronic::dqmEndRun(edm::Run const& run, edm::EventSetup const& eSetup)
 {
-  edm::LogInfo("SUSY_HLT_Muon_Hadronic") << "SUSY_HLT_Muon_Hadronic::endRun" << std::endl;
+  edm::LogInfo("SUSY_HLT_Muon_Hadronic") << "SUSY_HLT_Muon_Hadronic::dqmEndRun" << std::endl;
 }
 
 void SUSY_HLT_Muon_Hadronic::bookHistos(DQMStore::IBooker & ibooker_)

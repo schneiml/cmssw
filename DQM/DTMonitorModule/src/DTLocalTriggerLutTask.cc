@@ -145,7 +145,7 @@ void DTLocalTriggerLutTask::bookHistograms(DQMStore::IBooker & ibooker,
 }
 
 
-void DTLocalTriggerLutTask::beginLuminosityBlock(const LuminosityBlock& lumiSeg, const EventSetup& context) {
+void DTLocalTriggerLutTask::dqmBeginLuminosityBlock(const LuminosityBlock& lumiSeg, const EventSetup& context) {
 
   nLumis++;
   LogTrace("DTDQM|DTMonitorModule|DTLocalTriggerLutTask") << "[DTLocalTriggerLutTask]: Begin of LS transition" << endl;

@@ -72,10 +72,10 @@ void DQMExample_Step1::bookHistograms(DQMStore::IBooker & ibooker_, edm::Run con
 //
 // -------------------------------------- beginLuminosityBlock --------------------------------------------
 //
-void DQMExample_Step1::beginLuminosityBlock(edm::LuminosityBlock const& lumiSeg, 
+void DQMExample_Step1::dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumiSeg, 
                                             edm::EventSetup const& context) 
 {
-  edm::LogInfo("DQMExample_Step1") <<  "DQMExample_Step1::beginLuminosityBlock" << std::endl;
+  edm::LogInfo("DQMExample_Step1") <<  "DQMExample_Step1::dqmBeginLuminosityBlock" << std::endl;
 }
 
 
@@ -311,9 +311,9 @@ void DQMExample_Step1::dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiSeg
 //
 // -------------------------------------- endRun --------------------------------------------
 //
-void DQMExample_Step1::endRun(edm::Run const& run, edm::EventSetup const& eSetup)
+void DQMExample_Step1::dqmEndRun(edm::Run const& run, edm::EventSetup const& eSetup)
 {
-  edm::LogInfo("DQMExample_Step1") <<  "DQMExample_Step1::endRun" << std::endl;
+  edm::LogInfo("DQMExample_Step1") <<  "DQMExample_Step1::dqmEndRun" << std::endl;
 }
 
 

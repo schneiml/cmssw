@@ -264,7 +264,7 @@ void EwkElecDQM::bookHistograms(DQMStore::IBooker & ibooker,
 
 }
 
-void EwkElecDQM::endRun(const Run& r, const EventSetup&) {
+void EwkElecDQM::dqmEndRun(const Run& r, const EventSetup&) {
 
   // overall
   double all = nall;

@@ -124,7 +124,7 @@ void L1TDTTPG::dqmBeginRun(const edm::Run &r, const edm::EventSetup &c){
 
 }
 
-void L1TDTTPG::beginLuminosityBlock(const edm::LuminosityBlock &l, const edm::EventSetup &c){
+void L1TDTTPG::dqmBeginLuminosityBlock(const edm::LuminosityBlock &l, const edm::EventSetup &c){
   //empty
 
 }

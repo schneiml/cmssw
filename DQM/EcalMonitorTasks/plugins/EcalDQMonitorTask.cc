@@ -119,7 +119,7 @@ EcalDQMonitorTask::dqmBeginRun(edm::Run const& _run, edm::EventSetup const& _es)
 }
 
 void
-EcalDQMonitorTask::endRun(edm::Run const& _run, edm::EventSetup const& _es)
+EcalDQMonitorTask::dqmEndRun(edm::Run const& _run, edm::EventSetup const& _es)
 {
   if(lastResetTime_ != 0)
     executeOnWorkers_([](ecaldqm::DQWorker* worker){
@@ -134,7 +134,7 @@ EcalDQMonitorTask::endRun(edm::Run const& _run, edm::EventSetup const& _es)
 }
 
 void
-EcalDQMonitorTask::beginLuminosityBlock(edm::LuminosityBlock const& _lumi, edm::EventSetup const& _es)
+EcalDQMonitorTask::dqmBeginLuminosityBlock(edm::LuminosityBlock const& _lumi, edm::EventSetup const& _es)
 {
   ecaldqmBeginLuminosityBlock(_lumi, _es);
 }

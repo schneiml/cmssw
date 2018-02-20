@@ -102,10 +102,10 @@ void L1TStage2CaloLayer2Offline::bookHistograms(DQMStore::IBooker & ibooker_, ed
 //
 // -------------------------------------- beginLuminosityBlock --------------------------------------------
 //
-void L1TStage2CaloLayer2Offline::beginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
+void L1TStage2CaloLayer2Offline::dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
     edm::EventSetup const& context)
 {
-  edm::LogInfo("L1TStage2CaloLayer2Offline") << "L1TStage2CaloLayer2Offline::beginLuminosityBlock" << std::endl;
+  edm::LogInfo("L1TStage2CaloLayer2Offline") << "L1TStage2CaloLayer2Offline::dqmBeginLuminosityBlock" << std::endl;
 }
 
 //
@@ -481,9 +481,9 @@ void L1TStage2CaloLayer2Offline::dqmEndLuminosityBlock(edm::LuminosityBlock cons
 //
 // -------------------------------------- endRun --------------------------------------------
 //
-void L1TStage2CaloLayer2Offline::endRun(edm::Run const& run, edm::EventSetup const& eSetup)
+void L1TStage2CaloLayer2Offline::dqmEndRun(edm::Run const& run, edm::EventSetup const& eSetup)
 {
-  edm::LogInfo("L1TStage2CaloLayer2Offline") << "L1TStage2CaloLayer2Offline::endRun" << std::endl;
+  edm::LogInfo("L1TStage2CaloLayer2Offline") << "L1TStage2CaloLayer2Offline::dqmEndRun" << std::endl;
 }
 
 //

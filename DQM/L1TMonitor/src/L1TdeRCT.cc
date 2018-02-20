@@ -1901,7 +1901,7 @@ void L1TdeRCT::bookHistograms(DQMStore::IBooker &ibooker, const edm::Run& run , 
   readFEDVector(fedVectorMonitorRUN_,es);
 }
 
-void L1TdeRCT::beginLuminosityBlock(const edm::LuminosityBlock& ls,const edm::EventSetup& es)
+void L1TdeRCT::dqmBeginLuminosityBlock(const edm::LuminosityBlock& ls,const edm::EventSetup& es)
 {
   readFEDVector(fedVectorMonitorLS_,es);
 }

@@ -134,7 +134,7 @@ void DTEfficiencyTask::bookHistograms(DQMStore::IBooker & ibooker, edm::Run cons
   } // chambers
 }
 
-void DTEfficiencyTask::beginLuminosityBlock(LuminosityBlock const& lumiSeg, EventSetup const& context) {
+void DTEfficiencyTask::dqmBeginLuminosityBlock(LuminosityBlock const& lumiSeg, EventSetup const& context) {
 
 
   if(lumiSeg.id().luminosityBlock()%parameters.getUntrackedParameter<int>("ResetCycle", 3) == 0) {

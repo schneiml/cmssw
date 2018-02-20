@@ -66,7 +66,7 @@ ESIntegrityTask::ESIntegrityTask(const ParameterSet& ps) {
 
 }
 
-void ESIntegrityTask::endRun(const Run& r, const EventSetup& c) {
+void ESIntegrityTask::dqmEndRun(const Run& r, const EventSetup& c) {
   // In case of Lumi based analysis Disable SoftReset from Integrity histogram to get full statistics
   DQMStore* dqmStore(edm::Service<DQMStore>().operator->());
   
@@ -81,7 +81,7 @@ void ESIntegrityTask::endRun(const Run& r, const EventSetup& c) {
   }
 }
 
-void ESIntegrityTask::beginLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup & c) {
+void ESIntegrityTask::dqmBeginLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup & c) {
   DQMStore* dqmStore(edm::Service<DQMStore>().operator->());
 
   LogInfo("ESIntegrityTask") << "analyzed " << ievt_ << " events";
@@ -199,7 +199,7 @@ void ESIntegrityTask::bookHistograms(DQMStore::IBooker& iBooker, edm::Run const&
   }
 }
 
-void ESIntegrityTask::endJob(void){
+void ESIntegrityTask::dqmEndJob(void){
 
   LogInfo("ESIntegrityTask") << "analyzed " << ievt_ << " events";
 

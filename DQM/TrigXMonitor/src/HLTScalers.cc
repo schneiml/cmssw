@@ -183,7 +183,7 @@ void HLTScalers::bookHistograms(DQMStore::IBooker& iBooker, edm::Run const&,
       iBooker.book1D("hltBx", "Bx of HLT Accepted Events ", 3600, -0.5, 3599.5);
 }
 
-void HLTScalers::beginLuminosityBlock(const edm::LuminosityBlock& lumiSeg,
+void HLTScalers::dqmBeginLuminosityBlock(const edm::LuminosityBlock& lumiSeg,
                                       const edm::EventSetup& c) {
   LogDebug("HLTScalers") << "Start of luminosity block.";
   // reset the N guys
@@ -308,6 +308,6 @@ void HLTScalers::dqmEndLuminosityBlock(const edm::LuminosityBlock& lumiSeg,
   LogDebug("HLTScalers") << "End of luminosity block.";
 }
 
-void HLTScalers::endRun(const edm::Run& run, const edm::EventSetup& c) {
-  LogDebug("HLTScalers") << "HLTScalers::endRun , run " << run.id();
+void HLTScalers::dqmEndRun(const edm::Run& run, const edm::EventSetup& c) {
+  LogDebug("HLTScalers") << "HLTScalers::dqmEndRun , run " << run.id();
 }
