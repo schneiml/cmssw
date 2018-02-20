@@ -73,7 +73,7 @@ protected:
   void bookHistos(DQMStore::IBooker & ibooker, const int wheelId, std::string folder, std::string histoTag);
 
   /// To reset the MEs
-  void beginLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& context)  override;
+  void dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& context)  override;
   void dqmEndLuminosityBlock(const edm::LuminosityBlock& lumiSeg, const edm::EventSetup& setup) override;
 
   /// To map real channels

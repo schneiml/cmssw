@@ -63,7 +63,7 @@ class DTLocalTriggerBaseTask: public DQMEDAnalyzer{
   void analyze(const edm::Event& e, const edm::EventSetup& c) override;
 
   /// To reset the MEs
-  void beginLuminosityBlock(const edm::LuminosityBlock& lumiSeg, const edm::EventSetup& context) override;
+  void dqmBeginLuminosityBlock(const edm::LuminosityBlock& lumiSeg, const edm::EventSetup& context) override;
 
   /// Perform trend plot operations
   void dqmEndLuminosityBlock(const edm::LuminosityBlock& lumiSeg, const edm::EventSetup& context)  override;

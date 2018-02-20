@@ -58,7 +58,7 @@ class Vx3DHLTAnalyzer : public DQMEDAnalyzer
 
  private:
   void analyze              (const edm::Event& iEvent, const edm::EventSetup& iSetup) override;
-  void beginLuminosityBlock (const edm::LuminosityBlock& lumiBlock, const edm::EventSetup& iSetup) override;
+  void dqmBeginLuminosityBlock (const edm::LuminosityBlock& lumiBlock, const edm::EventSetup& iSetup) override;
   void dqmEndLuminosityBlock   (const edm::LuminosityBlock& lumiBlock, const edm::EventSetup& iSetup) override;
   void bookHistograms       (DQMStore::IBooker &, edm::Run const &, edm::EventSetup const &) override;
 

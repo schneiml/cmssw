@@ -44,7 +44,7 @@ public:
   ~DTEfficiencyTask() override;
 
   /// To reset the MEs
-  void beginLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& context)  override;
+  void dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& context)  override;
 
   // Operations
   void analyze(const edm::Event& event, const edm::EventSetup& setup) override;

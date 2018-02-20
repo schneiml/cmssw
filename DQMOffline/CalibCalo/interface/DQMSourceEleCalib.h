@@ -40,7 +40,7 @@ protected:
 
   void analyze(const edm::Event& e, const edm::EventSetup& c) override ;
 
-  void beginLuminosityBlock(const edm::LuminosityBlock& lumiSeg, 
+  void dqmBeginLuminosityBlock(const edm::LuminosityBlock& lumiSeg, 
                             const edm::EventSetup& context)  override;
 
   void dqmEndLuminosityBlock(const edm::LuminosityBlock& lumiSeg, 

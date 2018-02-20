@@ -28,7 +28,7 @@ class EcalDQMonitorTask : public DQMEDAnalyzer, public ecaldqm::EcalDQMonitor {
 
  private:
   void endRun(edm::Run const&, edm::EventSetup const&) override;
-  void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+  void dqmBeginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
   void dqmEndLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
   void analyze(edm::Event const&, edm::EventSetup const&) override;
   

@@ -92,7 +92,7 @@ class L1TSync : public DQMEDAnalyzer {
 
     void analyze (const edm::Event& e, const edm::EventSetup& c) override;  // Analyze
 
-    void beginLuminosityBlock(edm::LuminosityBlock const& lumiBlock, edm::EventSetup const& c) override;
+    void dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumiBlock, edm::EventSetup const& c) override;
     void dqmEndLuminosityBlock  (edm::LuminosityBlock const& lumiBlock, edm::EventSetup const& c) override;
     void bookHistograms(DQMStore::IBooker &ibooker, const edm::Run&, const edm::EventSetup&) override;
     void dqmBeginRun(edm::Run const&, edm::EventSetup const&) override;

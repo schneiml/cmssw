@@ -35,7 +35,7 @@ class SUSY_HLT_InclusiveHT: public DQMEDAnalyzer{
   void dqmBeginRun(edm::Run const &, edm::EventSetup const &) override;
   void bookHistograms(DQMStore::IBooker &, edm::Run const &, edm::EventSetup const &) override;
   void analyze(edm::Event const& e, edm::EventSetup const& eSetup) override;
-  void beginLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& eSetup)  override;
+  void dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& eSetup)  override;
   void dqmEndLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& eSetup) override;
   void endRun(edm::Run const& run, edm::EventSetup const& eSetup) override;
 

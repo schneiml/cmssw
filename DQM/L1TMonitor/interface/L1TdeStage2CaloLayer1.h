@@ -34,7 +34,7 @@ class L1TdeStage2CaloLayer1 : public DQMEDAnalyzer {
     void analyze(const edm::Event& e, const edm::EventSetup& c) override;
     void bookHistograms(DQMStore::IBooker &ibooker, const edm::Run&, const edm::EventSetup&) override;
     void dqmBeginRun(const edm::Run&, const edm::EventSetup&) override;
-    void beginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) override;
+    void dqmBeginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) override;
     void dqmEndLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) override;
   
   private:

@@ -44,7 +44,7 @@ L1TStage2OMTF(const edm::ParameterSet & ps);
 // member functions
 protected:
   void analyze(const edm::Event&, const edm::EventSetup&) override;
-  void beginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) override;
+  void dqmBeginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) override;
   void dqmBeginRun(const edm::Run&, const edm::EventSetup&) override;
   void bookHistograms(DQMStore::IBooker&, const edm::Run&, const edm::EventSetup&) override ;
 

@@ -65,7 +65,7 @@ class LogMessageMonitor : public DQMEDAnalyzer {
 
   //      virtual void beginRun(edm::Run const&, edm::EventSetup const&);
       void endRun(edm::Run const&, edm::EventSetup const&) override;
-      void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+      void dqmBeginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
       void dqmEndLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
 
   void bookHistograms(DQMStore::IBooker &, edm::Run const &, edm::EventSetup const &) override;

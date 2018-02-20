@@ -57,7 +57,7 @@ public:
   void analyze(const edm::Event& event, const edm::EventSetup& setup) override;
 
   /// Summary
-  void beginLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& eSetup) override;
+  void dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& eSetup) override;
   void dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& eSetup) override;
 
 

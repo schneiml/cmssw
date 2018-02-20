@@ -54,7 +54,7 @@ protected:
 
   void dqmBeginRun(const edm::Run&, const edm::EventSetup&) override;
 
-  void beginLuminosityBlock(const edm::LuminosityBlock&  lumiSeg, const edm::EventSetup& context) override;
+  void dqmBeginLuminosityBlock(const edm::LuminosityBlock&  lumiSeg, const edm::EventSetup& context) override;
   void dqmEndLuminosityBlock(const edm::LuminosityBlock& lumiSeg, const edm::EventSetup& setup) override;
 
 

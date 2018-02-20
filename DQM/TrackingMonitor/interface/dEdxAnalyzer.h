@@ -46,7 +46,7 @@ class dEdxAnalyzer : public DQMEDAnalyzer {
   double mass(double P, double I);
   
   //  virtual void beginRun(const edm::Run&, const edm::EventSetup&); 
-  void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+  void dqmBeginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
   void dqmEndLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
 
   void bookHistograms(DQMStore::IBooker &, edm::Run const &, edm::EventSetup const &) override;

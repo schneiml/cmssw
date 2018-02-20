@@ -61,7 +61,7 @@ class L1TRate : public DQMEDAnalyzer {
     void bookHistograms(DQMStore::IBooker &ibooker, const edm::Run&, const edm::EventSetup&) override;
     //void endRun  (const edm::Run& run, const edm::EventSetup& iSetup);
 
-    void beginLuminosityBlock(edm::LuminosityBlock const& lumiBlock, edm::EventSetup const& c) override;
+    void dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumiBlock, edm::EventSetup const& c) override;
     void dqmEndLuminosityBlock  (edm::LuminosityBlock const& lumiBlock, edm::EventSetup const& c) override;
     void dqmBeginRun(edm::Run const&, edm::EventSetup const&) override;
 
