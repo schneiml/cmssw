@@ -359,8 +359,8 @@ void DQMProvInfo::analyzeProvInfo(const edm::Event& event) {
   }
 }
 
-void DQMProvInfo::endLuminosityBlock(const edm::LuminosityBlock& iLumi,
-                                     const edm::EventSetup& c) {
+void DQMProvInfo::dqmEndLuminosityBlock(const edm::LuminosityBlock& iLumi,
+                                        const edm::EventSetup& c) {
   int currentLSNumber = iLumi.id().luminosityBlock();
 
   // We assume that we encounter the LumiSections in chronological order

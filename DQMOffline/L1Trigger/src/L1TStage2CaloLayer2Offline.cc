@@ -80,7 +80,7 @@ void L1TStage2CaloLayer2Offline::dqmBeginRun(edm::Run const &iRun, edm::EventSet
   edm::LogInfo("L1TStage2CaloLayer2Offline")
       << "L1TStage2CaloLayer2Offline::beginRun" << std::endl;
   bool changed(true);
-  if (!hltConfig_.init(iRun, iSetup, triggerProcess_, changed)) {
+  if (not hltConfig_.init(iRun, iSetup, triggerProcess_, changed)) {
     edm::LogError("L1TStage2CaloLayer2Offline")
         << " HLT config extraction failure with process name "
         << triggerProcess_<< std::endl;
@@ -117,7 +117,7 @@ void L1TStage2CaloLayer2Offline::analyze(edm::Event const& e, edm::EventSetup co
 
   edm::Handle<edm::TriggerResults> triggerResultHandle;
   e.getByToken(triggerResultsInputTag_, triggerResultHandle);
-  if (!triggerResultHandle.isValid()) {
+  if (not triggerResultHandle.isValid()) {
     edm::LogWarning("L1TStage2CaloLayer2Offline") << "invalid edm::TriggerResults handle" << std::endl;
     return;
   }
@@ -125,7 +125,7 @@ void L1TStage2CaloLayer2Offline::analyze(edm::Event const& e, edm::EventSetup co
 
   edm::Handle<trigger::TriggerEvent> triggerEventHandle;
   e.getByToken(triggerInputTag_, triggerEventHandle);
-  if (!triggerEventHandle.isValid()) {
+  if (not triggerEventHandle.isValid()) {
     edm::LogWarning("L1TStage2CaloLayer2Offline") << "invalid trigger::TriggerEvent handle" << std::endl;
     return;
   }
@@ -133,7 +133,7 @@ void L1TStage2CaloLayer2Offline::analyze(edm::Event const& e, edm::EventSetup co
 
   edm::Handle<reco::VertexCollection> vertexHandle;
   e.getByToken(thePVCollection_, vertexHandle);
-  if (!vertexHandle.isValid()) {
+  if (not vertexHandle.isValid()) {
     edm::LogWarning("L1TStage2CaloLayer2Offline") << "invalid collection: vertex " << std::endl;
     return;
   }
@@ -142,7 +142,7 @@ void L1TStage2CaloLayer2Offline::analyze(edm::Event const& e, edm::EventSetup co
   dqmoffline::l1t::fillWithinLimits(h_nVertex_, nVertex);
 
   // L1T
-  if(!dqmoffline::l1t::passesAnyTriggerFromList(triggerIndices_, triggerResults_)){
+  if(not dqmoffline::l1t::passesAnyTriggerFromList(triggerIndices_, triggerResults_)){
     return;
   }
   fillEnergySums(e, nVertex);
@@ -163,19 +163,19 @@ void L1TStage2CaloLayer2Offline::fillEnergySums(edm::Event const& e, const unsig
   edm::Handle<reco::CaloMETCollection> caloETMHFs;
   e.getByToken(thecaloETMHFCollection_, caloETMHFs);
 
-  if (!caloJets.isValid()) {
+  if (not caloJets.isValid()) {
     edm::LogWarning("L1TStage2CaloLayer2Offline") << "invalid collection: calo jets " << std::endl;
     return;
   }
-  if (!caloMETs.isValid()) {
+  if (not caloMETs.isValid()) {
     edm::LogWarning("L1TStage2CaloLayer2Offline") << "invalid collection: Offline E_{T}^{miss} " << std::endl;
     return;
   }
-  if (!caloETMHFs.isValid()) {
+  if (not caloETMHFs.isValid()) {
     edm::LogWarning("L1TStage2CaloLayer2Offline") << "invalid collection: Offline E_{T}^{miss} (HF) " << std::endl;
     return;
   }
-  if (!l1EtSums.isValid()) {
+  if (not l1EtSums.isValid()) {
     edm::LogWarning("L1TStage2CaloLayer2Offline") << "invalid collection: L1 ET sums " << std::endl;
     return;
   }
@@ -332,11 +332,11 @@ void L1TStage2CaloLayer2Offline::fillJets(edm::Event const& e, const unsigned in
   edm::Handle<reco::CaloJetCollection> caloJets;
   e.getByToken(theCaloJetCollection_, caloJets);
 
-  if (!caloJets.isValid()) {
+  if (not caloJets.isValid()) {
     edm::LogWarning("L1TStage2CaloLayer2Offline") << "invalid collection: calo jets " << std::endl;
     return;
   }
-  if (!l1Jets.isValid()) {
+  if (not l1Jets.isValid()) {
     edm::LogWarning("L1TStage2CaloLayer2Offline") << "invalid collection: L1 jets " << std::endl;
     return;
   }
@@ -373,12 +373,12 @@ void L1TStage2CaloLayer2Offline::fillJets(edm::Event const& e, const unsigned in
   }
 //	}
 
-  if (!foundMatch) {
+  if (not foundMatch) {
     LogDebug("L1TStage2CaloLayer2Offline") << "Could not find a matching L1 Jet " << std::endl;
     return;
   }
 
-  if(!doesNotOverlapWithHLTObjects(closestL1Jet)){
+  if(not doesNotOverlapWithHLTObjects(closestL1Jet)){
     return;
   }
 
@@ -471,11 +471,11 @@ void L1TStage2CaloLayer2Offline::fillJets(edm::Event const& e, const unsigned in
 }
 
 //
-// -------------------------------------- endLuminosityBlock --------------------------------------------
+// -------------------------------------- dqmEndLuminosityBlock --------------------------------------------
 //
-void L1TStage2CaloLayer2Offline::endLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& eSetup)
+void L1TStage2CaloLayer2Offline::dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& eSetup)
 {
-  edm::LogInfo("L1TStage2CaloLayer2Offline") << "L1TStage2CaloLayer2Offline::endLuminosityBlock" << std::endl;
+  edm::LogInfo("L1TStage2CaloLayer2Offline") << "L1TStage2CaloLayer2Offline::dqmEndLuminosityBlock" << std::endl;
 }
 
 //

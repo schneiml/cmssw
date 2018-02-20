@@ -991,7 +991,7 @@ TPTask::TPTask(edm::ParameterSet const& ps):
 	DQTask::beginLuminosityBlock(lb, es);
 }
 
-/* virtual */ void TPTask::endLuminosityBlock(edm::LuminosityBlock const& lb,
+/* virtual */ void TPTask::dqmEndLuminosityBlock(edm::LuminosityBlock const& lb,
 	edm::EventSetup const& es)
 {
 	if (_ptype!=fOnline)
@@ -1078,7 +1078,7 @@ TPTask::TPTask(edm::ParameterSet const& ps):
 	_xEmulTotal.reset();
 	
 	//	in the end always do the DQTask::endLumi
-	DQTask::endLuminosityBlock(lb, es);
+	DQTask::dqmEndLuminosityBlock(lb, es);
 }
 
 DEFINE_FWK_MODULE(TPTask);

@@ -453,7 +453,7 @@ void TrackTypeMonitor::fillHistograms(const reco::Track& track, int indx) {
   double chbyndof = (ndof > 0) ? chi2/ndof : 0;
   trackChi2bynDOFHList_.at(indx)->Fill(chbyndof);  
 }
-void TrackTypeMonitor::endLuminosityBlock(edm::LuminosityBlock const& lumiBlock, edm::EventSetup const& eSetup){
+void TrackTypeMonitor::dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiBlock, edm::EventSetup const& eSetup){
 }
 // Define this as a plug-in
 #include "FWCore/Framework/interface/MakerMacros.h"

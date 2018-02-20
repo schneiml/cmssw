@@ -739,7 +739,7 @@ string DTDigiTask::topFolder() const {
 
 
 
-void DTDigiTask::endLuminosityBlock(const edm::LuminosityBlock& lumiSeg, const edm::EventSetup& setup) {
+void DTDigiTask::dqmEndLuminosityBlock(const edm::LuminosityBlock& lumiSeg, const edm::EventSetup& setup) {
 
 }
 

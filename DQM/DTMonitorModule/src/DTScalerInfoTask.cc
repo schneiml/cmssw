@@ -56,7 +56,7 @@ void DTScalerInfoTask::beginLuminosityBlock(const LuminosityBlock& lumiSeg, cons
 
   }
 
-void DTScalerInfoTask::endLuminosityBlock(const LuminosityBlock& lumiSeg, const EventSetup& context) {
+void DTScalerInfoTask::dqmEndLuminosityBlock(const LuminosityBlock& lumiSeg, const EventSetup& context) {
 
   LogTrace("DTDQM|DTMonitorModule|DTScalerInfoTask")
     << "[DTScalerInfoTask]: End of LS transition" << endl;

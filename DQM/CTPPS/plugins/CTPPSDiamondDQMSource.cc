@@ -46,7 +46,7 @@ class CTPPSDiamondDQMSource : public DQMEDAnalyzer
     void bookHistograms( DQMStore::IBooker&, const edm::Run&, const edm::EventSetup& ) override;
     void analyze( const edm::Event&, const edm::EventSetup& ) override;
     void beginLuminosityBlock( const edm::LuminosityBlock&, const edm::EventSetup& ) override;
-    void endLuminosityBlock( const edm::LuminosityBlock&, const edm::EventSetup& ) override;
+    void dqmEndLuminosityBlock( const edm::LuminosityBlock&, const edm::EventSetup& ) override;
     void endRun( const edm::Run&, const edm::EventSetup& ) override;
 
   private:
@@ -925,7 +925,7 @@ CTPPSDiamondDQMSource::analyze( const edm::Event& event, const edm::EventSetup& 
 //----------------------------------------------------------------------------------------------------
 
 void
-CTPPSDiamondDQMSource::endLuminosityBlock( const edm::LuminosityBlock&, const edm::EventSetup& ) 
+CTPPSDiamondDQMSource::dqmEndLuminosityBlock( const edm::LuminosityBlock&, const edm::EventSetup& ) 
 {
   for ( auto& plot : channelPlots_ ) {
     if ( plot.second.hitsCounterPerLumisection != 0 ) {

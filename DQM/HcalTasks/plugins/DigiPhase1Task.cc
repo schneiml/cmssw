@@ -656,10 +656,10 @@ DigiPhase1Task::DigiPhase1Task(edm::ParameterSet const& ps):
 	DQTask::beginLuminosityBlock(lb, es);
 }
 
-/* virtual */ void DigiPhase1Task::endLuminosityBlock(edm::LuminosityBlock const& lb,
+/* virtual */ void DigiPhase1Task::dqmEndLuminosityBlock(edm::LuminosityBlock const& lb,
 	edm::EventSetup const& es)
 {
-	DQTask::endLuminosityBlock(lb, es);
+	DQTask::dqmEndLuminosityBlock(lb, es);
 }
 
 DEFINE_FWK_MODULE(DigiPhase1Task);

@@ -148,7 +148,7 @@ void DTLocalTriggerBaseTask::beginLuminosityBlock(const LuminosityBlock& lumiSeg
 
 }
 
-void DTLocalTriggerBaseTask::endLuminosityBlock(const LuminosityBlock& lumiSeg, const EventSetup& context) {
+void DTLocalTriggerBaseTask::dqmEndLuminosityBlock(const LuminosityBlock& lumiSeg, const EventSetup& context) {
 
   LogTrace("DTDQM|DTMonitorModule|DTLocalTriggerBaseTask")
     << "[DTLocalTriggerBaseTask]: End of LS transition" << endl;

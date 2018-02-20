@@ -140,7 +140,7 @@ namespace hcaldqm
 			
 	}
 
-	/* virtual */ void DQTask::endLuminosityBlock(
+	/* virtual */ void DQTask::dqmEndLuminosityBlock(
 		edm::LuminosityBlock const& lb,
 		edm::EventSetup const& es)
 	{

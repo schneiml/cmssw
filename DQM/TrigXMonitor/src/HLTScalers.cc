@@ -299,7 +299,7 @@ void HLTScalers::analyze(const edm::Event& e, const edm::EventSetup& c) {
   if (anyGroupPassed) scalersPD_->Fill(pairPDPaths_.size() - 1);
 }
 
-void HLTScalers::endLuminosityBlock(const edm::LuminosityBlock& lumiSeg,
+void HLTScalers::dqmEndLuminosityBlock(const edm::LuminosityBlock& lumiSeg,
                                     const edm::EventSetup& c) {
   // put this in as a first-pass for figuring out the rate
   // each lumi block is 23 seconds in length

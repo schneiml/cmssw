@@ -736,7 +736,7 @@ void L1TGT::analyze(const edm::Event& iEvent, const edm::EventSetup& evSetup) {
 
 
 // end section
-void L1TGT::endLuminosityBlock(const edm::LuminosityBlock& iLumi,
+void L1TGT::dqmEndLuminosityBlock(const edm::LuminosityBlock& iLumi,
         const edm::EventSetup& evSetup) {
 
     if (m_runInEndLumi) {

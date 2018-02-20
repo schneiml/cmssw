@@ -36,7 +36,7 @@ class UMNioTask : public hcaldqm::DQTask
 					return;
 			}
 		}
-		void endLuminosityBlock(edm::LuminosityBlock const&,
+		void dqmEndLuminosityBlock(edm::LuminosityBlock const&,
 			edm::EventSetup const&) override;
 
 	protected:

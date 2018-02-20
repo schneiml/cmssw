@@ -122,9 +122,9 @@ void SUSY_HLT_Muon_BJet::analyze(edm::Event const& e, edm::EventSetup const& eSe
 }
 
 
-void SUSY_HLT_Muon_BJet::endLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& eSetup)
+void SUSY_HLT_Muon_BJet::dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& eSetup)
 {
-    edm::LogInfo("SUSY_HLT_Muon_BJet") << "SUSY_HLT_Muon_BJet::endLuminosityBlock" << std::endl;
+    edm::LogInfo("SUSY_HLT_Muon_BJet") << "SUSY_HLT_Muon_BJet::dqmEndLuminosityBlock" << std::endl;
 }
 
 

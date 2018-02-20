@@ -304,7 +304,7 @@ LogMessageMonitor::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventS
 
 // ------------ method called when ending the processing of a luminosity block  ------------
 void 
-LogMessageMonitor::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+LogMessageMonitor::dqmEndLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
 

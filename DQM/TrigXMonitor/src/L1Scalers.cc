@@ -380,7 +380,7 @@ void L1Scalers::analyze(const edm::Event& e, const edm::EventSetup& iSetup) {
   return;
 }
 
-void L1Scalers::endLuminosityBlock(const edm::LuminosityBlock& lumiSeg,
+void L1Scalers::dqmEndLuminosityBlock(const edm::LuminosityBlock& lumiSeg,
                                    const edm::EventSetup& iSetup) {
   nLumiBlock_->Fill(lumiSeg.id().luminosityBlock());
 }

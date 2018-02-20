@@ -215,10 +215,10 @@ void L1TRate_Offline::beginLuminosityBlock(LuminosityBlock const& lumiBlock, Eve
 }
 
 //_____________________________________________________________________
-void L1TRate_Offline::endLuminosityBlock(LuminosityBlock const& lumiBlock, EventSetup const& c) {
+void L1TRate_Offline::dqmEndLuminosityBlock(LuminosityBlock const& lumiBlock, EventSetup const& c) {
 
   int eventLS = lumiBlock.id().luminosityBlock();
-  if (m_verbose) {cout << "[L1TRate_Offline:] Called endLuminosityBlock at LS=" << eventLS << endl;}
+  if (m_verbose) {cout << "[L1TRate_Offline:] Called dqmEndLuminosityBlock at LS=" << eventLS << endl;}
 
   // We can certify LS -1 since we should have available:
   // gt rates: (current LS)-1

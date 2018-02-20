@@ -26,7 +26,7 @@ public:
 		      edm::EventSetup const &  iSetup ) override;
   void dqmBeginRun(const edm::Run& iRun, const edm::EventSetup& iSetup) override; 
   void analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) override;
-  void endLuminosityBlock(edm::LuminosityBlock const& lumiBlock, edm::EventSetup const& iSetup) override;
+  void dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiBlock, edm::EventSetup const& iSetup) override;
   
   
   struct DigiMEs{

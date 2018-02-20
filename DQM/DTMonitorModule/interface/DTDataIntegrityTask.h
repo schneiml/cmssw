@@ -65,7 +65,7 @@ public:
   bool eventHasErrors() const;
 
   void beginLuminosityBlock(const edm::LuminosityBlock& ls, const edm::EventSetup& es) override;
-  void endLuminosityBlock(const edm::LuminosityBlock& ls, const edm::EventSetup& es) override;
+  void dqmEndLuminosityBlock(const edm::LuminosityBlock& ls, const edm::EventSetup& es) override;
 
   void analyze(const edm::Event& e, const edm::EventSetup& c) override;
 

@@ -25,7 +25,7 @@ class ESIntegrityTask : public DQMEDAnalyzer {
       void analyze(const edm::Event& e, const edm::EventSetup& c) override;
 
       /// EndJob
-      void endJob(void);
+      void endJob(void) override;
 
       /// EndRun
       void endRun(const edm::Run & r, const edm::EventSetup & c) override;
@@ -34,7 +34,7 @@ class ESIntegrityTask : public DQMEDAnalyzer {
       void beginLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup & c) override;
 
       /// End Lumi
-      void endLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup & c) override;
+      void dqmEndLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup & c) override;
 
       /// Calculate Data Integrity Fraction
       void calculateDIFraction(void);

@@ -42,7 +42,7 @@ AlcaBeamMonitor::AlcaBeamMonitor( const ParameterSet& ps ) :
   numberOfValuesToSave_ (0)
 {
 
-  if (monitorName_ != "" ) monitorName_ = monitorName_+"/" ;
+  if (not monitorName_.empty() ) monitorName_ = monitorName_+"/" ;
 
   theBeamFitter_ = new BeamFitter(parameters_, consumesCollector() );
   theBeamFitter_->resetTrkVector();
@@ -68,10 +68,10 @@ AlcaBeamMonitor::AlcaBeamMonitor( const ParameterSet& ps ) :
   histoByCategoryNames_.insert( pair<string,string>("run",        "PrimaryVertex-BeamFit"));
   histoByCategoryNames_.insert( pair<string,string>("run",        "PrimaryVertex-Scalers"));
 
-  histoByCategoryNames_.insert( pair<string,string>("lumi",       "Lumibased BeamSpotFit"));  
+  histoByCategoryNames_.insert( pair<string,string>("lumi",       "Lumibased BeamSpotFit"));
   histoByCategoryNames_.insert( pair<string,string>("lumi",       "Lumibased PrimaryVertex"));
-  histoByCategoryNames_.insert( pair<string,string>("lumi",       "Lumibased DataBase"));     
-  histoByCategoryNames_.insert( pair<string,string>("lumi",       "Lumibased Scalers"));      
+  histoByCategoryNames_.insert( pair<string,string>("lumi",       "Lumibased DataBase"));
+  histoByCategoryNames_.insert( pair<string,string>("lumi",       "Lumibased Scalers"));
   histoByCategoryNames_.insert( pair<string,string>("lumi",       "Lumibased PrimaryVertex-DataBase fit"));
   histoByCategoryNames_.insert( pair<string,string>("lumi",       "Lumibased PrimaryVertex-Scalers fit"));
   histoByCategoryNames_.insert( pair<string,string>("validation", "Lumibased Scalers-DataBase fit"));
@@ -85,12 +85,12 @@ AlcaBeamMonitor::AlcaBeamMonitor( const ParameterSet& ps ) :
         histosMap_[*itV][itM->first][itM->second] = nullptr;
       }
       else{
-        positionsMap_[*itV][itM->first][itM->second] = 3*numberOfValuesToSave_;//value, error, ok 
+        positionsMap_[*itV][itM->first][itM->second] = 3*numberOfValuesToSave_;//value, error, ok
         ++numberOfValuesToSave_;
       }
     }
   }
-  
+
 //  beamSpotsMap_["BF"] = map<LuminosityBlockNumber_t,BeamSpot>();//For each lumi the beamfitter will have a result
 //  beamSpotsMap_["PV"] = map<LuminosityBlockNumber_t,BeamSpot>();//For each lumi the PVfitter will have a result
 //  beamSpotsMap_["DB"] = map<LuminosityBlockNumber_t,BeamSpot>();//For each lumi we take the values that are stored in the database, already collapsed then
@@ -106,7 +106,7 @@ AlcaBeamMonitor::~AlcaBeamMonitor() {
   if(theBeamFitter_ != nullptr){
     delete theBeamFitter_;
   }
-  
+
   if(thePVFitter_ != nullptr){
     delete thePVFitter_;
   }
@@ -122,12 +122,12 @@ void AlcaBeamMonitor::bookHistograms(DQMStore::IBooker & ibooker, edm::Run const
     for(map<string,MonitorElement*>::iterator itMM=itM->second["run"].begin(); itMM!=itM->second["run"].end(); itMM++){
       name = string("h") + itM->first + itMM->first;
       title = itM->first + "_{0} " + itMM->first;
-      if(itM->first == "x" || itM->first == "y"){
+      if(itM->first == "x" or itM->first == "y"){
         if(itMM->first == "Coordinate"){
           itMM->second = ibooker.book1D(name,title,1001,-0.2525,0.2525);
 	}
-	else if(itMM->first == "PrimaryVertex fit-DataBase" || itMM->first == "PrimaryVertex fit-BeamFit" || itMM->first == "PrimaryVertex fit-Scalers"
-	     || itMM->first == "PrimaryVertex-DataBase" || itMM->first == "PrimaryVertex-BeamFit" || itMM->first == "PrimaryVertex-Scalers"){
+	else if(itMM->first == "PrimaryVertex fit-DataBase" or itMM->first == "PrimaryVertex fit-BeamFit" or itMM->first == "PrimaryVertex fit-Scalers"
+	 or itMM->first == "PrimaryVertex-DataBase" or itMM->first == "PrimaryVertex-BeamFit" or itMM->first == "PrimaryVertex-Scalers"){
           itMM->second = ibooker.book1D(name,title,1001,-0.02525,0.02525);
 	}
 	else{
@@ -138,22 +138,22 @@ void AlcaBeamMonitor::bookHistograms(DQMStore::IBooker & ibooker, edm::Run const
         if(itMM->first == "Coordinate"){
           itMM->second = ibooker.book1D(name,title,101,-5.05,5.05);
 	}
-	else if(itMM->first == "PrimaryVertex fit-DataBase" || itMM->first == "PrimaryVertex fit-BeamFit" || itMM->first == "PrimaryVertex fit-Scalers"){
+	else if(itMM->first == "PrimaryVertex fit-DataBase" or itMM->first == "PrimaryVertex fit-BeamFit" or itMM->first == "PrimaryVertex fit-Scalers"){
           itMM->second = ibooker.book1D(name,title,101,-0.505,0.505);
 	}
-	else if(itMM->first == "PrimaryVertex-DataBase" || itMM->first == "PrimaryVertex-BeamFit" || itMM->first == "PrimaryVertex-Scalers"){
+	else if(itMM->first == "PrimaryVertex-DataBase" or itMM->first == "PrimaryVertex-BeamFit" or itMM->first == "PrimaryVertex-Scalers"){
           itMM->second = ibooker.book1D(name,title,1001,-5.005,5.005);
 	}
 	else{
 	  //assert(0);
 	}
       }
-      else if(itM->first == "sigmaX" || itM->first == "sigmaY"){
+      else if(itM->first == "sigmaX" or itM->first == "sigmaY"){
         if(itMM->first == "Coordinate"){
           itMM->second = ibooker.book1D(name,title,100,0,0.015);
 	}
-	else if(itMM->first == "PrimaryVertex fit-DataBase" || itMM->first == "PrimaryVertex fit-BeamFit" || itMM->first == "PrimaryVertex fit-Scalers"
-	     || itMM->first == "PrimaryVertex-DataBase" || itMM->first == "PrimaryVertex-BeamFit" || itMM->first == "PrimaryVertex-Scalers"){
+	else if(itMM->first == "PrimaryVertex fit-DataBase" or itMM->first == "PrimaryVertex fit-BeamFit" or itMM->first == "PrimaryVertex fit-Scalers"
+	 or itMM->first == "PrimaryVertex-DataBase" or itMM->first == "PrimaryVertex-BeamFit" or itMM->first == "PrimaryVertex-Scalers"){
           itMM->second = nullptr;
 	}
 	else{
@@ -164,8 +164,8 @@ void AlcaBeamMonitor::bookHistograms(DQMStore::IBooker & ibooker, edm::Run const
         if(itMM->first == "Coordinate"){
           itMM->second = ibooker.book1D(name,title,110,0,11);
 	}
-	else if(itMM->first == "PrimaryVertex fit-DataBase" || itMM->first == "PrimaryVertex fit-BeamFit" || itMM->first == "PrimaryVertex fit-Scalers"
-	     || itMM->first == "PrimaryVertex-DataBase" || itMM->first == "PrimaryVertex-BeamFit" || itMM->first == "PrimaryVertex-Scalers"){
+	else if(itMM->first == "PrimaryVertex fit-DataBase" or itMM->first == "PrimaryVertex fit-BeamFit" or itMM->first == "PrimaryVertex fit-Scalers"
+	 or itMM->first == "PrimaryVertex-DataBase" or itMM->first == "PrimaryVertex-BeamFit" or itMM->first == "PrimaryVertex-Scalers"){
           itMM->second = ibooker.book1D(name,title,101,-5.05,5.05);
 	}
 	else{
@@ -176,15 +176,15 @@ void AlcaBeamMonitor::bookHistograms(DQMStore::IBooker & ibooker, edm::Run const
         //assert(0);
       }
       if(itMM->second != nullptr){
-      	if(itMM->first == "Coordinate"){				
-      	  itMM->second->setAxisTitle(itM->first + "_{0} (cm)",1);  
+      	if(itMM->first == "Coordinate"){
+      	  itMM->second->setAxisTitle(itM->first + "_{0} (cm)",1);
       	}
-      	else if(itMM->first == "PrimaryVertex fit-DataBase" || itMM->first == "PrimaryVertex fit-BeamFit" || itMM->first == "PrimaryVertex fit-Scalers"
-	     || itMM->first == "PrimaryVertex-DataBase" || itMM->first == "PrimaryVertex-BeamFit" || itMM->first == "PrimaryVertex-Scalers"){
-      	  itMM->second->setAxisTitle(itMM->first + " " + itM->first + "_{0} (cm)",1);  
+      	else if(itMM->first == "PrimaryVertex fit-DataBase" or itMM->first == "PrimaryVertex fit-BeamFit" or itMM->first == "PrimaryVertex fit-Scalers"
+	 or itMM->first == "PrimaryVertex-DataBase" or itMM->first == "PrimaryVertex-BeamFit" or itMM->first == "PrimaryVertex-Scalers"){
+      	  itMM->second->setAxisTitle(itMM->first + " " + itM->first + "_{0} (cm)",1);
       	}
       	itMM->second->setAxisTitle("Entries",2);
-      }		
+      }
     }
   }
   ibooker.setCurrentFolder(monitorName_+"Service");
@@ -206,34 +206,34 @@ void AlcaBeamMonitor::bookHistograms(DQMStore::IBooker & ibooker, edm::Run const
 //----------------------------------------------------------------------------------------------------------------------
 void AlcaBeamMonitor::beginLuminosityBlock(const LuminosityBlock& iLumi, const EventSetup& iSetup) {
   // Always create a beamspot group for each lumi weather we have results or not! Each Beamspot will be of unknown type!
-  
+
   vertices_.clear();
   theValuesContainer_->Reset();
   beamSpotsMap_.clear();
-  
+
   //Read BeamSpot from DB
   ESHandle<BeamSpotObjects> bsDBHandle;
   try{
     iSetup.get<BeamSpotObjectsRcd>().get(bsDBHandle);
   }
-  catch( cms::Exception& exception ){				      
-    LogInfo("AlcaBeamMonitor") 
-      << exception.what(); 
-    return;	      
-  }				      
+  catch( cms::Exception& exception ){
+    LogInfo("AlcaBeamMonitor")
+      << exception.what();
+    return;
+  }
   if(bsDBHandle.isValid()) { // check the product
     const BeamSpotObjects *spotDB = bsDBHandle.product();
 
     // translate from BeamSpotObjects to reco::BeamSpot
     BeamSpot::Point apoint( spotDB->GetX(), spotDB->GetY(), spotDB->GetZ() );
-  
+
     BeamSpot::CovarianceMatrix matrix;
     for ( int i=0; i<7; ++i ) {
       for ( int j=0; j<7; ++j ) {
   	matrix(i,j) = spotDB->GetCovariance(i,j);
       }
     }
-  
+
     beamSpotsMap_["DB"] = BeamSpot( apoint,
   				    spotDB->GetSigmaZ(),
   				    spotDB->Getdxdz(),
@@ -257,30 +257,30 @@ void AlcaBeamMonitor::beginLuminosityBlock(const LuminosityBlock& iLumi, const E
     //  << *aSpot << std::endl;
   }
   else {
-    LogInfo("AlcaBeamMonitor") 
-      << "Database BeamSpot is not valid at lumi: " << iLumi.id().luminosityBlock(); 
+    LogInfo("AlcaBeamMonitor")
+      << "Database BeamSpot is not valid at lumi: " << iLumi.id().luminosityBlock();
   }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void AlcaBeamMonitor::analyze(const Event& iEvent, const EventSetup& iSetup ){
-  
-  //------ BeamFitter 
+
+  //------ BeamFitter
   theBeamFitter_->readEvent(iEvent);
-  //------ PVFitter 
+  //------ PVFitter
   thePVFitter_->readEvent(iEvent);
-  
+
   if(beamSpotsMap_.find("DB") != beamSpotsMap_.end()){
     //------ Tracks
     Handle<reco::TrackCollection> TrackCollection;
     iEvent.getByToken(trackLabel_, TrackCollection);
     const reco::TrackCollection *tracks = TrackCollection.product();
-    for ( reco::TrackCollection::const_iterator track = tracks->begin(); track != tracks->end(); ++track ) {    
+    for ( reco::TrackCollection::const_iterator track = tracks->begin(); track != tracks->end(); ++track ) {
       hD0Phi0_->Fill(track->phi(), -1*track->dxy());
       hDxyBS_->Fill(-1*track->dxy(beamSpotsMap_["DB"].position()));
     }
   }
-  
+
   //------ Primary Vertices
   Handle<VertexCollection > PVCollection;
   if (iEvent.getByToken(primaryVertexLabel_, PVCollection )) {
@@ -293,11 +293,11 @@ void AlcaBeamMonitor::analyze(const Event& iEvent, const EventSetup& iSetup ){
     try{
       iEvent.getByToken(scalerLabel_,recoBeamSpotHandle);
     }
-    catch( cms::Exception& exception ){ 			      
-      LogInfo("AlcaBeamMonitor") 
-      << exception.what(); 
-      return;	      
-    }				      
+    catch( cms::Exception& exception ){
+      LogInfo("AlcaBeamMonitor")
+      << exception.what();
+      return;
+    }
     beamSpotsMap_["SC"] = *recoBeamSpotHandle;
     if ( beamSpotsMap_["SC"].BeamWidthX() != 0 ) {
       beamSpotsMap_["SC"].setType( reco::BeamSpot::Tracker );
@@ -309,7 +309,7 @@ void AlcaBeamMonitor::analyze(const Event& iEvent, const EventSetup& iSetup ){
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void AlcaBeamMonitor::endLuminosityBlock(const LuminosityBlock& iLumi, const EventSetup& iSetup) {
+void AlcaBeamMonitor::dqmEndLuminosityBlock(const LuminosityBlock& iLumi, const EventSetup& iSetup) {
   if (theBeamFitter_->runPVandTrkFitter()) {
     beamSpotsMap_["BF"] = theBeamFitter_->getBeamSpot();
   }
@@ -359,23 +359,23 @@ void AlcaBeamMonitor::endLuminosityBlock(const LuminosityBlock& iLumi, const Eve
     }
     vertexResults.clear();
     for(vector<VertexCollection>::iterator itPV = vertices_.begin(); itPV != vertices_.end(); itPV++){
-      if(!itPV->empty()){
+      if(not itPV->empty()){
     	for(VertexCollection::const_iterator pv = itPV->begin(); pv != itPV->end(); pv++) {
-    	  if (pv->isFake() || pv->tracksSize()<10)  continue;
-    	  if(*itV == "x"){										      
-    	    vertexResults.push_back(pair<double,double>(pv->x(),pv->xError()));       
-    	  }													      
-    	  else if(*itV == "y"){ 									      
-    	    vertexResults.push_back(pair<double,double>(pv->y(),pv->yError()));       
-    	  }													      
-    	  else if(*itV == "z"){ 									      
-    	    vertexResults.push_back(pair<double,double>(pv->z(),pv->zError()));       
-    	  }													      
-    	  else if(*itV != "sigmaX" && *itV != "sigmaY" && *itV != "sigmaZ"){		      
-    	    LogInfo("AlcaBeamMonitor")  									      
+    	  if (pv->isFake() or pv->tracksSize()<10)  continue;
+    	  if(*itV == "x"){
+    	    vertexResults.push_back(pair<double,double>(pv->x(),pv->xError()));
+    	  }
+    	  else if(*itV == "y"){
+    	    vertexResults.push_back(pair<double,double>(pv->y(),pv->yError()));
+    	  }
+    	  else if(*itV == "z"){
+    	    vertexResults.push_back(pair<double,double>(pv->z(),pv->zError()));
+    	  }
+    	  else if(*itV != "sigmaX" and *itV != "sigmaY" and *itV != "sigmaZ"){
+    	    LogInfo("AlcaBeamMonitor")
     	      << "The histosMap_ has been built with the name " << *itV << " that I can't recognize!";
-    	    //assert(0);  											      
-    	  }													      
+    	    //assert(0);
+    	  }
     	}
       }
     }
@@ -388,10 +388,10 @@ void AlcaBeamMonitor::endLuminosityBlock(const LuminosityBlock& iLumi, const Eve
   histoByCategoryNames_.insert( pair<string,string>("run",        "PrimaryVertex-BeamFit"));
   histoByCategoryNames_.insert( pair<string,string>("run",        "PrimaryVertex-Scalers"));
 
-  histoByCategoryNames_.insert( pair<string,string>("lumi",       "Lumibased BeamSpotFit"));  
+  histoByCategoryNames_.insert( pair<string,string>("lumi",       "Lumibased BeamSpotFit"));
   histoByCategoryNames_.insert( pair<string,string>("lumi",       "Lumibased PrimaryVertex"));
-  histoByCategoryNames_.insert( pair<string,string>("lumi",       "Lumibased DataBase"));     
-  histoByCategoryNames_.insert( pair<string,string>("lumi",       "Lumibased Scalers"));      
+  histoByCategoryNames_.insert( pair<string,string>("lumi",       "Lumibased DataBase"));
+  histoByCategoryNames_.insert( pair<string,string>("lumi",       "Lumibased Scalers"));
   histoByCategoryNames_.insert( pair<string,string>("lumi",       "Lumibased PrimaryVertex-DataBase fit"));
   histoByCategoryNames_.insert( pair<string,string>("lumi",       "Lumibased PrimaryVertex-Scalers fit"));
   histoByCategoryNames_.insert( pair<string,string>("validation", "Lumibased Scalers-DataBase fit"));
@@ -399,7 +399,7 @@ void AlcaBeamMonitor::endLuminosityBlock(const LuminosityBlock& iLumi, const Eve
   histoByCategoryNames_.insert( pair<string,string>("validation", "Lumibased PrimaryVertex-Scalers"));
 */
     for(multimap<string,string>::iterator itM=histoByCategoryNames_.begin(); itM!=histoByCategoryNames_.end(); itM++){
-      if(itM->first == "run" && (histo = histosMap_[*itV][itM->first][itM->second]) == nullptr){
+      if(itM->first == "run" and (histo = histosMap_[*itV][itM->first][itM->second]) == nullptr){
         continue;
       }
       else if(itM->first != "run"){
@@ -411,36 +411,36 @@ void AlcaBeamMonitor::endLuminosityBlock(const LuminosityBlock& iLumi, const Eve
         }
       }
       else if(itM->second == "PrimaryVertex fit-DataBase"){
-        if(resultsMap.find("PV") != resultsMap.end() && resultsMap.find("DB") != resultsMap.end()){
+        if(resultsMap.find("PV") != resultsMap.end() and resultsMap.find("DB") != resultsMap.end()){
           histo->Fill(resultsMap["PV"].first-resultsMap["DB"].first);
         }
       }
       else if(itM->second == "PrimaryVertex fit-BeamFit"){
-        if(resultsMap.find("PV") != resultsMap.end() && resultsMap.find("BF") != resultsMap.end()){
+        if(resultsMap.find("PV") != resultsMap.end() and resultsMap.find("BF") != resultsMap.end()){
           histo->Fill(resultsMap["PV"].first-resultsMap["BF"].first);
         }
       }
       else if(itM->second == "PrimaryVertex fit-Scalers"){
-        if(resultsMap.find("PV") != resultsMap.end() && resultsMap.find("SC") != resultsMap.end()){
+        if(resultsMap.find("PV") != resultsMap.end() and resultsMap.find("SC") != resultsMap.end()){
           histo->Fill(resultsMap["PV"].first-resultsMap["SC"].first);
         }
       }
       else if(itM->second == "PrimaryVertex-DataBase"){
-        if(resultsMap.find("PV") != resultsMap.end() && resultsMap.find("DB") != resultsMap.end()){
+        if(resultsMap.find("PV") != resultsMap.end() and resultsMap.find("DB") != resultsMap.end()){
           for(vector<pair<double,double> >::iterator itPV=vertexResults.begin(); itPV!=vertexResults.end(); itPV++){
             histo->Fill(itPV->first-resultsMap["DB"].first);
           }
         }
       }
       else if(itM->second == "PrimaryVertex-BeamFit"){
-        if(resultsMap.find("PV") != resultsMap.end() && resultsMap.find("BF") != resultsMap.end()){
+        if(resultsMap.find("PV") != resultsMap.end() and resultsMap.find("BF") != resultsMap.end()){
           for(vector<pair<double,double> >::iterator itPV=vertexResults.begin(); itPV!=vertexResults.end(); itPV++){
             histo->Fill(itPV->first-resultsMap["BF"].first);
           }
         }
       }
       else if(itM->second == "PrimaryVertex-Scalers"){
-        if(resultsMap.find("PV") != resultsMap.end() && resultsMap.find("SC") != resultsMap.end()){
+        if(resultsMap.find("PV") != resultsMap.end() and resultsMap.find("SC") != resultsMap.end()){
           for(vector<pair<double,double> >::iterator itPV=vertexResults.begin(); itPV!=vertexResults.end(); itPV++){
             histo->Fill(itPV->first-resultsMap["SC"].first);
           }
@@ -463,40 +463,40 @@ void AlcaBeamMonitor::endLuminosityBlock(const LuminosityBlock& iLumi, const Eve
       else if(itM->second == "Lumibased DataBase"){
         if(resultsMap.find("DB") != resultsMap.end()){
           theValuesContainer_->Fill(position  ,resultsMap["DB"].first);//Value
-          theValuesContainer_->Fill(position+1,resultsMap["DB"].second);//Error		  
+          theValuesContainer_->Fill(position+1,resultsMap["DB"].second);//Error
           theValuesContainer_->Fill(position+2,1);//ok
         }
       }
       else if(itM->second == "Lumibased Scalers"){
         if(resultsMap.find("SC") != resultsMap.end()){
           theValuesContainer_->Fill(position  ,resultsMap["SC"].first);//Value
-          theValuesContainer_->Fill(position+1,resultsMap["SC"].second);//Error		  
+          theValuesContainer_->Fill(position+1,resultsMap["SC"].second);//Error
           theValuesContainer_->Fill(position+2,1);//ok
         }
       }
       else if(itM->second == "Lumibased PrimaryVertex-DataBase fit"){
-        if(resultsMap.find("PV") != resultsMap.end() && resultsMap.find("DB") != resultsMap.end()){
+        if(resultsMap.find("PV") != resultsMap.end() and resultsMap.find("DB") != resultsMap.end()){
           theValuesContainer_->Fill(position  ,resultsMap["PV"].first-resultsMap["DB"].first);//Value
-          theValuesContainer_->Fill(position+1,std::sqrt(std::pow(resultsMap["PV"].second,2)+std::pow(resultsMap["DB"].second,2)));//Error	  
+          theValuesContainer_->Fill(position+1,std::sqrt(std::pow(resultsMap["PV"].second,2)+std::pow(resultsMap["DB"].second,2)));//Error
           theValuesContainer_->Fill(position+2,1);//ok
         }
       }
       else if(itM->second == "Lumibased PrimaryVertex-Scalers fit"){
-        if(resultsMap.find("PV") != resultsMap.end() && resultsMap.find("SC") != resultsMap.end()){
+        if(resultsMap.find("PV") != resultsMap.end() and resultsMap.find("SC") != resultsMap.end()){
           theValuesContainer_->Fill(position  ,resultsMap["PV"].first-resultsMap["SC"].first);//Value
-          theValuesContainer_->Fill(position+1,std::sqrt(std::pow(resultsMap["PV"].second,2)+std::pow(resultsMap["SC"].second,2)));//Error	  
+          theValuesContainer_->Fill(position+1,std::sqrt(std::pow(resultsMap["PV"].second,2)+std::pow(resultsMap["SC"].second,2)));//Error
           theValuesContainer_->Fill(position+2,1);//ok
         }
       }
       else if(itM->second == "Lumibased Scalers-DataBase fit"){
-        if(resultsMap.find("SC") != resultsMap.end() && resultsMap.find("DB") != resultsMap.end()){
+        if(resultsMap.find("SC") != resultsMap.end() and resultsMap.find("DB") != resultsMap.end()){
           theValuesContainer_->Fill(position  ,resultsMap["SC"].first-resultsMap["DB"].first);//Value
-          theValuesContainer_->Fill(position+1,std::sqrt(std::pow(resultsMap["SC"].second,2)+std::pow(resultsMap["DB"].second,2)));//Error	  
+          theValuesContainer_->Fill(position+1,std::sqrt(std::pow(resultsMap["SC"].second,2)+std::pow(resultsMap["DB"].second,2)));//Error
           theValuesContainer_->Fill(position+2,1);//ok
         }
       }
       else if(itM->second == "Lumibased PrimaryVertex-DataBase"){
-        if(resultsMap.find("DB") != resultsMap.end() && !vertexResults.empty()){
+        if(resultsMap.find("DB") != resultsMap.end() and !vertexResults.empty()){
 	  for(vector<pair<double,double> >::iterator itPV=vertexResults.begin(); itPV!=vertexResults.end(); itPV++){
             theValuesContainer_->Fill(position  ,(*itPV).first-resultsMap["DB"].first);//Value
           }
@@ -508,15 +508,15 @@ void AlcaBeamMonitor::endLuminosityBlock(const LuminosityBlock& iLumi, const Eve
             }
 	    error = std::sqrt(error)/vertexResults.size();
 	  }
-//          theValuesContainer_->Fill(position+1,std::sqrt(std::pow((*itPV).second,2)+std::pow(resultsMap["DB"].second,2)));//Error	  
-          theValuesContainer_->Fill(position+1,error);//Error	  
+//          theValuesContainer_->Fill(position+1,std::sqrt(std::pow((*itPV).second,2)+std::pow(resultsMap["DB"].second,2)));//Error
+          theValuesContainer_->Fill(position+1,error);//Error
 */
-          theValuesContainer_->Fill(position+1,theValuesContainer_->getTProfile()->GetBinError(position+1));//Error	  
+          theValuesContainer_->Fill(position+1,theValuesContainer_->getTProfile()->GetBinError(position+1));//Error
           theValuesContainer_->Fill(position+2,1);//ok
         }
       }
       else if(itM->second == "Lumibased PrimaryVertex-Scalers"){
-        if(resultsMap.find("SC") != resultsMap.end() && !vertexResults.empty()){
+        if(resultsMap.find("SC") != resultsMap.end() and !vertexResults.empty()){
           for(vector<pair<double,double> >::iterator itPV=vertexResults.begin(); itPV!=vertexResults.end(); itPV++){
             theValuesContainer_->Fill(position  ,(*itPV).first-resultsMap["SC"].first);//Value
           }
@@ -528,15 +528,15 @@ void AlcaBeamMonitor::endLuminosityBlock(const LuminosityBlock& iLumi, const Eve
             }
 	    error = std::sqrt(error)/vertexResults.size();
 	  }
-//          theValuesContainer_->Fill(position+1,std::sqrt(std::pow((*itPV).second,2)+std::pow(resultsMap["SC"].second,2)));//Error	  
-          theValuesContainer_->Fill(position+1,error);//Error	  
+//          theValuesContainer_->Fill(position+1,std::sqrt(std::pow((*itPV).second,2)+std::pow(resultsMap["SC"].second,2)));//Error
+          theValuesContainer_->Fill(position+1,error);//Error
 */
-          theValuesContainer_->Fill(position+1,theValuesContainer_->getTProfile()->GetBinError(position+1));//Error	  
+          theValuesContainer_->Fill(position+1,theValuesContainer_->getTProfile()->GetBinError(position+1));//Error
           theValuesContainer_->Fill(position+2,1);//ok
         }
       }
 //      else if(itM->second == "Lumibased Scalers-DataBase"){
-//      if(resultsMap.find("SC") != resultsMap.end() && resultsMap.find("DB") != resultsMap.end()){
+//      if(resultsMap.find("SC") != resultsMap.end() and resultsMap.find("DB") != resultsMap.end()){
 //        itHHH->second->Fill(bin,resultsMap["SC"].first-resultsMap["DB"].first);
 //      }
 //    }

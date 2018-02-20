@@ -26,7 +26,7 @@ class ElectronDqmAnalyzerBase : public DQMEDAnalyzer
 
     // specific implementation of EDAnalyzer
     void endRun( edm::Run const &, edm::EventSetup const & )  override;
-    void endLuminosityBlock( edm::LuminosityBlock const &, edm::EventSetup const & ) override ;
+    void dqmEndLuminosityBlock( edm::LuminosityBlock const &, edm::EventSetup const & ) override ;
     void dqmBeginRun( edm::Run const & , edm::EventSetup const & )  override;
     void bookHistograms( DQMStore::IBooker &, edm::Run const &, edm::EventSetup const &) override;
 

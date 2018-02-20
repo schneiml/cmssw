@@ -178,7 +178,7 @@ void L1TdeStage2CaloLayer1::beginLuminosityBlock(const edm::LuminosityBlock&, co
   }
 }
 
-void L1TdeStage2CaloLayer1::endLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup&) {
+void L1TdeStage2CaloLayer1::dqmEndLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup&) {
   auto id = static_cast<double>(lumi.id().luminosityBlock()); // uint64_t
   // Simple way to embed current lumi to auto-scale axis limits in render plugin
   etMismatchByLumi_->getTH1F()->SetBinContent(0, id);

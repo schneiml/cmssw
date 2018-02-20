@@ -98,7 +98,7 @@ void ESIntegrityTask::beginLuminosityBlock(const edm::LuminosityBlock& lumi, con
   }
 }
 
-void ESIntegrityTask::endLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup & c){
+void ESIntegrityTask::dqmEndLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup & c){
   if (doLumiAnalysis_) calculateDIFraction();
 }
 

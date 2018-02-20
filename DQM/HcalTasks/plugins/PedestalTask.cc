@@ -829,14 +829,14 @@ PedestalTask::PedestalTask(edm::ParameterSet const& ps):
 		return;
 }
 
-/* virtual */ void PedestalTask::endLuminosityBlock(
+/* virtual */ void PedestalTask::dqmEndLuminosityBlock(
 	edm::LuminosityBlock const& lb, edm::EventSetup const& es)
 {
 	if (_ptype==fLocal)
 		return;
 	this->_dump();
 
-	DQTask::endLuminosityBlock(lb, es);
+	DQTask::dqmEndLuminosityBlock(lb, es);
 }
 
 /* virtual */ void PedestalTask::_process(edm::Event const& e,

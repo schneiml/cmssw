@@ -158,7 +158,7 @@ void DQMSourceEleCalib::analyze(const Event& iEvent,
 
 
 //--------------------------------------------------------
-void DQMSourceEleCalib::endLuminosityBlock(const LuminosityBlock& lumiSeg, 
+void DQMSourceEleCalib::dqmEndLuminosityBlock(const LuminosityBlock& lumiSeg, 
                                           const EventSetup& context) {
 }
 

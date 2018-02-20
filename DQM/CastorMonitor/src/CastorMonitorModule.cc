@@ -112,7 +112,7 @@ void CastorMonitorModule::bookHistograms(DQMStore::IBooker& ibooker,
 void CastorMonitorModule::beginLuminosityBlock(const edm::LuminosityBlock& lumiSeg, 
 					       const edm::EventSetup& context) { }
 
-void CastorMonitorModule::endLuminosityBlock(const edm::LuminosityBlock& lumiSeg, 
+void CastorMonitorModule::dqmEndLuminosityBlock(const edm::LuminosityBlock& lumiSeg, 
 					     const edm::EventSetup& context) {}
 
 void CastorMonitorModule::endRun(const edm::Run& r, const edm::EventSetup& context)

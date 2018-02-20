@@ -153,9 +153,9 @@ class DummyBookFillDQMStoreMultiThread :  public DQMEDAnalyzer {
 
   void endRun(edm::Run const&, edm::EventSetup const&) override;
   void beginLuminosityBlock(edm::LuminosityBlock const&,
-                                    edm::EventSetup const&) override;
-  void endLuminosityBlock(edm::LuminosityBlock const&,
-                                  edm::EventSetup const&) override;
+                            edm::EventSetup const&) override;
+  void dqmEndLuminosityBlock(edm::LuminosityBlock const&,
+                             edm::EventSetup const&) override;
 
   void bookHistograms(DQMStore::IBooker &, edm::Run const &, edm::EventSetup const &) override;
   void fillerDispose();
@@ -297,7 +297,7 @@ void DummyBookFillDQMStoreMultiThread::endRun(edm::Run const&, edm::EventSetup c
 // ------------ method called when starting to processes a luminosity block  ------------
 void
 DummyBookFillDQMStoreMultiThread::beginLuminosityBlock(edm::LuminosityBlock const&,
-                                            edm::EventSetup const&) {
+                                                       edm::EventSetup const&) {
   auto it = m_lumiFillers.begin();
   auto ite = m_lumiFillers.end();
   for (; it != ite; ++it)
@@ -306,8 +306,9 @@ DummyBookFillDQMStoreMultiThread::beginLuminosityBlock(edm::LuminosityBlock cons
 
 // ------------ method called when ending the processing of a luminosity block  ------------
 void
-DummyBookFillDQMStoreMultiThread::endLuminosityBlock(edm::LuminosityBlock const&,
-                                          edm::EventSetup const&) {
+DummyBookFillDQMStoreMultiThread::dqmEndLuminosityBlock(edm::LuminosityBlock const&,
+                                                        edm::EventSetup const&)
+{
   auto it = m_lumiFillers.begin();
   auto ite = m_lumiFillers.end();
   for (; it != ite; ++it)

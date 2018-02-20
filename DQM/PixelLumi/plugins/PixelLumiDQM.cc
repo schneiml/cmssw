@@ -458,7 +458,7 @@ PixelLumiDQM::beginLuminosityBlock(edm::LuminosityBlock const&lumiBlock,
 
 // ------------ Method called when ending the processing of a luminosity block.  ------------
 void
-PixelLumiDQM::endLuminosityBlock(edm::LuminosityBlock const& lumiBlock,
+PixelLumiDQM::dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiBlock,
          edm::EventSetup const&es)
 {
   

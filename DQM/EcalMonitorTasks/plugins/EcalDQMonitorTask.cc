@@ -140,7 +140,7 @@ EcalDQMonitorTask::beginLuminosityBlock(edm::LuminosityBlock const& _lumi, edm::
 }
 
 void
-EcalDQMonitorTask::endLuminosityBlock(edm::LuminosityBlock const& _lumi, edm::EventSetup const& _es)
+EcalDQMonitorTask::dqmEndLuminosityBlock(edm::LuminosityBlock const& _lumi, edm::EventSetup const& _es)
 {
   ecaldqmEndLuminosityBlock(_lumi, _es);
   

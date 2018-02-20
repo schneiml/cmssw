@@ -313,12 +313,12 @@ void L1TSync::beginLuminosityBlock(LuminosityBlock const& lumiBlock, EventSetup 
 }
 
 //_____________________________________________________________________
-// Function: endLuminosityBlock
+// Function: dqmEndLuminosityBlock
 // * Fills LS by LS ration of trigger out of sync
 //_____________________________________________________________________
-void L1TSync::endLuminosityBlock(LuminosityBlock const& lumiBlock, EventSetup const& c) {
+void L1TSync::dqmEndLuminosityBlock(LuminosityBlock const& lumiBlock, EventSetup const& c) {
 
-  if(m_verbose){cout << "[L1TSync] Called endLuminosityBlock." << endl;}
+  if(m_verbose){cout << "[L1TSync] Called dqmEndLuminosityBlock." << endl;}
 
   if(m_verbose){
     cout << "[L1TSync] m_currentLSValid      : " << m_currentLSValid       << endl;

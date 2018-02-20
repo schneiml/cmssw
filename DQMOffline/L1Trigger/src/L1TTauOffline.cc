@@ -299,11 +299,11 @@ void L1TTauOffline::analyze(edm::Event const& e, edm::EventSetup const& eSetup)
 }
 
 //
-// -------------------------------------- endLuminosityBlock --------------------------------------------
+// -------------------------------------- dqmEndLuminosityBlock --------------------------------------------
 //
-void L1TTauOffline::endLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& eSetup)
+void L1TTauOffline::dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& eSetup)
 {
-  edm::LogInfo("L1TTauOffline") << "L1TTauOffline::endLuminosityBlock" << std::endl;
+  edm::LogInfo("L1TTauOffline") << "L1TTauOffline::dqmEndLuminosityBlock" << std::endl;
 }
 
 //
