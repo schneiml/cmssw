@@ -125,7 +125,7 @@ class QcdLowPtDQM : public DQMEDAnalyzer {
   void analyze(const edm::Event &iEvent, const edm::EventSetup &iSetup) override;
   void dqmEndLuminosityBlock(const edm::LuminosityBlock &l,
                           const edm::EventSetup &iSetup) override;
-  void endRun(const edm::Run &r, const edm::EventSetup &iSetup) override;
+  void dqmEndRun(const edm::Run &r, const edm::EventSetup &iSetup) override;
 
  private:
   void book1D(DQMStore::IBooker &, std::vector<MonitorElement *> &mes, const std::string &name,

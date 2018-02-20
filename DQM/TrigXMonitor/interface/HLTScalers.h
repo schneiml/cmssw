@@ -77,7 +77,7 @@ class HLTScalers : public DQMEDAnalyzer {
   /// DQM Client Diagnostic should be performed here:
   void dqmEndLuminosityBlock(const edm::LuminosityBlock &lumiSeg,
                           const edm::EventSetup &c) override;
-  void endRun(const edm::Run &run, const edm::EventSetup &c) override;
+  void dqmEndRun(const edm::Run &run, const edm::EventSetup &c) override;
 
  private:
   HLTConfigProvider hltConfig_;

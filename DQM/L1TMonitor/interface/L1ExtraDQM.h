@@ -171,7 +171,7 @@ protected:
     void dqmBeginRun(const edm::Run&, const edm::EventSetup&) override;
     void dqmBeginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) override;
     void analyze(const edm::Event&, const edm::EventSetup&) override;
-    void endRun(const edm::Run& run, const edm::EventSetup& evSetup) override;
+    void dqmEndRun(const edm::Run& run, const edm::EventSetup& evSetup) override;
 
 private:
 

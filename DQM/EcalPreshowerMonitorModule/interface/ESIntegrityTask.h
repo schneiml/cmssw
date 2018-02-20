@@ -28,7 +28,7 @@ class ESIntegrityTask : public DQMEDAnalyzer {
       void endJob(void) override;
 
       /// EndRun
-      void endRun(const edm::Run & r, const edm::EventSetup & c) override;
+      void dqmEndRun(const edm::Run & r, const edm::EventSetup & c) override;
 
       /// Begin Lumi
       void dqmBeginLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup & c) override;

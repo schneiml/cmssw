@@ -44,7 +44,7 @@ protected:
     void analyze(edm::Event const& e, edm::EventSetup const& eSetup) override;
     void dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& eSetup) override ;
     void dqmEndLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& eSetup) override;
-    void endRun(edm::Run const& run, edm::EventSetup const& eSetup) override;
+    void dqmEndRun(edm::Run const& run, edm::EventSetup const& eSetup) override;
     
 private:
     //histos booking function

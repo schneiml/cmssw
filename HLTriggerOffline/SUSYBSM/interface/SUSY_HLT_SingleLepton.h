@@ -59,7 +59,7 @@ protected:
   void dqmBeginLuminosityBlock(const edm::LuminosityBlock &lumi, const edm::EventSetup &eSetup)  override;
   void analyze(const edm::Event &e, const edm::EventSetup &eSetup) override;
   void dqmEndLuminosityBlock(const edm::LuminosityBlock &lumi, const edm::EventSetup &eSetup) override;
-  void endRun(const edm::Run &run, const edm::EventSetup &eSetup) override;
+  void dqmEndRun(const edm::Run &run, const edm::EventSetup &eSetup) override;
 
 private:
   //variables from config file

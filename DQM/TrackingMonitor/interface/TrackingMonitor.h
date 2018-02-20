@@ -74,7 +74,7 @@ class TrackingMonitor : public DQMEDAnalyzer
         void analyze(const edm::Event&, const edm::EventSetup&) override;
 	void bookHistograms(DQMStore::IBooker &, edm::Run const &, edm::EventSetup const &) override;
 	//        virtual void beginRun(const edm::Run&, const edm::EventSetup&); 
-        void endRun(const edm::Run&, const edm::EventSetup&) override;
+        void dqmEndRun(const edm::Run&, const edm::EventSetup&) override;
 
     private:
         void doProfileX(TH2 * th2, MonitorElement* me);

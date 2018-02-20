@@ -35,7 +35,7 @@ protected:
     edm::Run const &, edm::EventSetup const &) override;
   void dqmBeginRun(const edm::Run&, const edm::EventSetup&) override;
   void analyze(const edm::Event&, const edm::EventSetup&) override;
-  void endRun(const edm::Run&, const edm::EventSetup&) override;
+  void dqmEndRun(const edm::Run&, const edm::EventSetup&) override;
 
   double calcDeltaPhi(double phi1, double phi2);
 

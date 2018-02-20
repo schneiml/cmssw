@@ -102,7 +102,7 @@ protected:
   void analyze(edm::Event const& e, edm::EventSetup const& eSetup) override;
   void dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& eSetup) override;
   void dqmEndLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& eSetup) override;
-  void endRun(edm::Run const& run, edm::EventSetup const& eSetup) override;
+  void dqmEndRun(edm::Run const& run, edm::EventSetup const& eSetup) override;
 
   const reco::Vertex getPrimaryVertex( edm::Handle<reco::VertexCollection> const& vertex, edm::Handle<reco::BeamSpot> const& beamSpot );
   bool matchHlt(edm::Handle<trigger::TriggerEvent> const& triggerEvent, const reco::Muon * muon);

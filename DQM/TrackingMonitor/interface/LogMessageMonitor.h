@@ -64,7 +64,7 @@ class LogMessageMonitor : public DQMEDAnalyzer {
       void endJob() override ;
 
   //      virtual void beginRun(edm::Run const&, edm::EventSetup const&);
-      void endRun(edm::Run const&, edm::EventSetup const&) override;
+      void dqmEndRun(edm::Run const&, edm::EventSetup const&) override;
       void dqmBeginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
       void dqmEndLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
 

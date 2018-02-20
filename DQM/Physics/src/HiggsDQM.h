@@ -56,7 +56,7 @@ class HiggsDQM : public DQMEDAnalyzer {
                             edm::EventSetup const& context) override;
   void dqmEndLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
                           edm::EventSetup const& c) override;
-  void endRun(edm::Run const& run, edm::EventSetup const& eSetup) override;
+  void dqmEndRun(edm::Run const& run, edm::EventSetup const& eSetup) override;
 
  private:
   double Distance(const reco::Candidate& c1, const reco::Candidate& c2);
