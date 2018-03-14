@@ -1,7 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-from DQMServices.Core.DQMEDAnalyzer import DQMEDAnalyzer
-OuterTrackerMonitorTTCluster = DQMEDAnalyzer('OuterTrackerMonitorTTCluster',
+OuterTrackerMonitorTTCluster = cms.EDAnalyzer('OuterTrackerMonitorTTCluster',
 
     TopFolderName = cms.string('Phase2OuterTracker'),
     TTClusters    = cms.InputTag("TTClustersFromPhase2TrackerDigis", "ClusterInclusive"),

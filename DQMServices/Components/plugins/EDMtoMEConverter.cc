@@ -10,7 +10,6 @@
 #include "DQMServices/Components/plugins/EDMtoMEConverter.h"
 
 #include "FWCore/Framework/interface/ConsumesCollector.h"
-#include "DataFormats/Histograms/interface/DQMToken.h"
 
 using namespace lat;
 
@@ -62,56 +61,56 @@ namespace {
   template <typename T> struct HistoTraits;
   template <> struct HistoTraits<TH1F> {
     static TH1F *get(MonitorElement *me) { return me->getTH1F(); }
-    template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
-      return iBooker.book1D(std::forward<Args>(args)...);
+    template <typename ...Args> static MonitorElement *book(DQMStore *dbe, Args&&... args) {
+      return dbe->book1D(std::forward<Args>(args)...);
     }
   };
   template <> struct HistoTraits<TH1S> {
     static TH1S *get(MonitorElement *me) { return me->getTH1S(); }
-    template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
-      return iBooker.book1S(std::forward<Args>(args)...);
+    template <typename ...Args> static MonitorElement *book(DQMStore *dbe, Args&&... args) {
+      return dbe->book1S(std::forward<Args>(args)...);
     }
   };
   template <> struct HistoTraits<TH1D> {
     static TH1D *get(MonitorElement *me) { return me->getTH1D(); }
-    template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
-      return iBooker.book1DD(std::forward<Args>(args)...);
+    template <typename ...Args> static MonitorElement *book(DQMStore *dbe, Args&&... args) {
+      return dbe->book1DD(std::forward<Args>(args)...);
     }
   };
   template <> struct HistoTraits<TH2F> {
     static TH2F *get(MonitorElement *me) { return me->getTH2F(); }
-    template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
-      return iBooker.book2D(std::forward<Args>(args)...);
+    template <typename ...Args> static MonitorElement *book(DQMStore *dbe, Args&&... args) {
+      return dbe->book2D(std::forward<Args>(args)...);
     }
   };
   template <> struct HistoTraits<TH2S> {
     static TH2S *get(MonitorElement *me) { return me->getTH2S(); }
-    template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
-      return iBooker.book2S(std::forward<Args>(args)...);
+    template <typename ...Args> static MonitorElement *book(DQMStore *dbe, Args&&... args) {
+      return dbe->book2S(std::forward<Args>(args)...);
     }
   };
   template <> struct HistoTraits<TH2D> {
     static TH2D *get(MonitorElement *me) { return me->getTH2D(); }
-    template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
-      return iBooker.book2DD(std::forward<Args>(args)...);
+    template <typename ...Args> static MonitorElement *book(DQMStore *dbe, Args&&... args) {
+      return dbe->book2DD(std::forward<Args>(args)...);
     }
   };
   template <> struct HistoTraits<TH3F> {
     static TH3F *get(MonitorElement *me) { return me->getTH3F(); }
-    template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
-      return iBooker.book3D(std::forward<Args>(args)...);
+    template <typename ...Args> static MonitorElement *book(DQMStore *dbe, Args&&... args) {
+      return dbe->book3D(std::forward<Args>(args)...);
     }
   };
   template <> struct HistoTraits<TProfile>{
     static TProfile *get(MonitorElement *me) { return me->getTProfile(); }
-    template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
-      return iBooker.bookProfile(std::forward<Args>(args)...);
+    template <typename ...Args> static MonitorElement *book(DQMStore *dbe, Args&&... args) {
+      return dbe->bookProfile(std::forward<Args>(args)...);
     }
   };
   template <> struct HistoTraits<TProfile2D> {
     static TProfile2D *get(MonitorElement *me) { return me->getTProfile2D(); }
-    template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
-      return iBooker.bookProfile2D(std::forward<Args>(args)...);
+    template <typename ...Args> static MonitorElement *book(DQMStore *dbe, Args&&... args) {
+      return dbe->bookProfile2D(std::forward<Args>(args)...);
     }
   };
   
@@ -120,9 +119,8 @@ namespace {
   struct AddMonitorElement {
     template <typename MEtoEDMObject_object, typename RunOrLumi>
     static
-    MonitorElement *call(DQMStore::IBooker &iBooker, DQMStore::IGetter &iGetter, MEtoEDMObject_object *metoedmobject, const std::string& dir, const std::string& name, const RunOrLumi& runOrLumi) {
-      MonitorElement *me = iGetter.get(dir+"/"+metoedmobject->GetName());
-
+    MonitorElement *call(DQMStore *dbe, MEtoEDMObject_object *metoedmobject, const std::string& dir, const std::string& name, const RunOrLumi& runOrLumi) {
+      MonitorElement *me = dbe->get(dir+"/"+metoedmobject->GetName());
       if(me) {
         auto histo = HistoTraits<T>::get(me);
         if(histo && me->getTH1()->CanExtendAllAxes()) {
@@ -135,8 +133,8 @@ namespace {
         }
       }
 
-      iBooker.setCurrentFolder(dir);
-      return HistoTraits<T>::book(iBooker, metoedmobject->GetName(), metoedmobject);
+      dbe->setCurrentFolder(dir);
+      return HistoTraits<T>::book(dbe, metoedmobject->GetName(), metoedmobject);
     }
   };
 
@@ -144,9 +142,9 @@ namespace {
   struct AddMonitorElement<double> {
     template <typename MEtoEDMObject_object, typename RunOrLumi>
     static
-    MonitorElement *call(DQMStore::IBooker &iBooker, DQMStore::IGetter &iGetter, MEtoEDMObject_object *metoedmobject, const std::string& dir, const std::string& name, const RunOrLumi& runOrLumi) {
-      iBooker.setCurrentFolder(dir);
-      MonitorElement *me = iBooker.bookFloat(name);
+    MonitorElement *call(DQMStore *dbe, MEtoEDMObject_object *metoedmobject, const std::string& dir, const std::string& name, const RunOrLumi& runOrLumi) {
+      dbe->setCurrentFolder(dir);
+      MonitorElement *me = dbe->bookFloat(name);
       me->Fill(*metoedmobject);
       return me;
     }
@@ -157,19 +155,18 @@ namespace {
   struct AddMonitorElementForIntegers {
     template <typename MEtoEDMObject_object, typename RunOrLumi>
     static
-    MonitorElement *call(DQMStore::IBooker &iBooker, DQMStore::IGetter &iGetter, MEtoEDMObject_object *metoedmobject, const std::string& dir, const std::string& name, const RunOrLumi& runOrLumi) {
-      iBooker.setCurrentFolder(dir);
-      iGetter.setCurrentFolder(dir);
-      T ival = getProcessedEvents(iGetter, dir, name, runOrLumi);
-      MonitorElement *me = iBooker.bookInt(name);
+    MonitorElement *call(DQMStore *dbe, MEtoEDMObject_object *metoedmobject, const std::string& dir, const std::string& name, const RunOrLumi& runOrLumi) {
+      dbe->setCurrentFolder(dir);
+      T ival = getProcessedEvents(dbe, dir, name, runOrLumi);
+      MonitorElement *me = dbe->bookInt(name);
       me->Fill(*metoedmobject + ival);
       return me;
     }
 
     static
-    T getProcessedEvents(DQMStore::IGetter &iGetter, const std::string& dir, const std::string& name, const edm::Run&) {
+    T getProcessedEvents(const DQMStore *dbe, const std::string& dir, const std::string& name, const edm::Run&) {
       if(name.find("processedEvents") != std::string::npos) {
-        if(const MonitorElement *me = iGetter.get(dir+"/"+name)) {
+        if(const MonitorElement *me = dbe->get(dir+"/"+name)) {
           return me->getIntValue();
         }
       }
@@ -177,7 +174,7 @@ namespace {
     }
 
     static
-    T getProcessedEvents(DQMStore::IGetter &iGetter, const std::string& dir, const std::string& name, const edm::LuminosityBlock&) {
+    T getProcessedEvents(const DQMStore *dbe, const std::string& dir, const std::string& name, const edm::LuminosityBlock&) {
       return 0;
     }
   };
@@ -203,10 +200,10 @@ namespace {
   struct AddMonitorElement<TString> {
     template <typename MEtoEDMObject_object, typename RunOrLumi>
     static
-    MonitorElement *call(DQMStore::IBooker &iBooker, DQMStore::IGetter &iGetter, MEtoEDMObject_object *metoedmobject, const std::string& dir, const std::string& name, const RunOrLumi& runOrLumi) {
-      iBooker.setCurrentFolder(dir);
+    MonitorElement *call(DQMStore *dbe, MEtoEDMObject_object *metoedmobject, const std::string& dir, const std::string& name, const RunOrLumi& runOrLumi) {
+      dbe->setCurrentFolder(dir);
       std::string scont = metoedmobject->Data();
-      return iBooker.bookString(name, scont);
+      return dbe->bookString(name, scont);
     }
   };
 
@@ -243,6 +240,10 @@ EDMtoMEConverter::EDMtoMEConverter(const edm::ParameterSet & iPSet) :
   // 0 is none, 1 is basic, 2 is fill output, 3 is gather output
   verbosity %= 10;
 
+  // get dqm info
+  dbe = nullptr;
+  dbe = edm::Service<DQMStore>().operator->();
+
   // print out Parameter Set information being used
   if (verbosity >= 0) {
     edm::LogInfo(MsgLoggerCat)
@@ -254,44 +255,80 @@ EDMtoMEConverter::EDMtoMEConverter(const edm::ParameterSet & iPSet) :
       << "===============================\n";
   }
 
-  assert(sizeof(int64_t) == sizeof(long long));
-  usesResource("DQMStore");
+  iCountf = 0;
+  iCount.clear();
 
-  dqmLumiToken_ = produces<DQMToken,edm::Transition::EndLuminosityBlock>("endLumi");
-  dqmRunToken_ = produces<DQMToken,edm::Transition::EndRun>("endRun");
+  assert(sizeof(int64_t) == sizeof(long long));
+
 } // end constructor
 
 EDMtoMEConverter::~EDMtoMEConverter() = default;
 
-void EDMtoMEConverter::endRunProduce(edm::Run& iRun, edm::EventSetup const& iSetup) 
+void EDMtoMEConverter::beginJob()
+{
+}
+
+void EDMtoMEConverter::endJob()
+{
+  constexpr char MsgLoggerCat[] = "EDMtoMEConverter_endJob";
+  if (verbosity >= 0)
+    edm::LogInfo(MsgLoggerCat)
+      << "Terminating having processed " << iCount.size() << " runs across "
+      << iCountf << " files.";
+  return;
+}
+
+void EDMtoMEConverter::respondToOpenInputFile(const edm::FileBlock& iFb)
+{
+  ++iCountf;
+  return;
+}
+
+void EDMtoMEConverter::beginRun(const edm::Run& iRun, const edm::EventSetup& iSetup)
+{
+  constexpr char MsgLoggerCat[] = "EDMtoMEConverter_beginRun";
+
+  int nrun = iRun.run();
+
+  // keep track of number of unique runs processed
+  ++iCount[nrun];
+
+  if (verbosity > 0) {
+    edm::LogInfo(MsgLoggerCat)
+      << "Processing run " << nrun << " (" << iCount.size() << " runs total)";
+  } else if (verbosity == 0) {
+    if (nrun%frequency == 0 || iCount.size() == 1) {
+      edm::LogInfo(MsgLoggerCat)
+        << "Processing run " << nrun << " (" << iCount.size() << " runs total)";
+    }
+  }
+}
+
+void EDMtoMEConverter::endRun(const edm::Run& iRun, const edm::EventSetup& iSetup)
 {
   if (convertOnEndRun) {
-    DQMStore * store = edm::Service<DQMStore>().operator->();
-    store->meBookerGetter([&](DQMStore::IBooker &b, DQMStore::IGetter &g) {
-      getData(b, g, iRun);
-    });
+    getData(iRun);
   }
-
-
-  iRun.put(dqmRunToken_, std::make_unique<DQMToken>());
 }
 
-void EDMtoMEConverter::endLuminosityBlockProduce(edm::LuminosityBlock& iLumi, edm::EventSetup const& iSetup)
+void EDMtoMEConverter::beginLuminosityBlock(const edm::LuminosityBlock& iLumi, const edm::EventSetup& iSetup)
+{
+}
+
+void EDMtoMEConverter::endLuminosityBlock(const edm::LuminosityBlock& iLumi, const edm::EventSetup& iSetup)
 {
   if (convertOnEndLumi) {
-    DQMStore * store = edm::Service<DQMStore>().operator->();
-    store->meBookerGetter([&](DQMStore::IBooker &b, DQMStore::IGetter &g) {
-      getData(b, g, iLumi);
-    });
+    getData(iLumi);
   }
-
-  iLumi.put(dqmLumiToken_, std::make_unique<DQMToken>());
 }
 
+void EDMtoMEConverter::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+{
+}
 
 template <class T>
 void
-EDMtoMEConverter::getData(DQMStore::IBooker &iBooker, DQMStore::IGetter &iGetter, T& iGetFrom)
+EDMtoMEConverter::getData(T& iGetFrom)
 {
   constexpr char MsgLoggerCat[] = "EDMtoMEConverter_getData";
 
@@ -330,14 +367,23 @@ EDMtoMEConverter::getData(DQMStore::IBooker &iBooker, DQMStore::IGetter &iGetter
         }
 
         // define new monitor element
-        MonitorElement *me = AddMonitorElement<METype>::call(iBooker, iGetter, &metoedmobject[i].object, dir, name, iGetFrom);
+        MonitorElement *me = AddMonitorElement<METype>::call(dbe, &metoedmobject[i].object, dir, name, iGetFrom);
         maybeSetLumiFlag(me, iGetFrom);
 
         // attach taglist
         for(const auto& tag: metoedmobject[i].tags) {
-          iBooker.tag(me, tag);
+          dbe->tag(me->getFullname(), tag);
         }
       } // end loop thorugh metoedmobject
     });
+
+  // verify tags stored properly
+  if (verbosity > 0) {
+    std::vector<std::string> stags;
+    dbe->getAllTags(stags);
+    for (auto const & stag : stags) {
+      std::cout << "Tags: " << stag << std::endl;
+    }
+  }
 }
 

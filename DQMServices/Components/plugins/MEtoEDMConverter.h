@@ -51,10 +51,8 @@
 #include "TObjString.h"
 
 class MEtoEDMConverter : public edm::one::EDProducer<edm::one::WatchRuns,
-                                                     edm::one::WatchLuminosityBlocks,
                                                      edm::EndLuminosityBlockProducer,
-                                                     edm::EndRunProducer,
-                                                     edm::one::SharedResources>
+                                                     edm::EndRunProducer>
 {
 public:
   explicit MEtoEDMConverter(const edm::ParameterSet&);
@@ -66,11 +64,9 @@ public:
   void endRun(edm::Run const&, const edm::EventSetup&) override;
   void endRunProduce(edm::Run&, const edm::EventSetup&) override;
   void endLuminosityBlockProduce(edm::LuminosityBlock&, const edm::EventSetup&) override;
-  void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override {};
-  void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override {};
 
   template <class T>
-  void putData(DQMStore::IGetter &g, T& iPutTo, bool iLumiOnly, uint32_t run, uint32_t lumi);
+      void putData(T& iPutTo, bool iLumiOnly, uint32_t run, uint32_t lumi);
 
   using TagList = std::vector<uint32_t>;
 
@@ -81,6 +77,8 @@ private:
   bool deleteAfterCopy;
   bool enableMultiThread_;
   std::string path;
+
+  DQMStore* dbe;
 
   // private statistics information
   std::map<int,int> iCount;
