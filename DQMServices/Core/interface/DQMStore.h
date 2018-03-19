@@ -94,6 +94,7 @@ class DQMStore
   {
    public:
     friend class DQMStore;
+    IBooker* operator &() = delete;
 
     // for the supported syntaxes, see the declarations of DQMStore::bookString
     template <typename... Args>
@@ -299,6 +300,7 @@ class DQMStore
   {
    public:
     friend class DQMStore;
+    IGetter* operator &() = delete;
 
     // for the supported syntaxes, see the declarations of DQMStore::getContents
     template <typename... Args>
