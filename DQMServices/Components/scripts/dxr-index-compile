@@ -1,0 +1,2 @@
+clang++ sha1.cpp dxr-index.cpp -o dxr-index.so --shared -fPIC -I /cvmfs/cms-ib.cern.ch/nweek-02562/slc7_amd64_gcc700/external/llvm/7.0.0-dlmfga/include -Os
+
