@@ -153,3 +153,5 @@ public:
 };
 
 #endif // DQMServices_Core_ConcurrentMonitorElement_h
+
+#define CHANGED
