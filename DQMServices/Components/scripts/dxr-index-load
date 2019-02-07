@@ -1,1 +1,1 @@
-PLUGIN="-Xclang -load -Xclang src/DQMServices/Components/scripts/dxr-index.so -Xclang -plugin -Xclang dxr-index  -Xclang -plugin-arg-dxr-index -Xclang $PWD/src"
+PLUGIN="-Xclang -load -Xclang $PWD/src/DQMServices/Components/scripts/dxr-index.so -Xclang -plugin -Xclang dxr-index  -Xclang -plugin-arg-dxr-index -Xclang $PWD/src"
