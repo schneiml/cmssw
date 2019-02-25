@@ -1,1 +1,36 @@
+#ifndef DQMSERIVES_CORE_DQMEDANALYZER_H
+#define DQMSERIVES_CORE_DQMEDANALYZER_H
+
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
+#include "FWCore/Framework/interface/LuminosityBlock.h"
+#include "FWCore/Framework/interface/Run.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
+
+namespace one {
+
+  struct DQMLuminosityBlockElements {};
+
+  template <typename... T>
+  class DQMEDAnalyzer edm::one::EDProducer<edm::Accumulator,
+                                           edm::EndRunProducer,
+                                           edm::one::WatchRuns, T...> {
+  public:
+    virtual void analyze(edm::Event const&, edm::EventSetup const&);
+    virtual void bookHistograms(DQMStore::IBooker &, edm::Run const&, edm::EventSetup const&);
+    virtual void dqmBeginRun(edm::Run const&, edm::EventSetup const&);
+    virtual void beginLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& setup);
+    virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
+    virtual ~DQMEDAnalyzer() noexcept (false) {};
+
+
+
+      
+  };
+};
+
+
+using DQMEDAnalyzer = one::DQMEDAnalyzer<>;
+
+#endif
 
