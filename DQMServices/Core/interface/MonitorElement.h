@@ -25,7 +25,10 @@ public:
   void Fill(double x, double y, double z) {};
   void Fill(std::string value) {};
 
-  DQM_DEPRECATED void Reset();
+  // Maybe deprecated?
+  DQM_DEPRECATED void setBinLabel(int binindex, std::string label) {};
+
+  DQM_DEPRECATED void Reset() {};
 
 };
 
