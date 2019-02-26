@@ -45,6 +45,7 @@ public:
   DQM_DEPRECATED TProfile2D* getTProfile2D() { return nullptr; };
 
   DQM_DEPRECATED std::string getTitle() const { return ""; };
+  DQM_DEPRECATED std::string getFullname() { return ""; };
 
   // non-histogram operations -- can we force people to use TProfile instead?
   DQM_DEPRECATED double getEntries() { return 0; };

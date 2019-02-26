@@ -16,6 +16,7 @@ public:
   public:
     void setCurrentFolder(std::string folder) {};
     DQM_DEPRECATED void cd(std::string folder = "") {};
+    DQM_DEPRECATED std::string pwd() { return ""; };
 
     MonitorElement* bookInt(std::string name, std::string title = "") { return nullptr; };
     MonitorElement* bookString(std::string name, std::string title = "") { return nullptr; };
@@ -88,6 +89,7 @@ public:
   class IGetter {
   public:
     MonitorElement* get(std::string name) { return nullptr; };
+    std::vector<MonitorElement*> getAllContents(std::string path = "") { return {}; };
     DQM_DEPRECATED bool dirExists(std::string name) { return false; };
     DQM_DEPRECATED std::vector<std::string> getSubdirs() { return {}; };
     DQM_DEPRECATED void removeElement(std::string name) {};
@@ -103,6 +105,8 @@ public:
 
 
   // legacy booking interface
+  DQM_DEPRECATED void cd(std::string folder = "") {};
+  DQM_DEPRECATED std::string pwd() { return ""; };
   DQM_DEPRECATED MonitorElement* book1D(std::string name, TH1* object) { return nullptr; };
   DQM_DEPRECATED MonitorElement* book1S(std::string name, TH1* object) { return nullptr; };
   DQM_DEPRECATED MonitorElement* book2D(std::string name, TH2* object) { return nullptr; };
@@ -110,9 +114,15 @@ public:
   DQM_DEPRECATED MonitorElement* book3D(std::string name, TH3* object) { return nullptr; };
   DQM_DEPRECATED MonitorElement* bookProfile(std::string name, TProfile* object) { return nullptr; };
   DQM_DEPRECATED MonitorElement* bookProfile2D(std::string name, TProfile2D* object) { return nullptr; };
+  DQM_DEPRECATED MonitorElement* book1D(std::string name, std::string title = "", 
+    int xnbins = 30, double xlow = 0.0, double xhigh = 1.0) { return nullptr; };
+  DQM_DEPRECATED MonitorElement* book2D(std::string name, std::string title = "", 
+    int xnbins = 30, double xlow = 0.0, double xhigh = 1.0,
+    int ynbins = 30, double ylow = 0.0, double yhigh = 1.0) { return nullptr; };
 
   DQM_DEPRECATED std::vector<std::string> getSubdirs() { return {}; };
   DQM_DEPRECATED std::vector<std::string> getMEs() { return {}; };
+  DQM_DEPRECATED std::vector<MonitorElement*> getAllContents(std::string path = "") { return {}; };
   DQM_DEPRECATED void rmdir(std::string) {};
 
   // APIs to be removed
