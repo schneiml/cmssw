@@ -28,7 +28,7 @@ namespace one {
 
 
     // things we need to implement
-    virtual void produce(edm::Event&, edm::EventSetup const&)  {};
+    virtual void produce(edm::Event&, edm::EventSetup const&) final {};
 
 
     // formalities
