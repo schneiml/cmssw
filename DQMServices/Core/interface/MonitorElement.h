@@ -52,6 +52,7 @@ public:
   DQM_DEPRECATED void setEfficiencyFlag(bool set = true) {};
   DQM_DEPRECATED void setBinContent(int, double) {};
   DQM_DEPRECATED void setBinError(int, double) {};
+  DQM_DEPRECATED int getNbinsX() { return 0; };
 
 
   // Maybe this should be deprecated as well, but there are a lot of users and it is not too bad to have.
