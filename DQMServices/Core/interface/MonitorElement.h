@@ -38,13 +38,20 @@ public:
 
   DQM_DEPRECATED void Reset() {};
 
-  DQM_DEPRECATED TObject* getRootObject() { return nullptr; }
-  DQM_DEPRECATED TH1* getTH1() { return nullptr; }
-  DQM_DEPRECATED TH1F* getTH1F() { return nullptr; }
-  DQM_DEPRECATED TH2F* getTH2F() { return nullptr; }
-  DQM_DEPRECATED TProfile2D* getTProfile2D() { return nullptr; }
+  DQM_DEPRECATED TObject* getRootObject() { return nullptr; };
+  DQM_DEPRECATED TH1* getTH1() { return nullptr; };
+  DQM_DEPRECATED TH1F* getTH1F() { return nullptr; };
+  DQM_DEPRECATED TH2F* getTH2F() { return nullptr; };
+  DQM_DEPRECATED TProfile2D* getTProfile2D() { return nullptr; };
 
-  DQM_DEPRECATED std::string getTitle() const { return ""; }
+  DQM_DEPRECATED std::string getTitle() const { return ""; };
+
+  // non-histogram operations -- can we force people to use TProfile instead?
+  DQM_DEPRECATED double getEntries() { return 0; };
+  DQM_DEPRECATED void setEntries(double) {};
+  DQM_DEPRECATED void setEfficiencyFlag(bool set = true) {};
+  DQM_DEPRECATED void setBinContent(int, double) {};
+  DQM_DEPRECATED void setBinError(int, double) {};
 
 
   // Maybe this should be deprecated as well, but there are a lot of users and it is not too bad to have.

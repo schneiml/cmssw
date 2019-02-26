@@ -14,6 +14,8 @@ public:
   class IBooker {
   public:
     void setCurrentFolder(std::string folder) {};
+    DQM_DEPRECATED void cd(std::string folder = "") {};
+
     MonitorElement* bookInt(std::string name, std::string title = "") { return nullptr; };
     MonitorElement* bookString(std::string name, std::string title = "") { return nullptr; };
 
@@ -47,6 +49,7 @@ public:
     // A version of each taking a existing ROOT object.
     MonitorElement* book1D(std::string name, TH1* object) { return nullptr; };
     MonitorElement* book2D(std::string name, TH2* object) { return nullptr; };
+    MonitorElement* book3D(std::string name, TH3* object) { return nullptr; };
     MonitorElement* bookProfile(std::string name, TProfile* object) { return nullptr; };
     MonitorElement* bookProfile2D(std::string name, TProfile2D* object) { return nullptr; };
   };
@@ -54,6 +57,9 @@ public:
   class IGetter {
   public:
     MonitorElement* get(std::string name) { return nullptr; };
+    DQM_DEPRECATED bool dirExists(std::string name) { return false; };
+    DQM_DEPRECATED std::vector<std::string> getSubdirs() { return {}; };
+    DQM_DEPRECATED void removeElement(std::string name) {};
 
   };
 
