@@ -17,6 +17,7 @@
 #include <TH1.h>
 
 #include <iostream>
+#include <iomanip>
 
 const std::string dqmRootDirectory_inTFile = "DQMData";
 

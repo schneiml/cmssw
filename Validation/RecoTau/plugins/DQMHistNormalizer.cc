@@ -18,12 +18,12 @@
 #include "DQMServices/Core/interface/DQMStore.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "DQMServices/Core/interface/MonitorElement.h"
-#include "DQMServices/Core/src/DQMError.h"
 
 
 //Regexp handling
 #include "classlib/utils/RegexpMatch.h"
 #include "classlib/utils/Regexp.h"
+#include "classlib/utils/Error.h"
 
 
 #include <string>
@@ -76,8 +76,7 @@ lat::Regexp* DQMHistNormalizer::buildRegex(const string & expr)
   }
   catch (lat::Error &e)
   {
-    raiseDQMError("DQMStore", "Invalid regular expression '%s': %s",
-		  expr.c_str(), e.explain().c_str());
+    throw cms::Exception(string("Invalid regular expression ") + expr + e.explain());
   }
   return rx;
 }
