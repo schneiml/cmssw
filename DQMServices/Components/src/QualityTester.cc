@@ -50,25 +50,6 @@ QualityTester::QualityTester(const ParameterSet& ps)
 
 void QualityTester::beginRun(const edm::Run& run , const edm::EventSetup& iSetup){
 
-  // if getQualityTestsFromFile is False, it means that the end-user wants them from the Database
-  if (!getQualityTestsFromFile) {
-    edm::eventsetup::EventSetupRecordKey recordKey(edm::eventsetup::EventSetupRecordKey::TypeTag::findType("DQMXMLFileRcd"));
-    if(recordKey.type() == edm::eventsetup::EventSetupRecordKey::TypeTag()) {
-      throw cms::Exception ("Record not found") << "Record \"DQMXMLFileRcd" 
-						<< "\" does not exist!" << std::endl;
-    }
-//     std::cout << "Reading XML from Database" << std::endl ;
-    edm::ESHandle<FileBlob> xmlfile;
-    iSetup.get<DQMXMLFileRcd>().get(Label,xmlfile);
-    std::unique_ptr<std::vector<unsigned char> > vc( (*xmlfile).getUncompressedBlob() );
-    std::string xmlstr="";
-    for(unsigned char & it : *vc){
-      xmlstr += it;
-    }
-
-    qtHandler->configureTests(xmlstr,bei,true);
-
-  }
 }
 
 QualityTester::~QualityTester()
@@ -78,25 +59,10 @@ QualityTester::~QualityTester()
 
 void QualityTester::analyze(const edm::Event& e, const edm::EventSetup& c) 
 {
-  if (testInEventloop) {
-    nEvents++;
-    if (getQualityTestsFromFile
-	&& prescaleFactor > 0 
-	&& nEvents % prescaleFactor == 0)  {
-      performTests();
-    }
-  }
 }
 
 void QualityTester::endLuminosityBlock(LuminosityBlock const& lumiSeg, EventSetup const& context)
 {
-  if (!testInEventloop&&qtestOnEndLumi) {
-    if (getQualityTestsFromFile
-        && prescaleFactor > 0
-        && lumiSeg.id().luminosityBlock() % prescaleFactor == 0) {
-      performTests();
-    }
-  }
 }
 
 void QualityTester::endRun(const Run& r, const EventSetup& context){
@@ -109,32 +75,4 @@ void QualityTester::endJob(){
 
 void QualityTester::performTests()
 {
-    // done here because new ME can appear while processing data
-    qtHandler->attachTests(bei,verboseQT);
-
-    edm::LogVerbatim ("QualityTester") << "Running the Quality Test";
-
-    bei->runQTests();
-
-    if (!reportThreshold.empty())
-    {
-      std::map< std::string, std::vector<std::string> > theAlarms
-	= qtHandler->checkDetailedQTStatus(bei);
-
-      for (auto & theAlarm : theAlarms)
-      {
-        const std::string &alarmType = theAlarm.first;
-        const std::vector<std::string> &msgs = theAlarm.second;
-        if ((reportThreshold == "black")
-	    || (reportThreshold == "orange" && (alarmType == "orange" || alarmType == "red"))
-	    || (reportThreshold == "red" && alarmType == "red"))
-	  {
-	    std::cout << std::endl;
-	    std::cout << "Error Type: " << alarmType << std::endl;
-	    for (auto const & msg : msgs)
-	      std::cout << msg << std::endl;
-	  }
-      }
-      std::cout << std::endl;
-    }
 }
