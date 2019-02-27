@@ -76,9 +76,9 @@ public:
   DQM_DEPRECATED int getNbinsY() { return 0; };
   DQM_DEPRECATED double getBinContent(int bin) { return 0; };
   DQM_DEPRECATED double getBinContent(int, int) { return 0; };
-  DQM_DEPRECATED double getMean(int) { return 0; };
-  DQM_DEPRECATED double getMeanError(int) { return 0; };
-  DQM_DEPRECATED double getRMS(int) { return 0; };
+  DQM_DEPRECATED double getMean(int bin = 0) { return 0; };
+  DQM_DEPRECATED double getMeanError(int bin = 0) { return 0; };
+  DQM_DEPRECATED double getRMS(int bin = 0) { return 0; };
 
   DQM_DEPRECATED void setEfficiencyFlag(bool set = true) {};
   DQM_DEPRECATED void setLumiFlag(bool set = true) {};

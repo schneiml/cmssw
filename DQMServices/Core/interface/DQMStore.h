@@ -16,6 +16,7 @@ public:
   public:
     void setCurrentFolder(std::string folder) {};
     DQM_DEPRECATED void cd(std::string folder = "") {};
+    DQM_DEPRECATED void goUp() {};
     DQM_DEPRECATED std::string pwd() { return ""; };
 
     MonitorElement* bookInt(std::string name, std::string title = "") { return nullptr; };
@@ -47,6 +48,9 @@ public:
     DQM_DEPRECATED MonitorElement* bookProfile(std::string name, std::string title, 
         int xnbins, const double* buf,
         int ynbbins, double ylow, double yhigh) { return nullptr; };
+    DQM_DEPRECATED MonitorElement* bookProfile(std::string name, std::string title = "", 
+        int xnbins = 30, double* buf = nullptr, // ???
+        double ylow = -INF, double yhigh = +INF, std::string opts = "") { return nullptr; };
 
     // A version of each taking a existing ROOT object.
     MonitorElement* book1D(std::string name, TH1* object) { return nullptr; };
@@ -54,6 +58,9 @@ public:
     MonitorElement* book3D(std::string name, TH3* object) { return nullptr; };
     MonitorElement* bookProfile(std::string name, TProfile* object) { return nullptr; };
     MonitorElement* bookProfile2D(std::string name, TProfile2D* object) { return nullptr; };
+
+    DQM_DEPRECATED void tag(MonitorElement* me, unsigned int tag);
+    DQM_DEPRECATED void tagContents(std::string, unsigned int tag);
   };
 
   class ConcurrentBooker {
@@ -89,10 +96,16 @@ public:
   class IGetter {
   public:
     MonitorElement* get(std::string name) { return nullptr; };
+    DQM_DEPRECATED void removeElement(std::string name) {};
     std::vector<MonitorElement*> getAllContents(std::string path = "") { return {}; };
+    DQM_DEPRECATED std::vector<MonitorElement*> getContents(std::string path = "", unsigned int tag = 0) { return {}; };
+    DQM_DEPRECATED std::vector<std::string> getMEs() { return {}; };
+
     DQM_DEPRECATED bool dirExists(std::string name) { return false; };
     DQM_DEPRECATED std::vector<std::string> getSubdirs() { return {}; };
-    DQM_DEPRECATED void removeElement(std::string name) {};
+
+    DQM_DEPRECATED void setCurrentFolder(std::string folder) {};
+    DQM_DEPRECATED void cd(std::string folder = "") {};
 
   };
 

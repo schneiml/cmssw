@@ -25,6 +25,8 @@ namespace one {
     virtual void dqmBeginRun(edm::Run const&, edm::EventSetup const&) {};
     virtual void beginLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& setup) {};
     virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) {};
+    virtual void endRun(const edm::Run&, const edm::EventSetup&) {};
+
 
 
     // things we need to implement
