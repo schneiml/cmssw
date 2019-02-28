@@ -89,6 +89,10 @@ public:
   {
   }
 
+  DQM_DEPRECATED void setXTitle(std::string title) {};
+  DQM_DEPRECATED void setYTitle(std::string title) {};
+
+
   void enableSumw2()
   {
     me_->getTH1()->Sumw2();

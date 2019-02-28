@@ -41,15 +41,15 @@ public:
 
   DQM_DEPRECATED void Reset() {};
 
-  DQM_DEPRECATED TObject* getRootObject() { return nullptr; };
+  DQM_DEPRECATED TObject* getRootObject() const { return nullptr; };
   DQM_DEPRECATED TH1* getTH1() const { return nullptr; };
   DQM_DEPRECATED TH1F* getTH1F() const { return nullptr; };
-  DQM_DEPRECATED TH1D* getTH1D() { return nullptr; };
+  DQM_DEPRECATED TH1D* getTH1D() const { return nullptr; };
   DQM_DEPRECATED TH2F* getTH2F() const { return nullptr; };
-  DQM_DEPRECATED TH2D* getTH2D() { return nullptr; };
-  DQM_DEPRECATED TH2S* getTH2S() { return nullptr; };
-  DQM_DEPRECATED TProfile* getTProfile() { return nullptr; };
-  DQM_DEPRECATED TProfile2D* getTProfile2D() { return nullptr; };
+  DQM_DEPRECATED TH2D* getTH2D() const { return nullptr; };
+  DQM_DEPRECATED TH2S* getTH2S() const { return nullptr; };
+  DQM_DEPRECATED TProfile* getTProfile() const { return nullptr; };
+  DQM_DEPRECATED TProfile2D* getTProfile2D() const { return nullptr; };
 
   int getIntValue() const { return 0; };
   float getFloatValue() { return 0; };
@@ -69,13 +69,13 @@ public:
   DQM_DEPRECATED void setBinContent(int, double) {};
   DQM_DEPRECATED void setBinContent(int, int, double) {};
   DQM_DEPRECATED void setBinError(int, double) {};
-  DQM_DEPRECATED double getBinError(int) { return 0; };
   DQM_DEPRECATED void setBinError(int, int, double) {};
-  DQM_DEPRECATED double getBinError(int, int) { return 0; };
+  DQM_DEPRECATED double getBinError(int, int) const { return 0; };
+  DQM_DEPRECATED double getBinError(int) const { return 0; };
   DQM_DEPRECATED int getNbinsX() const { return 0; };
   DQM_DEPRECATED int getNbinsY() const { return 0; };
-  DQM_DEPRECATED double getBinContent(int bin) { return 0; };
-  DQM_DEPRECATED double getBinContent(int, int) { return 0; };
+  DQM_DEPRECATED double getBinContent(int bin) const { return 0; };
+  DQM_DEPRECATED double getBinContent(int, int) const { return 0; };
   DQM_DEPRECATED double getMean(int bin = 0) const { return 0; };
   DQM_DEPRECATED double getMeanError(int bin = 0) { return 0; };
   DQM_DEPRECATED double getRMS(int bin = 0) const { return 0; };

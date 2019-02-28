@@ -25,9 +25,9 @@ public:
 
    // TODO: replicating all the variations of arguments here requires more work
    // This section catches many ambiguous numeric variations, likely incorrectly.
-    MonitorElement* book1D(std::string name, std::string title = "", 
+    MonitorElement* book1D(const char*  name, const char*  title = "",  // char* here so it does not conflict with the TString version
         int xnbins = 30, double xlow = 0.0, double xhigh = 1.0) { return nullptr; };
-    MonitorElement* book2D(std::string name, std::string title = "", 
+    MonitorElement* book2D(const char*  name, const char*  title = "", 
         int xnbins = 30, double xlow = 0.0, double xhigh = 1.0,
         int ynbins = 30, double ylow = 0.0, double yhigh = 1.0) { return nullptr; };
     MonitorElement* book1S(std::string name, std::string title = "", // "S" is a 16bit int version 
@@ -145,7 +145,7 @@ public:
   };
 
   DQM_DEPRECATED void save(std::string filename) {};
-  DQM_DEPRECATED void open(std::string filename, bool something = false) {};
+  DQM_DEPRECATED void open(std::string filename, bool something = false, std::string a = "", std::string b = "") {}; // last args for reference?
   DQM_DEPRECATED void setVerbose(int level) {};
   DQM_DEPRECATED void showDirStructure() {};
   DQM_DEPRECATED void setCurrentFolder(std::string folder) {};
@@ -169,6 +169,8 @@ public:
   DQM_DEPRECATED MonitorElement* bookProfile2D(std::string name, TProfile2D* object) { return nullptr; };
   DQM_DEPRECATED MonitorElement* book1D(std::string name, std::string title = "", 
     int xnbins = 30, double xlow = 0.0, double xhigh = 1.0) { return nullptr; };
+  DQM_DEPRECATED MonitorElement* book1D(std::string name, std::string title, 
+    int xnbins, const float* buf) { return nullptr; };
   DQM_DEPRECATED MonitorElement* book1DD(std::string name, std::string title = "", 
     int xnbins = 30, double xlow = 0.0, double xhigh = 1.0) { return nullptr; };
   DQM_DEPRECATED MonitorElement* book2D(std::string name, std::string title = "", 
@@ -177,19 +179,34 @@ public:
   DQM_DEPRECATED MonitorElement* book2DD(std::string name, std::string title = "", 
     int xnbins = 30, double xlow = 0.0, double xhigh = 1.0,
     int ynbins = 30, double ylow = 0.0, double yhigh = 1.0) { return nullptr; };
-  DQM_DEPRECATED MonitorElement* book1D(std::string name, std::string title, 
-      int xnbins, const float* buf) { return nullptr; };
+  DQM_DEPRECATED MonitorElement* bookProfile(std::string name, std::string title = "", 
+    int xnbins = 30, double xlow = 0.0, double xhigh = 1.0,
+    int ynbins = 0, double ylow = -INF, double yhigh = +INF, std::string opts = "") { return nullptr; };
 
+  DQM_DEPRECATED bool dirExists(std::string name) { return false; };
   DQM_DEPRECATED std::vector<std::string> getSubdirs() { return {}; };
   DQM_DEPRECATED std::vector<std::string> getMEs() { return {}; };
   DQM_DEPRECATED std::vector<MonitorElement*> getAllContents(std::string path = "") { return {}; };
   DQM_DEPRECATED void rmdir(std::string) {};
+  DQM_DEPRECATED void removeElement(std::string name) {};
 
   // APIs to be removed
   template <typename iFunc>
   DQM_DEPRECATED void meBookerGetter(iFunc f)
   {
   }
+  enum SaveReferenceTag {
+    SaveWithoutReference,
+    SaveWithReference,
+    SaveWithReferenceForQTest
+  };
+
+  enum OpenRunDirs {
+    KeepRunDirs,
+    StripRunDirs
+  };
+  DQM_DEPRECATED void open(std::string filename, OpenRunDirs mode, bool something = false, std::string a = "", std::string b = "") {}; // last args for reference?
+
 
  
 
