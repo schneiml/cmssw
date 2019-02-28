@@ -58,7 +58,7 @@
 // Class declaration
 //
 
-class SiStripFEDMonitorPlugin : public one::DQMEDAnalyzer<one::DQMLuminosityBlockElements>
+class SiStripFEDMonitorPlugin : public DQMEDAnalyzerPerLumi
 {
  public:
   explicit SiStripFEDMonitorPlugin(const edm::ParameterSet&);

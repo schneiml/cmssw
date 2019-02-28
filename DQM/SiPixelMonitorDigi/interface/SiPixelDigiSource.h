@@ -45,7 +45,7 @@
 
 #include <boost/cstdint.hpp>
 
-class SiPixelDigiSource : public one::DQMEDAnalyzer<one::DQMLuminosityBlockElements> {
+class SiPixelDigiSource : public DQMEDAnalyzerPerLumi {
     public:
        explicit SiPixelDigiSource(const edm::ParameterSet& conf);
        ~SiPixelDigiSource() override;

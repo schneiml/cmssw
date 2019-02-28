@@ -24,7 +24,7 @@
 // class declaration
 //
 
-class BeamSpotProblemMonitor : public one::DQMEDAnalyzer<one::DQMLuminosityBlockElements> {
+class BeamSpotProblemMonitor : public DQMEDAnalyzerPerLumi {
   public:
 
     explicit BeamSpotProblemMonitor( const edm::ParameterSet& );
