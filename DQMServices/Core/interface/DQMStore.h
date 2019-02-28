@@ -2,6 +2,7 @@
 #define DQMSERVICES_CORE_DQMSTORE_H
 
 #include "DQMServices/Core/interface/MonitorElement.h"
+#include "DQMServices/Core/interface/DQMDefinitions.h"
 #include "DQMServices/Core/interface/ConcurrentMonitorElement.h"
 
 #include <limits>
@@ -44,19 +45,18 @@ public:
     MonitorElement* bookProfile(std::string name, std::string title = "", 
         int xnbins = 30, double xlow = 0.0, double xhigh = 1.0,
         int ynbins = 0, double ylow = -INF, double yhigh = +INF, std::string opts = "") { return nullptr; };
-    MonitorElement* bookProfile2D(std::string name, std::string title = "", 
-        int xnbins = 30, double xlow = 0.0, double xhigh = 1.0,
-        int ynbins = 30, double ylow = 0.0, double yhigh = 1.0,
-        double zlow = -INF, double zhigh = +INF) { return nullptr; };
-
-    // TProfile takes options. 
-    MonitorElement* bookProfile(std::string name, std::string title = "", 
+    MonitorElement* bookProfile(const char* name, const char* title = "", 
         int xnbins = 30, double xlow = 0.0, double xhigh = 1.0,
         double ylow = -INF, double yhigh = +INF, std::string opts = "") { return nullptr; };
     MonitorElement* bookProfile2D(std::string name, std::string title = "", 
         int xnbins = 30, double xlow = 0.0, double xhigh = 1.0,
         int ynbins = 30, double ylow = 0.0, double yhigh = 1.0,
-        int znbins = 0, double zlow = -INF, double zhigh = +INF, std::string opts = "") { return nullptr; };
+        double zlow = -INF, double zhigh = +INF, std::string opts = "") { return nullptr; };
+    MonitorElement* bookProfile2D(const char* name, const char* title,
+        int xnbins, double xlow, double xhigh,
+        int ynbins, double ylow, double yhigh,
+        int znbins, double zlow, double zhigh, std::string opts = "") { return nullptr; };
+
     // a version taking bare buffers?
     DQM_DEPRECATED MonitorElement* book1D(std::string name, std::string title, 
         int xnbins, const float* buf) { return nullptr; };
@@ -76,6 +76,9 @@ public:
     DQM_DEPRECATED MonitorElement* book2D(TString const& name, TString const& title = "", 
         int xnbins = 30, double xlow = 0.0, double xhigh = 1.0,
         int ynbins = 30, double ylow = 0.0, double yhigh = 1.0) { return nullptr; };
+    DQM_DEPRECATED MonitorElement* bookProfile(TString const& name, TString const& title = "", 
+        int xnbins = 30, double xlow = 0.0, double xhigh = 1.0,
+        double ylow = -INF, double yhigh = +INF, std::string opts = "") { return nullptr; };
 
 
     // A version of each taking a existing ROOT object.
@@ -144,8 +147,12 @@ public:
 
   };
 
+  enum OpenRunDirs {
+    KeepRunDirs,
+    StripRunDirs
+  };
   DQM_DEPRECATED void save(std::string filename) {};
-  DQM_DEPRECATED void open(std::string filename, bool something = false, std::string a = "", std::string b = "") {}; // last args for reference?
+  DQM_DEPRECATED void open(std::string filename, bool something = false, std::string a = "", std::string b = "", OpenRunDirs mode = KeepRunDirs) {}; // last args for reference?
   DQM_DEPRECATED void setVerbose(int level) {};
   DQM_DEPRECATED void showDirStructure() {};
   DQM_DEPRECATED void setCurrentFolder(std::string folder) {};
@@ -182,6 +189,9 @@ public:
   DQM_DEPRECATED MonitorElement* bookProfile(std::string name, std::string title = "", 
     int xnbins = 30, double xlow = 0.0, double xhigh = 1.0,
     int ynbins = 0, double ylow = -INF, double yhigh = +INF, std::string opts = "") { return nullptr; };
+  DQM_DEPRECATED MonitorElement* book2S(std::string name, std::string title = "",
+        int xnbins = 30, double xlow = 0.0, double xhigh = 1.0,
+        int ynbins = 30, double ylow = 0.0, double yhigh = 1.0) { return nullptr; };
 
   DQM_DEPRECATED bool dirExists(std::string name) { return false; };
   DQM_DEPRECATED std::vector<std::string> getSubdirs() { return {}; };
@@ -201,11 +211,8 @@ public:
     SaveWithReferenceForQTest
   };
 
-  enum OpenRunDirs {
-    KeepRunDirs,
-    StripRunDirs
-  };
-  DQM_DEPRECATED void open(std::string filename, OpenRunDirs mode, bool something = false, std::string a = "", std::string b = "") {}; // last args for reference?
+  DQM_DEPRECATED bool load(std::string filename, OpenRunDirs mode, bool something = false){ return false; };
+  DQM_DEPRECATED void tag(MonitorElement* me, int tag) {};
 
 
  
