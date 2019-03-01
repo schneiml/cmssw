@@ -2,10 +2,11 @@
 #define DQMSERVICES_CORE_DQMSTORE_H
 
 #include "DQMServices/Core/interface/MonitorElement.h"
-#include "DQMServices/Core/interface/DQMDefinitions.h"
+#include "DQMServices/Core/interface/DQMDefinitions.h" // missing include in some places
 #include "DQMServices/Core/interface/ConcurrentMonitorElement.h"
 
 #include <limits>
+#include <set> // missing include in many places
 
 #define INF (std::numeric_limits<double>::infinity())
 //#define INF (1.0/0.0)
@@ -29,6 +30,7 @@ public:
 #define YBINRANGE int ynbins, double ylow, double yhigh
 #define ZBINRANGE int znbins, double zlow, double zhigh
 #define XBINVALUES int xnbins, float* xbinvalues
+#define XBINVALUESD int xnbins, double* xbinvalues
 #define YBINVALUES int ynbins, float* ybinvalues
 #define YRANGE double ylow, double yhigh
 #define ZRANGE double zlow, double zhigh
@@ -48,6 +50,10 @@ public:
 
     MonitorElement* bookProfile(NAMETITLE, XBINRANGE, YRANGE, const char* opts = "") { return nullptr; };
     MonitorElement* bookProfile(NAMETITLE, XBINRANGE, YBINRANGE, const char* opts = "") { return nullptr; };
+    MonitorElement* bookProfile(NAMETITLE, XBINVALUES, YBINRANGE, const char* opts = "") { return nullptr; };
+    MonitorElement* bookProfile(NAMETITLE, XBINVALUESD, YBINRANGE, const char* opts = "") { return nullptr; };
+    MonitorElement* bookProfile(NAMETITLE, XBINVALUES, YRANGE, const char* opts = "") { return nullptr; };
+    MonitorElement* bookProfile(NAMETITLE, XBINVALUESD, YRANGE, const char* opts = "") { return nullptr; };
     MonitorElement* bookProfile2D(NAMETITLE, XBINRANGE, YBINRANGE, ZRANGE, const char* opts = "") { return nullptr; };
     MonitorElement* bookProfile2D(NAMETITLE, XBINRANGE, YBINRANGE, ZBINRANGE, const char* opts = "") { return nullptr; };
 
@@ -108,6 +114,7 @@ public:
   class IGetter {
   public:
     MonitorElement* get(std::string name) { return nullptr; };
+    DQM_DEPRECATED MonitorElement* getElement(std::string name) { return nullptr; }; // are these identical?
     DQM_DEPRECATED void removeElement(std::string name) {};
     std::vector<MonitorElement*> getAllContents(std::string path = "") { return {}; };
     DQM_DEPRECATED std::vector<MonitorElement*> getContents(std::string path = "", unsigned int tag = 0) { return {}; };
@@ -179,6 +186,7 @@ public:
   DQM_DEPRECATED std::vector<std::string> getSubdirs() { return {}; };
   DQM_DEPRECATED std::vector<std::string> getMEs() { return {}; };
   DQM_DEPRECATED std::vector<MonitorElement*> getAllContents(std::string path = "") { return {}; };
+  DQM_DEPRECATED std::vector<MonitorElement*> getContents(std::string path = "", unsigned int tag = 0) { return {}; };
   DQM_DEPRECATED void rmdir(std::string) {};
   DQM_DEPRECATED void removeElement(std::string name) {};
 

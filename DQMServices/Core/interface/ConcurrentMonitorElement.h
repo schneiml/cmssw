@@ -91,6 +91,7 @@ public:
 
   DQM_DEPRECATED void setXTitle(std::string title) {};
   DQM_DEPRECATED void setYTitle(std::string title) {};
+  DQM_DEPRECATED void setAxisTitle(std::string title, int axis = 0) {};
 
 
   void enableSumw2()
