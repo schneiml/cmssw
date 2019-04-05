@@ -77,7 +77,7 @@ namespace {
      m_tree(iTree), m_flagBuffer(0),m_fullNameBufferPtr(iFullNameBufferPtr){ setup();}
      void doFill(MonitorElement* iElement) override {
        *m_fullNameBufferPtr = iElement->getFullname();
-       m_flagBuffer = iElement->getTag();
+       m_flagBuffer = iElement->flags();
        m_bufferPtr = dynamic_cast<T*>(iElement->getRootObject());
        assert(nullptr!=m_bufferPtr);
        //std::cout <<"#entries: "<<m_bufferPtr->GetEntries()<<std::endl;
@@ -107,7 +107,7 @@ namespace {
 
     void doFill(MonitorElement* iElement) override {
      *m_fullNameBufferPtr = iElement->getFullname();
-     m_flagBuffer = iElement->getTag();
+     m_flagBuffer = iElement->flags();
      m_buffer = iElement->getIntValue();
      m_tree->Fill();
     }
@@ -131,7 +131,7 @@ namespace {
      {setup();}
    void doFill(MonitorElement* iElement) override {
      *m_fullNameBufferPtr = iElement->getFullname();
-     m_flagBuffer = iElement->getTag();
+     m_flagBuffer = iElement->flags();
      m_buffer = iElement->getFloatValue();
      m_tree->Fill();
    }
@@ -155,7 +155,7 @@ namespace {
      {setup();}
    void doFill(MonitorElement* iElement) override {
      *m_fullNameBufferPtr = iElement->getFullname();
-     m_flagBuffer = iElement->getTag();
+     m_flagBuffer = iElement->flags();
      m_buffer = iElement->getStringValue();
      m_tree->Fill();
    }
@@ -403,7 +403,7 @@ DQMRootOutputModule::writeLuminosityBlock(edm::LuminosityBlockForOutput const& i
   for(std::vector<MonitorElement*>::iterator it = items.begin(), itEnd=items.end();
       it!=itEnd;
       ++it) {
-    if((*it)->getLumiFlag()) {
+    if((*it)->getLumiFlag() || (*it)->getCanSaveByLumi()) {
       std::map<unsigned int,unsigned int>::iterator itFound = m_dqmKindToTypeIndex.find((*it)->kind());
       assert(itFound !=m_dqmKindToTypeIndex.end());
       m_treeHelpers[itFound->second]->fill(*it);
@@ -464,7 +464,7 @@ void DQMRootOutputModule::writeRun(edm::RunForOutput const& iRun){
   for(std::vector<MonitorElement*>::iterator it = items.begin(), itEnd=items.end();
       it!=itEnd;
       ++it) {
-    if(not (*it)->getLumiFlag()) {
+    if(not ((*it)->getLumiFlag() or (*it)->getCanSaveByLumi())) {
       std::map<unsigned int,unsigned int>::iterator itFound = m_dqmKindToTypeIndex.find((*it)->kind());
       assert  (itFound !=m_dqmKindToTypeIndex.end());
       m_treeHelpers[itFound->second]->fill(*it);

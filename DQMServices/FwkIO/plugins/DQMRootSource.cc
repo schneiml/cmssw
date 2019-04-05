@@ -229,7 +229,7 @@ namespace {
   template<class T>
     class TreeObjectReader: public TreeReaderBase {
       public:
-        TreeObjectReader():m_tree(nullptr),m_fullName(nullptr),m_buffer(nullptr),m_tag(0){
+        TreeObjectReader():m_tree(nullptr),m_fullName(nullptr),m_buffer(nullptr),m_flags(0){
         }
         MonitorElement* doRead(ULong64_t iIndex, DQMStore& iStore, bool iIsLumi) override {
           m_tree->GetEntry(iIndex);
@@ -240,32 +240,33 @@ namespace {
             splitName(*m_fullName, path,name);
             iStore.setCurrentFolder(path);
             element = createElement(iStore,name,m_buffer);
-            if(iIsLumi) { element->setLumiFlag();}
           } else {
             mergeWithElement(element,m_buffer);
           }
-          if(0!= m_tag) {
-            iStore.tag(element,m_tag);
+          if(m_flags & DQMNet::DQM_PROP_LUMI) {
+            // The lumiFlag is the only flag we restore, to preserve compatibility
+            // with Run2 harvesting, where the flags were not saved at all. 
+            element->setLumiFlag();
           }
           return element;
         }
         void setTree(TTree* iTree) override  {
           m_tree = iTree;
           m_tree->SetBranchAddress(kFullNameBranch,&m_fullName);
-          m_tree->SetBranchAddress(kFlagBranch,&m_tag);
+          m_tree->SetBranchAddress(kFlagBranch,&m_flags);
           m_tree->SetBranchAddress(kValueBranch,&m_buffer);
         }
       private:
         TTree* m_tree;
         std::string* m_fullName;
         T* m_buffer;
-        uint32_t m_tag;
+        uint32_t m_flags;
     };
 
   template<class T>
     class TreeSimpleReader : public TreeReaderBase {
       public:
-        TreeSimpleReader():m_tree(nullptr),m_fullName(nullptr),m_buffer(0),m_tag(0){
+        TreeSimpleReader():m_tree(nullptr),m_fullName(nullptr),m_buffer(0),m_flags(0){
         }
         MonitorElement* doRead(ULong64_t iIndex, DQMStore& iStore,bool iIsLumi) override {
           m_tree->GetEntry(iIndex);
@@ -276,26 +277,27 @@ namespace {
             splitName(*m_fullName, path,name);
             iStore.setCurrentFolder(path);
             element = createElement(iStore,name,m_buffer);
-            if(iIsLumi) { element->setLumiFlag();}
           } else {
             mergeWithElement(element, m_buffer);
           }
-          if(0!=m_tag) {
-            iStore.tag(element,m_tag);
+          if(m_flags & DQMNet::DQM_PROP_LUMI) {
+            // The lumiFlag is the only flag we restore, to preserve compatibility
+            // with Run2 harvesting, where the flags were not saved at all. 
+            element->setLumiFlag();
           }
           return element;
         }
         void setTree(TTree* iTree) override  {
           m_tree = iTree;
           m_tree->SetBranchAddress(kFullNameBranch,&m_fullName);
-          m_tree->SetBranchAddress(kFlagBranch,&m_tag);
+          m_tree->SetBranchAddress(kFlagBranch,&m_flags);
           m_tree->SetBranchAddress(kValueBranch,&m_buffer);
         }
       private:
         TTree* m_tree;
         std::string* m_fullName;
         T m_buffer;
-        uint32_t m_tag;
+        uint32_t m_flags;
     };
 
 }
@@ -627,12 +629,12 @@ DQMRootSource::readLuminosityBlock_( edm::LuminosityBlockPrincipal& lbCache)
     
     edm::Service<DQMStore> store;
     std::vector<MonitorElement*> allMEs = (*store).getAllContents("");
-    //for(auto const& ME : allMEs) {
-    //  // We do not want to reset Run Products here!
-    //  if (ME->getLumiFlag()) {
-    //    ME->Reset();
-    //  }
-    //}
+    for(auto const& ME : allMEs) {
+      // We do not want to reset Run Products here!
+      if (ME->getLumiFlag()) {
+        ME->Reset();
+      }
+    }
     m_lastSeenReducedPHID2 = m_reducedHistoryIDs.at(runLumiRange.m_historyIDIndex);
     m_lastSeenRun2 = runLumiRange.m_run;
     m_lastSeenLumi2 = runLumiRange.m_lumi;

@@ -81,6 +81,12 @@ private:
     data_.lumi = ls;
   }
 
+  /// This flag will be set by DQMStore on MEs that are automatically
+  ///  saved by lumisection.
+  void setCanSaveByLumi()
+    { data_.flags |= DQMNet::DQM_PROP_CANSAVELUMI; }
+
+
 public:
   MonitorElement();
   MonitorElement(const std::string *path, const std::string &name);
@@ -145,6 +151,10 @@ public:
   /// true if ME is meant to be stored for each luminosity section
   bool getLumiFlag() const
     { return data_.flags & DQMNet::DQM_PROP_LUMI; }
+
+  /// true if this ME is automatically saved by lumisection.
+  bool getCanSaveByLumi() const
+    { return data_.flags & DQMNet::DQM_PROP_CANSAVELUMI; }
 
   /// this ME is meant to be stored for each luminosity section
   void setLumiFlag()

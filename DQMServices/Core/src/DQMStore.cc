@@ -938,9 +938,9 @@ DQMStore::book_(std::string const& dir,
     // Create and initialise core object.
     assert(dirs_.count(dir));
     MonitorElement proto(&*dirs_.find(dir), name, run_, moduleId_);
-    if (doSaveByLumi_ && canSaveByLumi_) {
+    if (enableMultiThread_ && doSaveByLumi_ && canSaveByLumi_) {
       // for legacy (not DQMEDAnalyzer) this is not save.
-      proto.setLumiFlag(); // default to per-lumi mode for all non-legacy MEs.
+      proto.setCanSaveByLumi(); // default to per-lumi mode for all non-legacy MEs.
     }
     me = const_cast<MonitorElement&>(*data_.insert(std::move(proto)).first)
       .initialise((MonitorElement::Kind)kind, h);
@@ -1897,7 +1897,7 @@ DQMStore::postGlobalBeginLumi(edm::GlobalContext const& gc)
   while (i != e) {
     auto& me = const_cast<MonitorElement&>(*i++);
     // skip per-run MEs
-    if (not LSbasedMode_ and not me.getLumiFlag())
+    if (not (LSbasedMode_ or me.getLumiFlag() or me.getCanSaveByLumi()))
       continue;
     me.Reset();
     me.resetUpdate();
@@ -1933,7 +1933,7 @@ DQMStore::cloneLumiHistograms(uint32_t const run, uint32_t const lumi, uint32_t 
   auto e = data_.lower_bound(MonitorElement(&null_str, null_str, run, moduleId + 1));
   for (; i != e; ++i) {
     // handle only lumisection-based histograms
-    if (not LSbasedMode_ and not i->getLumiFlag())
+    if (not (LSbasedMode_ or i->getLumiFlag() or i->getCanSaveByLumi()))
       continue;
 
     // clone the lumisection-based histograms
@@ -1970,7 +1970,7 @@ DQMStore::cloneRunHistograms(uint32_t const run, uint32_t const moduleId)
   auto e = data_.lower_bound(MonitorElement(&null_str, null_str, run, moduleId + 1));
   for (; i != e; ++i) {
     // handle only non lumisection-based histograms
-    if (LSbasedMode_ or i->getLumiFlag())
+    if (LSbasedMode_ or i->getLumiFlag() or i->getCanSaveByLumi())
       continue;
 
     // clone the lumisection-based histograms
@@ -2389,6 +2389,7 @@ DQMStore::saveMonitorElementRangeToROOT(std::string const& dir,
                 << " run: " << me.run()
                 << " lumi: " << me.lumi()
                 << " lumiFlag: " << me.getLumiFlag()
+                << " canSaveByLumi: " << me.getCanSaveByLumi()
                 << " moduleId: " << me.moduleId()
                 << " fullpathname: " << me.getFullname()
                 << " flags: " << std::hex << me.data_.flags
@@ -2605,6 +2606,7 @@ DQMStore::saveMonitorElementRangeToPB(std::string const& dir,
                 << " run: " << me.run()
                 << " lumi: " << me.lumi()
                 << " lumiFlag: " << me.getLumiFlag()
+                << " canSaveByLumi: " << me.getCanSaveByLumi()
                 << " moduleId: " << me.moduleId()
                 << " fullpathname: " << me.getFullname()
                 << " flags: " << std::hex << me.data_.flags
