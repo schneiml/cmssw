@@ -1,8 +1,7 @@
 #!/bin/env python
 
 from __future__ import print_function
-import ROOT
-ROOT.PyConfig.IgnoreCommandLineOptions = True
+import uproot
 import os
 import sys
 import argparse
@@ -11,20 +10,8 @@ import numpy as np
 from blacklist import get_blacklist
 
 def create_dif(base_file_path, pr_file_path, pr_number, test_number, cmssw_version, output_dir_path):
-   base_file = ROOT.TFile(base_file_path, 'read')
-   pr_file = ROOT.TFile(pr_file_path, 'read')
-
-   if base_file.IsOpen():
-      print('Baseline file successfully opened', file=sys.stderr)
-   else:
-      print('Unable to open base file', file=sys.stderr)
-      return
-
-   if pr_file.IsOpen():
-      print('PR file successfully opened', file=sys.stderr)
-   else:
-      print('Unable to open PR file', file=sys.stderr)
-      return
+   base_file = uproot.open(base_file_path)
+   pr_file = uproot.open(pr_file_path)
 
    run_nr = get_run_nr(pr_file_path)
       
@@ -102,14 +89,14 @@ def compare(shared_paths, pr_flat_dict, base_flat_dict, paths_to_save_in_pr, pat
       if pr_item == None or base_item == None:
          continue
 
-      if pr_item.InheritsFrom('TH1') and base_item.InheritsFrom('TH1'):
+      if hasattr(pr_item, 'allnumpy') and hasattr(base_item, 'allnumpy'):
          # Compare bin by bin
-         pr_array = root_numpy.hist2array(pr_item)
-         base_array = root_numpy.hist2array(base_item)
-         if pr_array.shape != base_array.shape or not np.allclose(pr_array, base_array, equal_nan=True):
-            paths_to_save_in_pr.append(path)
-            paths_to_save_in_base.append(path)
-            continue
+         pr_array = pr_item.allnumpy()
+         base_array = base_item.allnumpy()
+         for a, b in zip(pr_array, base_array):
+           if a.shape != b.shape or not np.allclose(a, b, equal_nan=True):
+              paths_to_save_in_pr.append(path)
+              paths_to_save_in_base.append(path)
       else:
          # Compare non histograms
          if pr_item != base_item:
@@ -118,9 +105,9 @@ def compare(shared_paths, pr_flat_dict, base_flat_dict, paths_to_save_in_pr, pat
 
 def flatten_file(file, run_nr):
    result = {} 
-   for key in file.GetListOfKeys():
+   for key in file.keys():
       try:
-         traverse_till_end(key.ReadObj(), [], result, run_nr)
+         traverse_till_end(file.get(key), [], result, run_nr)
       except:
          pass
    
@@ -128,20 +115,20 @@ def flatten_file(file, run_nr):
 
 def traverse_till_end(node, dirs_list, result, run_nr):
    new_dir_list = dirs_list + [get_node_name(node)]
-   if hasattr(node, 'GetListOfKeys'): 
-      for key in node.GetListOfKeys():
-         traverse_till_end(key.ReadObj(), new_dir_list, result, run_nr)
+   if hasattr(node, 'keys'): 
+      for key in node.keys():
+         traverse_till_end(node.get(key) if "/" not in key else key, new_dir_list, result, run_nr)
    else:
       path = tuple(new_dir_list)
       if path not in get_blacklist(run_nr):
          result[path] = node
 
 def get_node_name(node):
-   if node.InheritsFrom('TObjString'):
+   if isinstance(node, str):
       # Strip out just the name from a tag (<name>value</name>)
-      return node.GetName().split('>')[0][1:]
+      return node.split('>')[0][1:]
    else:
-      return node.GetName()
+      return node.name
 
 def save_paths(flat_dict, paths, result_file_path):
    if len(paths) == 0:
@@ -153,11 +140,7 @@ def save_paths(flat_dict, paths, result_file_path):
    if not os.path.exists(result_dir):
       os.makedirs(result_dir)
    
-   result_file = ROOT.TFile(result_file_path, 'recreate')
-
-   if not result_file.IsOpen():
-      print('Unable to open %s output file' % result_file_path, file=sys.stderr)
-      return
+   result_file = uproot.recreate(result_file_path)
 
    for path in paths:
       save_to_file(flat_dict, path, result_file)
@@ -169,14 +152,7 @@ def save_paths(flat_dict, paths, result_file_path):
 def save_to_file(flat_dict, path, output_file):
    histogram = flat_dict[path]
 
-   current = output_file
-
-   # Last item is filename. No need to create dir for it
-   for directory in path[:-1]:
-      current = create_dir(current, directory)
-      current.cd()
-
-   histogram.Write()
+   output_file["/".join(path)] = histogram
 
 # Create dir in root file if it doesn't exist
 def create_dir(parent_dir, name):
