@@ -3,23 +3,32 @@ report () {
       "$@"
 }
 
+# build clang plugin
 report cd $CMSSW_BASE/src/DQMServices/Components/scripts
 CLANG=$(which clang++)
 CLANGINC="${CLANG%/bin/clang++}/include/"
-
 report clang++ sha1.cpp dxr-index.cpp -o dxr-index.so --shared -fPIC -I "$CLANGINC" -O2
 
-report cd $CMSSW_BASE/
+# build pcre plugin for sqlite (not required, but nice to have)
+GCC=$(which gcc)
+VERSIONSUFFIX=${GCC%/bin/gcc}
+VERSIONSUFFIX=${VERSIONSUFFIX##*-}
+EXTERNALBASE=${GCC%/gcc/*}
+report gcc pcre.c -o pcre.so -shared -fPIC -O2 $EXTERNALBASE/pcre/*-$VERSIONSUFFIX/lib/libpcre.so -I $EXTERNALBASE/sqlite/*-$VERSIONSUFFIX/include/ -I $EXTERNALBASE/pcre/*-$VERSIONSUFFIX/include/
+
 # touch a lot  of files to trigger a full recompile
 touch $(find src/ -name '*.cc' )
 
 # run scram b with indexer active
+report cd $CMSSW_BASE/
 PLUGIN="-Xclang -load -Xclang $PWD/src/DQMServices/Components/scripts/dxr-index.so -Xclang -plugin -Xclang dxr-index  -Xclang -plugin-arg-dxr-index -Xclang $PWD/src"
 echo PLUGIN=$PLUGIN
 USER_CXXFLAGS="$PLUGIN" report scram build -k  -j8 
 
+# convert .csv to sqlite
 report cd $CMSSW_BASE/src/
 report bash DQMServices/Components/scripts/csv_to_sqlite.sh
 
 echo "Check $PWD/dxr.sqlite for your DXR index database."
+echo "Use '.load $CMSSW_BASE/src/DQMServices/Components/scripts/pcre.so' to load a REGEX function into sqlite."
 
