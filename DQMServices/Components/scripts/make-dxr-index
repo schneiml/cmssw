@@ -12,5 +12,10 @@ report cd $CMSSW_BASE/
 
 PLUGIN="-Xclang -load -Xclang $PWD/src/DQMServices/Components/scripts/dxr-index.so -Xclang -plugin -Xclang dxr-index  -Xclang -plugin-arg-dxr-index -Xclang $PWD/src"
 echo PLUGIN=$PLUGIN
-USER_CXXFLAGS="$PLUGIN" report scram build -v  -j8 
+USER_CXXFLAGS="$PLUGIN" report scram build -k  -j8 
+
+report cd $CMSSW_BASE/src/
+report bash DQMServices/Components/scripts/csv_to_sqlite.sh
+
+echo "Check $PWD/dxr.sqlite for your DXR index database."
 
