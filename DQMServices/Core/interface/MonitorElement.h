@@ -390,3 +390,5 @@ public:
 };
 
 #endif // DQMSERVICES_CORE_MONITOR_ELEMENT_H
+
+#define CHANGED

@@ -6,3 +6,5 @@
 using DQMEDAnalyzer = one::DQMEDAnalyzer<>;
 
 #endif // DQMServices_Core_DQMEDAnalyzer_h
+
+#define CHANGED

@@ -657,3 +657,5 @@ private:
 };
 
 #endif // DQMServices_Core_DQMStore_h
+
+#define CHANGED

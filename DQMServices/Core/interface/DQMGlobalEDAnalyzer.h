@@ -62,3 +62,5 @@ DQMGlobalEDAnalyzer<H, Args...>::analyze(edm::StreamID, edm::Event const& event,
 }
 
 #endif // DQMServices_Core_DQMGlobalEDAnalyzer_h
+
+#define CHANGED

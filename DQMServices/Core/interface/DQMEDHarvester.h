@@ -43,3 +43,5 @@ protected:
 };
 
 #endif // CORE_DQMED_HARVESTER_H
+
+#define CHANGED
