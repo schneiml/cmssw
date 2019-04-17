@@ -1,0 +1,16 @@
+report () {
+      echo "$@" 1>&2
+      "$@"
+}
+
+report cd $CMSSW_BASE/src/DQMServices/Components/scripts
+CLANG=$(which clang++)
+CLANGINC="${CLANG%/bin/clang++}/include/"
+
+report clang++ sha1.cpp dxr-index.cpp -o dxr-index.so --shared -fPIC -I "$CLANGINC" -O2
+report cd $CMSSW_BASE/
+
+PLUGIN="-Xclang -load -Xclang $PWD/src/DQMServices/Components/scripts/dxr-index.so -Xclang -plugin -Xclang dxr-index  -Xclang -plugin-arg-dxr-index -Xclang $PWD/src"
+echo PLUGIN=$PLUGIN
+USER_CXXFLAGS="$PLUGIN" report scram build -v  -j8 
+
