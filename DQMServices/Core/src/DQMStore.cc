@@ -687,6 +687,11 @@ DQMStore::DQMStore(edm::ParameterSet const& pset, edm::ActivityRegistry& ar)
   ar.watchPostGlobalBeginLumi(this, &DQMStore::postGlobalBeginLumi);
 }
 
+DQMStore::DQMStore()
+{
+  initializeFrom(edm::ParameterSet());
+}
+
 DQMStore::DQMStore(edm::ParameterSet const& pset)
 {
   initializeFrom(pset);
