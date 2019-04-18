@@ -16,6 +16,9 @@ VERSIONSUFFIX=${VERSIONSUFFIX##*-}
 EXTERNALBASE=${GCC%/gcc/*}
 report gcc pcre.c -o pcre.so -shared -fPIC -O2 $EXTERNALBASE/pcre/*-$VERSIONSUFFIX/lib/libpcre.so -I $EXTERNALBASE/sqlite/*-$VERSIONSUFFIX/include/ -I $EXTERNALBASE/pcre/*-$VERSIONSUFFIX/include/
 
+# build another plugin for regexp replace
+report gcc -fPIC -O2 -Wall -shared -o glib_replace.so `pkg-config --cflags glib-2.0` glib_replace.c `pkg-config --libs glib-2.0` -I $EXTERNALBASE/sqlite/*-$VERSIONSUFFIX/include/
+
 # touch a lot  of files to trigger a full recompile
 touch $(find src/ -name '*.cc' )
 
@@ -30,5 +33,6 @@ report cd $CMSSW_BASE/src/
 report bash DQMServices/Components/scripts/csv_to_sqlite.sh
 
 echo "Check $PWD/dxr.sqlite for your DXR index database."
-echo "Use '.load $CMSSW_BASE/src/DQMServices/Components/scripts/pcre.so' to load a REGEX function into sqlite."
+echo "Use '.load $CMSSW_BASE/src/DQMServices/Components/scripts/pcre.so' to load a REGEXP function into sqlite."
+echo "Use '.load $CMSSW_BASE/src/DQMServices/Components/scripts/glib_replace.so' to load a regep_replace function into sqlite."
 
