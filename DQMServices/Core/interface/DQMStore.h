@@ -17,6 +17,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <memory>
 #include <cxxabi.h>
 #include <execinfo.h>
 
@@ -138,7 +139,7 @@ public:
     // Embedded classes do not natively own a pointer to the embedding
     // class. We therefore need to store a pointer to the main
     // DQMStore instance (owner_).
-    std::unique_ptr<DQMStore> owner_;
+    DQMStore* owner_;
   };  // IBooker
 
   class ConcurrentBooker : public IBooker {
@@ -234,7 +235,7 @@ public:
     // Embedded classes do not natively own a pointer to the embedding
     // class. We therefore need to store a pointer to the main
     // DQMStore instance (owner_).
-    std::unique_ptr<DQMStore> owner_;
+    DQMStore* owner_;
   }; //IGetter
 
   // Template function to be used inside each DQM Modules' lambda
@@ -301,6 +302,7 @@ public:
   // ---------------------- Constructors ------------------------------------
   DQMStore(edm::ParameterSet const& pset, edm::ActivityRegistry&);
   DQMStore(edm::ParameterSet const& pset);
+  DQMStore();
   ~DQMStore();
 
   //-------------------------------------------------------------------------
