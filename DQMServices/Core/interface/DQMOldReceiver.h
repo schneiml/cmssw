@@ -7,8 +7,11 @@
 
 #include <string>
 
-class DQMStore;
-class DQMOldReceiver {
+#include <DQMServices/Core/interface/DQMStore.h>
+
+class DQMOldReceiver
+{
+
 public:
   /** Connect with monitoring server (DQM Collector) at <hostname> and <port_no>
      using <client_name>; if flag=true, client will accept downstream connections
