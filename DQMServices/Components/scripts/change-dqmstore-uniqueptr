@@ -1,0 +1,22 @@
+DB="sqlite3 dxr.sqlite"
+$DB <<SQL
+CREATE TABLE dqmstores AS 
+  SELECT DISTINCT code.* 
+  FROM variable NATURAL JOIN code 
+  WHERE variable.type LIKE "DQMStore %" and variable.loc NOT IN (
+    SELECT loc FROM function
+  )
+;
+SQL
+
+for f in $(echo 'SELECT DISTINCT rtrim(loc, "0123456789:") FROM (SELECT loc FROM dqmstores);' | $DB); do
+  $DB <<SQL > $f
+.load /build/schneiml/newdqmstore/CMSSW_10_6_CLANG_X_2019-04-16-2300/src/DQMServices/Components/scripts/glib_replace.so
+  SELECT CASE 
+    WHEN loc IN (SELECT loc FROM dqmstores) THEN 
+       regex_replace("DQMStore\s*[*]\s*(\w+)\s*?( ?[;=])", line, "std::unique_ptr<DQMStore> \1\2")
+    ELSE line END 
+  FROM code 
+  WHERE rtrim(loc, "0123456789:") = "$f";
+SQL
+done
