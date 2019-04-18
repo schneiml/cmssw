@@ -65,7 +65,7 @@ class EcalLocalRecoTask: public edm::EDAnalyzer
 
   bool verbose_;
   
-  DQMStore* dbe_;
+  std::unique_ptr<DQMStore> dbe_;
   
   std::string outputFile_;
 

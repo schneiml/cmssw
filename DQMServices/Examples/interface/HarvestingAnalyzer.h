@@ -48,7 +48,7 @@ class HarvestingAnalyzer : public edm::EDAnalyzer
 private:
   std::string fName;
   int verbosity;
-  DQMStore *dbe;
+  std::unique_ptr<DQMStore> dbe;
 
 };
 

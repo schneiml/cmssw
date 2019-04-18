@@ -123,7 +123,7 @@ class TH1FCumulator : public CumulatorBase {
   }
 
  private:
-  DQMStore* store_;
+  std::unique_ptr<DQMStore> store_;
   std::string folder_;
   std::string name_;
   std::map<int, int> entries_per_LS_;
@@ -177,7 +177,7 @@ class TH2FCumulator : public CumulatorBase {
   };
 
  private:
-  DQMStore* store_;
+  std::unique_ptr<DQMStore> store_;
   std::string folder_;
   std::string name_;
   std::map<int, int> entries_per_LS_;

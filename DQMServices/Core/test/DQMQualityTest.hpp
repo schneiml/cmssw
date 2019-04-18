@@ -211,7 +211,7 @@ class DQMQualityTest
 
  protected:
 
-  DQMStore* dbe_ ; 
+  std::unique_ptr<DQMStore> dbe_ ; 
   float xmin_; float xmax_; // range for histograms
   
   MonitorElement * my_ref; // reference histogram

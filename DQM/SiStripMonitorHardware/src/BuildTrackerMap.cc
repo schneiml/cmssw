@@ -147,7 +147,7 @@ void BuildTrackerMapPlugin::read(bool aMechView,
 				 std::vector<bool>& aValidVec)
 {
   
-  DQMStore * lDqmStore = edm::Service<DQMStore>().operator->();
+  std::unique_ptr<DQMStore> lDqmStore = std::make_unique<DQMStore>();
   lDqmStore->open(aFile);  
 
   unsigned int nHists = tkHistoMapNameVec_.size();

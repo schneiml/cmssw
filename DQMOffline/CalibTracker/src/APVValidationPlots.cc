@@ -51,7 +51,7 @@ class APVValidationPlots : public edm::EDAnalyzer {
 
   std::ostringstream oss;
 
-  DQMStore* dqmStore;
+  std::unique_ptr<DQMStore> dqmStore;
 
   MonitorElement* tmp;
 
@@ -146,7 +146,7 @@ APVValidationPlots::beginJob()
   oss.str("");
   oss << 1; //runNumber
 
-  dqmStore = edm::Service<DQMStore>().operator->();
+  dqmStore = std::make_unique<DQMStore>();
   dqmStore->setCurrentFolder("ChannelStatusPlots");
 
   // Initialize histograms

@@ -81,7 +81,7 @@ private:
   
  private:
   
-  DQMStore* dbe_;
+  std::unique_ptr<DQMStore> dbe_;
   std::string dirName_;
   std::string subsystemname_;
   edm::ParameterSet pset;

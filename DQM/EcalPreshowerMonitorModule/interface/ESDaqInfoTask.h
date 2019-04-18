@@ -42,7 +42,7 @@ class ESDaqInfoTask: public edm::EDAnalyzer{
         
    private:
         
-      DQMStore* dqmStore_;
+      std::unique_ptr<DQMStore> dqmStore_;
 
       std::string prefixME_;
 

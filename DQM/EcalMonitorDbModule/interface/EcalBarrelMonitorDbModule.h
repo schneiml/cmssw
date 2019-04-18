@@ -47,7 +47,7 @@ class EcalBarrelMonitorDbModule: public edm::EDAnalyzer{
   
   int icycle_;
  
-  DQMStore* dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
 
   std::string prefixME_;
 

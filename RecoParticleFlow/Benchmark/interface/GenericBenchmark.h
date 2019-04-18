@@ -128,7 +128,7 @@ class GenericBenchmark{
 
  protected:
 
-  DQMStore *dbe_;
+  std::unique_ptr<DQMStore> dbe_;
   PFBenchmarkAlgo *algo_;
 
 };

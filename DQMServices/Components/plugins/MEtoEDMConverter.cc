@@ -91,7 +91,7 @@ void
 MEtoEDMConverter::beginJob()
 {
   // Determine if we are running multithreading asking to the DQMStore. Not to be moved in the ctor
-  DQMStore *dbe = edm::Service<DQMStore>().operator->();
+  std::unique_ptr<DQMStore> dbe = edm::Service<DQMStore>().operator->();
   enableMultiThread_ = dbe->enableMultiThread_;
 }
 
@@ -109,7 +109,7 @@ MEtoEDMConverter::globalEndRun(edm::Run const& iRun, const edm::EventSetup& iSet
 void
 MEtoEDMConverter::endRunProduce(edm::Run& iRun, const edm::EventSetup& iSetup)
 {
-  DQMStore * store = edm::Service<DQMStore>().operator->();
+  std::unique_ptr<DQMStore> store = edm::Service<DQMStore>().operator->();
   store->meBookerGetter([&](DQMStore::IBooker &b, DQMStore::IGetter &g) {
     store->scaleElements();
     putData(g, iRun, false, iRun.run(), 0);
@@ -124,7 +124,7 @@ MEtoEDMConverter::globalBeginLuminosityBlock(edm::LuminosityBlock const&, edm::E
 void
 MEtoEDMConverter::endLuminosityBlockProduce(edm::LuminosityBlock& iLumi, const edm::EventSetup& iSetup)
 {
-  DQMStore * store = edm::Service<DQMStore>().operator->();
+  std::unique_ptr<DQMStore> store = edm::Service<DQMStore>().operator->();
   store->meBookerGetter([&](DQMStore::IBooker &b, DQMStore::IGetter &g) {
     putData(g, iLumi, true, iLumi.run(), iLumi.id().luminosityBlock());
   });

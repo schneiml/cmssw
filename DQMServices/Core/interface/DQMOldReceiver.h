@@ -59,7 +59,7 @@ public:
 
 private:
   /// use to get hold of structure with monitoring elements that class owns
-  DQMStore *store_;
+  std::unique_ptr<DQMStore> store_;
 } DQM_DEPRECATED;
 
 #endif // DQMSERVICES_CORE_DQM_CONNECTOR_H

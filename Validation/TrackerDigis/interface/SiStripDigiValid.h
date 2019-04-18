@@ -173,7 +173,7 @@ class  SiStripDigiValid: public DQMEDAnalyzer {
 
 
     //Back-End Interface
-    DQMStore* dbe_;
+    std::unique_ptr<DQMStore> dbe_;
     bool runStandalone;
     std::string outputFile_;
     edm::EDGetTokenT< edm::DetSetVector<SiStripDigi> > edmDetSetVector_SiStripDigi_Token_;

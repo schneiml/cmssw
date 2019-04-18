@@ -69,7 +69,7 @@ private:
   // event counter
   int counter;
   // back-end interface
-  DQMStore * dbe;
+  std::unique_ptr<DQMStore> dbe;
   // quality tests
   Comp2RefChi2 * chi2_test; // chi2 test
   Comp2RefKolmogorov * ks_test; // Kolmogorov test
@@ -107,7 +107,7 @@ private:
 DQMStoreQTestsExample::DQMStoreQTestsExample(const edm::ParameterSet& iConfig ) : counter(0)
 {
   // get hold of back-end interface
-  dbe = edm::Service<DQMStore>().operator->();
+  dbe = std::make_unique<DQMStore>();
 
   // set # of bins, range for histogram(s)
   const int NBINS = 50; const float XMIN = -3; const float XMAX = 3;
