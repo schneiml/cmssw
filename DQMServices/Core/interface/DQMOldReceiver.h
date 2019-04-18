@@ -7,7 +7,8 @@
 
 # include <string>
 
-class DQMStore;
+#include <DQMServices/Core/interface/DQMStore.h>
+
 class DQMOldReceiver
 {
 
