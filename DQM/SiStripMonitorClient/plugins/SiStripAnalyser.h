@@ -69,6 +69,8 @@ private:
   bool trackerFEDsFound_{false};
   bool printFaultyModuleList_;
   bool endLumiAnalysisOn_{false};
+
+  std::unique_ptr<DQMStore> dqm_store;
 };
 
 #endif

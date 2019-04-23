@@ -85,5 +85,7 @@ private:
   static constexpr float MaxAcceptableBadDcsLumi_{2};
 
   edm::ESHandle<SiStripDetCabling> detCabling_{};
+
+  std::unique_ptr<DQMStore> dqm_store;
 };
 #endif
