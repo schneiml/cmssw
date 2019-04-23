@@ -199,7 +199,7 @@ DQMFileSaver::saveForOnlinePB(int run, const std::string &suffix) const
   // and the @a suffix, defined in the run/lumi transitions.
   // TODO(diguida): add the possibility to change the dir structure with rewrite.
   std::string filename = onlineOfflineFileName(fileBaseName_, suffix, workflow_, child_, PB);
-  doSaveForOnline(dbe_, run, enableMultiThread_,
+  doSaveForOnline(&*dbe_, run, enableMultiThread_,
 		  filename,
 		  "", "^(Reference/)?([^/]+)", "\\1\\2",
 		  (DQMStore::SaveReferenceTag) saveReference_,
@@ -220,7 +220,7 @@ DQMFileSaver::saveForOnline(int run, const std::string &suffix, const std::strin
       dbe_->cd();
       if (MonitorElement* me = dbe_->get(systems[i] + "/EventInfo/processName"))
       {
-	doSaveForOnline(dbe_, run, enableMultiThread_,
+	doSaveForOnline(&*dbe_, run, enableMultiThread_,
 			fileBaseName_ + me->getStringValue() + suffix + child_ + ".root",
 			"", "^(Reference/)?([^/]+)", rewrite,
 	                (DQMStore::SaveReferenceTag) saveReference_,
@@ -238,7 +238,7 @@ DQMFileSaver::saveForOnline(int run, const std::string &suffix, const std::strin
       dbe_->cd();
       std::vector<MonitorElement*> pNamesVector = dbe_->getMatchingContents("^" + systems[i] + "/.*/EventInfo/processName",lat::Regexp::Perl);
       if (!pNamesVector.empty()){
-        doSaveForOnline(dbe_, run, enableMultiThread_,
+        doSaveForOnline(&*dbe_, run, enableMultiThread_,
                         fileBaseName_ + systems[i] + suffix + child_ + ".root",
                         "", "^(Reference/)?([^/]+)", rewrite,
                         (DQMStore::SaveReferenceTag) saveReference_,
@@ -252,7 +252,7 @@ DQMFileSaver::saveForOnline(int run, const std::string &suffix, const std::strin
   // if no EventInfo Folder is found, then store subsystem wise
   for (size_t i = 0, e = systems.size(); i != e; ++i)
     if (systems[i] != "Reference")
-      doSaveForOnline(dbe_, run, enableMultiThread_,
+      doSaveForOnline(&*dbe_, run, enableMultiThread_,
                       fileBaseName_ + systems[i] + suffix + child_ + ".root",
 	              systems[i], "^(Reference/)?([^/]+)", rewrite,
 	              (DQMStore::SaveReferenceTag) saveReference_,
@@ -380,7 +380,7 @@ DQMFileSaver::DQMFileSaver(const edm::ParameterSet &ps)
     forceRunNumber_ (-1),
     fileBaseName_ (""),
     fileUpdate_ (0),
-    dbe_ (&*edm::Service<DQMStore>()),
+    dbe_ (std::make_unique<DQMStore>()),
     nrun_ (0),
     nlumi_ (0),
     irun_ (0),

@@ -27,7 +27,7 @@ DQMScope::~DQMScope()
 
 // -------------------------------------------------------------------
 DQMService::DQMService(const edm::ParameterSet &pset, edm::ActivityRegistry &ar)
-  : store_(&*edm::Service<DQMStore>()),
+  : store_(std::make_unique<DQMStore>()),
     net_(nullptr),
     filter_(nullptr),
     lastFlush_(0),

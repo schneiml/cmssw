@@ -117,7 +117,7 @@ DQMSourceExampleConfig::DQMSourceExampleConfig ( const edm::ParameterSet& iConfi
     dirCounter = 1;
     dirSpacer = 1;
     
-    recursiveBuild ("", histograms_number/directories_number, histograms_number, iConfig.getUntrackedParameter<int>("lDepth", 2), dbe, directories_number);
+    recursiveBuild ("", histograms_number/directories_number, histograms_number, iConfig.getUntrackedParameter<int>("lDepth", 2), &*dbe, directories_number);
     dbe->showDirStructure ();
 }
 
