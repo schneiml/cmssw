@@ -39,7 +39,7 @@ L1ScalersClient::L1ScalersClient(const edm::ParameterSet& ps):
 {
   LogDebug("Status") << "constructor" ;
   // get back-end interface
-  dbe_ = edm::Service<DQMStore>().operator->();
+  dbe_ = std::make_unique<DQMStore>();
   assert(dbe_ != nullptr); // blammo!
   dbe_->setCurrentFolder(folderName_);
 

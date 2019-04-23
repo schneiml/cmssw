@@ -49,7 +49,7 @@ SiPixelDQMRocLevelAnalyzer::beginJob()
   if(!bRS && !fRS) return;
 
   //Open file and get MEs
-  dbe = edm::Service<DQMStore>().operator->();
+  dbe = std::make_unique<DQMStore>();
   dbe->open(filename);
   mes = dbe->getAllContents("");
   std::cout << "found " << mes.size() << " monitoring elements!" << std::endl;

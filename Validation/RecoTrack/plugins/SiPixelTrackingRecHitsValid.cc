@@ -128,7 +128,7 @@ SiPixelTrackingRecHitsValid::SiPixelTrackingRecHitsValid(const edm::ParameterSet
 void SiPixelTrackingRecHitsValid::bookHistograms(DQMStore::IBooker & ibooker,const edm::Run& run, const edm::EventSetup& es){
   
   // Book histograms
-  dbe_ = edm::Service<DQMStore>().operator->();
+  dbe_ = std::make_unique<DQMStore>();
   //dbe_->showDirStructure();
 
   //float math_pi = 3.14159265;

@@ -36,7 +36,7 @@ TrackingTruthValid::TrackingTruthValid(const edm::ParameterSet& conf)
   , vec_TrackingParticle_Token_( consumes<TrackingParticleCollection>( conf.getParameter<edm::InputTag>( "src" ) ) ) {}
 
 void TrackingTruthValid::bookHistograms(DQMStore::IBooker & ibooker,const edm::Run& run, const edm::EventSetup& es){
-  dbe_  = edm::Service<DQMStore>().operator->();
+  dbe_  = std::make_unique<DQMStore>();
   ibooker.setCurrentFolder("Tracking/TrackingMCTruth/TrackingParticle");
   
 

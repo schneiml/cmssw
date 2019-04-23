@@ -28,7 +28,7 @@ void HarvestingAnalyzer::endJob()
 {
 
   dbe = nullptr;
-  dbe = edm::Service<DQMStore>().operator->();
+  dbe = std::make_unique<DQMStore>();
 
   if (dbe) {
 
