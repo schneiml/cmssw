@@ -121,7 +121,7 @@ class PFTauElecRejectionBenchmark {
 
  protected:
 		
-  std::unique_ptr<DQMStore> db_;
+  DQMStore* db_;
 };
 
 #endif // RecoParticleFlow_Benchmark_PFTauElecRejectionBenchmark_h

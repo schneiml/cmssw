@@ -114,7 +114,7 @@ PFJetBenchmarkAnalyzer::PFJetBenchmarkAnalyzer(const edm::ParameterSet& iConfig)
 			benchmarkLabel_, 
 			recPt, 
 			maxEta, 
-			dbe_);
+			&*dbe_);
 }
 
 

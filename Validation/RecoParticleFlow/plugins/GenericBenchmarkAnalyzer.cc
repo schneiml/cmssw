@@ -80,7 +80,7 @@ GenericBenchmarkAnalyzer::beginJob()
     std::string path = "ParticleFlow/" + benchmarkLabel_ + "/" ;
     if (plotAgainstRecoQuantities_) path += "Reco"; else path += "Gen";
     dbe_->setCurrentFolder(path);
-    setup(dbe_, plotAgainstRecoQuantities_, minDeltaEt_, maxDeltaEt_, minDeltaPhi_, maxDeltaPhi_, doMetPlots_);
+    setup(&*dbe_, plotAgainstRecoQuantities_, minDeltaEt_, maxDeltaEt_, minDeltaPhi_, maxDeltaPhi_, doMetPlots_);
 
   }
 

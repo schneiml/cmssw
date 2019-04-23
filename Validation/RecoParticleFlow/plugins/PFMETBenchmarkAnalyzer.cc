@@ -107,7 +107,7 @@ PFMETBenchmarkAnalyzer::PFMETBenchmarkAnalyzer(const edm::ParameterSet& iConfig)
 			pfmBenchmarkDebug,
 			xplotAgainstReco,
 			xbenchmarkLabel_, 
-			xdbe_);
+			&*xdbe_);
 }
 
 
