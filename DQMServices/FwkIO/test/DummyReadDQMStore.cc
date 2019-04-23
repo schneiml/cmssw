@@ -180,7 +180,7 @@ class DummyReadDQMStore :  public edm::EDAnalyzer {
 //
 DummyReadDQMStore::DummyReadDQMStore(const edm::ParameterSet& iConfig)
 {
-  edm::Service<DQMStore> dstore;
+  auto dstore = std::make_unique<DQMStore>();
 
   typedef std::vector<edm::ParameterSet> PSets;
   const PSets& runElements = iConfig.getUntrackedParameter<std::vector<edm::ParameterSet> >("runElements");

@@ -10,17 +10,6 @@ DQMLumisEDProducer::DQMLumisEDProducer():
 void DQMLumisEDProducer::beginLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& setup) 
 { 
   dqmBeginLuminosityBlock(lumi, setup);
-
-  /*
-  edm::Service<DQMStore>()->bookTransaction(
-    [this, &lumi, &setup](DQMStore::IBooker & booker)
-    {
-      booker.cd();
-      this->bookLumiHistograms(booker, lumi, setup);
-    },
-    lumi.run(),
-    lumi.moduleCallingContext()->moduleDescription()->id());
-  */
 }
 
 void DQMLumisEDProducer::dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& setup) 
@@ -31,7 +20,7 @@ void DQMLumisEDProducer::endLuminosityBlock(edm::LuminosityBlock const&, edm::Ev
 
 void DQMLumisEDProducer::endLuminosityBlockProduce(edm::LuminosityBlock & lumi, edm::EventSetup const& setup) 
 {
-  edm::Service<DQMStore>()->cloneLumiHistograms(
+  dqmstore_->cloneLumiHistograms(
       lumi.run(),
       lumi.luminosityBlock(),
       moduleDescription().id());

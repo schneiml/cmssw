@@ -43,11 +43,6 @@ public:
 
   ~DQMOldReceiver() DQM_DEPRECATED;
 
-  /// get pointer to back-end interface
-  DQMStore *getStore() DQM_DEPRECATED
-    { return store_; }
-  DQMStore *getBEInterface() DQM_DEPRECATED
-    { return store_; }
 
   /** this is the "main" loop where we receive monitoring or
       send subscription requests;

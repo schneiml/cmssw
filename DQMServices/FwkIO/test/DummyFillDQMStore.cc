@@ -162,7 +162,7 @@ DummyFillDQMStore::DummyFillDQMStore(const edm::ParameterSet& iConfig):
 m_fillRuns(iConfig.getUntrackedParameter<bool>("fillRuns")),
 m_fillLumis(iConfig.getUntrackedParameter<bool>("fillLumis"))
 {
-  edm::Service<DQMStore> dstore;
+  auto dstore = std::make_unique<DQMStore>();
 
   typedef std::vector<edm::ParameterSet> PSets;
   const PSets& elements = iConfig.getUntrackedParameter<std::vector<edm::ParameterSet> >("elements");

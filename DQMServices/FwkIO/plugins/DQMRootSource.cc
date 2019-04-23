@@ -377,6 +377,7 @@ class DQMRootSource : public edm::InputSource
       const DQMRootSource& operator=(const DQMRootSource&) = delete; // stop default
 
       // ---------- member data --------------------------------
+      std::unique_ptr<DQMStore> m_store;
       edm::InputFileCatalog m_catalog;
       edm::RunAuxiliary m_runAux;
       edm::LuminosityBlockAuxiliary m_lumiAux;
@@ -442,6 +443,7 @@ DQMRootSource::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
 //
 DQMRootSource::DQMRootSource(edm::ParameterSet const& iPSet, const edm::InputSourceDescription& iDesc):
   edm::InputSource(iPSet,iDesc),
+  m_store(std::make_unique<DQMStore>()),
   m_catalog(iPSet.getUntrackedParameter<std::vector<std::string> >("fileNames"),
             iPSet.getUntrackedParameter<std::string>("overrideCatalog")),
   m_nextItemType(edm::InputSource::IsFile),
@@ -581,10 +583,9 @@ DQMRootSource::readRun_(edm::RunPrincipal& rpCache)
   if( m_lastSeenRun != runID ||
       m_lastSeenReducedPHID != m_reducedHistoryIDs.at(runLumiRange.m_historyIDIndex) ) {
     if (m_shouldReadMEs) {
-      edm::Service<DQMStore> store;
-      std::vector<MonitorElement*> allMEs = (*store).getAllContents("");
+      std::vector<MonitorElement*> allMEs = (*m_store).getAllContents("");
       for(auto const& ME : allMEs) {
-	if ( !(*store).isCollate() )
+	if ( !(*m_store).isCollate() )
 	  ME->Reset();
       }
     }
@@ -621,8 +622,7 @@ DQMRootSource::readLuminosityBlock_( edm::LuminosityBlockPrincipal& lbCache)
 	m_lastSeenReducedPHID2 != m_reducedHistoryIDs.at(runLumiRange.m_historyIDIndex) ) 
       && m_shouldReadMEs) {
     
-    edm::Service<DQMStore> store;
-    std::vector<MonitorElement*> allMEs = (*store).getAllContents("");
+    std::vector<MonitorElement*> allMEs = (*m_store).getAllContents("");
     //for(auto const& ME : allMEs) {
     //  // We do not want to reset Run Products here!
     //  if (ME->getLumiFlag()) {
@@ -681,7 +681,6 @@ DQMRootSource::closeFile_() {
 }
 
 void DQMRootSource::readElements() {
-  edm::Service<DQMStore> store;
   RunLumiToRange runLumiRange = m_runlumiToRange[*m_presentIndexItr];
   bool shouldContinue = false;
   do
@@ -699,7 +698,7 @@ void DQMRootSource::readElements() {
       {
         bool isLumi = runLumiRange.m_lumi !=0;
         if (m_shouldReadMEs)
-          reader->read(index,*store,isLumi);
+          reader->read(index,*m_store,isLumi);
 
         //std::cout << runLumiRange.m_run << " " << runLumiRange.m_lumi <<" "<<index<< " " << runLumiRange.m_type << std::endl;
       }

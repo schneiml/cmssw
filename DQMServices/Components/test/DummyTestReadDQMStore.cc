@@ -192,7 +192,7 @@ class DummyTestReadDQMStore :  public edm::EDAnalyzer {
   using PSets = std::vector<edm::ParameterSet>;
   PSets runElements;
   PSets lumiElements;
-  edm::Service<DQMStore> dstore;
+  std::unique_ptr<DQMStore> dstore = std::make_unique<DQMStore>();
 };
 
 //
