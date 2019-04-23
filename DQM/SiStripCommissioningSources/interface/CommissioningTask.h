@@ -183,7 +183,7 @@ const uint32_t& CommissioningTask::updateFreq() const { return updateFreq_; }
 void CommissioningTask::updateFreq(const uint32_t& freq) { updateFreq_ = freq; }
 const std::string& CommissioningTask::myName() const { return myName_; }
 
-DQMStore* const CommissioningTask::dqm() const { return dqm_; }
+DQMStore* const CommissioningTask::dqm() const { return &*dqm_; }
 const FedChannelConnection& CommissioningTask::connection() const { return connection_; }
 
 const uint32_t& CommissioningTask::fecKey() const { return fecKey_; }

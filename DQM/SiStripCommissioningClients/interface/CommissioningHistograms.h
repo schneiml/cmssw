@@ -153,7 +153,7 @@ private:
 // ---------- inline methods ----------
 
 const sistrip::RunType& CommissioningHistograms::task() const { return task_; }
-DQMStore* const CommissioningHistograms::bei() const { return bei_; }
+DQMStore* const CommissioningHistograms::bei() const { return &*bei_; }
 CommissioningHistograms::Factory* const CommissioningHistograms::factory() { return factory_.get(); }
 const CommissioningHistograms::HistosMap& CommissioningHistograms::histos() const { return histos_; }
 const CommissioningHistograms::FedToFecMap& CommissioningHistograms::mapping() const { return mapping_; }
