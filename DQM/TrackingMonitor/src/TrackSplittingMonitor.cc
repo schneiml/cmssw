@@ -30,8 +30,7 @@
 #include <string>
 
 TrackSplittingMonitor::TrackSplittingMonitor(const edm::ParameterSet& iConfig) 
-  : dqmStore_( edm::Service<DQMStore>().operator->() )
-  , conf_( iConfig )
+  : conf_( iConfig )
 {
 
   splitTracks_ = conf_.getParameter< edm::InputTag >("splitTrackCollection");

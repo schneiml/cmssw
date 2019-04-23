@@ -158,7 +158,7 @@ private:
 	  tfd.reset(new TFileDirectory(upDir.tfd->mkdir(newDir)));
       }
       else {
-	theDbe=edm::Service<DQMStore>().operator->();
+	theDbe=std::make_unique<DQMStore>();
       }
     }
     
@@ -182,7 +182,7 @@ private:
 	  else directoryString = newDir;
 	}
 	else directoryString=basedir;
-	theDbe=edm::Service<DQMStore>().operator->();
+	theDbe=std::make_unique<DQMStore>();
       }
     }
     // Generalization of Histogram Booking; allows switch between TFileService and DQMStore

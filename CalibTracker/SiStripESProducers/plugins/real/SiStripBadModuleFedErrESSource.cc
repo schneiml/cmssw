@@ -36,9 +36,7 @@
 
 #include "CondFormats/SiStripObjects/interface/SiStripBadStrip.h"
 #include "CalibTracker/Records/interface/SiStripDependentRecords.h"
-
-class DQMStore;
-class MonitorElement;
+#include "DQMServices/Core/interface/DQMStore.h"
 
 class SiStripBadModuleFedErrESSource : public edm::ESProducer, public edm::EventSetupRecordIntervalFinder {
 public:
@@ -144,7 +142,7 @@ SiStripBadModuleFedErrESSource::produce(const SiStripBadModuleFedErrRcd& iRecord
     MonitorElement* me = dqmStore->get(hpath);
     if ( me ) {
       std::map<uint32_t, std::set<int>> detectorMap;
-      for ( const auto& elm : getFedBadChannelList(dqmStore, me) ) {
+      for ( const auto& elm : getFedBadChannelList(&*dqmStore, me) ) {
 	const uint16_t fId = elm.first;
 	const uint16_t fChan = elm.second/2;
         if ( ( fId == 9999 ) && ( fChan == 9999 ) ) continue;
