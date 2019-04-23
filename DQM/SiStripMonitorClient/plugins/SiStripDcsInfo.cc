@@ -75,9 +75,9 @@ SiStripDcsInfo::beginRun(edm::Run const& run, edm::EventSetup const& eSetup)
     }
   }
 
-  auto& dqm_store = *edm::Service<DQMStore>{};
-  bookStatus(dqm_store);
-  fillDummyStatus(dqm_store);
+  dqm_store = std::make_unique<DQMStore>();
+  bookStatus(*dqm_store);
+  fillDummyStatus(*dqm_store);
   if (nFEDConnected_ > 0) readCabling(eSetup);
 }
 
@@ -107,9 +107,8 @@ SiStripDcsInfo::endLuminosityBlock(edm::LuminosityBlock const& lumiSeg,
   LogDebug( "SiStripDcsInfo") << "SiStripDcsInfo::endLuminosityBlock";
 
   if (nFEDConnected_ == 0) return;
-  auto& dqm_store = *edm::Service<DQMStore>{};
   readStatus(eSetup);
-  fillStatus(dqm_store);
+  fillStatus(*dqm_store);
 }
 
 void
@@ -123,8 +122,7 @@ SiStripDcsInfo::endRun(edm::Run const& run, edm::EventSetup const& eSetup)
     subDetME.second.FaultyDetectors.clear();
   }
   readStatus(eSetup);
-  auto& dqm_store = *edm::Service<DQMStore>{};
-  addBadModules(dqm_store);
+  addBadModules(*dqm_store);
 }
 //
 // -- Book MEs for SiStrip Dcs Fraction

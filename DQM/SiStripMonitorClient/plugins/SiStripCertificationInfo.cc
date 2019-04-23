@@ -58,9 +58,9 @@ SiStripCertificationInfo::beginRun(edm::Run const& run,
     }
   }
 
-  auto& dqm_store = *edm::Service<DQMStore>{};
-  bookSiStripCertificationMEs(dqm_store);
-  fillDummySiStripCertification(dqm_store);
+  dqm_store = std::unique_ptr<DQMStore>();
+  bookSiStripCertificationMEs(*dqm_store);
+  fillDummySiStripCertification(*dqm_store);
 }
 //
 // -- Book MEs for SiStrip Sertification fractions
@@ -161,8 +161,7 @@ SiStripCertificationInfo::endLuminosityBlock(
   edm::LogInfo( "SiStripDaqInfo") << "SiStripDaqInfo::endLuminosityBlock";
 
   if (nFEDConnected_ > 0) {
-    auto& dqm_store = *edm::Service<DQMStore>{};
-    fillSiStripCertificationMEsAtLumi(dqm_store);
+    fillSiStripCertificationMEsAtLumi(*dqm_store);
   }
 }
 
@@ -173,8 +172,7 @@ SiStripCertificationInfo::endRun(edm::Run const& run,
   edm::LogInfo ("SiStripCertificationInfo") <<"SiStripCertificationInfo:: End Run";
 
   if (nFEDConnected_ > 0) {
-    auto& dqm_store = *edm::Service<DQMStore>{};
-    fillSiStripCertificationMEs(dqm_store, eSetup);
+    fillSiStripCertificationMEs(*dqm_store, eSetup);
   }
 }
 
