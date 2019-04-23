@@ -49,7 +49,7 @@ void DQMClientExample::initialize() {
   counterClientOperation = 0;
 
   ////---- get DQM store interface
-  dbe_ = Service<DQMStore>().operator->();
+  dbe_ = std::make_unique<DQMStore>();
 
   ////---- define base folder for the contents of this job
   monitorName_ = parameters_.getUntrackedParameter<string>("monitorName", "YourSubsystemName");
@@ -84,9 +84,6 @@ void DQMClientExample::initialize() {
 //========================= beginJob ===============================//
 //==================================================================//
 void DQMClientExample::beginJob() {
-  ////---- get DQM store interface
-  dbe_ = Service<DQMStore>().operator->();
-
   ////---- define the directory where the clientHisto will be located;
   dbe_->setCurrentFolder(monitorName_ + "DQMclient");
   clientHisto = dbe_->book1D("clientHisto", "Guassian fit results.", 2, 0, 1);

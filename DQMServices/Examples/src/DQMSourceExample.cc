@@ -35,7 +35,7 @@ void DQMSourceExample::initialize() {
   counterLS_ = 0;
 
   ////---- get DQM store interface
-  dbe_ = Service<DQMStore>().operator->();
+  dbe_ = std::make_unique<DQMStore>();
 
   ////---- define base folder for the contents of this job
   monitorName_ = parameters_.getUntrackedParameter<string>("monitorName", "YourSubsystemName");
@@ -58,9 +58,6 @@ void DQMSourceExample::initialize() {
 //========================= beginJob ===============================//
 //==================================================================//
 void DQMSourceExample::beginJob() {
-  ////---- get DQM store interface
-  dbe_ = Service<DQMStore>().operator->();
-
   ////----  create summ and cd into new folder
   dbe_->setCurrentFolder(monitorName_ + "DQMsource/Summary");
   summ = dbe_->book1D("summary", "Run Summary", 100, 0, 100);

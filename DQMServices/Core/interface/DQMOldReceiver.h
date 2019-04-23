@@ -9,9 +9,7 @@
 
 #include <DQMServices/Core/interface/DQMStore.h>
 
-class DQMOldReceiver
-{
-
+class DQMOldReceiver {
 public:
   /** Connect with monitoring server (DQM Collector) at <hostname> and <port_no>
      using <client_name>; if flag=true, client will accept downstream connections
@@ -42,10 +40,6 @@ public:
                  bool unusedActAsServer = false) DQM_DEPRECATED;
 
   ~DQMOldReceiver() DQM_DEPRECATED;
-
-  /// get pointer to back-end interface
-  DQMStore *getStore() DQM_DEPRECATED { return store_; }
-  DQMStore *getBEInterface() DQM_DEPRECATED { return store_; }
 
   /** this is the "main" loop where we receive monitoring or
       send subscription requests;
