@@ -46,8 +46,6 @@ class DTChamberId;
 class DTTtrig;
 class DTT0;
 
-class DQMStore;
-class MonitorElement;
 
 class DTDigiTask: public one::DQMEDAnalyzer<edm::one::WatchLuminosityBlocks> {
 

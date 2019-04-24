@@ -3,6 +3,7 @@
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include <DQMServices/Core/interface/DQMEDAnalyzer.h>
 
 #include <string>
@@ -11,8 +12,6 @@ namespace edm {
   template<class T> class DetSetVector;
 }
 class SiStripDigi;
-class DQMStore;
-class MonitorElement;
 
 class  SiStripDigiValid: public DQMEDAnalyzer {
 

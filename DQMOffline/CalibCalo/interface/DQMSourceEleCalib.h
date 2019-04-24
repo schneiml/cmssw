@@ -24,8 +24,6 @@
 
 
 
-class DQMStore;
-class MonitorElement;
 
 class DQMSourceEleCalib : public DQMEDAnalyzer {
 

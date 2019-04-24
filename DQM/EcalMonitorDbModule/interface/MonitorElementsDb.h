@@ -21,9 +21,8 @@
 #include "MonitorXMLParser.h"
 
 #include "RelationalAccess/ISessionProxy.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
-class MonitorElement;
-class DQMStore;
 
 class MonitorElementsDb{
 

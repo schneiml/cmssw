@@ -15,9 +15,9 @@
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "DataFormats/Common/interface/DetSetVectorNew.h"
 #include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 
-class DQMStore;
 
 class OuterTrackerMonitorTTTrack : public DQMEDAnalyzer {
 

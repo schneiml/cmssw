@@ -24,9 +24,8 @@ Monitoring source for track residuals on each detector module
 #include "Alignment/OfflineValidation/interface/TrackerValidationVariables.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DQM/SiStripCommon/interface/TkHistoMap.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
-class MonitorElement;
-class DQMStore;
 class GenericTriggerEventFlag;
 namespace edm { class Event; }
 

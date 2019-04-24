@@ -19,13 +19,12 @@
 
 #include <DataFormats/DTDigi/interface/DTDigi.h>
 #include "DataFormats/DTDigi/interface/DTDigiCollection.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 #include <string>
 #include <map>
 #include <vector>
 
-class DQMStore;
-class MonitorElement;
 
 class DTPreCalibrationTask: public DQMEDAnalyzer{
 

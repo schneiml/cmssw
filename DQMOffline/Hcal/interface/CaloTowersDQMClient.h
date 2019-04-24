@@ -34,8 +34,6 @@
 #include <fstream>
 #include <vector>
 
-class DQMStore;
-class MonitorElement;
 
 class CaloTowersDQMClient : public DQMEDHarvester {
  
