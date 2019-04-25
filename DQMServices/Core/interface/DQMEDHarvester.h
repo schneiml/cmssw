@@ -11,12 +11,25 @@
 #include "FWCore/Utilities/interface/EDPutToken.h"
 #include "DataFormats/Histograms/interface/DQMToken.h"
 
+class DQMHarvestingBase {
+  typedef ::MonitorElement BaseMonitorElement;
+  public:
+  class MonitorElement : public BaseMonitorElement {
+    using BaseMonitorElement:: BaseMonitorElement;
+
+  };
+  class DQMStore : public dqminternal::DQMStore<MonitorElement> {
+
+  };
+};
+
 class DQMEDHarvester: public edm::one::EDProducer<edm::Accumulator,
                                                   edm::EndLuminosityBlockProducer,
                                                   edm::EndRunProducer,
                                                   edm::one::WatchLuminosityBlocks,
                                                   edm::one::WatchRuns,
-                                                  edm::one::SharedResources>
+                                                  edm::one::SharedResources>,
+                      public DQMHarvestingBase
 {
 
 public:

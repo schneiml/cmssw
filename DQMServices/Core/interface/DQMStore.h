@@ -30,23 +30,11 @@ namespace edm { class DQMHttpSource; class ParameterSet; class ActivityRegistry;
 namespace lat { class Regexp; }
 namespace dqmstorepb {class ROOTFilePB; class ROOTFilePB_Histo;}
 
-class MonitorElement;
 class QCriterion;
 class TFile;
 class TBufferFile;
-class TObject;
-class TH1;
-class TObjString;
-class TH1F;
-class TH1S;
-class TH1D;
-class TH2F;
-class TH2S;
-class TH2D;
-class TH3F;
-class TProfile;
-class TProfile2D;
-class TNamed;
+
+namespace dqminternal {
 
 /** Implements RegEx patterns which occur often in a high-performant
     mattern. For all other expressions, the full RegEx engine is used.
@@ -60,7 +48,7 @@ public:
 
   bool match(std::string const& s) const;
 
-private:
+protected:
   // checks if two strings are equal, starting at the back of the strings
   bool compare_strings_reverse(std::string const& pattern,
                                std::string const& input) const;
@@ -73,7 +61,7 @@ private:
   MatchingHeuristicEnum matching_;
 };
 
-
+template<class MonitorElement>
 class DQMStore {
 public:
   enum SaveReferenceTag {
@@ -130,7 +118,7 @@ public:
     IBooker() = delete;
     IBooker(IBooker const&) = delete;
 
-  private:
+  protected:
     explicit IBooker(DQMStore* store) noexcept : owner_{store}
     {
       assert(store);
@@ -181,7 +169,7 @@ public:
     ConcurrentBooker& operator=(ConcurrentBooker const&) = delete;
     ConcurrentBooker& operator=(ConcurrentBooker &&) = delete;
 
-  private:
+  protected:
     explicit ConcurrentBooker(DQMStore* store) noexcept :
       IBooker{store}
     {}
@@ -226,7 +214,7 @@ public:
     IGetter() = delete;
     IGetter(IGetter const&) = delete;
 
-  private:
+  protected:
     explicit IGetter(DQMStore* store) noexcept : owner_{store}
     {
       assert(store);
@@ -328,7 +316,7 @@ public:
     char_string(std::string const& str) : data_{str} {}
     operator std::string const&() const { return data_; }
     operator char const*() const { return data_.c_str(); }
-  private:
+  protected:
     std::string data_;
   };
 
@@ -492,7 +480,7 @@ public:
   int getStatus(std::string const& path = "") const;
   void scaleElements();
 
-private:
+protected:
   // ---------------- Navigation -----------------------
   bool cdInto(std::string const& path) const;
 
@@ -546,7 +534,7 @@ public:
   DQMStore(DQMStore const&) = delete;
   DQMStore& operator=(DQMStore const&) = delete;
 
-private:
+protected:
   // ---------------- Miscellaneous -----------------------------
   void initializeFrom(const edm::ParameterSet&);
   void reset();
@@ -605,13 +593,13 @@ private:
   using QCMap = std::map<std::string, QCriterion*>;
   using QAMap = std::map<std::string, QCriterion* (*)(std::string const&)>;
 
-  // ------------------------ private I/O helpers ------------------------------
+  // ------------------------ protected I/O helpers ------------------------------
   void saveMonitorElementToPB(MonitorElement const& me,
                               dqmstorepb::ROOTFilePB& file);
   void saveMonitorElementRangeToPB(std::string const& dir,
                                    unsigned int run,
-                                   MEMap::const_iterator begin,
-                                   MEMap::const_iterator end,
+                                   typename MEMap::const_iterator begin,
+                                   typename MEMap::const_iterator end,
                                    dqmstorepb::ROOTFilePB& file,
                                    unsigned int& counter);
   void saveMonitorElementToROOT(MonitorElement const& me,
@@ -621,8 +609,8 @@ private:
                                      SaveReferenceTag ref,
                                      int minStatus,
                                      unsigned int run,
-                                     MEMap::const_iterator begin,
-                                     MEMap::const_iterator end,
+                                     typename MEMap::const_iterator begin,
+                                     typename MEMap::const_iterator end,
                                      TFile& file,
                                      unsigned int& counter);
 
@@ -652,6 +640,12 @@ private:
   QTestSpecs qtestspecs_;
 
   std::mutex book_mutex_;
+
+};
+
+}; // namespace dqminternal
+
+class DQMStore : public dqminternal::DQMStore<MonitorElement> {
 
   friend class edm::DQMHttpSource;
   friend class DQMService;

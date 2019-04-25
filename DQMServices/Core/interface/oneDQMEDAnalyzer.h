@@ -24,6 +24,19 @@ Inheriting from one::DQMEDAnalyzer<edm::one::WatchLuminosityBlocks> gives access
 Inheriting from one::DQMEDAnalyzer<one::DQMLuminosityBlockElements> give access to Run and LuminosityBlock transitions and filling LuminosityBlock based MonitorElements.
 */
 
+class DQMRecoBase {
+  typedef ::MonitorElement BaseMonitorElement;
+  public:
+  class MonitorElement : public BaseMonitorElement {
+    using BaseMonitorElement:: BaseMonitorElement;
+
+  };
+
+  class DQMStore : public dqminternal::DQMStore<MonitorElement> {
+
+  };
+};
+
 namespace one {
 
 struct DQMLuminosityBlockElements {};
@@ -32,7 +45,8 @@ namespace dqmimplementation {
 template <typename... T>
 class DQMRunEDProducer : public edm::one::EDProducer<edm::Accumulator,
                                                      edm::EndRunProducer,
-                                                     edm::one::WatchRuns, T...> 
+                                                     edm::one::WatchRuns, T...>,
+                         public DQMRecoBase
 {
 public:
   DQMRunEDProducer() :

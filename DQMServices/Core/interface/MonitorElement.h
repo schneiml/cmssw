@@ -36,8 +36,6 @@ struct MonitorElementNoCloneTag {};
 /** The base class for all MonitorElements (ME) */
 class MonitorElement
 {
-  friend class DQMStore;
-  friend class DQMService;
 public:
   struct Scalar
   {
@@ -63,7 +61,7 @@ public:
     DQM_KIND_TPROFILE2D = DQMNet::DQM_PROP_TYPE_TPROF2D
   };
 
-private:
+public:
   DQMNet::CoreObject    data_;       //< Core object information.
   Scalar                scalar_;     //< Current scalar value.
   TH1                   *object_;    //< Current ROOT object value.
@@ -228,7 +226,7 @@ public:
   /// run all quality tests
   void runQTests();
 
-private:
+public:
   void doFill(int64_t x);
   void incompatible(const char *func) const;
   TH1 *accessRootObject(const char *func, int reqdim) const;
@@ -251,7 +249,7 @@ public:
   double getEntries() const;
   double getBinEntries(int bin) const;
 
-private:
+public:
   double getYmin() const;
   double getYmax() const;
 
@@ -272,14 +270,14 @@ public:
   void setAxisTimeDisplay(int value, int axis = 1);
   void setAxisTimeFormat(const char *format = "", int axis = 1);
 
-private:
+public:
   void setAxisTimeOffset(double toffset, const char *option="local", int axis = 1);
 
 public:
   void setTitle(const std::string &title);
 #endif // DQM_ROOT_METHODS
 
-private:
+public:
   /// whether soft-reset is enabled; default is false
   bool isSoftResetEnabled() const
     { return refvalue_ != nullptr; }
@@ -297,7 +295,7 @@ private:
   void markToDelete()
     { data_.flags |= DQMNet::DQM_PROP_MARKTODELETE; }
 
-private:
+public:
   /// reset "was updated" flag
   void resetUpdate()
     { data_.flags &= ~DQMNet::DQM_PROP_NEW; }
@@ -316,7 +314,7 @@ private:
   // ------------ Operations for MEs that are normally never reset ---------
 public:
   void softReset();
-private:
+public:
   void disableSoftReset();
   void addProfiles(TProfile *h1, TProfile *h2, TProfile *sum, float c1, float c2);
   void addProfiles(TProfile2D *h1, TProfile2D *h2, TProfile2D *sum, float c1, float c2);

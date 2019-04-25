@@ -26,30 +26,30 @@
 #include <sstream>
 #include <utility>
 
-/** @var DQMStore::verbose_
+/** @var DQMStore<MonitorElement>::verbose_
     Universal verbose flag for DQM. */
 
-/** @var DQMStore::verboseQT_
+/** @var DQMStore<MonitorElement>::verboseQT_
     Verbose flag for xml-based QTests. */
 
-/** @var DQMStore::reset_
+/** @var DQMStore<MonitorElement>::reset_
 
     Flag used to print out a warning when calling quality tests.
     twice without having called reset() in between; to be reset in
     DQMOldReceiver::runQualityTests.  */
 
-/** @var DQMStore::collateHistograms_ */
+/** @var DQMStore<MonitorElement>::collateHistograms_ */
 
-/** @var DQMStore::readSelectedDirectory_
+/** @var DQMStore<MonitorElement>::readSelectedDirectory_
     If non-empty, read from file only selected directory. */
 
-/** @var DQMStore::pwd_
+/** @var DQMStore<MonitorElement>::pwd_
     Current directory. */
 
-/** @var DQMStore::qtests_.
+/** @var DQMStore<MonitorElement>::qtests_.
     All the quality tests.  */
 
-/** @var DQMStore::qalgos_
+/** @var DQMStore<MonitorElement>::qalgos_
     Set of all the available quality test algorithms. */
 
 namespace {
@@ -65,7 +65,7 @@ namespace {
   lat::Regexp const s_rxmeqr1{"^st:(\\d+):([-+e.\\d]+):([^:]*):(.*)$"};
   lat::Regexp const s_rxmeqr2{"^st\\.(\\d+)\\.(.*)$"};
   lat::Regexp const s_rxtrace{"(.*)\\((.*)\\+0x.*\\).*"};
-  lat::Regexp const s_rxself{"^[^()]*DQMStore::.*"};
+  lat::Regexp const s_rxself{"^[^()]*DQMStore<MonitorElement>::.*"};
   lat::Regexp const s_rxpbfile{".*\\.pb$"};
 
   std::string const empty_str{};
@@ -136,6 +136,8 @@ namespace {
   }
 
 } // anonymous namespace
+
+namespace dqminternal {
 
 /////////////////////////////////////////////////////////////
 fastmatch::fastmatch(std::string fastString) :
@@ -255,198 +257,236 @@ bool fastmatch::match(std::string const& s) const
 }
 
 //IBooker methods
-MonitorElement* DQMStore::IBooker::bookInt(TString const& name)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::bookInt(TString const& name)
 {
   return owner_->bookInt(name);
 }
 
-MonitorElement* DQMStore::IBooker::bookFloat(TString const& name)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::bookFloat(TString const& name)
 {
   return owner_->bookFloat(name);
 }
 
-MonitorElement* DQMStore::IBooker::bookString(TString const& name, TString const& value)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::bookString(TString const& name, TString const& value)
 {
   return owner_->bookString(name, value);
 }
 
-MonitorElement* DQMStore::IBooker::book1D(TString const& name, TString const& title, int const nchX, double const lowX, double const highX)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::book1D(TString const& name, TString const& title, int const nchX, double const lowX, double const highX)
 {
   return owner_->book1D(name, title, nchX, lowX, highX);
 }
 
-MonitorElement* DQMStore::IBooker::book1D(TString const& name, TString const& title, int nchX, float const* xbinsize)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::book1D(TString const& name, TString const& title, int nchX, float const* xbinsize)
 {
   return owner_->book1D(name, title, nchX, xbinsize);
 };
 
-MonitorElement* DQMStore::IBooker::book1D(TString const& name, TH1F* object)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::book1D(TString const& name, TH1F* object)
 {
   return owner_->book1D(name, object);
 }
 
-MonitorElement* DQMStore::IBooker::book1S(TString const& name, TString const& title, int nchX, double lowX, double highX)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::book1S(TString const& name, TString const& title, int nchX, double lowX, double highX)
 {
   return owner_->book1S(name, title, nchX, lowX, highX);
 }
 
-MonitorElement* DQMStore::IBooker::book1S(TString const& name, TH1S* object)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::book1S(TString const& name, TH1S* object)
 {
   return owner_->book1S(name, object);
 }
 
-MonitorElement* DQMStore::IBooker::book1DD(TString const& name, TString const& title, int nchX, double lowX, double highX)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::book1DD(TString const& name, TString const& title, int nchX, double lowX, double highX)
 {
   return owner_->book1DD(name, title, nchX, lowX, highX);
 }
 
-MonitorElement* DQMStore::IBooker::book1DD(TString const& name, TH1D* object)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::book1DD(TString const& name, TH1D* object)
 {
   return owner_->book1DD(name, object);
 }
 
-MonitorElement* DQMStore::IBooker::book2D(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::book2D(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY)
 {
   return owner_->book2D(name, title, nchX, lowX, highX, nchY, lowY, highY);
 }
 
-MonitorElement* DQMStore::IBooker::book2D(TString const& name, TString const& title, int nchX, float const* xbinsize, int nchY, float const* ybinsize)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::book2D(TString const& name, TString const& title, int nchX, float const* xbinsize, int nchY, float const* ybinsize)
 {
   return owner_->book2D(name, title, nchX, xbinsize, nchY, ybinsize);
 }
 
-MonitorElement* DQMStore::IBooker::book2D(TString const& name, TH2F* object)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::book2D(TString const& name, TH2F* object)
 {
   return owner_->book2D(name, object);
 }
 
-MonitorElement* DQMStore::IBooker::book2S(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::book2S(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY)
 {
   return owner_->book2S(name, title, nchX, lowX, highX, nchY, lowY, highY);
 }
 
-MonitorElement* DQMStore::IBooker::book2S(TString const& name, TString const& title, int nchX, float const* xbinsize, int nchY, float const* ybinsize)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::book2S(TString const& name, TString const& title, int nchX, float const* xbinsize, int nchY, float const* ybinsize)
 {
   return owner_->book2S(name, title, nchX, xbinsize, nchY, ybinsize);
 }
 
-MonitorElement* DQMStore::IBooker::book2S(TString const& name, TH2S* object)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::book2S(TString const& name, TH2S* object)
 {
   return owner_->book2S(name, object);
 }
 
-MonitorElement* DQMStore::IBooker::book2DD(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::book2DD(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY)
 {
   return owner_->book2DD(name, title, nchX, lowX, highX, nchY, lowY, highY);
 }
 
-MonitorElement* DQMStore::IBooker::book2DD(TString const& name, TH2D* object)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::book2DD(TString const& name, TH2D* object)
 {
   return owner_->book2DD(name, object);
 }
 
-MonitorElement* DQMStore::IBooker::book3D(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY, int nchZ, double lowZ, double highZ)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::book3D(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY, int nchZ, double lowZ, double highZ)
 {
   return owner_->book3D(name, title, nchX, lowX, highX, nchY, lowY, highY, nchZ, lowZ, highZ);
 }
 
-MonitorElement* DQMStore::IBooker::book3D(TString const& name, TH3F* object)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::book3D(TString const& name, TH3F* object)
 {
   return owner_->book3D(name, object);
 }
 
-MonitorElement* DQMStore::IBooker::bookProfile(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY, char const* option)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::bookProfile(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY, char const* option)
 {
   return owner_->bookProfile(name, title, nchX, lowX, highX, nchY, lowY, highY, option);
 }
 
-MonitorElement* DQMStore::IBooker::bookProfile(TString const& name, TString const& title, int nchX, double lowX, double highX, double lowY, double highY, char const* option)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::bookProfile(TString const& name, TString const& title, int nchX, double lowX, double highX, double lowY, double highY, char const* option)
 {
   return owner_->bookProfile(name, title, nchX, lowX, highX, lowY, highY, option);
 }
 
-MonitorElement* DQMStore::IBooker::bookProfile(TString const& name, TString const& title, int nchX, double const* xbinsize, int nchY, double lowY, double highY, char const* option)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::bookProfile(TString const& name, TString const& title, int nchX, double const* xbinsize, int nchY, double lowY, double highY, char const* option)
 {
   return owner_->bookProfile(name, title, nchX, xbinsize, nchY, lowY, highY, option);
 }
 
-MonitorElement* DQMStore::IBooker::bookProfile(TString const& name, TString const& title, int nchX, double const* xbinsize, double lowY, double highY, char const* option)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::bookProfile(TString const& name, TString const& title, int nchX, double const* xbinsize, double lowY, double highY, char const* option)
 {
   return owner_->bookProfile(name, title, nchX, xbinsize, lowY, highY, option);
 }
 
-MonitorElement* DQMStore::IBooker::bookProfile(TString const& name, TProfile* object)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::bookProfile(TString const& name, TProfile* object)
 {
   return owner_->bookProfile(name, object);
 }
 
-MonitorElement* DQMStore::IBooker::bookProfile2D(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY, double lowZ, double highZ, char const* option)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::bookProfile2D(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY, double lowZ, double highZ, char const* option)
 {
   return owner_->bookProfile2D(name, title, nchX, lowX, highX, nchY, lowY, highY, lowZ, highZ, option);
 }
 
-MonitorElement* DQMStore::IBooker::bookProfile2D(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY, int nchZ, double lowZ, double highZ, char const* option)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::bookProfile2D(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY, int nchZ, double lowZ, double highZ, char const* option)
 {
   return owner_->bookProfile2D(name, title, nchX, lowX, highX, nchY, lowY, highY, nchZ, lowZ, highZ, option);
 }
 
-MonitorElement* DQMStore::IBooker::bookProfile2D(TString const& name, TProfile2D* object)
+template<class MonitorElement>
+MonitorElement* DQMStore<MonitorElement>::IBooker::bookProfile2D(TString const& name, TProfile2D* object)
 {
   return owner_->bookProfile2D(name, object);
 }
 
-void DQMStore::IBooker::cd()
+template<class MonitorElement>
+void DQMStore<MonitorElement>::IBooker::cd()
 {
   owner_->cd();
 }
 
-void DQMStore::IBooker::cd(std::string const& dir)
+template<class MonitorElement>
+void DQMStore<MonitorElement>::IBooker::cd(std::string const& dir)
 {
   owner_->cd(dir);
 }
 
-void DQMStore::IBooker::setCurrentFolder(std::string const& fullpath)
+template<class MonitorElement>
+void DQMStore<MonitorElement>::IBooker::setCurrentFolder(std::string const& fullpath)
 {
   owner_->setCurrentFolder(fullpath);
 }
 
-void DQMStore::IBooker::goUp()
+template<class MonitorElement>
+void DQMStore<MonitorElement>::IBooker::goUp()
 {
   owner_->goUp();
 }
 
-std::string const& DQMStore::IBooker::pwd()
+template<class MonitorElement>
+std::string const& DQMStore<MonitorElement>::IBooker::pwd()
 {
   return owner_->pwd();
 }
 
-void DQMStore::IBooker::tag(MonitorElement* me, unsigned int const tag)
+template<class MonitorElement>
+void DQMStore<MonitorElement>::IBooker::tag(MonitorElement* me, unsigned int const tag)
 {
   owner_->tag(me, tag);
 }
 
-void DQMStore::IBooker::tagContents(std::string const& path, unsigned int const myTag)
+template<class MonitorElement>
+void DQMStore<MonitorElement>::IBooker::tagContents(std::string const& path, unsigned int const myTag)
 {
   owner_->tagContents(path, myTag);
 }
 
 //IGetter methods
+template<class MonitorElement>
 std::vector<MonitorElement*>
-DQMStore::IGetter::getAllContents(std::string const& path,
+DQMStore<MonitorElement>::IGetter::getAllContents(std::string const& path,
                                   uint32_t const run  /* = 0 */,
                                   uint32_t const lumi /* = 0 */)
 {
   return owner_->getAllContents(path, run, lumi);
 }
 
+template<class MonitorElement>
 MonitorElement*
-DQMStore::IGetter::get(std::string const& path)
+DQMStore<MonitorElement>::IGetter::get(std::string const& path)
 {
   return owner_->get(path);
 }
 
+template<class MonitorElement>
 MonitorElement*
-DQMStore::IGetter::getElement(std::string const& path)
+DQMStore<MonitorElement>::IGetter::getElement(std::string const& path)
 {
   MonitorElement* ptr = this->get(path);
   if (ptr == nullptr) {
@@ -461,213 +501,248 @@ DQMStore::IGetter::getElement(std::string const& path)
   return ptr;
 }
 
+template<class MonitorElement>
 std::vector<std::string>
-DQMStore::IGetter::getSubdirs()
+DQMStore<MonitorElement>::IGetter::getSubdirs()
 {
   return owner_->getSubdirs();
 }
 
+template<class MonitorElement>
 std::vector<std::string>
-DQMStore::IGetter::getMEs()
+DQMStore<MonitorElement>::IGetter::getMEs()
 {
   return owner_->getMEs();
 }
 
+template<class MonitorElement>
 bool
-DQMStore::IGetter::containsAnyMonitorable(std::string const& path)
+DQMStore<MonitorElement>::IGetter::containsAnyMonitorable(std::string const& path)
 {
   return owner_->containsAnyMonitorable(path);
 }
 
+template<class MonitorElement>
 bool
-DQMStore::IGetter::dirExists(std::string const& path)
+DQMStore<MonitorElement>::IGetter::dirExists(std::string const& path)
 {
   return owner_->dirExists(path);
 }
 
+template<class MonitorElement>
 void
-DQMStore::IGetter::cd()
+DQMStore<MonitorElement>::IGetter::cd()
 {
   owner_->cd();
 }
 
+template<class MonitorElement>
 void
-DQMStore::IGetter::cd(std::string const& dir)
+DQMStore<MonitorElement>::IGetter::cd(std::string const& dir)
 {
   owner_->cd(dir);
 }
 
+template<class MonitorElement>
 void
-DQMStore::IGetter::setCurrentFolder(std::string const& fullpath)
+DQMStore<MonitorElement>::IGetter::setCurrentFolder(std::string const& fullpath)
 {
   owner_->setCurrentFolder(fullpath);
 }
 
 // ConcurrentBooker methods
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::bookInt(TString const& name)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::bookInt(TString const& name)
 {
   MonitorElement* me = IBooker::bookInt(name);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::bookFloat(TString const& name)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::bookFloat(TString const& name)
 {
   MonitorElement* me = IBooker::bookFloat(name);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::bookString(TString const& name, TString const& value)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::bookString(TString const& name, TString const& value)
 {
   MonitorElement* me = IBooker::bookString(name, value);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::book1D(TString const& name, TString const& title, int const nchX, double const lowX, double const highX)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::book1D(TString const& name, TString const& title, int const nchX, double const lowX, double const highX)
 {
   MonitorElement* me = IBooker::book1D(name, title, nchX, lowX, highX);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::book1D(TString const& name, TString const& title, int nchX, float const* xbinsize)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::book1D(TString const& name, TString const& title, int nchX, float const* xbinsize)
 {
   MonitorElement* me = IBooker::book1D(name, title, nchX, xbinsize);
   return ConcurrentMonitorElement(me);
 };
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::book1D(TString const& name, TH1F* object)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::book1D(TString const& name, TH1F* object)
 {
   MonitorElement* me = IBooker::book1D(name, object);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::book1S(TString const& name, TString const& title, int nchX, double lowX, double highX)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::book1S(TString const& name, TString const& title, int nchX, double lowX, double highX)
 {
   MonitorElement* me = IBooker::book1S(name, title, nchX, lowX, highX);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::book1S(TString const& name, TH1S* object)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::book1S(TString const& name, TH1S* object)
 {
   MonitorElement* me = IBooker::book1S(name, object);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::book1DD(TString const& name, TString const& title, int nchX, double lowX, double highX)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::book1DD(TString const& name, TString const& title, int nchX, double lowX, double highX)
 {
   MonitorElement* me = IBooker::book1DD(name, title, nchX, lowX, highX);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::book1DD(TString const& name, TH1D* object)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::book1DD(TString const& name, TH1D* object)
 {
   MonitorElement* me = IBooker::book1DD(name, object);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::book2D(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::book2D(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY)
 {
   MonitorElement* me = IBooker::book2D(name, title, nchX, lowX, highX, nchY, lowY, highY);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::book2D(TString const& name, TString const& title, int nchX, float const* xbinsize, int nchY, float const* ybinsize)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::book2D(TString const& name, TString const& title, int nchX, float const* xbinsize, int nchY, float const* ybinsize)
 {
   MonitorElement* me = IBooker::book2D(name, title, nchX, xbinsize, nchY, ybinsize);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::book2D(TString const& name, TH2F* object)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::book2D(TString const& name, TH2F* object)
 {
   MonitorElement* me = IBooker::book2D(name, object);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::book2S(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::book2S(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY)
 {
   MonitorElement* me = IBooker::book2S(name, title, nchX, lowX, highX, nchY, lowY, highY);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::book2S(TString const& name, TString const& title, int nchX, float const* xbinsize, int nchY, float const* ybinsize)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::book2S(TString const& name, TString const& title, int nchX, float const* xbinsize, int nchY, float const* ybinsize)
 {
   MonitorElement* me = IBooker::book2S(name, title, nchX, xbinsize, nchY, ybinsize);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::book2S(TString const& name, TH2S* object)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::book2S(TString const& name, TH2S* object)
 {
   MonitorElement* me = IBooker::book2S(name, object);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::book2DD(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::book2DD(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY)
 {
   MonitorElement* me = IBooker::book2DD(name, title, nchX, lowX, highX, nchY, lowY, highY);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::book2DD(TString const& name, TH2D* object)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::book2DD(TString const& name, TH2D* object)
 {
   MonitorElement* me = IBooker::book2DD(name, object);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::book3D(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY, int nchZ, double lowZ, double highZ)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::book3D(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY, int nchZ, double lowZ, double highZ)
 {
   MonitorElement* me = IBooker::book3D(name, title, nchX, lowX, highX, nchY, lowY, highY, nchZ, lowZ, highZ);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::book3D(TString const& name, TH3F* object)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::book3D(TString const& name, TH3F* object)
 {
   MonitorElement* me = IBooker::book3D(name, object);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::bookProfile(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY, char const* option)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::bookProfile(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY, char const* option)
 {
   MonitorElement* me = IBooker::bookProfile(name, title, nchX, lowX, highX, nchY, lowY, highY, option);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::bookProfile(TString const& name, TString const& title, int nchX, double lowX, double highX, double lowY, double highY, char const* option)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::bookProfile(TString const& name, TString const& title, int nchX, double lowX, double highX, double lowY, double highY, char const* option)
 {
   MonitorElement* me = IBooker::bookProfile(name, title, nchX, (double)lowX, highX, lowY, highY, option);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::bookProfile(TString const& name, TString const& title, int nchX, double const* xbinsize, int nchY, double lowY, double highY, char const* option)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::bookProfile(TString const& name, TString const& title, int nchX, double const* xbinsize, int nchY, double lowY, double highY, char const* option)
 {
   MonitorElement* me = IBooker::bookProfile(name, title, nchX, xbinsize, nchY, lowY, highY, option);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::bookProfile(TString const& name, TString const& title, int nchX, double const* xbinsize, double lowY, double highY, char const* option)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::bookProfile(TString const& name, TString const& title, int nchX, double const* xbinsize, double lowY, double highY, char const* option)
 {
   MonitorElement* me = IBooker::bookProfile(name, title, nchX, xbinsize, lowY, highY, option);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::bookProfile(TString const& name, TProfile* object)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::bookProfile(TString const& name, TProfile* object)
 {
   MonitorElement* me = IBooker::bookProfile(name, object);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::bookProfile2D(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY, double lowZ, double highZ, char const* option)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::bookProfile2D(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY, double lowZ, double highZ, char const* option)
 {
   MonitorElement* me = IBooker::bookProfile2D(name, title, nchX, lowX, highX, nchY, lowY, highY, lowZ, highZ, option);
   return ConcurrentMonitorElement(me);
 }
 
-ConcurrentMonitorElement DQMStore::ConcurrentBooker::bookProfile2D(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY, int nchZ, double lowZ, double highZ, char const* option)
+template<class MonitorElement>
+ConcurrentMonitorElement DQMStore<MonitorElement>::ConcurrentBooker::bookProfile2D(TString const& name, TString const& title, int nchX, double lowX, double highX, int nchY, double lowY, double highY, int nchZ, double lowZ, double highZ, char const* option)
 {
   MonitorElement* me = IBooker::bookProfile2D(name, title, nchX, lowX, highX, nchY, lowY, highY, nchZ, lowZ, highZ, option);
   return ConcurrentMonitorElement(me);
 }
 
 //////////////////////////////////////////////////////////////////////
-DQMStore::DQMStore(edm::ParameterSet const& pset, edm::ActivityRegistry& ar)
+template<class MonitorElement>
+DQMStore<MonitorElement>::DQMStore(edm::ParameterSet const& pset, edm::ActivityRegistry& ar)
   : DQMStore{pset}
 {
   ar.preallocateSignal_.connect([this](edm::service::SystemBounds const& iBounds) {
@@ -684,20 +759,23 @@ DQMStore::DQMStore(edm::ParameterSet const& pset, edm::ActivityRegistry& ar)
     ar.watchPreSourceLumi([this](edm::LuminosityBlockIndex){ forceReset(); });
 #endif
   }
-  ar.watchPostGlobalBeginLumi(this, &DQMStore::postGlobalBeginLumi);
+  ar.watchPostGlobalBeginLumi(this, &DQMStore<MonitorElement>::postGlobalBeginLumi);
 }
 
-DQMStore::DQMStore()
+template<class MonitorElement>
+DQMStore<MonitorElement>::DQMStore()
 {
   initializeFrom(edm::ParameterSet());
 }
 
-DQMStore::DQMStore(edm::ParameterSet const& pset)
+template<class MonitorElement>
+DQMStore<MonitorElement>::DQMStore(edm::ParameterSet const& pset)
 {
   initializeFrom(pset);
 }
 
-DQMStore::~DQMStore()
+template<class MonitorElement>
+DQMStore<MonitorElement>::~DQMStore()
 {
   for (auto& qtest : qtests_)
     delete qtest.second;
@@ -706,8 +784,9 @@ DQMStore::~DQMStore()
     delete qtestspec.first;
 }
 
+template<class MonitorElement>
 void
-DQMStore::initializeFrom(edm::ParameterSet const& pset)
+DQMStore<MonitorElement>::initializeFrom(edm::ParameterSet const& pset)
 {
   makeDirectory("");
   reset();
@@ -772,8 +851,9 @@ DQMStore::initializeFrom(edm::ParameterSet const& pset)
    http://www.gnu.org/software/libc/manual/html_node/Backtraces.html
    http://gcc.gnu.org/onlinedocs/libstdc++/manual/ext_demangling.html.*/
 
+template<class MonitorElement>
 void
-DQMStore::print_trace(std::string const& dir, std::string const& name)
+DQMStore<MonitorElement>::print_trace(std::string const& dir, std::string const& name)
 {
   // the access to the member stream_ is implicitely protected against
   // concurrency problems because the print_trace method is always called behind
@@ -835,30 +915,34 @@ DQMStore::print_trace(std::string const& dir, std::string const& name)
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 /// set verbose level (0 turns all non-error messages off)
+template<class MonitorElement>
 void
-DQMStore::setVerbose(unsigned /* level */)
+DQMStore<MonitorElement>::setVerbose(unsigned /* level */)
 {}
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 /// return pathname of current directory
+template<class MonitorElement>
 std::string const&
-DQMStore::pwd() const
+DQMStore<MonitorElement>::pwd() const
 {
   return pwd_;
 }
 
 /// go to top directory (ie. root)
+template<class MonitorElement>
 void
-DQMStore::cd()
+DQMStore<MonitorElement>::cd()
 {
   setCurrentFolder("");
 }
 
 /// cd to subdirectory (if there)
+template<class MonitorElement>
 void
-DQMStore::cd(std::string const& subdir)
+DQMStore<MonitorElement>::cd(std::string const& subdir)
 {
   std::string clean;
   std::string const* cleaned = nullptr;
@@ -875,8 +959,9 @@ DQMStore::cd(std::string const& subdir)
 /// to be invoked by user to specify directories for monitoring objects
 /// before booking;
 /// commands book1D (etc) & removeElement(name) imply elements in this directory!;
+template<class MonitorElement>
 void
-DQMStore::setCurrentFolder(std::string const& fullpath)
+DQMStore<MonitorElement>::setCurrentFolder(std::string const& fullpath)
 {
   std::string clean;
   std::string const* cleaned = nullptr;
@@ -886,8 +971,9 @@ DQMStore::setCurrentFolder(std::string const& fullpath)
 }
 
 /// equivalent to "cd .."
+template<class MonitorElement>
 void
-DQMStore::goUp()
+DQMStore<MonitorElement>::goUp()
 {
   size_t pos = pwd_.rfind('/');
   if (pos == std::string::npos)
@@ -899,8 +985,9 @@ DQMStore::goUp()
 // -------------------------------------------------------------------
 /// get folder corresponding to inpath wrt to root (create subdirs if
 /// necessary)
+template<class MonitorElement>
 void
-DQMStore::makeDirectory(std::string const& path)
+DQMStore<MonitorElement>::makeDirectory(std::string const& path)
 {
   std::string prev;
   std::string subdir;
@@ -939,8 +1026,9 @@ DQMStore::makeDirectory(std::string const& path)
 }
 
 /// true if directory exists
+template<class MonitorElement>
 bool
-DQMStore::dirExists(std::string const& path) const
+DQMStore<MonitorElement>::dirExists(std::string const& path) const
 {
   return dirs_.count(path) > 0;
 }
@@ -948,26 +1036,26 @@ DQMStore::dirExists(std::string const& path) const
 // //====================================================
 // // Global-histogram booking
 // MonitorElement*
-// DQMStore::bookInt(char_string const& name)
+// DQMStore<MonitorElement>::bookInt(char_string const& name)
 // {
 //   return bookInt(0, 0, pwd_, name);
 // }
 
 // MonitorElement*
-// DQMStore::bookFloat(char_string const& name)
+// DQMStore<MonitorElement>::bookFloat(char_string const& name)
 // {
 //   return bookFloat(0, 0, pwd_, name);
 // }
 
 // MonitorElement*
-// DQMStore::bookString(char_string const& name,
+// DQMStore<MonitorElement>::bookString(char_string const& name,
 //                      char_string const& value)
 // {
 //   return bookString(0, 0, pwd_, name, value);
 // }
 
 // MonitorElement*
-// DQMStore::book1D(char_string const& name,
+// DQMStore<MonitorElement>::book1D(char_string const& name,
 //                  char_string const& title,
 //                  int const nchX, double const lowX, double const highX)
 // {
@@ -975,7 +1063,7 @@ DQMStore::dirExists(std::string const& path) const
 // }
 
 // MonitorElement*
-// DQMStore::book1D(char_string const& name,
+// DQMStore<MonitorElement>::book1D(char_string const& name,
 //                  char_string const& title,
 //                  int const nchX, float const* xbinsize)
 // {
@@ -983,13 +1071,13 @@ DQMStore::dirExists(std::string const& path) const
 // }
 
 // MonitorElement*
-// DQMStore::book1D(char_string const& name, TH1F* h)
+// DQMStore<MonitorElement>::book1D(char_string const& name, TH1F* h)
 // {
 //   return book1D(0, 0, pwd_, name, h);
 // }
 
 // MonitorElement*
-// DQMStore::book1S(char_string const& name,
+// DQMStore<MonitorElement>::book1S(char_string const& name,
 //                  char_string const& title,
 //                  int const nchX, double const lowX, double const highX)
 // {
@@ -997,7 +1085,7 @@ DQMStore::dirExists(std::string const& path) const
 // }
 
 // MonitorElement*
-// DQMStore::book1S(char_string const& name,
+// DQMStore<MonitorElement>::book1S(char_string const& name,
 //                  char_string const& title,
 //                  int const nchX, float const* xbinsize)
 // {
@@ -1005,13 +1093,13 @@ DQMStore::dirExists(std::string const& path) const
 // }
 
 // MonitorElement*
-// DQMStore::book1S(char_string const& name, TH1S* h)
+// DQMStore<MonitorElement>::book1S(char_string const& name, TH1S* h)
 // {
 //   return book1S(0, 0, pwd_, name, h);
 // }
 
 // MonitorElement*
-// DQMStore::book1DD(char_string const& name,
+// DQMStore<MonitorElement>::book1DD(char_string const& name,
 //                   char_string const& title,
 //                   int const nchX, double const lowX, double const highX)
 // {
@@ -1019,7 +1107,7 @@ DQMStore::dirExists(std::string const& path) const
 // }
 
 // MonitorElement*
-// DQMStore::book1DD(char_string const& name,
+// DQMStore<MonitorElement>::book1DD(char_string const& name,
 //                   char_string const& title,
 //                   int const nchX, float const* xbinsize)
 // {
@@ -1027,13 +1115,13 @@ DQMStore::dirExists(std::string const& path) const
 // }
 
 // MonitorElement*
-// DQMStore::book1DD(char_string const& name, TH1D* h)
+// DQMStore<MonitorElement>::book1DD(char_string const& name, TH1D* h)
 // {
 //   return book1DD(0, 0, pwd_, name, h);
 // }
 
 // MonitorElement*
-// DQMStore::book2D(char_string const& name,
+// DQMStore<MonitorElement>::book2D(char_string const& name,
 //                  char_string const& title,
 //                  int const nchX, double const lowX, double const highX,
 //                  int const nchY, double const lowY, double const highY)
@@ -1042,7 +1130,7 @@ DQMStore::dirExists(std::string const& path) const
 // }
 
 // MonitorElement*
-// DQMStore::book2D(char_string const& name,
+// DQMStore<MonitorElement>::book2D(char_string const& name,
 //                  char_string const& title,
 //                  int const nchX, float const* xbinsize,
 //                  int const nchY, float const* ybinsize)
@@ -1051,13 +1139,13 @@ DQMStore::dirExists(std::string const& path) const
 // }
 
 // MonitorElement*
-// DQMStore::book2D(char_string const& name, TH2F* h)
+// DQMStore<MonitorElement>::book2D(char_string const& name, TH2F* h)
 // {
 //   return book2D(0, 0, pwd_, name, h);
 // }
 
 // MonitorElement*
-// DQMStore::book2S(char_string const& name,
+// DQMStore<MonitorElement>::book2S(char_string const& name,
 //                  char_string const& title,
 //                  int const nchX, double const lowX, double const highX,
 //                  int const nchY, double const lowY, double const highY)
@@ -1066,7 +1154,7 @@ DQMStore::dirExists(std::string const& path) const
 // }
 
 // MonitorElement*
-// DQMStore::book2S(char_string const& name,
+// DQMStore<MonitorElement>::book2S(char_string const& name,
 //                  char_string const& title,
 //                  int const nchX, float const* xbinsize,
 //                  int const nchY, float const* ybinsize)
@@ -1075,13 +1163,13 @@ DQMStore::dirExists(std::string const& path) const
 // }
 
 // MonitorElement*
-// DQMStore::book2S(char_string const& name, TH2S* h)
+// DQMStore<MonitorElement>::book2S(char_string const& name, TH2S* h)
 // {
 //   return book2S(0, 0, pwd_, name, h);
 // }
 
 // MonitorElement*
-// DQMStore::book2DD(char_string const& name,
+// DQMStore<MonitorElement>::book2DD(char_string const& name,
 //                   char_string const& title,
 //                   int const nchX, double const lowX, double const highX,
 //                   int const nchY, double const lowY, double const highY)
@@ -1090,7 +1178,7 @@ DQMStore::dirExists(std::string const& path) const
 // }
 
 // MonitorElement*
-// DQMStore::book2DD(char_string const& name,
+// DQMStore<MonitorElement>::book2DD(char_string const& name,
 //                   char_string const& title,
 //                   int const nchX, float const* xbinsize,
 //                   int const nchY, float const* ybinsize)
@@ -1099,13 +1187,13 @@ DQMStore::dirExists(std::string const& path) const
 // }
 
 // MonitorElement*
-// DQMStore::book2DD(char_string const& name, TH2D* h)
+// DQMStore<MonitorElement>::book2DD(char_string const& name, TH2D* h)
 // {
 //   return book2DD(0, 0, pwd_, name, h);
 // }
 
 // MonitorElement*
-// DQMStore::book3D(char_string const& name,
+// DQMStore<MonitorElement>::book3D(char_string const& name,
 //                  char_string const& title,
 //                  int const nchX, double const lowX, double const highX,
 //                  int const nchY, double const lowY, double const highY,
@@ -1118,13 +1206,13 @@ DQMStore::dirExists(std::string const& path) const
 // }
 
 // MonitorElement*
-// DQMStore::book3D(char_string const& name, TH3F* h)
+// DQMStore<MonitorElement>::book3D(char_string const& name, TH3F* h)
 // {
 //   return book3D(0, 0, pwd_, name, h);
 // }
 
 // MonitorElement*
-// DQMStore::bookProfile(char_string const& name,
+// DQMStore<MonitorElement>::bookProfile(char_string const& name,
 //                       char_string const& title,
 //                       int const nchX, double const lowX, double const highX,
 //                       int const nchY, double const lowY, double const highY,
@@ -1134,7 +1222,7 @@ DQMStore::dirExists(std::string const& path) const
 // }
 
 // MonitorElement*
-// DQMStore::bookProfile(char_string const& name,
+// DQMStore<MonitorElement>::bookProfile(char_string const& name,
 //                       char_string const& title,
 //                       int const nchX, double const lowX, double const highX,
 //                       double const lowY, double const highY,
@@ -1144,7 +1232,7 @@ DQMStore::dirExists(std::string const& path) const
 // }
 
 // MonitorElement*
-// DQMStore::bookProfile(char_string const& name,
+// DQMStore<MonitorElement>::bookProfile(char_string const& name,
 //                       char_string const& title,
 //                       int const nchX, double const* xbinsize,
 //                       int const nchY, double const lowY, double const highY,
@@ -1154,7 +1242,7 @@ DQMStore::dirExists(std::string const& path) const
 // }
 
 // MonitorElement*
-// DQMStore::bookProfile(char_string const& name,
+// DQMStore<MonitorElement>::bookProfile(char_string const& name,
 //                       char_string const& title,
 //                       int const nchX, double const* xbinsize,
 //                       double const lowY, double const highY,
@@ -1164,13 +1252,13 @@ DQMStore::dirExists(std::string const& path) const
 // }
 
 // MonitorElement*
-// DQMStore::bookProfile(char_string const& name, TProfile* h)
+// DQMStore<MonitorElement>::bookProfile(char_string const& name, TProfile* h)
 // {
 //   return bookProfile(0, 0, pwd_, name, h);
 // }
 
 // MonitorElement*
-// DQMStore::bookProfile2D(char_string const& name,
+// DQMStore<MonitorElement>::bookProfile2D(char_string const& name,
 //                         char_string const& title,
 //                         int const nchX, double const lowX, double const highX,
 //                         int const nchY, double const lowY, double const highY,
@@ -1184,7 +1272,7 @@ DQMStore::dirExists(std::string const& path) const
 // }
 
 // MonitorElement*
-// DQMStore::bookProfile2D(char_string const& name,
+// DQMStore<MonitorElement>::bookProfile2D(char_string const& name,
 //                         char_string const& title,
 //                         int const nchX, double const lowX, double const highX,
 //                         int const nchY, double const lowY, double const highY,
@@ -1198,7 +1286,7 @@ DQMStore::dirExists(std::string const& path) const
 // }
 
 // MonitorElement*
-// DQMStore::bookProfile2D(char_string const& name, TProfile2D* h)
+// DQMStore<MonitorElement>::bookProfile2D(char_string const& name, TProfile2D* h)
 // {
 //   return bookProfile2D(0, 0, pwd_, name, h);
 // }
@@ -1207,9 +1295,10 @@ DQMStore::dirExists(std::string const& path) const
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+template<class ME>
 template <class HISTO, class COLLATE>
-MonitorElement*
-DQMStore::book_(std::string const& dir,
+ME*
+DQMStore<ME>::book_(std::string const& dir,
                 std::string const& name,
                 char const* context,
                 int const kind,
@@ -1226,7 +1315,7 @@ DQMStore::book_(std::string const& dir,
   h->SetDirectory(nullptr);
 
   // Check if the request monitor element already exists.
-  MonitorElement* me = findObject(run_, 0, moduleId_, dir, name);
+  ME* me = findObject(run_, 0, moduleId_, dir, name);
   if (me) {
     if (collateHistograms_) {
       collate(me, h, verbose_);
@@ -1247,13 +1336,13 @@ DQMStore::book_(std::string const& dir,
   else {
     // Create and initialise core object.
     assert(dirs_.count(dir));
-    MonitorElement proto(&*dirs_.find(dir), name, run_, moduleId_);
+    ME proto(&*dirs_.find(dir), name, run_, moduleId_);
     if (doSaveByLumi_ && canSaveByLumi_) {
       // for legacy (not DQMEDAnalyzer) this is not save.
       proto.setLumiFlag(); // default to per-lumi mode for all non-legacy MEs.
     }
-    me = const_cast<MonitorElement&>(*data_.insert(std::move(proto)).first)
-      .initialise((MonitorElement::Kind)kind, h);
+    me = &const_cast<ME&>(*data_.insert(std::move(proto)).first);
+    me->initialise((::MonitorElement::Kind)kind, h);
 
     // Initialise quality test information.
     for (auto const& q : qtestspecs_) {
@@ -1269,7 +1358,7 @@ DQMStore::book_(std::string const& dir,
     refdir += s_referenceDirName;
     refdir += '/';
     refdir += dir;
-    MonitorElement* referenceME = findObject(0, 0, 0, refdir, name);
+    ME* referenceME = findObject(0, 0, 0, refdir, name);
     if (referenceME) {
       // We have booked a new MonitorElement with a specific dir and name.
       // Then, if we can find the corresponding MonitorElement in the reference
@@ -1284,8 +1373,9 @@ DQMStore::book_(std::string const& dir,
   }
 }
 
-MonitorElement*
-DQMStore::book_(std::string const& dir,
+template<class ME>
+ME*
+DQMStore<ME>::book_(std::string const& dir,
                 std::string const& name,
                 char const* context)
 {
@@ -1294,7 +1384,7 @@ DQMStore::book_(std::string const& dir,
     print_trace(dir, name);
 
   // Check if the request monitor element already exists.
-  if (MonitorElement* me = findObject(run_, 0, moduleId_, dir, name)) {
+  if (ME* me = findObject(run_, 0, moduleId_, dir, name)) {
     if (verbose_ > 1) {
       std::string path;
       mergePath(path, dir, name);
@@ -1309,17 +1399,18 @@ DQMStore::book_(std::string const& dir,
   else {
     // Create it and return for initialisation.
     assert(dirs_.count(dir));
-    MonitorElement proto(&*dirs_.find(dir), name, run_, moduleId_);
+    ME proto(&*dirs_.find(dir), name, run_, moduleId_);
     // this is used only for Int/String/Float. We don't save these by lumi by
     // default, since we can't merge them properly.
-    return &const_cast<MonitorElement&>(*data_.insert(std::move(proto)).first);
+    return &const_cast<ME&>(*data_.insert(std::move(proto)).first);
   }
 }
 
 // -------------------------------------------------------------------
 /// Book int.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::bookInt_(std::string const& dir, std::string const& name)
+DQMStore<MonitorElement>::bookInt_(std::string const& dir, std::string const& name)
 {
   if (collateHistograms_) {
     if (MonitorElement* me = findObject(run_, 0, moduleId_, dir, name)) {
@@ -1327,20 +1418,22 @@ DQMStore::bookInt_(std::string const& dir, std::string const& name)
       return me;
     }
   }
-  return book_(dir, name, "bookInt")->initialise(MonitorElement::DQM_KIND_INT);
+  auto me = book_(dir, name, "bookInt"); me->initialise(MonitorElement::DQM_KIND_INT); return me;
 }
 
 /// Book int.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::bookInt(char_string const& name)
+DQMStore<MonitorElement>::bookInt(char_string const& name)
 {
   return bookInt_(pwd_, name);
 }
 
 // -------------------------------------------------------------------
 /// Book float.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::bookFloat_(std::string const& dir, std::string const& name)
+DQMStore<MonitorElement>::bookFloat_(std::string const& dir, std::string const& name)
 {
   if (collateHistograms_) {
     if (MonitorElement* me = findObject(run_, 0, moduleId_, dir, name)) {
@@ -1348,20 +1441,22 @@ DQMStore::bookFloat_(std::string const& dir, std::string const& name)
       return me;
     }
   }
-  return book_(dir, name, "bookFloat")->initialise(MonitorElement::DQM_KIND_REAL);
+  auto me = book_(dir, name, "bookFloat"); me->initialise(MonitorElement::DQM_KIND_REAL); return me;
 }
 
 /// Book float.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::bookFloat(char_string const& name)
+DQMStore<MonitorElement>::bookFloat(char_string const& name)
 {
   return bookFloat_(pwd_, name);
 }
 
 // -------------------------------------------------------------------
 /// Book string.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::bookString_(std::string const& dir,
+DQMStore<MonitorElement>::bookString_(std::string const& dir,
                       std::string const& name,
                       std::string const& value)
 {
@@ -1369,116 +1464,131 @@ DQMStore::bookString_(std::string const& dir,
     if (MonitorElement* me = findObject(run_, 0, moduleId_, dir, name))
       return me;
   }
-  return book_(dir, name, "bookString")->initialise(MonitorElement::DQM_KIND_STRING, value);
+  auto me = book_(dir, name, "bookString"); me->initialise(MonitorElement::DQM_KIND_STRING, value); return me;
 }
 
 /// Book string.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::bookString(char_string const& name, char_string const& value)
+DQMStore<MonitorElement>::bookString(char_string const& name, char_string const& value)
 {
   return bookString_(pwd_, name, value);
 }
 
 // -------------------------------------------------------------------
 /// Book 1D histogram based on TH1F.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book1D_(std::string const& dir, std::string const& name, TH1F* h)
+DQMStore<MonitorElement>::book1D_(std::string const& dir, std::string const& name, TH1F* h)
 {
   return book_(dir, name, "book1D", MonitorElement::DQM_KIND_TH1F, h, collate1D);
 }
 
 /// Book 1D histogram based on TH1S.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book1S_(std::string const& dir, std::string const& name, TH1S* h)
+DQMStore<MonitorElement>::book1S_(std::string const& dir, std::string const& name, TH1S* h)
 {
   return book_(dir, name, "book1S", MonitorElement::DQM_KIND_TH1S, h, collate1S);
 }
 
 /// Book 1D histogram based on TH1D.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book1DD_(std::string const& dir, std::string const& name, TH1D* h)
+DQMStore<MonitorElement>::book1DD_(std::string const& dir, std::string const& name, TH1D* h)
 {
   return book_(dir, name, "book1DD", MonitorElement::DQM_KIND_TH1D, h, collate1DD);
 }
 
 /// Book 1D histogram.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book1D(char_string const& name, char_string const& title,
+DQMStore<MonitorElement>::book1D(char_string const& name, char_string const& title,
                  int const nchX, double const lowX, double const highX)
 {
   return book1D_(pwd_, name, new TH1F(name, title, nchX, lowX, highX));
 }
 
 /// Book 1S histogram.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book1S(char_string const& name, char_string const& title,
+DQMStore<MonitorElement>::book1S(char_string const& name, char_string const& title,
                  int const nchX, double const lowX, double const highX)
 {
   return book1S_(pwd_, name, new TH1S(name, title, nchX, lowX, highX));
 }
 
 /// Book 1S histogram.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book1DD(char_string const& name, char_string const& title,
+DQMStore<MonitorElement>::book1DD(char_string const& name, char_string const& title,
                   int const nchX, double const lowX, double const highX)
 {
   return book1DD_(pwd_, name, new TH1D(name, title, nchX, lowX, highX));
 }
 
 /// Book 1D variable bin histogram.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book1D(char_string const& name, char_string const& title,
+DQMStore<MonitorElement>::book1D(char_string const& name, char_string const& title,
                  int const nchX, const float* xbinsize)
 {
   return book1D_(pwd_, name, new TH1F(name, title, nchX, xbinsize));
 }
 
 /// Book 1D histogram by cloning an existing histogram.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book1D(char_string const& name, TH1F* source)
+DQMStore<MonitorElement>::book1D(char_string const& name, TH1F* source)
 {
   return book1D_(pwd_, name, static_cast<TH1F*>(source->Clone(name)));
 }
 
 /// Book 1S histogram by cloning an existing histogram.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book1S(char_string const& name, TH1S* source)
+DQMStore<MonitorElement>::book1S(char_string const& name, TH1S* source)
 {
   return book1S_(pwd_, name, static_cast<TH1S*>(source->Clone(name)));
 }
 
 /// Book 1D double histogram by cloning an existing histogram.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book1DD(char_string const& name, TH1D* source)
+DQMStore<MonitorElement>::book1DD(char_string const& name, TH1D* source)
 {
   return book1DD_(pwd_, name, static_cast<TH1D*>(source->Clone(name)));
 }
 
 // -------------------------------------------------------------------
 /// Book 2D histogram based on TH2F.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book2D_(std::string const& dir, std::string const& name, TH2F* h)
+DQMStore<MonitorElement>::book2D_(std::string const& dir, std::string const& name, TH2F* h)
 {
   return book_(dir, name, "book2D", MonitorElement::DQM_KIND_TH2F, h, collate2D);
 }
 
 /// Book 2D histogram based on TH2S.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book2S_(std::string const& dir, std::string const& name, TH2S* h)
+DQMStore<MonitorElement>::book2S_(std::string const& dir, std::string const& name, TH2S* h)
 {
   return book_(dir, name, "book2S", MonitorElement::DQM_KIND_TH2S, h, collate2S);
 }
 
 /// Book 2D histogram based on TH2D.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book2DD_(std::string const& dir, std::string const& name, TH2D* h)
+DQMStore<MonitorElement>::book2DD_(std::string const& dir, std::string const& name, TH2D* h)
 {
   return book_(dir, name, "book2DD", MonitorElement::DQM_KIND_TH2D, h, collate2DD);
 }
 
 /// Book 2D histogram.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book2D(char_string const& name, char_string const& title,
+DQMStore<MonitorElement>::book2D(char_string const& name, char_string const& title,
                  int const nchX, double const lowX, double const highX,
                  int const nchY, double const lowY, double const highY)
 {
@@ -1488,8 +1598,9 @@ DQMStore::book2D(char_string const& name, char_string const& title,
 }
 
 /// Book 2S histogram.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book2S(char_string const& name, char_string const& title,
+DQMStore<MonitorElement>::book2S(char_string const& name, char_string const& title,
                  int const nchX, double const lowX, double const highX,
                  int const nchY, double const lowY, double const highY)
 {
@@ -1499,8 +1610,9 @@ DQMStore::book2S(char_string const& name, char_string const& title,
 }
 
 /// Book 2D histogram.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book2DD(char_string const& name, char_string const& title,
+DQMStore<MonitorElement>::book2DD(char_string const& name, char_string const& title,
                   int const nchX, double const lowX, double const highX,
                   int const nchY, double const lowY, double const highY)
 {
@@ -1510,8 +1622,9 @@ DQMStore::book2DD(char_string const& name, char_string const& title,
 }
 
 /// Book 2D variable bin histogram.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book2D(char_string const& name, char_string const& title,
+DQMStore<MonitorElement>::book2D(char_string const& name, char_string const& title,
                  int const nchX, const float* xbinsize, int const nchY, const float* ybinsize)
 {
   return book2D_(pwd_, name, new TH2F(name, title,
@@ -1519,8 +1632,9 @@ DQMStore::book2D(char_string const& name, char_string const& title,
 }
 
 /// Book 2S variable bin histogram.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book2S(char_string const& name, char_string const& title,
+DQMStore<MonitorElement>::book2S(char_string const& name, char_string const& title,
                  int const nchX, const float* xbinsize, int const nchY, const float* ybinsize)
 {
   return book2S_(pwd_, name, new TH2S(name, title,
@@ -1528,37 +1642,42 @@ DQMStore::book2S(char_string const& name, char_string const& title,
 }
 
 /// Book 2D histogram by cloning an existing histogram.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book2D(char_string const& name, TH2F* source)
+DQMStore<MonitorElement>::book2D(char_string const& name, TH2F* source)
 {
   return book2D_(pwd_, name, static_cast<TH2F*>(source->Clone(name)));
 }
 
 /// Book 2DS histogram by cloning an existing histogram.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book2S(char_string const& name, TH2S* source)
+DQMStore<MonitorElement>::book2S(char_string const& name, TH2S* source)
 {
   return book2S_(pwd_, name, static_cast<TH2S*>(source->Clone(name)));
 }
 
 /// Book 2DS histogram by cloning an existing histogram.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book2DD(char_string const& name, TH2D* source)
+DQMStore<MonitorElement>::book2DD(char_string const& name, TH2D* source)
 {
   return book2DD_(pwd_, name, static_cast<TH2D*>(source->Clone(name)));
 }
 
 // -------------------------------------------------------------------
 /// Book 3D histogram based on TH3F.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book3D_(std::string const& dir, std::string const& name, TH3F* h)
+DQMStore<MonitorElement>::book3D_(std::string const& dir, std::string const& name, TH3F* h)
 {
   return book_(dir, name, "book3D", MonitorElement::DQM_KIND_TH3F, h, collate3D);
 }
 
 /// Book 3D histogram.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book3D(char_string const& name, char_string const& title,
+DQMStore<MonitorElement>::book3D(char_string const& name, char_string const& title,
                  int const nchX, double const lowX, double const highX,
                  int const nchY, double const lowY, double const highY,
                  int const nchZ, double const lowZ, double const highZ)
@@ -1570,16 +1689,18 @@ DQMStore::book3D(char_string const& name, char_string const& title,
 }
 
 /// Book 3D histogram by cloning an existing histogram.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::book3D(char_string const& name, TH3F* source)
+DQMStore<MonitorElement>::book3D(char_string const& name, TH3F* source)
 {
   return book3D_(pwd_, name, static_cast<TH3F*>(source->Clone(name)));
 }
 
 // -------------------------------------------------------------------
 /// Book profile histogram based on TProfile.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::bookProfile_(std::string const& dir, std::string const& name, TProfile* h)
+DQMStore<MonitorElement>::bookProfile_(std::string const& dir, std::string const& name, TProfile* h)
 {
   return book_(dir, name, "bookProfile",
                MonitorElement::DQM_KIND_TPROFILE,
@@ -1589,8 +1710,9 @@ DQMStore::bookProfile_(std::string const& dir, std::string const& name, TProfile
 /// Book profile.  Option is one of: " ", "s" (default), "i", "G" (see
 /// TProfile::BuildOptions).  The number of channels in Y is
 /// disregarded in a profile plot.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::bookProfile(char_string const& name, char_string const& title,
+DQMStore<MonitorElement>::bookProfile(char_string const& name, char_string const& title,
                       int const nchX, double const lowX, double const highX,
                       int /* nchY */, double const lowY, double const highY,
                       char const* option /* = "s" */)
@@ -1604,8 +1726,9 @@ DQMStore::bookProfile(char_string const& name, char_string const& title,
 /// Book profile.  Option is one of: " ", "s" (default), "i", "G" (see
 /// TProfile::BuildOptions).  The number of channels in Y is
 /// disregarded in a profile plot.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::bookProfile(char_string const& name, char_string const& title,
+DQMStore<MonitorElement>::bookProfile(char_string const& name, char_string const& title,
                       int const nchX, double const lowX, double const highX,
                       double const lowY, double const highY,
                       char const* option /* = "s" */)
@@ -1619,8 +1742,9 @@ DQMStore::bookProfile(char_string const& name, char_string const& title,
 /// Book variable bin profile.  Option is one of: " ", "s" (default), "i", "G" (see
 /// TProfile::BuildOptions).  The number of channels in Y is
 /// disregarded in a profile plot.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::bookProfile(char_string const& name, char_string const& title,
+DQMStore<MonitorElement>::bookProfile(char_string const& name, char_string const& title,
                       int const nchX, double const* xbinsize,
                       int /* nchY */, double const lowY, double const highY,
                       char const* option /* = "s" */)
@@ -1634,8 +1758,9 @@ DQMStore::bookProfile(char_string const& name, char_string const& title,
 /// Book variable bin profile.  Option is one of: " ", "s" (default), "i", "G" (see
 /// TProfile::BuildOptions).  The number of channels in Y is
 /// disregarded in a profile plot.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::bookProfile(char_string const& name, char_string const& title,
+DQMStore<MonitorElement>::bookProfile(char_string const& name, char_string const& title,
                       int const nchX, double const* xbinsize,
                       double const lowY, double const highY,
                       char const* option /* = "s" */)
@@ -1647,16 +1772,18 @@ DQMStore::bookProfile(char_string const& name, char_string const& title,
 }
 
 /// Book TProfile by cloning an existing profile.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::bookProfile(char_string const& name, TProfile* source)
+DQMStore<MonitorElement>::bookProfile(char_string const& name, TProfile* source)
 {
   return bookProfile_(pwd_, name, static_cast<TProfile*>(source->Clone(name)));
 }
 
 // -------------------------------------------------------------------
 /// Book 2D profile histogram based on TProfile2D.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::bookProfile2D_(std::string const& dir, std::string const& name, TProfile2D* h)
+DQMStore<MonitorElement>::bookProfile2D_(std::string const& dir, std::string const& name, TProfile2D* h)
 {
   return book_(dir, name, "bookProfile2D",
                MonitorElement::DQM_KIND_TPROFILE2D,
@@ -1666,8 +1793,9 @@ DQMStore::bookProfile2D_(std::string const& dir, std::string const& name, TProfi
 /// Book 2-D profile.  Option is one of: " ", "s" (default), "i", "G"
 /// (see TProfile2D::BuildOptions).  The number of channels in Z is
 /// disregarded in a 2-D profile.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::bookProfile2D(char_string const& name, char_string const& title,
+DQMStore<MonitorElement>::bookProfile2D(char_string const& name, char_string const& title,
                         int const nchX, double const lowX, double const highX,
                         int const nchY, double const lowY, double const highY,
                         int /* nchZ */, double const lowZ, double const highZ,
@@ -1683,8 +1811,9 @@ DQMStore::bookProfile2D(char_string const& name, char_string const& title,
 /// Book 2-D profile.  Option is one of: " ", "s" (default), "i", "G"
 /// (see TProfile2D::BuildOptions).  The number of channels in Z is
 /// disregarded in a 2-D profile.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::bookProfile2D(char_string const& name, char_string const& title,
+DQMStore<MonitorElement>::bookProfile2D(char_string const& name, char_string const& title,
                         int const nchX, double const lowX, double const highX,
                         int const nchY, double const lowY, double const highY,
                         double const lowZ, double const highZ,
@@ -1698,8 +1827,9 @@ DQMStore::bookProfile2D(char_string const& name, char_string const& title,
 }
 
 /// Book TProfile2D by cloning an existing profile.
+template<class MonitorElement>
 MonitorElement*
-DQMStore::bookProfile2D(char_string const& name, TProfile2D* source)
+DQMStore<MonitorElement>::bookProfile2D(char_string const& name, TProfile2D* source)
 {
   return bookProfile2D_(pwd_, name, static_cast<TProfile2D*>(source->Clone(name)));
 }
@@ -1707,8 +1837,9 @@ DQMStore::bookProfile2D(char_string const& name, TProfile2D* source)
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+template<class MonitorElement>
 bool
-DQMStore::checkBinningMatches(MonitorElement* me, TH1* h, unsigned const verbose)
+DQMStore<MonitorElement>::checkBinningMatches(MonitorElement* me, TH1* h, unsigned const verbose)
 {
   if (me->getTH1()->GetNbinsX() != h->GetNbinsX()
       || me->getTH1()->GetNbinsY() != h->GetNbinsY()
@@ -1733,57 +1864,65 @@ DQMStore::checkBinningMatches(MonitorElement* me, TH1* h, unsigned const verbose
   return true;
 }
 
+template<class MonitorElement>
 void
-DQMStore::collate1D(MonitorElement* me, TH1F* h, unsigned const verbose)
+DQMStore<MonitorElement>::collate1D(MonitorElement* me, TH1F* h, unsigned const verbose)
 {
   if (checkBinningMatches(me,h,verbose))
     me->getTH1F()->Add(h);
 }
 
+template<class MonitorElement>
 void
-DQMStore::collate1S(MonitorElement* me, TH1S* h, unsigned const verbose)
+DQMStore<MonitorElement>::collate1S(MonitorElement* me, TH1S* h, unsigned const verbose)
 {
   if (checkBinningMatches(me,h,verbose))
     me->getTH1S()->Add(h);
 }
 
+template<class MonitorElement>
 void
-DQMStore::collate1DD(MonitorElement* me, TH1D* h, unsigned const verbose)
+DQMStore<MonitorElement>::collate1DD(MonitorElement* me, TH1D* h, unsigned const verbose)
 {
   if (checkBinningMatches(me,h,verbose))
     me->getTH1D()->Add(h);
 }
 
+template<class MonitorElement>
 void
-DQMStore::collate2D(MonitorElement* me, TH2F* h, unsigned const verbose)
+DQMStore<MonitorElement>::collate2D(MonitorElement* me, TH2F* h, unsigned const verbose)
 {
   if (checkBinningMatches(me,h,verbose))
     me->getTH2F()->Add(h);
 }
 
+template<class MonitorElement>
 void
-DQMStore::collate2S(MonitorElement* me, TH2S* h, unsigned const verbose)
+DQMStore<MonitorElement>::collate2S(MonitorElement* me, TH2S* h, unsigned const verbose)
 {
   if (checkBinningMatches(me,h,verbose))
     me->getTH2S()->Add(h);
 }
 
+template<class MonitorElement>
 void
-DQMStore::collate2DD(MonitorElement* me, TH2D* h, unsigned const verbose)
+DQMStore<MonitorElement>::collate2DD(MonitorElement* me, TH2D* h, unsigned const verbose)
 {
   if (checkBinningMatches(me,h,verbose))
     me->getTH2D()->Add(h);
 }
 
+template<class MonitorElement>
 void
-DQMStore::collate3D(MonitorElement* me, TH3F* h, unsigned const verbose)
+DQMStore<MonitorElement>::collate3D(MonitorElement* me, TH3F* h, unsigned const verbose)
 {
   if (checkBinningMatches(me,h,verbose))
     me->getTH3F()->Add(h);
 }
 
+template<class MonitorElement>
 void
-DQMStore::collateProfile(MonitorElement* me, TProfile* h, unsigned const verbose)
+DQMStore<MonitorElement>::collateProfile(MonitorElement* me, TProfile* h, unsigned const verbose)
 {
   if (checkBinningMatches(me,h,verbose)) {
     TProfile* meh = me->getTProfile();
@@ -1791,8 +1930,9 @@ DQMStore::collateProfile(MonitorElement* me, TProfile* h, unsigned const verbose
   }
 }
 
+template<class MonitorElement>
 void
-DQMStore::collateProfile2D(MonitorElement* me, TProfile2D* h, unsigned const verbose)
+DQMStore<MonitorElement>::collateProfile2D(MonitorElement* me, TProfile2D* h, unsigned const verbose)
 {
   if (checkBinningMatches(me,h,verbose)) {
     TProfile2D* meh = me->getTProfile2D();
@@ -1804,8 +1944,9 @@ DQMStore::collateProfile2D(MonitorElement* me, TProfile2D* h, unsigned const ver
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 /// tag ME as <myTag> (myTag > 0)
+template<class MonitorElement>
 void
-DQMStore::tag(MonitorElement* me, unsigned int const myTag)
+DQMStore<MonitorElement>::tag(MonitorElement* me, unsigned int const myTag)
 {
   if (! myTag)
     raiseDQMError("DQMStore", "Attempt to tag monitor element '%s'"
@@ -1819,8 +1960,9 @@ DQMStore::tag(MonitorElement* me, unsigned int const myTag)
 }
 
 /// tag ME specified by full pathname (e.g. "my/long/dir/my_histo")
+template<class MonitorElement>
 void
-DQMStore::tag(std::string const& path, unsigned int const myTag)
+DQMStore<MonitorElement>::tag(std::string const& path, unsigned int const myTag)
 {
   std::string dir;
   std::string name;
@@ -1835,8 +1977,9 @@ DQMStore::tag(std::string const& path, unsigned int const myTag)
 }
 
 /// tag all children of folder (does NOT include subfolders)
+template<class MonitorElement>
 void
-DQMStore::tagContents(std::string const& path, unsigned int const myTag)
+DQMStore<MonitorElement>::tagContents(std::string const& path, unsigned int const myTag)
 {
   MonitorElement proto(&path, std::string());
   auto e = data_.end();
@@ -1847,8 +1990,9 @@ DQMStore::tagContents(std::string const& path, unsigned int const myTag)
 
 /// tag all children of folder, including all subfolders and their children;
 /// path must be an exact path name
+template<class MonitorElement>
 void
-DQMStore::tagAllContents(std::string const& path, unsigned int const myTag)
+DQMStore<MonitorElement>::tagAllContents(std::string const& path, unsigned int const myTag)
 {
   std::string clean;
   std::string const* cleaned = nullptr;
@@ -1868,8 +2012,9 @@ DQMStore::tagAllContents(std::string const& path, unsigned int const myTag)
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 /// get list of subdirectories of current directory
+template<class MonitorElement>
 std::vector<std::string>
-DQMStore::getSubdirs() const
+DQMStore<MonitorElement>::getSubdirs() const
 {
   std::vector<std::string> result;
   auto e = dirs_.end();
@@ -1891,8 +2036,9 @@ DQMStore::getSubdirs() const
 }
 
 /// get list of (non-dir) MEs of current directory
+template<class MonitorElement>
 std::vector<std::string>
-DQMStore::getMEs() const
+DQMStore<MonitorElement>::getMEs() const
 {
   MonitorElement proto(&pwd_, std::string());
   std::vector<std::string> result;
@@ -1907,8 +2053,9 @@ DQMStore::getMEs() const
 
 /// true if directory (or any subfolder at any level below it) contains
 /// at least one monitorable element
+template<class MonitorElement>
 bool
-DQMStore::containsAnyMonitorable(std::string const& path) const
+DQMStore<MonitorElement>::containsAnyMonitorable(std::string const& path) const
 {
   MonitorElement proto(&path, std::string());
   auto e = data_.end();
@@ -1917,8 +2064,9 @@ DQMStore::containsAnyMonitorable(std::string const& path) const
 }
 
 /// get ME from full pathname (e.g. "my/long/dir/my_histo")
+template<class MonitorElement>
 MonitorElement*
-DQMStore::get(std::string const& path) const
+DQMStore<MonitorElement>::get(std::string const& path) const
 {
   std::string dir;
   std::string name;
@@ -1930,8 +2078,9 @@ DQMStore::get(std::string const& path) const
 }
 
 /// get all MonitorElements tagged as <tag>
+template<class MonitorElement>
 std::vector<MonitorElement*>
-DQMStore::get(unsigned int const tag) const
+DQMStore<MonitorElement>::get(unsigned int const tag) const
 {
   // FIXME: Use reverse map [tag -> path] / [tag -> dir]?
   std::vector<MonitorElement*> result;
@@ -1944,8 +2093,9 @@ DQMStore::get(unsigned int const tag) const
 
 /// get vector with all children of folder
 /// (does NOT include contents of subfolders)
+template<class MonitorElement>
 std::vector<MonitorElement*>
-DQMStore::getContents(std::string const& path) const
+DQMStore<MonitorElement>::getContents(std::string const& path) const
 {
   std::string clean;
   std::string const* cleaned = nullptr;
@@ -1963,8 +2113,9 @@ DQMStore::getContents(std::string const& path) const
 }
 
 /// same as above for tagged MonitorElements
+template<class MonitorElement>
 std::vector<MonitorElement*>
-DQMStore::getContents(std::string const& path, unsigned int const tag) const
+DQMStore<MonitorElement>::getContents(std::string const& path, unsigned int const tag) const
 {
   std::string clean;
   std::string const* cleaned = nullptr;
@@ -1987,8 +2138,9 @@ DQMStore::getContents(std::string const& path, unsigned int const tag) const
 /// return vector<string> of the form <dir pathname>:<obj1>,<obj2>,<obj3>;
 /// if showContents = false, change form to <dir pathname>:
 /// (useful for subscription requests; meant to imply "all contents")
+template<class MonitorElement>
 void
-DQMStore::getContents(std::vector<std::string>& into, bool const showContents /* = true */) const
+DQMStore<MonitorElement>::getContents(std::vector<std::string>& into, bool const showContents /* = true */) const
 {
   into.clear();
   into.reserve(dirs_.size());
@@ -2043,8 +2195,9 @@ DQMStore::getContents(std::vector<std::string>& into, bool const showContents /*
 
 /// get MonitorElement <name> in directory <dir>
 /// (null if MonitorElement does not exist)
+template<class MonitorElement>
 MonitorElement*
-DQMStore::findObject(uint32_t const run,
+DQMStore<MonitorElement>::findObject(uint32_t const run,
                      uint32_t const lumi,
                      uint32_t const moduleId,
                      std::string const& dir,
@@ -2071,8 +2224,9 @@ DQMStore::findObject(uint32_t const run,
 
 /// get vector with children of folder, including all subfolders + their children;
 /// must use an exact pathname
+template<class MonitorElement>
 std::vector<MonitorElement*>
-DQMStore::getAllContents(std::string const& path,
+DQMStore<MonitorElement>::getAllContents(std::string const& path,
                          uint32_t const run  /* = 0 */,
                          uint32_t const lumi /* = 0 */) const
 {
@@ -2117,8 +2271,9 @@ DQMStore::getAllContents(std::string const& path,
 
 /// get vector with children of folder, including all subfolders + their children;
 /// matches names against a wildcard pattern matched against the full ME path
+template<class MonitorElement>
 std::vector<MonitorElement*>
-DQMStore::getMatchingContents(std::string const& pattern, lat::Regexp::Syntax const syntaxType /* = Wildcard */) const
+DQMStore<MonitorElement>::getMatchingContents(std::string const& pattern, lat::Regexp::Syntax const syntaxType /* = Wildcard */) const
 {
   lat::Regexp rx;
   try {
@@ -2148,8 +2303,9 @@ DQMStore::getMatchingContents(std::string const& pattern, lat::Regexp::Syntax co
 /** Invoke this method after flushing all recently changed monitoring.
     Clears updated flag on all recently updated MEs and calls their
     Reset() method for those that have resetMe = true. */
+template<class MonitorElement>
 void
-DQMStore::reset()
+DQMStore<MonitorElement>::reset()
 {
   for (auto const& m : data_) {
     auto& me = const_cast<MonitorElement&>(m);
@@ -2168,8 +2324,9 @@ DQMStore::reset()
 //////////////////////////////////////////////////////////////////////
 /** Invoke this method after flushing all recently changed monitoring.
     Clears updated flag on all MEs and calls their Reset() method. */
+template<class MonitorElement>
 void
-DQMStore::forceReset()
+DQMStore<MonitorElement>::forceReset()
 {
   for (auto const& m : data_) {
     if (forceResetOnBeginLumi_ && (m.getLumiFlag() == false))
@@ -2190,8 +2347,9 @@ DQMStore::forceReset()
  * Reset global per-lumi MEs (or all MEs if LSbasedMode) so that
  * they can be reused.
  */
+template<class MonitorElement>
 void
-DQMStore::postGlobalBeginLumi(edm::GlobalContext const& gc)
+DQMStore<MonitorElement>::postGlobalBeginLumi(edm::GlobalContext const& gc)
 {
   static const std::string null_str("");
 
@@ -2224,11 +2382,12 @@ DQMStore::postGlobalBeginLumi(edm::GlobalContext const& gc)
  * will be deleted at the beginninng of the next lumisection.
  */
 
+template<class MonitorElement>
 void
-DQMStore::cloneLumiHistograms(uint32_t const run, uint32_t const lumi, uint32_t const moduleId)
+DQMStore<MonitorElement>::cloneLumiHistograms(uint32_t const run, uint32_t const lumi, uint32_t const moduleId)
 {
   if (verbose_ > 1) {
-    std::cout << "DQMStore::cloneLumiHistograms - Preparing lumi histograms for run: "
+    std::cout << "DQMStore<MonitorElement>::cloneLumiHistograms - Preparing lumi histograms for run: "
               << run << ", lumi: " << lumi << ", module: " << moduleId << std::endl;
   }
 
@@ -2266,11 +2425,12 @@ DQMStore::cloneLumiHistograms(uint32_t const run, uint32_t const lumi, uint32_t 
 /** Same as above, but for run histograms.
  */
 
+template<class MonitorElement>
 void
-DQMStore::cloneRunHistograms(uint32_t const run, uint32_t const moduleId)
+DQMStore<MonitorElement>::cloneRunHistograms(uint32_t const run, uint32_t const moduleId)
 {
   if (verbose_ > 1) {
-    std::cout << "DQMStore::cloneRunHistograms - Preparing run histograms for run: "
+    std::cout << "DQMStore<MonitorElement>::cloneRunHistograms - Preparing run histograms for run: "
               << run << ", module: " << moduleId << std::endl;
   }
 
@@ -2309,8 +2469,9 @@ DQMStore::cloneRunHistograms(uint32_t const run, uint32_t const moduleId)
  * Such histograms are created at the end of each lumi and should be
  * deleted after the last globalEndLuminosityBlock.
  */
+template<class MonitorElement>
 void
-DQMStore::deleteUnusedLumiHistograms(uint32_t const run, uint32_t const lumi)
+DQMStore<MonitorElement>::deleteUnusedLumiHistograms(uint32_t const run, uint32_t const lumi)
 {
   if (!enableMultiThread_)
     return;
@@ -2337,7 +2498,7 @@ DQMStore::deleteUnusedLumiHistograms(uint32_t const run, uint32_t const lumi)
     }
 
     if (verbose_ > 1) {
-      std::cout << "DQMStore::deleteUnusedLumiHistograms: deleted monitor element '"
+      std::cout << "DQMStore<MonitorElement>::deleteUnusedLumiHistograms: deleted monitor element '"
                 << *i->data_.dirname << "/" << i->data_.objname << "'"
                 << "flags " << i->data_.flags << "\n";
     }
@@ -2351,8 +2512,9 @@ DQMStore::deleteUnusedLumiHistograms(uint32_t const run, uint32_t const lumi)
 //////////////////////////////////////////////////////////////////////
 /// extract object (TH1F, TH2F, ...) from <to>; return success flag
 /// flag fromRemoteNode indicating if ME arrived from different node
+template<class MonitorElement>
 bool
-DQMStore::extract(TObject* obj,
+DQMStore<MonitorElement>::extract(TObject* obj,
                   std::string const& dir,
                   bool const overwrite,
                   bool const collateHistograms)
@@ -2618,8 +2780,9 @@ DQMStore::extract(TObject* obj,
 /// Use this for saving monitoring objects in ROOT files with dir structure;
 /// cd into directory (create first if it doesn't exist);
 /// returns success flag
+template<class MonitorElement>
 bool
-DQMStore::cdInto(std::string const& path) const
+DQMStore<MonitorElement>::cdInto(std::string const& path) const
 {
   assert(! path.empty());
 
@@ -2660,8 +2823,9 @@ DQMStore::cdInto(std::string const& path) const
   return true;
 }
 
+template<class MonitorElement>
 void
-DQMStore::saveMonitorElementToROOT(MonitorElement const& me,
+DQMStore<MonitorElement>::saveMonitorElementToROOT(MonitorElement const& me,
                                    TFile& file)
 {
   // Save the object.
@@ -2689,14 +2853,15 @@ DQMStore::saveMonitorElementToROOT(MonitorElement const& me,
   }
 }
 
+template<class MonitorElement>
 void
-DQMStore::saveMonitorElementRangeToROOT(std::string const& dir,
+DQMStore<MonitorElement>::saveMonitorElementRangeToROOT(std::string const& dir,
                                         std::string const& refpath,
                                         SaveReferenceTag const ref,
                                         int const minStatus,
                                         unsigned int const run,
-                                        MEMap::const_iterator const begin,
-                                        MEMap::const_iterator const end,
+                                        typename MEMap::const_iterator const begin,
+                                        typename MEMap::const_iterator const end,
                                         TFile& file,
                                         unsigned int& counter)
 {
@@ -2705,7 +2870,7 @@ DQMStore::saveMonitorElementRangeToROOT(std::string const& dir,
       break;
 
     if (verbose_ > 1)
-      std::cout << "DQMStore::save:"
+      std::cout << "DQMStore<MonitorElement>::save:"
                 << " run: " << me.run()
                 << " lumi: " << me.lumi()
                 << " lumiFlag: " << me.getLumiFlag()
@@ -2717,7 +2882,7 @@ DQMStore::saveMonitorElementRangeToROOT(std::string const& dir,
     // Skip MonitorElements in a subdirectory of the current one.
     if (dir != *me.data_.dirname) {
       if (verbose_ > 1) {
-        std::cout << "DQMStore::save: skipping monitor element in a subfolder of " << dir << "/" << std::endl;
+        std::cout << "DQMStore<MonitorElement>::save: skipping monitor element in a subfolder of " << dir << "/" << std::endl;
       }
       continue;
     }
@@ -2747,7 +2912,7 @@ DQMStore::saveMonitorElementRangeToROOT(std::string const& dir,
 
         if (not master or status < minStatus) {
           if (verbose_ > 1)
-            std::cout << "DQMStore::save: skipping monitor element '"
+            std::cout << "DQMStore<MonitorElement>::save: skipping monitor element '"
                       << me.data_.objname << "' while saving, status is "
                       << status << ", required minimum status is "
                       << minStatus << std::endl;
@@ -2757,7 +2922,7 @@ DQMStore::saveMonitorElementRangeToROOT(std::string const& dir,
     }
 
     if (verbose_ > 1) {
-      std::cout << "DQMStore::save: saving monitor element" << std::endl;
+      std::cout << "DQMStore<MonitorElement>::save: saving monitor element" << std::endl;
     }
 
     saveMonitorElementToROOT(me, file);
@@ -2769,8 +2934,9 @@ DQMStore::saveMonitorElementRangeToROOT(std::string const& dir,
 
 /// save directory with monitoring objects into protobuf file <filename>;
 /// if directory="", save full monitoring structure
+template<class MonitorElement>
 void
-DQMStore::save(std::string const& filename,
+DQMStore<MonitorElement>::save(std::string const& filename,
                std::string const& path /* = "" */,
                std::string const& pattern /* = "" */,
                std::string const& rewrite /* = "" */,
@@ -2797,7 +2963,7 @@ DQMStore::save(std::string const& filename,
 
   // open output file, on 1st save recreate, later update
   if (verbose_) {
-    std::cout << "DQMStore::save: Opening TFile '" << filename
+    std::cout << "DQMStore<MonitorElement>::save: Opening TFile '" << filename
               << "' with option '" << fileupdate << "'"
               << std::endl;
   }
@@ -2831,7 +2997,7 @@ DQMStore::save(std::string const& filename,
       continue;
 
     if (verbose_ > 1) {
-      std::cout << "DQMStore::save: DQM folder " << dir << "/" << std::endl;
+      std::cout << "DQMStore<MonitorElement>::save: DQM folder " << dir << "/" << std::endl;
     }
 
     // Create the directory.
@@ -2874,14 +3040,15 @@ DQMStore::save(std::string const& filename,
 
   // Maybe make some noise.
   if (verbose_) {
-    std::cout << "DQMStore::save: successfully wrote " << nme
+    std::cout << "DQMStore<MonitorElement>::save: successfully wrote " << nme
               << " objects from path '" << path << "/"
               << "' into DQM file '" << filename << "'\n";
   }
 }
 
+template<class MonitorElement>
 void
-DQMStore::saveMonitorElementToPB(MonitorElement const& me,
+DQMStore<MonitorElement>::saveMonitorElementToPB(MonitorElement const& me,
                                  dqmstorepb::ROOTFilePB& file)
 {
   // Save the object.
@@ -2908,11 +3075,12 @@ DQMStore::saveMonitorElementToPB(MonitorElement const& me,
   // XXX not supported by protobuf files.
 }
 
+template<class MonitorElement>
 void
-DQMStore::saveMonitorElementRangeToPB(std::string const& dir,
+DQMStore<MonitorElement>::saveMonitorElementRangeToPB(std::string const& dir,
                                       unsigned int const run,
-                                      MEMap::const_iterator const begin,
-                                      MEMap::const_iterator const end,
+                                      typename MEMap::const_iterator const begin,
+                                      typename MEMap::const_iterator const end,
                                       dqmstorepb::ROOTFilePB& file,
                                       unsigned int& counter)
 {
@@ -2921,7 +3089,7 @@ DQMStore::saveMonitorElementRangeToPB(std::string const& dir,
       break;
 
     if (verbose_ > 1)
-      std::cout << "DQMStore::savePB:"
+      std::cout << "DQMStore<MonitorElement>::savePB:"
                 << " run: " << me.run()
                 << " lumi: " << me.lumi()
                 << " lumiFlag: " << me.getLumiFlag()
@@ -2933,7 +3101,7 @@ DQMStore::saveMonitorElementRangeToPB(std::string const& dir,
     // Skip MonitorElements in a subdirectory of the current one.
     if (dir != *me.data_.dirname) {
       if (verbose_ > 1) {
-        std::cout << "DQMStore::savePB: skipping monitor element in a subfolder of " << dir << "/" << std::endl;
+        std::cout << "DQMStore<MonitorElement>::savePB: skipping monitor element in a subfolder of " << dir << "/" << std::endl;
       }
       continue;
     }
@@ -2942,7 +3110,7 @@ DQMStore::saveMonitorElementRangeToPB(std::string const& dir,
     // XXX not supported by protobuf files.
 
     if (verbose_ > 1) {
-      std::cout << "DQMStore::savePB: saving monitor element" << std::endl;
+      std::cout << "DQMStore<MonitorElement>::savePB: saving monitor element" << std::endl;
     }
 
     saveMonitorElementToPB(me, file);
@@ -2954,8 +3122,9 @@ DQMStore::saveMonitorElementRangeToPB(std::string const& dir,
 
 /// save directory with monitoring objects into protobuf file <filename>;
 /// if directory="", save full monitoring structure
+template<class MonitorElement>
 void
-DQMStore::savePB(std::string const& filename,
+DQMStore<MonitorElement>::savePB(std::string const& filename,
                  std::string const& path /* = "" */,
                  uint32_t const run /* = 0 */,
                  uint32_t const lumi /* = 0 */)
@@ -2969,7 +3138,7 @@ DQMStore::savePB(std::string const& filename,
   unsigned int nme = 0;
 
   if (verbose_) {
-    std::cout << "DQMStore::savePB: Opening PBFile '" << filename << "'"
+    std::cout << "DQMStore<MonitorElement>::savePB: Opening PBFile '" << filename << "'"
               << std::endl;
   }
   dqmstorepb::ROOTFilePB dqmstore_message;
@@ -2983,7 +3152,7 @@ DQMStore::savePB(std::string const& filename,
       continue;
 
     if (verbose_ > 1) {
-      std::cout << "DQMStore::savePB: DQM folder " << dir << "/" << std::endl;
+      std::cout << "DQMStore<MonitorElement>::savePB: DQM folder " << dir << "/" << std::endl;
     }
 
     // Loop over monitor elements in this directory.
@@ -3032,7 +3201,7 @@ DQMStore::savePB(std::string const& filename,
 
   // Maybe make some noise.
   if (verbose_) {
-    std::cout << "DQMStore::savePB: successfully wrote " << nme
+    std::cout << "DQMStore<MonitorElement>::savePB: successfully wrote " << nme
               << " objects from path '" << path << "/"
               << "' into DQM file '" << filename << "'\n";
   }
@@ -3041,8 +3210,9 @@ DQMStore::savePB(std::string const& filename,
 
 /// read ROOT objects from file <file> in directory <onlypath>;
 /// return total # of ROOT objects read
+template<class MonitorElement>
 unsigned int
-DQMStore::readDirectory(TFile* file,
+DQMStore<MonitorElement>::readDirectory(TFile* file,
                         bool const overwrite,
                         std::string const& onlypath,
                         std::string const& prepend,
@@ -3104,7 +3274,7 @@ DQMStore::readDirectory(TFile* file,
         && slash + 10 == dirpart.size()
         && dirpart.compare( slash+1 , 9 , "EventInfo") == 0) {
       if (verbose_)
-        std::cout << "DQMStore::readDirectory: skipping '" << dirpart << "'\n";
+        std::cout << "DQMStore<MonitorElement>::readDirectory: skipping '" << dirpart << "'\n";
       return 0;
     }
 
@@ -3187,8 +3357,9 @@ DQMStore::readDirectory(TFile* file,
 /// if prepend !="", prepend string to path
 /// note: by default this method keeps the dir structure as in file
 /// and does not update monitor element references!
+template<class MonitorElement>
 bool
-DQMStore::open(std::string const& filename,
+DQMStore<MonitorElement>::open(std::string const& filename,
                bool const overwrite /* = false */,
                std::string const& onlypath /* ="" */,
                std::string const& prepend /* ="" */,
@@ -3202,8 +3373,9 @@ DQMStore::open(std::string const& filename,
 /// overwrite identical MonitorElements (default: true);
 /// set DQMStore.collateHistograms to true to sum several files
 /// note: by default this method strips off run dir structure
+template<class MonitorElement>
 bool
-DQMStore::load(std::string const& filename,
+DQMStore<MonitorElement>::load(std::string const& filename,
                OpenRunDirs const stripdirs /* =StripRunDirs */,
                bool const fileMustExist /* =true */)
 {
@@ -3211,11 +3383,11 @@ DQMStore::load(std::string const& filename,
   if (collateHistograms_) overwrite = false;
   if (verbose_)
     {
-      std::cout << "DQMStore::load: reading from file '" << filename << "'\n";
+      std::cout << "DQMStore<MonitorElement>::load: reading from file '" << filename << "'\n";
       if (collateHistograms_)
-        std::cout << "DQMStore::load: in collate mode   " << "\n";
+        std::cout << "DQMStore<MonitorElement>::load: in collate mode   " << "\n";
       else
-        std::cout << "DQMStore::load: in overwrite mode   " << "\n";
+        std::cout << "DQMStore<MonitorElement>::load: in overwrite mode   " << "\n";
     }
 
   if (!s_rxpbfile.match(filename, 0, 0))
@@ -3229,8 +3401,9 @@ DQMStore::load(std::string const& filename,
 /// if onlypath != "", read only selected directory
 /// if prepend !="", prepend string to path
 /// if StripRunDirs is set the run and run summary folders are erased.
+template<class MonitorElement>
 bool
-DQMStore::readFile(std::string const& filename,
+DQMStore<MonitorElement>::readFile(std::string const& filename,
                    bool const overwrite /* = false */,
                    std::string const& onlypath /* ="" */,
                    std::string const& prepend /* ="" */,
@@ -3239,7 +3412,7 @@ DQMStore::readFile(std::string const& filename,
 {
 
   if (verbose_)
-    std::cout << "DQMStore::readFile: reading from file '" << filename << "'\n";
+    std::cout << "DQMStore<MonitorElement>::readFile: reading from file '" << filename << "'\n";
 
   std::unique_ptr<TFile> f;
 
@@ -3253,7 +3426,7 @@ DQMStore::readFile(std::string const& filename,
       throw;
     else {
       if (verbose_)
-        std::cout << "DQMStore::readFile: file '" << filename << "' does not exist, continuing\n";
+        std::cout << "DQMStore<MonitorElement>::readFile: file '" << filename << "' does not exist, continuing\n";
       return false;
     }
   }
@@ -3265,7 +3438,7 @@ DQMStore::readFile(std::string const& filename,
     const_cast<MonitorElement &>(me).updateQReportStats();
 
   if (verbose_) {
-    std::cout << "DQMStore::open: successfully read " << n
+    std::cout << "DQMStore<MonitorElement>::open: successfully read " << n
               << " objects from file '" << filename << "'";
     if (! onlypath.empty())
       std::cout << " from directory '" << onlypath << "'";
@@ -3279,7 +3452,8 @@ DQMStore::readFile(std::string const& filename,
 /** Extract the next serialised ROOT object from @a buf. Returns null
     if there are no more objects in the buffer, or a null pointer was
     serialised at this location. */
-inline TObject* DQMStore::extractNextObject(TBufferFile& buf) const
+template<class MonitorElement>
+TObject* DQMStore<MonitorElement>::extractNextObject(TBufferFile& buf) const
 {
   if (buf.Length() == buf.BufferSize())
     return nullptr;
@@ -3288,7 +3462,8 @@ inline TObject* DQMStore::extractNextObject(TBufferFile& buf) const
   return reinterpret_cast<TObject*>(ptr);
 }
 
-void DQMStore::get_info(dqmstorepb::ROOTFilePB::Histo const& h,
+template<class MonitorElement>
+void DQMStore<MonitorElement>::get_info(dqmstorepb::ROOTFilePB::Histo const& h,
                         std::string& dirname,
                         std::string& objname,
                         TObject** obj)
@@ -3308,8 +3483,9 @@ void DQMStore::get_info(dqmstorepb::ROOTFilePB::Histo const& h,
   }
 }
 
+template<class MonitorElement>
 bool
-DQMStore::readFilePB(std::string const& filename,
+DQMStore<MonitorElement>::readFilePB(std::string const& filename,
                      bool const overwrite /* = false */,
                      std::string const& onlypath /* ="" */,
                      std::string const& prepend /* ="" */,
@@ -3324,7 +3500,7 @@ DQMStore::readFilePB(std::string const& filename,
   using google::protobuf::io::ArrayInputStream;
 
   if (verbose_)
-    std::cout << "DQMStore::readFile: reading from file '" << filename << "'\n";
+    std::cout << "DQMStore<MonitorElement>::readFile: reading from file '" << filename << "'\n";
 
   int filedescriptor;
   if ((filedescriptor = ::open(filename.c_str(), O_RDONLY)) == -1) {
@@ -3332,7 +3508,7 @@ DQMStore::readFilePB(std::string const& filename,
       raiseDQMError("DQMStore", "Failed to open file '%s'", filename.c_str());
     else
       if (verbose_)
-        std::cout << "DQMStore::readFile: file '" << filename << "' does not exist, continuing\n";
+        std::cout << "DQMStore<MonitorElement>::readFile: file '" << filename << "' does not exist, continuing\n";
     return false;
   }
 
@@ -3388,8 +3564,9 @@ DQMStore::readFilePB(std::string const& filename,
 //////////////////////////////////////////////////////////////////////
 /// delete directory and all contents;
 /// delete directory (all contents + subfolders);
+template<class MonitorElement>
 void
-DQMStore::rmdir(std::string const& path)
+DQMStore<MonitorElement>::rmdir(std::string const& path)
 {
   std::string clean;
   std::string const* cleaned = nullptr;
@@ -3408,8 +3585,9 @@ DQMStore::rmdir(std::string const& path)
 }
 
 /// remove all monitoring elements from directory;
+template<class MonitorElement>
 void
-DQMStore::removeContents(std::string const& dir)
+DQMStore<MonitorElement>::removeContents(std::string const& dir)
 {
   MonitorElement proto(&dir, std::string());
   auto e = data_.end();
@@ -3422,24 +3600,27 @@ DQMStore::removeContents(std::string const& dir)
 }
 
 /// erase all monitoring elements in current directory (not including subfolders);
+template<class MonitorElement>
 void
-DQMStore::removeContents()
+DQMStore<MonitorElement>::removeContents()
 {
   removeContents(pwd_);
 }
 
 /// erase monitoring element in current directory
 /// (opposite of book1D,2D,etc. action);
+template<class MonitorElement>
 void
-DQMStore::removeElement(std::string const& name)
+DQMStore<MonitorElement>::removeElement(std::string const& name)
 {
   removeElement(pwd_, name);
 }
 
 /// remove monitoring element from directory;
 /// if warning = true, print message if element does not exist
+template<class MonitorElement>
 void
-DQMStore::removeElement(std::string const& dir, std::string const& name, bool const warning /* = true */)
+DQMStore<MonitorElement>::removeElement(std::string const& dir, std::string const& name, bool const warning /* = true */)
 {
   MonitorElement proto(&dir, name);
   auto pos = data_.find(proto);
@@ -3456,8 +3637,9 @@ DQMStore::removeElement(std::string const& dir, std::string const& name, bool co
 //////////////////////////////////////////////////////////////////////
 /// get QCriterion corresponding to <qtname>
 /// (null pointer if QCriterion does not exist)
+template<class MonitorElement>
 QCriterion*
-DQMStore::getQCriterion(std::string const& qtname) const
+DQMStore<MonitorElement>::getQCriterion(std::string const& qtname) const
 {
   auto i = qtests_.find(qtname);
   auto e = qtests_.end();
@@ -3467,8 +3649,9 @@ DQMStore::getQCriterion(std::string const& qtname) const
 /// create quality test with unique name <qtname> (analogous to ME name);
 /// quality test can then be attached to ME with useQTest method
 /// (<algo_name> must match one of known algorithms)
+template<class MonitorElement>
 QCriterion*
-DQMStore::createQTest(std::string const& algoname, std::string const& qtname)
+DQMStore<MonitorElement>::createQTest(std::string const& algoname, std::string const& qtname)
 {
   if (qtests_.count(qtname))
     raiseDQMError("DQMStore", "Attempt to create duplicate quality test '%s'",
@@ -3488,8 +3671,9 @@ DQMStore::createQTest(std::string const& algoname, std::string const& qtname)
 
 /// attach quality test <qtname> to directory contents
 /// (need exact pathname without wildcards, e.g. A/B/C);
+template<class MonitorElement>
 void
-DQMStore::useQTest(std::string const& dir, std::string const& qtname)
+DQMStore<MonitorElement>::useQTest(std::string const& dir, std::string const& qtname)
 {
   // Clean the path
   std::string clean;
@@ -3506,8 +3690,9 @@ DQMStore::useQTest(std::string const& dir, std::string const& qtname)
 }
 
 /// attach quality test <qc> to monitor elements matching <pattern>.
+template<class MonitorElement>
 int
-DQMStore::useQTestByMatch(std::string const& pattern, std::string const& qtname)
+DQMStore<MonitorElement>::useQTestByMatch(std::string const& pattern, std::string const& qtname)
 {
   QCriterion* qc = getQCriterion(qtname);
   if (! qc)
@@ -3537,8 +3722,9 @@ DQMStore::useQTestByMatch(std::string const& pattern, std::string const& qtname)
 }
 /// run quality tests (also finds updated contents in last monitoring cycle,
 /// including newly added content)
+template<class MonitorElement>
 void
-DQMStore::runQTests()
+DQMStore<MonitorElement>::runQTests()
 {
 
   if (verbose_ > 0)
@@ -3556,8 +3742,9 @@ DQMStore::runQTests()
 /// get "global" folder <path> status (one of:STATUS_OK, WARNING, ERROR, OTHER);
 /// returns most sever error, where ERROR > WARNING > OTHER > STATUS_OK;
 /// see Core/interface/QTestStatus.h for details on "OTHER"
+template<class MonitorElement>
 int
-DQMStore::getStatus(std::string const& path /* = "" */) const
+DQMStore<MonitorElement>::getStatus(std::string const& path /* = "" */) const
 {
   std::string clean;
   std::string const* cleaned = nullptr;
@@ -3584,16 +3771,18 @@ DQMStore::getStatus(std::string const& path /* = "" */) const
 //////////////////////////////////////////////////////////////////////
 /// reset contents (does not erase contents permanently)
 /// (makes copy of current contents; will be subtracted from future contents)
+template<class MonitorElement>
 void
-DQMStore::softReset(MonitorElement* me)
+DQMStore<MonitorElement>::softReset(MonitorElement* me)
 {
   if (me)
     me->softReset();
 }
 
 // reverts action of softReset
+template<class MonitorElement>
 void
-DQMStore::disableSoftReset(MonitorElement* me)
+DQMStore<MonitorElement>::disableSoftReset(MonitorElement* me)
 {
   if (me)
     me->disableSoftReset();
@@ -3601,8 +3790,9 @@ DQMStore::disableSoftReset(MonitorElement* me)
 
 /// if true, will accumulate ME contents (over many periods)
 /// until method is called with flag = false again
+template<class MonitorElement>
 void
-DQMStore::setAccumulate(MonitorElement* me, bool const flag)
+DQMStore<MonitorElement>::setAccumulate(MonitorElement* me, bool const flag)
 {
   if (me)
     me->setAccumulate(flag);
@@ -3611,8 +3801,9 @@ DQMStore::setAccumulate(MonitorElement* me, bool const flag)
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+template<class MonitorElement>
 void
-DQMStore::showDirStructure() const
+DQMStore<MonitorElement>::showDirStructure() const
 {
   std::vector<std::string> contents;
   getContents(contents);
@@ -3631,8 +3822,9 @@ DQMStore::showDirStructure() const
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 // check if the collate option is active on the DQMStore
+template<class MonitorElement>
 bool
-DQMStore::isCollate() const
+DQMStore<MonitorElement>::isCollate() const
 {
   return collateHistograms_;
 }
@@ -3640,8 +3832,9 @@ DQMStore::isCollate() const
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 // check if the monitor element is in auto-collation folder
+template<class MonitorElement>
 bool
-DQMStore::isCollateME(MonitorElement* me) const
+DQMStore<MonitorElement>::isCollateME(MonitorElement* me) const
 {
   return me && isSubdirectory(s_collateDirName, *me->data_.dirname);
 }
@@ -3651,8 +3844,9 @@ DQMStore::isCollateME(MonitorElement* me) const
 //////////////////////////////////////////////////////////////////////
 /** Invoke this method after flushing all recently changed monitoring.
     Clears updated flag on all MEs and calls their Reset() method. */
+template<class MonitorElement>
 void
-DQMStore::scaleElements()
+DQMStore<MonitorElement>::scaleElements()
 {
   if (scaleFlag_ == 0.0) return;
   if (verbose_ > 0)
@@ -3723,4 +3917,14 @@ DQMStore::scaleElements()
       continue;
     }
   }
+}
+
+} // namespace dqminternal
+
+#include "DQMServices/Core/interface/DQMEDHarvester.h"
+#include "DQMServices/Core/interface/DQMEDAnalyzer.h"
+namespace dqminternal {
+  template class DQMStore<DQMHarvestingBase::MonitorElement>;
+  template class DQMStore<DQMRecoBase::MonitorElement>;
+  template class DQMStore<::MonitorElement>;
 }

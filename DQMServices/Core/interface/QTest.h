@@ -68,7 +68,7 @@ public:
   virtual std::vector<DQMChannel> getBadChannels() const
                                         { return std::vector<DQMChannel>(); }
 
-protected:
+public: //friends get complicated with the tempalted DQMStore
   QCriterion(std::string qtname)        { qtname_ = std::move(qtname); init(); }
   /// initialize values
   void init();
@@ -124,8 +124,6 @@ private:
   static const float WARNING_PROB_THRESHOLD;
   static const float ERROR_PROB_THRESHOLD;
 
-  /// for creating and deleting class instances
-  friend class DQMStore;
   /// for running the test
   friend class MonitorElement;
 };
