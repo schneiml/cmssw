@@ -3921,6 +3921,7 @@ DQMStore<MonitorElement>::scaleElements()
 
 } // namespace dqminternal
 
+#if !WITHOUT_CMS_FRAMEWORK
 #include "DQMServices/Core/interface/DQMEDHarvester.h"
 #include "DQMServices/Core/interface/DQMEDAnalyzer.h"
 namespace dqminternal {
@@ -3928,3 +3929,8 @@ namespace dqminternal {
   template class DQMStore<DQMRecoBase::MonitorElement>;
   template class DQMStore<::MonitorElement>;
 }
+#else
+namespace dqminternal {
+  template class DQMStore<::MonitorElement>;
+}
+#endif
