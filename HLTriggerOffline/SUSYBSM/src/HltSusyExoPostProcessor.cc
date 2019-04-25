@@ -500,7 +500,7 @@ void HltSusyExoPostProcessor::dqmEndJob(DQMStore::IBooker& iBooker_, DQMStore::I
   }
 }
 
-MonitorElement* HltSusyExoPostProcessor::bookEffMEProfileFromTH1(TH1F* histo, std::string name, DQMStore::IBooker& iBooker_) {
+HltSusyExoPostProcessor::MonitorElement* HltSusyExoPostProcessor::bookEffMEProfileFromTH1(TH1F* histo, std::string name, DQMStore::IBooker& iBooker_) {
   MonitorElement* myEffME;
   if(name == "Eff") {
     myEffME = iBooker_.bookProfile((std::string) ("Eff_"+((std::string) histo->GetName())), ((std::string) histo->GetTitle()), histo->GetXaxis()->GetNbins(), histo->GetXaxis()->GetXmin(), histo->GetXaxis()->GetXmax(), 100, 0, 1, "");

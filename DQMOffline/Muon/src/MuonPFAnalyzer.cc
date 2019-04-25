@@ -350,7 +350,7 @@ void MuonPFAnalyzer::bookHistos(DQMStore::IBooker & ibooker,
 }
 
 
-MonitorElement * MuonPFAnalyzer::getPlot(const string & group,
+MuonPFAnalyzer::MonitorElement* MuonPFAnalyzer::getPlot(const string & group,
 					 const string & type) {
 
   map<string,map<string,MonitorElement *> >::iterator groupIt = thePlots.find(group);

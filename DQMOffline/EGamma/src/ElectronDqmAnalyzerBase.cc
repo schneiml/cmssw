@@ -62,7 +62,7 @@ void ElectronDqmAnalyzerBase::bookHistograms( DQMStore::IBooker & ibooker_, edm:
  
 } 
 
-MonitorElement * ElectronDqmAnalyzerBase::bookH1
+ElectronDqmAnalyzerBase::MonitorElement* ElectronDqmAnalyzerBase::bookH1
  ( DQMStore::IBooker & iBooker, const std::string & name, const std::string & title,
    int nchX, double lowX, double highX,
    const std::string & titleX, const std::string & titleY,
@@ -77,7 +77,7 @@ MonitorElement * ElectronDqmAnalyzerBase::bookH1
   return me ;
  }
 
-MonitorElement * ElectronDqmAnalyzerBase::bookH1withSumw2
+ElectronDqmAnalyzerBase::MonitorElement* ElectronDqmAnalyzerBase::bookH1withSumw2
  ( DQMStore::IBooker & iBooker, const std::string & name, const std::string & title,
    int nchX, double lowX, double highX,
    const std::string & titleX, const std::string & titleY,
@@ -93,7 +93,7 @@ MonitorElement * ElectronDqmAnalyzerBase::bookH1withSumw2
   return me ;
  }
 
-MonitorElement * ElectronDqmAnalyzerBase::bookH2
+ElectronDqmAnalyzerBase::MonitorElement* ElectronDqmAnalyzerBase::bookH2
  ( DQMStore::IBooker & iBooker, const std::string & name, const std::string & title,
    int nchX, double lowX, double highX,
    int nchY, double lowY, double highY,
@@ -109,7 +109,7 @@ MonitorElement * ElectronDqmAnalyzerBase::bookH2
  return me ;
  }
 
-MonitorElement * ElectronDqmAnalyzerBase::bookH2withSumw2
+ElectronDqmAnalyzerBase::MonitorElement* ElectronDqmAnalyzerBase::bookH2withSumw2
  ( DQMStore::IBooker & iBooker, const std::string & name, const std::string & title,
    int nchX, double lowX, double highX,
    int nchY, double lowY, double highY,
@@ -126,7 +126,7 @@ MonitorElement * ElectronDqmAnalyzerBase::bookH2withSumw2
   return me ;
  }
 
-MonitorElement * ElectronDqmAnalyzerBase::bookP1
+ElectronDqmAnalyzerBase::MonitorElement* ElectronDqmAnalyzerBase::bookP1
  ( DQMStore::IBooker & iBooker, const std::string & name, const std::string & title,
    int nchX, double lowX, double highX,
              double lowY, double highY,

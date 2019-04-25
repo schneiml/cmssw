@@ -2059,7 +2059,7 @@ void SiStripTrackingRecHitsValid::createStereoAndMatchedMEs(DQMStore::IBooker & 
  
 }
 //------------------------------------------------------------------------------------------
-inline MonitorElement* SiStripTrackingRecHitsValid::bookME1D(DQMStore::IBooker & ibooker,const char* ParameterSetLabel, const char* HistoName, const char* HistoTitle)
+MonitorElement* SiStripTrackingRecHitsValid::bookME1D(DQMStore::IBooker & ibooker,const char* ParameterSetLabel, const char* HistoName, const char* HistoTitle)
 {
   Parameters =  conf_.getParameter<edm::ParameterSet>(ParameterSetLabel);
   return ibooker.book1D(HistoName,HistoTitle,
@@ -2069,7 +2069,7 @@ inline MonitorElement* SiStripTrackingRecHitsValid::bookME1D(DQMStore::IBooker &
 		      );
 }
 //------------------------------------------------------------------------------------------
-inline MonitorElement* SiStripTrackingRecHitsValid::bookMEProfile(DQMStore::IBooker & ibooker,const char* ParameterSetLabel, const char* HistoName, const char* HistoTitle)
+MonitorElement* SiStripTrackingRecHitsValid::bookMEProfile(DQMStore::IBooker & ibooker,const char* ParameterSetLabel, const char* HistoName, const char* HistoTitle)
 {
   Parameters =  conf_.getParameter<edm::ParameterSet>(ParameterSetLabel);
   //The number of channels in Y is disregarded in a profile plot.

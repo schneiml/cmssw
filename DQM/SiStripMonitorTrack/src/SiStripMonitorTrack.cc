@@ -412,7 +412,7 @@ void SiStripMonitorTrack::bookModMEs(DQMStore::IBooker & ibooker , const uint32_
   }
 }
 
-MonitorElement* SiStripMonitorTrack::handleBookMEs(DQMStore::IBooker & ibooker , std::string& viewParameter, std::string& id, std::string& histoParameters, std::string& histoName) {
+SiStripMonitorTrack::MonitorElement* SiStripMonitorTrack::handleBookMEs(DQMStore::IBooker & ibooker , std::string& viewParameter, std::string& id, std::string& histoParameters, std::string& histoName) {
 
   MonitorElement* me = nullptr;
   bool view = false;
@@ -729,7 +729,7 @@ void SiStripMonitorTrack::bookSubDetMEs(DQMStore::IBooker & ibooker , std::strin
 }
 //--------------------------------------------------------------------------------
 
-inline MonitorElement* SiStripMonitorTrack::bookME1D(DQMStore::IBooker & ibooker , const char* ParameterSetLabel, const char* HistoName)
+SiStripMonitorTrack::MonitorElement* SiStripMonitorTrack::bookME1D(DQMStore::IBooker & ibooker , const char* ParameterSetLabel, const char* HistoName)
 {
   Parameters =  conf_.getParameter<edm::ParameterSet>(ParameterSetLabel);
   return ibooker.book1D(HistoName,HistoName,
@@ -740,7 +740,7 @@ inline MonitorElement* SiStripMonitorTrack::bookME1D(DQMStore::IBooker & ibooker
 }
 
 //--------------------------------------------------------------------------------
-inline MonitorElement* SiStripMonitorTrack::bookME2D(DQMStore::IBooker & ibooker , const char* ParameterSetLabel, const char* HistoName)
+SiStripMonitorTrack::MonitorElement* SiStripMonitorTrack::bookME2D(DQMStore::IBooker & ibooker , const char* ParameterSetLabel, const char* HistoName)
 {
   Parameters =  conf_.getParameter<edm::ParameterSet>(ParameterSetLabel);
   return ibooker.book2D(HistoName,HistoName,
@@ -754,7 +754,7 @@ inline MonitorElement* SiStripMonitorTrack::bookME2D(DQMStore::IBooker & ibooker
 }
 
 //--------------------------------------------------------------------------------
-inline MonitorElement* SiStripMonitorTrack::bookME3D(DQMStore::IBooker & ibooker , const char* ParameterSetLabel, const char* HistoName)
+SiStripMonitorTrack::MonitorElement* SiStripMonitorTrack::bookME3D(DQMStore::IBooker & ibooker , const char* ParameterSetLabel, const char* HistoName)
 {
   Parameters =  conf_.getParameter<edm::ParameterSet>(ParameterSetLabel);
   return ibooker.book3D(HistoName,HistoName,
@@ -771,7 +771,7 @@ inline MonitorElement* SiStripMonitorTrack::bookME3D(DQMStore::IBooker & ibooker
 }
 
 //--------------------------------------------------------------------------------
-inline MonitorElement* SiStripMonitorTrack::bookMEProfile(DQMStore::IBooker & ibooker , const char* ParameterSetLabel, const char* HistoName)
+SiStripMonitorTrack::MonitorElement* SiStripMonitorTrack::bookMEProfile(DQMStore::IBooker & ibooker , const char* ParameterSetLabel, const char* HistoName)
 {
     Parameters =  conf_.getParameter<edm::ParameterSet>(ParameterSetLabel);
     return ibooker.bookProfile(HistoName,HistoName,
@@ -785,7 +785,7 @@ inline MonitorElement* SiStripMonitorTrack::bookMEProfile(DQMStore::IBooker & ib
 }
 
 //--------------------------------------------------------------------------------
-MonitorElement* SiStripMonitorTrack::bookMETrend(DQMStore::IBooker & ibooker , const char* HistoName)
+SiStripMonitorTrack::MonitorElement* SiStripMonitorTrack::bookMETrend(DQMStore::IBooker & ibooker , const char* HistoName)
 {
   edm::ParameterSet ParametersTrend =  conf_.getParameter<edm::ParameterSet>("Trending");
   MonitorElement* me = ibooker.bookProfile(HistoName,HistoName,

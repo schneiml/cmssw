@@ -24,7 +24,7 @@ ME0BaseValidation::ME0BaseValidation( const edm::ParameterSet& ps)
 ME0BaseValidation::~ME0BaseValidation() {
 }
 
-MonitorElement* ME0BaseValidation::BookHistZR( DQMStore::IBooker& ibooker, const char* name, const char* label, unsigned int region_num, unsigned int layer_num) {
+ME0BaseValidation::MonitorElement* ME0BaseValidation::BookHistZR( DQMStore::IBooker& ibooker, const char* name, const char* label, unsigned int region_num, unsigned int layer_num) {
   string hist_name, hist_label;
   if ( layer_num == 0 || layer_num==1 || layer_num==2 || layer_num==3 || layer_num==4 || layer_num==5 || layer_num==6 ) {
     hist_name  = name+string("_zr_r") + regionLabel[region_num]+"_l"+layerLabel[layer_num];
@@ -53,7 +53,7 @@ MonitorElement* ME0BaseValidation::BookHistZR( DQMStore::IBooker& ibooker, const
   return ibooker.book2D( hist_name, hist_label, xbin, xmin, xmax, ybin,ymin, ymax);
 }
 
-MonitorElement* ME0BaseValidation::BookHistXY( DQMStore::IBooker& ibooker, const char* name, const char* label, unsigned int region_num, unsigned int layer_num) {
+ME0BaseValidation::MonitorElement* ME0BaseValidation::BookHistXY( DQMStore::IBooker& ibooker, const char* name, const char* label, unsigned int region_num, unsigned int layer_num) {
   string hist_name, hist_label;
   if ( layer_num == 0 || layer_num==1 || layer_num==2 || layer_num==3 || layer_num==4 || layer_num==5 || layer_num==6 ) {
     hist_name  = name+string("_xy_r") + regionLabel[region_num]+"_l"+layerLabel[layer_num];

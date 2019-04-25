@@ -228,7 +228,7 @@ void EgHLTOfflineClient::createHLTvsOfflineHists(const std::string& filterName,
   }//end loop over varNames 
 }
 
-MonitorElement* EgHLTOfflineClient::FillHLTvsOfflineHist(const std::string& filter,
+EgHLTOfflineClient::MonitorElement* EgHLTOfflineClient::FillHLTvsOfflineHist(const std::string& filter,
     const std::string& name, const std::string& title, const MonitorElement* numer,
     const MonitorElement* denom, DQMStore::IBooker& ibooker, DQMStore::IGetter& igetter) {
 
@@ -453,7 +453,7 @@ void EgHLTOfflineClient::createLooseTightTrigEff(
   
 }
 //-----Morse-------
-MonitorElement* EgHLTOfflineClient::makeEffMonElemFromPassAndAll(const std::string& filterName,
+EgHLTOfflineClient::MonitorElement* EgHLTOfflineClient::makeEffMonElemFromPassAndAll(const std::string& filterName,
     const std::string& name, const std::string& title, const MonitorElement* pass,
     const MonitorElement* all, DQMStore::IBooker& ibooker, DQMStore::IGetter& igetter) {
 
@@ -476,7 +476,7 @@ MonitorElement* EgHLTOfflineClient::makeEffMonElemFromPassAndAll(const std::stri
   return eff;
 }
 
-MonitorElement* EgHLTOfflineClient::makeEffMonElemFromPassAndFailAndTagTag(
+EgHLTOfflineClient::MonitorElement* EgHLTOfflineClient::makeEffMonElemFromPassAndFailAndTagTag(
     const std::string& filter, const std::string& name, const std::string& title,
     const MonitorElement* passNotTag, const MonitorElement* fail, const MonitorElement* tagtag,
     DQMStore::IBooker& ibooker, DQMStore::IGetter& igetter) {
@@ -513,7 +513,7 @@ MonitorElement* EgHLTOfflineClient::makeEffMonElemFromPassAndFailAndTagTag(
   return eff;
 }
 
-MonitorElement* EgHLTOfflineClient::makeEffMonElem2Leg(const std::string& filter,
+EgHLTOfflineClient::MonitorElement* EgHLTOfflineClient::makeEffMonElem2Leg(const std::string& filter,
     const std::string& name, const std::string& title, const MonitorElement* Leg1Eff,
     const MonitorElement* Leg2NotLeg1Source, const MonitorElement* all, DQMStore::IBooker& ibooker,
     DQMStore::IGetter& igetter) {
@@ -555,7 +555,7 @@ MonitorElement* EgHLTOfflineClient::makeEffMonElem2Leg(const std::string& filter
 }
 
 //-----Morse-------
-MonitorElement* EgHLTOfflineClient::makeEffMonElemFromPassAndFail(const std::string& filterName,
+EgHLTOfflineClient::MonitorElement* EgHLTOfflineClient::makeEffMonElemFromPassAndFail(const std::string& filterName,
     const std::string& name, const std::string& title, const MonitorElement* pass,
     const MonitorElement* fail, DQMStore::IBooker& ibooker, DQMStore::IGetter& igetter) {
 

@@ -1827,7 +1827,7 @@ double EcalSelectiveReadoutValidation::frame2EnergyForTp(const T& frame,
   return acc;
 }
 
-MonitorElement* EcalSelectiveReadoutValidation::bookFloat(DQMStore::IBooker& ibook, const std::string& name){
+EcalSelectiveReadoutValidation::MonitorElement* EcalSelectiveReadoutValidation::bookFloat(DQMStore::IBooker& ibook, const std::string& name){
   if(!registerHist(name, "")) return nullptr; //this histo is disabled
   MonitorElement* result = ibook.bookFloat(name);
   if(result==nullptr){
@@ -1838,7 +1838,7 @@ MonitorElement* EcalSelectiveReadoutValidation::bookFloat(DQMStore::IBooker& ibo
 }
 
 
-MonitorElement* EcalSelectiveReadoutValidation::book1D(DQMStore::IBooker& ibook, const std::string& name, const std::string& title, int nbins, double xmin, double xmax){
+EcalSelectiveReadoutValidation::MonitorElement* EcalSelectiveReadoutValidation::book1D(DQMStore::IBooker& ibook, const std::string& name, const std::string& title, int nbins, double xmin, double xmax){
   if(!registerHist(name, title)) return nullptr; //this histo is disabled
   MonitorElement* result = ibook.book1D(name, title, nbins, xmin, xmax);
   if(result==nullptr){
@@ -1848,7 +1848,7 @@ MonitorElement* EcalSelectiveReadoutValidation::book1D(DQMStore::IBooker& ibook,
   return result;
 }
 
-MonitorElement* EcalSelectiveReadoutValidation::book2D(DQMStore::IBooker& ibook, const std::string& name, const std::string& title, int nxbins, double xmin, double xmax, int nybins, double ymin, double ymax){
+EcalSelectiveReadoutValidation::MonitorElement* EcalSelectiveReadoutValidation::book2D(DQMStore::IBooker& ibook, const std::string& name, const std::string& title, int nxbins, double xmin, double xmax, int nybins, double ymin, double ymax){
   if(!registerHist(name, title)) return nullptr; //this histo is disabled
   MonitorElement* result = ibook.book2D(name, title, nxbins, xmin, xmax,
 					nybins, ymin, ymax);
@@ -1859,7 +1859,7 @@ MonitorElement* EcalSelectiveReadoutValidation::book2D(DQMStore::IBooker& ibook,
   return result;
 }
 
-MonitorElement* EcalSelectiveReadoutValidation::bookProfile(DQMStore::IBooker& ibook, const std::string& name, const std::string& title, int nbins, double xmin, double xmax){
+EcalSelectiveReadoutValidation::MonitorElement* EcalSelectiveReadoutValidation::bookProfile(DQMStore::IBooker& ibook, const std::string& name, const std::string& title, int nbins, double xmin, double xmax){
   if(!registerHist(name, title)) return nullptr; //this histo is disabled
   MonitorElement* result = ibook.bookProfile(name, title, nbins, xmin, xmax,
 					     0, 0, 0);
@@ -1870,7 +1870,7 @@ MonitorElement* EcalSelectiveReadoutValidation::bookProfile(DQMStore::IBooker& i
   return result;
 }
 
-MonitorElement* EcalSelectiveReadoutValidation::bookProfile2D(DQMStore::IBooker& ibook, const std::string& name, const std::string& title, int nbinx, double xmin, double xmax, int nbiny, double ymin, double ymax, const char* option){
+EcalSelectiveReadoutValidation::MonitorElement* EcalSelectiveReadoutValidation::bookProfile2D(DQMStore::IBooker& ibook, const std::string& name, const std::string& title, int nbinx, double xmin, double xmax, int nbiny, double ymin, double ymax, const char* option){
   if(!registerHist(name, title)) return nullptr; //this histo is disabled
   MonitorElement* result
     = ibook.bookProfile2D(name,

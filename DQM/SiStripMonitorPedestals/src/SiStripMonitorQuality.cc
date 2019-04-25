@@ -200,7 +200,7 @@ void SiStripMonitorQuality::endJob(void){
 //
 // -- End Job
 //
-MonitorElement* SiStripMonitorQuality::getQualityME(uint32_t idet, const TrackerTopology* tTopo){
+SiStripMonitorQuality::MonitorElement* SiStripMonitorQuality::getQualityME(uint32_t idet, const TrackerTopology* tTopo){
 
   std::map<uint32_t, MonitorElement* >::iterator pos = QualityMEs.find(idet);
   MonitorElement* det_me = nullptr;
