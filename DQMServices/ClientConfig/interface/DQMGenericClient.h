@@ -29,6 +29,7 @@ class DQMGenericClient : public DQMEDHarvester
 {
  public:
   DQMGenericClient(const edm::ParameterSet& pset);
+/* unused */
   ~DQMGenericClient() override {};
 
   void dqmEndLuminosityBlock(DQMStore::IBooker& ibooker,DQMStore::IGetter& igetter,const edm::LuminosityBlock& lumiSeg, const edm::EventSetup& c) override;

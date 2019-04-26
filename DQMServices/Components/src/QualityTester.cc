@@ -71,11 +71,13 @@ void QualityTester::beginRun(const edm::Run& run , const edm::EventSetup& iSetup
   }
 }
 
+/* unused */
 QualityTester::~QualityTester()
 {
   delete qtHandler;
 }
 
+/* unused */
 void QualityTester::analyze(const edm::Event& e, const edm::EventSetup& c) 
 {
   if (testInEventloop) {
@@ -99,14 +101,17 @@ void QualityTester::endLuminosityBlock(LuminosityBlock const& lumiSeg, EventSetu
   }
 }
 
+/* unused */
 void QualityTester::endRun(const Run& r, const EventSetup& context){
   if (qtestOnEndRun) performTests();
 }
 
+/* unused */
 void QualityTester::endJob(){
   if (qtestOnEndJob) performTests();
 }
 
+/* unused */
 void QualityTester::performTests()
 {
     // done here because new ME can appear while processing data

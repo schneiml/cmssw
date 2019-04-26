@@ -73,6 +73,7 @@ public:
   void globalEndRun(edm::Run const&, const edm::EventSetup&) override;
   void endRunProduce(edm::Run&, const edm::EventSetup&) override;
   void endLuminosityBlockProduce(edm::LuminosityBlock&, const edm::EventSetup&) override;
+/* unused */
   void globalEndLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override {};
   std::shared_ptr<meedm::Void>  globalBeginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) const override;
 

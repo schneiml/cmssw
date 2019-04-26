@@ -42,6 +42,7 @@ class DQMParserBase{
 	///Parses a new Document
 	void getNewDocument(std::string configFile, bool UseDB=false);
         /// DOM Document
+/* unused */
         xercesc::DOMDocument* doc(){return parser->getDocument();}
  protected:	 
 	xercesc::XercesDOMParser* parser; 

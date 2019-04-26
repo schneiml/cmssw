@@ -74,6 +74,7 @@ private:
   MonitorElement *initialise(Kind kind);
   MonitorElement *initialise(Kind kind, TH1 *rootobj);
   MonitorElement *initialise(Kind kind, const std::string &value);
+/* unused */
   void globalize() {
     data_.moduleId = 0;
   }
@@ -106,6 +107,7 @@ public:
     { return Kind(data_.flags & DQMNet::DQM_PROP_TYPE_MASK); }
 
   /// Get the object flags.
+/* unused */
   uint32_t flags() const
     { return data_.flags; }
 
@@ -114,6 +116,7 @@ public:
     { return data_.objname; }
 
   /// get pathname of parent folder
+/* unused */
   const std::string &getPathname() const
     { return *data_.dirname; }
 
@@ -130,19 +133,23 @@ public:
     }
 
   /// true if ME was updated in last monitoring cycle
+/* unused */
   bool wasUpdated() const
     { return data_.flags & DQMNet::DQM_PROP_NEW; }
 
   /// Mark the object updated.
+/* unused */
   void update()
     { data_.flags |= DQMNet::DQM_PROP_NEW; }
 
   /// specify whether ME should be reset at end of monitoring cycle (default:false);
   /// (typically called by Sources that control the original ME)
+/* unused */
   void setResetMe(bool /* flag */)
     { data_.flags |= DQMNet::DQM_PROP_RESET; }
 
   /// true if ME is meant to be stored for each luminosity section
+/* unused */
   bool getLumiFlag() const
     { return data_.flags & DQMNet::DQM_PROP_LUMI; }
 
@@ -197,15 +204,18 @@ public:
     { return data_.flags & DQMNet::DQM_PROP_REPORT_ERROR; }
 
   /// true if at least of one of the quality tests returned a warning
+/* unused */
   bool hasWarning() const
     { return data_.flags & DQMNet::DQM_PROP_REPORT_WARN; }
 
   /// true if at least of one of the tests returned some other (non-ok) status
+/* unused */
   bool hasOtherReport() const
     { return data_.flags & DQMNet::DQM_PROP_REPORT_OTHER; }
 
     /// true if the plot has been marked as an efficiency plot, which
     /// will not be normalized when rendered within the DQM GUI.
+/* unused */
   bool isEfficiency() const
     { return data_.flags & DQMNet::DQM_PROP_EFFICIENCY_PLOT; }
 
@@ -281,33 +291,40 @@ public:
 
 private:
   /// whether soft-reset is enabled; default is false
+/* unused */
   bool isSoftResetEnabled() const
     { return refvalue_ != nullptr; }
 
   /// whether ME contents should be accumulated over multiple monitoring periods; default: false
+/* unused */
   bool isAccumulateEnabled() const
     { return data_.flags & DQMNet::DQM_PROP_ACCUMULATE; }
 
   /// true if ME is marked for deletion
+/* unused */
   bool markedToDelete() const
     { return data_.flags & DQMNet::DQM_PROP_MARKTODELETE; }
 
   /// Mark the object for deletion.
   /// NB: make sure that the following method is not called simultaneously for the same ME
+/* unused */
   void markToDelete()
     { data_.flags |= DQMNet::DQM_PROP_MARKTODELETE; }
 
 private:
   /// reset "was updated" flag
+/* unused */
   void resetUpdate()
     { data_.flags &= ~DQMNet::DQM_PROP_NEW; }
 
   /// true if ME should be reset at end of monitoring cycle
+/* unused */
   bool resetMe() const
     { return data_.flags & DQMNet::DQM_PROP_RESET; }
 
   /// if true, will accumulate ME contents (over many periods)
   /// until method is called with flag = false again
+/* unused */
   void setAccumulate(bool /* flag */)
     { data_.flags |= DQMNet::DQM_PROP_ACCUMULATE; }
 
@@ -373,6 +390,7 @@ public:
       return scalar_.str;
     }
 
+/* unused */
   DQMNet::TagList getTags() const // DEPRECATED
     {
       DQMNet::TagList tags;
@@ -381,11 +399,15 @@ public:
       return tags;
     }
 
+/* unused */
   const uint32_t getTag() const
     { return data_.tag; }
 
+/* unused */
   const uint32_t run() const {return data_.run;}
+/* unused */
   const uint32_t lumi() const {return data_.lumi;}
+/* unused */
   const uint32_t moduleId() const {return data_.moduleId;}
 };
 

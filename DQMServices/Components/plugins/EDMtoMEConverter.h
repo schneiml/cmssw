@@ -61,12 +61,19 @@ class EDMtoMEConverter : public edm::one::EDProducer<edm::one::WatchRuns,
   explicit EDMtoMEConverter(const edm::ParameterSet&);
   ~EDMtoMEConverter() override;
 
+/* unused */
   void beginJob() final {};
+/* unused */
   void endJob() final {};
+/* unused */
   void beginRun(const edm::Run&, const edm::EventSetup&) final {};
+/* unused */
   void endRun(const edm::Run&, const edm::EventSetup&) final {};
+/* unused */
   void beginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) final {};
+/* unused */
   void endLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) final {};
+/* unused */
   void produce(edm::Event&, edm::EventSetup const&) final {};
 
   void endLuminosityBlockProduce(edm::LuminosityBlock&, edm::EventSetup const&) override;

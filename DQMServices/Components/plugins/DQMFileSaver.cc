@@ -566,6 +566,7 @@ DQMFileSaver::DQMFileSaver(const edm::ParameterSet &ps)
 
 //--------------------------------------------------------
 void
+/* unused */
 DQMFileSaver::beginJob()
 {
   nrun_ = nlumi_ = irun_ = 0;
@@ -581,6 +582,7 @@ DQMFileSaver::beginJob()
 }
 
 std::shared_ptr<saverDetails::NoCache>
+/* unused */
 DQMFileSaver::globalBeginRun(const edm::Run &r, const edm::EventSetup &) const
 {
   ++nrun_;
@@ -601,12 +603,14 @@ DQMFileSaver::globalBeginRun(const edm::Run &r, const edm::EventSetup &) const
 }
 
 std::shared_ptr<saverDetails::NoCache>
+/* unused */
 DQMFileSaver::globalBeginLuminosityBlock(const edm::LuminosityBlock &l, const edm::EventSetup &) const
 {
   ++nlumi_;
   return nullptr;
 }
 
+/* unused */
 void DQMFileSaver::analyze(edm::StreamID, const edm::Event &e, const edm::EventSetup &) const
 {
   //save by event and save by time are not supported
@@ -743,6 +747,7 @@ DQMFileSaver::globalEndRun(const edm::Run & iRun, const edm::EventSetup &) const
 }
 
 void
+/* unused */
 DQMFileSaver::endJob()
 {
   if (saveAtJobEnd_)

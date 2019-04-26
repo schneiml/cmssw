@@ -326,7 +326,9 @@ public:
     char_string(TString const& str) : data_{str.Data()} {}
     char_string(char const* str) : data_{str} {}
     char_string(std::string const& str) : data_{str} {}
+/* unused */
     operator std::string const&() const { return data_; }
+/* unused */
     operator char const*() const { return data_.c_str(); }
   private:
     std::string data_;
@@ -471,6 +473,7 @@ public:
   bool load(std::string const& filename,
             OpenRunDirs stripdirs = StripRunDirs,
             bool fileMustExist = true);
+/* unused */
   bool mtEnabled() { return enableMultiThread_; };
 
 

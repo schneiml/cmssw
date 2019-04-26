@@ -25,6 +25,7 @@ public:
     { return qvalue_->message; }
 
   /// get name of quality test
+/* unused */
   const std::string &getQRName() const
     { return qvalue_->qtname; }
 
@@ -34,6 +35,7 @@ public:
     { return badChannels_; }
 
   /// get QCriterion
+/* unused */
   const QCriterion *getQCriterion() const
     { return qcriterion_; }
 

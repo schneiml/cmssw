@@ -55,6 +55,7 @@ class MEtoMEComparitor : public edm::EDAnalyzer {
 
    private:
       void beginJob() override ;
+/* unused */
       void analyze(const edm::Event&, const edm::EventSetup&) override{}
       void beginRun(const edm::Run& iRun, const edm::EventSetup& iSetup) override;
       void endRun(const edm::Run& iRun, const edm::EventSetup& iSetup) override;
