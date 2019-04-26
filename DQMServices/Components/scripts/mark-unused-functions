@@ -1,0 +1,32 @@
+# Mark unused functions (according to DXR) with a comment.
+# Does not get it always right (like DXR), e.g. virtuals might appear unused even though they are used.
+# Constructors/destructors and framework-called methods are also often wrong.
+
+DB="sqlite3 dxr.sqlite"
+
+$DB <<SQL
+DROP TABLE unused;
+DROP INDEX unused_loc;
+SQL
+
+$DB <<SQL
+CREATE TABLE unused AS SELECT DISTINCT function.loc FROM function NATURAL JOIN code WHERE 
+  (SELECT count(*) FROM ref WHERE ref.defloc = function.loc) = 0
+  AND line NOT LIKE "% = %"; 
+
+CREATE INDEX unused_loc ON unused(loc);
+SQL
+
+# restrict to DQMServices for now
+for f in $(echo 'SELECT DISTINCT rtrim(loc, "1234567890:") FROM unused WHERE loc LIKE "DQMServices/%";' | $DB); do
+  echo processing $f
+  $DB <<SQL > $f
+  SELECT CASE
+    WHEN loc IN (SELECT loc FROM unused) THEN
+      "/* unused */
+" || line
+    ELSE line END
+  FROM code 
+  WHERE rtrim(loc, "0123456789:") = "$f" 
+SQL
+done
