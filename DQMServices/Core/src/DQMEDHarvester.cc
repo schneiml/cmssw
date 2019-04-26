@@ -10,6 +10,7 @@ DQMEDHarvester::DQMEDHarvester() {
   usesResource("DQMStore");
   lumiToken_ = produces<DQMToken,edm::Transition::EndLuminosityBlock>("endLumi");
   runToken_ = produces<DQMToken,edm::Transition::EndRun>("endRun");
+  dqmstore_ = std::make_unique<DQMStore>();
 }
 
 void DQMEDHarvester::endJob() {
