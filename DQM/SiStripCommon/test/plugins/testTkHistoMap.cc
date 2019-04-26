@@ -77,7 +77,7 @@ void testTkHistoMap::create(const TkDetMap* tkDetMap)
 void testTkHistoMap::read(const TkDetMap* tkDetMap)
 {
   // TODO: need to use parent instance
-  auto dqmstore = std::make_unique<DQMStore>();
+  auto dqmstore = std::unique_ptr<DQMStore>(dqmstore_.release());
   dqmstore->open("test.root");  
 
   tkhisto      = std::make_unique<TkHistoMap>(tkDetMap);
@@ -140,7 +140,7 @@ void testTkHistoMap::endJob(void)
 
   if(!readFromFile) {
     // TODO: need to use parent instance
-    auto dqmstore = std::make_unique<DQMStore>();
+    auto dqmstore = std::unique_ptr<DQMStore>(dqmstore_.release());
     dqmstore->save("test.root");  
   }
   

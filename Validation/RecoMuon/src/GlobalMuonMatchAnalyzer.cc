@@ -52,7 +52,7 @@ subsystemname_ = iConfig.getUntrackedParameter<std::string>("subSystemFolder", "
   glbName_ = iConfig.getUntrackedParameter<edm::InputTag>("glbLabel");
 
   out = iConfig.getUntrackedParameter<std::string>("out");
-  dbe_ = std::make_unique<DQMStore>();
+  dbe_ = std::unique_ptr<DQMStore>(dqmstore_.release());
 
   tpToken_ = consumes<edm::View<reco::Track> >(tpName_);
   tkToken_ = consumes<edm::View<reco::Track> >(tkName_);

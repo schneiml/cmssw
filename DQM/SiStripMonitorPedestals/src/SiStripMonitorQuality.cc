@@ -42,7 +42,7 @@
 #include <algorithm>
 
 SiStripMonitorQuality::SiStripMonitorQuality(edm::ParameterSet const& iConfig):
-  dqmStore_(std::make_unique<DQMStore>()),
+  dqmStore_(std::unique_ptr<DQMStore>(dqmstore_.release())),
   conf_(iConfig),
   m_cacheID_(0)
 
