@@ -9,12 +9,11 @@ CLANGINC="${CLANG%/bin/clang++}/include/"
 
 report clang++ sha1.cpp dxr-index.cpp -o dxr-index.so --shared -fPIC -I "$CLANGINC" -O2
 
+report cd $CMSSW_BASE/
 # touch a lot  of files to trigger a full recompile
 touch $(find src/ -name '*.cc' )
 
 # run scram b with indexer active
-report cd $CMSSW_BASE/
-
 PLUGIN="-Xclang -load -Xclang $PWD/src/DQMServices/Components/scripts/dxr-index.so -Xclang -plugin -Xclang dxr-index  -Xclang -plugin-arg-dxr-index -Xclang $PWD/src"
 echo PLUGIN=$PLUGIN
 USER_CXXFLAGS="$PLUGIN" report scram build -k  -j8 
