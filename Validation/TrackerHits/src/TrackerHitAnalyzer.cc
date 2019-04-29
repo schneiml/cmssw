@@ -53,7 +53,6 @@ TrackerHitAnalyzer::TrackerHitAnalyzer(const edm::ParameterSet& ps)
   , edmPSimHitContainer_siTECLow_Token_( consumes<edm::PSimHitContainer>( ps.getParameter<edm::InputTag>( "SiTECLowSrc" ) ) )
   , edmPSimHitContainer_siTECHigh_Token_( consumes<edm::PSimHitContainer>( ps.getParameter<edm::InputTag>( "SiTECHighSrc" ) ) )
   , edmSimTrackContainerToken_( consumes<edm::SimTrackContainer>( ps.getParameter<edm::InputTag>( "G4TrkSrc" ) ) )
-  , fDBE( nullptr )
   , conf_(ps)
   , runStandalone ( ps.getParameter<bool>("runStandalone")  ) 
   , fOutputFile( ps.getUntrackedParameter<std::string>( "outputFile", "TrackerHitHisto.root" ) ) 
@@ -62,7 +61,6 @@ TrackerHitAnalyzer::TrackerHitAnalyzer(const edm::ParameterSet& ps)
 
 void TrackerHitAnalyzer::bookHistograms(DQMStore::IBooker & ibooker,const edm::Run& run, const edm::EventSetup& es){
 ////// booking histograms
-  fDBE = std::unique_ptr<DQMStore>(dqmstore_.release());
    	
   Char_t  hname1[50], htitle1[80];
   Char_t  hname2[50], htitle2[80];
@@ -71,19 +69,16 @@ void TrackerHitAnalyzer::bookHistograms(DQMStore::IBooker & ibooker,const edm::R
   Char_t  hname5[50], htitle5[80];
   Char_t  hname6[50], htitle6[80];
    
-  if ( fDBE ) {
+  if ( dqmstore_ ) {
      if ( verbose_ ) {
-       fDBE->setVerbose(1);
+       dqmstore_->setVerbose(1);
      } else {
-       fDBE->setVerbose(0);
+       dqmstore_->setVerbose(0);
      }
   }
         																
-  if ( fDBE) {
-    if ( verbose_ ) fDBE->showDirStructure();
-  } 
-
-  if ( fDBE != nullptr ) {
+  if ( dqmstore_) {
+    if ( verbose_ ) dqmstore_->showDirStructure();
 //   fDBE->setCurrentFolder("TrackerHitsV/TrackerHitTask");
      
      // is there any way to record CPU Info ???
@@ -338,7 +333,7 @@ void TrackerHitAnalyzer::endJob(){
   //and here we will do the profile
 
   //Save root file only in standalone mode
-  if ( runStandalone && !fOutputFile.empty() && fDBE ){ fDBE->save(fOutputFile);}
+  if ( runStandalone && !fOutputFile.empty() && dqmstore_ ){ dqmstore_->save(fOutputFile);}
 }
 
 

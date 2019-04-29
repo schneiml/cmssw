@@ -42,7 +42,6 @@ class TFile;
 
 //Constructor
 SiStripTrackingRecHitsValid::SiStripTrackingRecHitsValid(const edm::ParameterSet& ps) : 
-  dbe_(std::unique_ptr<DQMStore>(dqmstore_.release())),
   conf_(ps),
   trackerHitAssociatorConfig_(ps, consumesCollector()),
   m_cacheID_(0)
@@ -447,7 +446,7 @@ void SiStripTrackingRecHitsValid::bookHistograms(DQMStore::IBooker & ibooker,con
 void SiStripTrackingRecHitsValid::endJob() {
 
   //Only in standalone mode save local root file 
-  if(runStandalone && outputMEsInRootFile){dbe_->save(outputFileName);}
+  if(runStandalone && outputMEsInRootFile){dqmstore_->save(outputFileName);}
 
 }
 

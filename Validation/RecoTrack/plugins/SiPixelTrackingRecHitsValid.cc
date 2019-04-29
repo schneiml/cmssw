@@ -111,7 +111,7 @@ void SiPixelTrackingRecHitsValid::beginJob()
 
 SiPixelTrackingRecHitsValid::SiPixelTrackingRecHitsValid(const edm::ParameterSet& ps) :
   trackerHitAssociatorConfig_(ps, consumesCollector()),
-  dbe_(nullptr), tfile_(nullptr), t_(nullptr)
+  tfile_(nullptr), t_(nullptr)
 {
   //Read config file
   MTCCtrack_ = ps.getParameter<bool>("MTCCtrack");
@@ -128,7 +128,6 @@ SiPixelTrackingRecHitsValid::SiPixelTrackingRecHitsValid(const edm::ParameterSet
 void SiPixelTrackingRecHitsValid::bookHistograms(DQMStore::IBooker & ibooker,const edm::Run& run, const edm::EventSetup& es){
   
   // Book histograms
-  dbe_ = std::unique_ptr<DQMStore>(dqmstore_.release());
   //dbe_->showDirStructure();
 
   //float math_pi = 3.14159265;
@@ -1067,7 +1066,7 @@ void SiPixelTrackingRecHitsValid::bookHistograms(DQMStore::IBooker & ibooker,con
 SiPixelTrackingRecHitsValid::~SiPixelTrackingRecHitsValid() 
 {  
   //save local root file only in standalone mode
-  if ( runStandalone && !outputFile_.empty() && dbe_ ) dbe_->save(outputFile_);
+  if ( runStandalone && !outputFile_.empty() && dqmstore_ ) dqmstore_->save(outputFile_);
 }  
 
 // Functions that gets called by framework every event

@@ -65,7 +65,6 @@ class RecoMuonValidator : public DQMEDAnalyzer
   edm::ParameterSet pset;
 
   MuonServiceProxy * theMuonService;
-  std::unique_ptr<DQMStore> dbe_;
   
   bool doAbsEta_;
   bool doAssoc_;

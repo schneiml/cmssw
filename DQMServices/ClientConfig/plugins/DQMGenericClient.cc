@@ -376,14 +376,12 @@ void DQMGenericClient::dqmEndJob(DQMStore::IBooker & ibooker, DQMStore::IGetter 
   // this endRun function
 
   // needed to access the DQMStore::save method
-  theDQM = nullptr;
-  theDQM = std::unique_ptr<DQMStore>(dqmstore_.release());
 
   if (runOnEndJob_) {
     makeAllPlots(ibooker, igetter);
   }
 
-  if ( ! outputFileName_.empty() ) theDQM->save(outputFileName_);
+  if ( ! outputFileName_.empty() ) dqmstore_->save(outputFileName_);
 
 }
 

@@ -18,7 +18,6 @@ class OuterTrackerMCHarvester : public DQMEDHarvester {
 
 		private:
 			// ----------member data ---------------------------
-			 std::unique_ptr<DQMStore> dbe;
 	};
 
 #endif

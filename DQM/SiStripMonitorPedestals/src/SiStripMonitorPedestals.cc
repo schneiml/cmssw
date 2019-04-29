@@ -51,7 +51,6 @@ const std::string SiStripMonitorPedestals::RunMode2 = "CalculatedPlotsOnly";
 const std::string SiStripMonitorPedestals::RunMode3 = "AllPlots";
 
 SiStripMonitorPedestals::SiStripMonitorPedestals(edm::ParameterSet const& iConfig):
-  dqmStore_(std::unique_ptr<DQMStore>(dqmstore_.release())),
   conf_(iConfig),
   pedsPSet_(iConfig.getParameter<edm::ParameterSet>("PedestalsPSet")),
   analyzed(false),
@@ -458,7 +457,7 @@ void SiStripMonitorPedestals::endRun(edm::Run const& run, edm::EventSetup const&
   if (outputMEsInRootFile) {    
     std::string outPutFileName = conf_.getParameter<std::string>("OutPutFileName");
 //    dqmStore_->showDirStructure();
-    dqmStore_->save(outPutFileName);
+    dqmstore_->save(outPutFileName);
   }
 }
 //

@@ -537,7 +537,6 @@ RecoMuonValidator::RecoMuonValidator(const edm::ParameterSet& pset):
   theMuonService = new MuonServiceProxy(serviceParameters);
 
   // retrieve the instance of DQMService
-  dbe_ = std::unique_ptr<DQMStore>(dqmstore_.release());
   subsystemname_ = pset.getUntrackedParameter<std::string>("subSystemFolder", "YourSubsystem") ;
 
   subDir_ = pset.getUntrackedParameter<string>("subDir");
@@ -623,7 +622,7 @@ void RecoMuonValidator::dqmBeginRun(const edm::Run& , const EventSetup& eventSet
 //
 void RecoMuonValidator::endRun(edm::Run const&, edm::EventSetup const&)
 {
-  if ( dbe_ && ! outputFileName_.empty() ) dbe_->save(outputFileName_);
+  if ( dqmstore_ && ! outputFileName_.empty() ) dqmstore_->save(outputFileName_);
 }
 
 //
