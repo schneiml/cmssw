@@ -32,8 +32,6 @@ bool ecalRecHitGreater(EcalRecHit x, EcalRecHit y)
 
 
 
-class DQMStore;
-class MonitorElement;
 
 class DQMSourcePi0 : public DQMEDAnalyzer {
 

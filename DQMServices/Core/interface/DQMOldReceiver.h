@@ -7,7 +7,8 @@
 
 # include <string>
 
-class DQMStore;
+#include <DQMServices/Core/interface/DQMStore.h>
+
 class DQMOldReceiver
 {
 
@@ -42,11 +43,6 @@ public:
 
   ~DQMOldReceiver() DQM_DEPRECATED;
 
-  /// get pointer to back-end interface
-  DQMStore *getStore() DQM_DEPRECATED
-    { return store_; }
-  DQMStore *getBEInterface() DQM_DEPRECATED
-    { return store_; }
 
   /** this is the "main" loop where we receive monitoring or
       send subscription requests;
@@ -59,7 +55,7 @@ public:
 
 private:
   /// use to get hold of structure with monitoring elements that class owns
-  DQMStore *store_;
+  std::unique_ptr<DQMStore> store_;
 } DQM_DEPRECATED;
 
 #endif // DQMSERVICES_CORE_DQM_CONNECTOR_H

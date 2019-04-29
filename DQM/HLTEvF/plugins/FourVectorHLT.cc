@@ -16,10 +16,7 @@ FourVectorHLT::FourVectorHLT(const edm::ParameterSet& iConfig)
 {
   LogDebug("FourVectorHLT") << "constructor...." ;
 
-  dbe_ = Service < DQMStore > ().operator->();
-  if ( ! dbe_ ) {
-    LogWarning("Status") << "unable to get DQMStore service?";
-  }
+  dbe_ = std::make_unique<DQMStore>();
   if (iConfig.getUntrackedParameter < bool > ("DQMStore", false)) {
     dbe_->setVerbose(0);
   }
@@ -191,8 +188,7 @@ void
 FourVectorHLT::beginJob()
 {
   nev_ = 0;
-  DQMStore *dbe = nullptr;
-  dbe = Service<DQMStore>().operator->();
+  std::unique_ptr<DQMStore> dbe = nullptr;
   
   if (dbe) {
     dbe->setCurrentFolder(dirname_);

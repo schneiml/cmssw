@@ -20,12 +20,12 @@
 
 #include "TH1F.h"
 #include "TH2F.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include <string>
 #include <TFile.h>
 #include <vector>
 
 
-class DQMStore;
 
 class PFJetBenchmark {
 	
@@ -226,7 +226,7 @@ class PFJetBenchmark {
   double recPt_cut;
   double maxEta_cut;
   unsigned int entry_;
-  DQMStore *dbe_;
+  DQMStore* dbe_;
 };
 
 #endif // RecoParticleFlow_Benchmark_PFJetBenchmark_h

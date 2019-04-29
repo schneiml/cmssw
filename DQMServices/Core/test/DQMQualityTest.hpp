@@ -26,7 +26,7 @@ class DQMQualityTest
     edm::ServiceRegistry::Operate operate(services);
 
     //dbe_ = edm::Service<DQMStore>().operator->();
-    dbe_ = new DQMStore(emptyps);	
+    dbe_ = std::make_unique<DQMStore>();
 
     xmin_ = XMIN; xmax_ = XMAX;
     // distribution: gaussian w/ parameters: mean, sigma
@@ -116,7 +116,6 @@ class DQMQualityTest
     delete equalH_test_;
     delete meanNear_test_;
 //    delete emu_test_;
-    delete dbe_;
   }
   // N_ref: statistics for reference histogram
   // N_test: statistics for test histogram
@@ -211,7 +210,7 @@ class DQMQualityTest
 
  protected:
 
-  DQMStore* dbe_ ; 
+  std::unique_ptr<DQMStore> dbe_ ; 
   float xmin_; float xmax_; // range for histograms
   
   MonitorElement * my_ref; // reference histogram

@@ -22,14 +22,17 @@ class QTestConfigure{
  public:
  
   ///Constructor
+/* unused */
   QTestConfigure(){}
   ///Destructor
+/* unused */
   ~QTestConfigure(){}
   ///Creates and defines quality tests
   bool enableTests(const std::map<std::string, std::map<std::string, std::string> >& tests, DQMStore * bei); 
   ///Disables the Quality Tests in the string list
   void disableTests(const std::vector<std::string>& testsOFFList, DQMStore * bei);
   ///Returns the vector containing the names of the quality tests that have been created
+/* unused */
   std::vector<std::string> testsReady(){return testsConfigured;}
  
  private:

@@ -40,7 +40,7 @@ class DQMMessageLoggerClient : public edm::EDAnalyzer {
 
   // ----------member data ---------------------------
   
-  DQMStore* theDbe;
+  std::unique_ptr<DQMStore> theDbe;
   edm::ParameterSet parameters;
   std::string directoryName;
 

@@ -35,7 +35,7 @@ SiStripDigiValid::~SiStripDigiValid(){
 
 
 void SiStripDigiValid::bookHistograms(DQMStore::IBooker & ibooker,const edm::Run& run, const edm::EventSetup& es){
-  dbe_ = edm::Service<DQMStore>().operator->();
+  dbe_ = std::unique_ptr<DQMStore>(dqmstore_.release());
 
    if ( dbe_ ) {
      ibooker.setCurrentFolder("TrackerDigisV/TrackerDigis/Strip");

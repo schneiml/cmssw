@@ -27,6 +27,7 @@
 #include "FWCore/Framework/interface/LuminosityBlock.h"
 #include "FWCore/Framework/interface/Run.h"
 #include "FWCore/Framework/interface/EventSetup.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 #include <iostream>
 #include <fstream>
@@ -35,8 +36,6 @@
 #include <map>
 #include <unordered_map>
 
-class DQMStore;
-class MonitorElement;
 class SiStripDetVOff;
 class SiStripDetCabling;
 
@@ -85,5 +84,7 @@ private:
   static constexpr float MaxAcceptableBadDcsLumi_{2};
 
   edm::ESHandle<SiStripDetCabling> detCabling_{};
+
+  std::unique_ptr<DQMStore> dqm_store;
 };
 #endif

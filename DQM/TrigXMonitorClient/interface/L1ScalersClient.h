@@ -53,7 +53,7 @@ public:
 
 
 private:
-  DQMStore * dbe_;
+  std::unique_ptr<DQMStore> dbe_;
 
   int nev_; // Number of events processed
   int nLumi_; // number of lumi blocks

@@ -27,6 +27,7 @@
 
 #include "DataFormats/DetId/interface/DetId.h"
 #include "TrackingTools/PatternTools/interface/Trajectory.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include <DQMServices/Core/interface/DQMEDAnalyzer.h>
 
 
@@ -35,7 +36,6 @@ namespace edm {
   class Event;
   class EventSetup;
 }
-class DQMStore;
 class HTracks;
 class HResolution;
 
@@ -81,7 +81,7 @@ private:
   
  private:
   
-  DQMStore* dbe_;
+  std::unique_ptr<DQMStore> dbe_;
   std::string dirName_;
   std::string subsystemname_;
   edm::ParameterSet pset;

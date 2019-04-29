@@ -56,7 +56,7 @@ PFTester::beginJob()
 {
 
   // get ahold of back-end interface
-  dbe_ = edm::Service<DQMStore>().operator->();
+  dbe_ = std::make_unique<DQMStore>();
   
   if (dbe_) {
 

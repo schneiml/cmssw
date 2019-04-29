@@ -113,7 +113,7 @@ DQMStore* const SiStripCommissioningSource::dqm( std::string method ) const {
     ss << " NULL pointer to DQMStore";
     edm::LogWarning(mlDqmSource_) << ss.str();
     return nullptr;
-  } else { return dqm_; }
+  } else { return &*dqm_; }
 }
 
 // -----------------------------------------------------------------------------
@@ -127,11 +127,7 @@ void SiStripCommissioningSource::beginRun( edm::Run const & run, const edm::Even
   
   // ---------- DQM back-end interface ----------
   
-  dqm_ = edm::Service<DQMStore>().operator->();
-  edm::LogInfo(mlDqmSource_)
-    << "[SiStripCommissioningSource::" << __func__ << "]"
-    << " DQMStore service: " 
-    << dqm_;
+  dqm_ = std::make_unique<DQMStore>();
   dqm(__func__);
   dqm()->setVerbose(0);
   

@@ -26,10 +26,10 @@ Monitoring source for general quantities related to track dEdx.
 #include "DataFormats/TrackReco/interface/DeDxData.h"
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 #include <DQMServices/Core/interface/DQMEDAnalyzer.h>
 
-class DQMStore;
 class GenericTriggerEventFlag;
 
 class dEdxAnalyzer : public DQMEDAnalyzer {
@@ -47,7 +47,7 @@ class dEdxAnalyzer : public DQMEDAnalyzer {
   
  private:
   // ----------member data ---------------------------
-  DQMStore * dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
   edm::ParameterSet fullconf_;
   edm::ParameterSet conf_;
   

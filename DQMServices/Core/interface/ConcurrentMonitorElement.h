@@ -18,6 +18,7 @@ private:
   mutable tbb::spin_mutex lock_;
 
 public:
+/* unused */
   ConcurrentMonitorElement(void) :
     me_(nullptr)
   { }
@@ -71,12 +72,14 @@ public:
   }
 
   // reset the internal pointer
+/* unused */
   void reset()
   {
     std::lock_guard<tbb::spin_mutex> guard(lock_);
     me_ = nullptr;
   }
 
+/* unused */
   operator bool() const
   {
     std::lock_guard<tbb::spin_mutex> guard(lock_);
@@ -136,11 +139,13 @@ public:
     me_->setBinLabel(bin, label, axis);
   }
 
+/* unused */
   void enableSumw2()
   {
     me_->getTH1()->Sumw2();
   }
 
+/* unused */
   void disableAlphanumeric()
   {
     me_->getTH1()->GetXaxis()->SetNoAlphanumeric(false);
@@ -153,3 +158,5 @@ public:
 };
 
 #endif // DQMServices_Core_ConcurrentMonitorElement_h
+
+#define CHANGED

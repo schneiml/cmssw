@@ -41,7 +41,7 @@
 
 SiStripMonitorRawData::SiStripMonitorRawData(edm::ParameterSet const& iConfig):
   BadFedNumber(nullptr),
-  dqmStore_(edm::Service<DQMStore>().operator->()),
+  dqmStore_(std::unique_ptr<DQMStore>(dqmstore_.release())),
   conf_(iConfig),
   m_cacheID_(0)
 

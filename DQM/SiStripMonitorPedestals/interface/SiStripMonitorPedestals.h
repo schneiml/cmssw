@@ -45,12 +45,11 @@
 #include <DQMServices/Core/interface/DQMEDAnalyzer.h>
 
 #include "boost/cstdint.hpp"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include <iomanip>
 #include <string>
 
 class ApvAnalysisFactory;
-class MonitorElement;
-class DQMStore;
 class SiStripDetCabling;
 
 class SiStripMonitorPedestals : public DQMEDAnalyzer {
@@ -92,7 +91,7 @@ class SiStripMonitorPedestals : public DQMEDAnalyzer {
     MonitorElement* BadStripsDB;
   };
   
-  DQMStore* dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
   edm::ParameterSet conf_;
   std::map<uint32_t, ModMEs> PedMEs;
   edm::ESHandle<SiStripDetCabling> detcabling;

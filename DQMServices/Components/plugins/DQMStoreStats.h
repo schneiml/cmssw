@@ -88,17 +88,23 @@ class VIterator : public Iterator<Item>
   public:
     VIterator(const std::vector<Item>* aVector):vector_(aVector),index(0) {}
     ~VIterator() override = default; 
+/* unused */
     void First() override     {index=0;}
+/* unused */
     void Next() override      { ++index;}
+/* unused */
     virtual int  size()      { return vector_->size();}
+/* unused */
     virtual int  getIndex()  { return (int)index;}
 
+/* unused */
     bool IsDone() const override
     {
       if(index < (unsigned int)vector_->size()) return false ;
       return true ;
     }
 
+/* unused */
     Item CurrentItem() const override
     {
       return vector_->operator[](index) ;
@@ -123,6 +129,7 @@ public:
                                  id_(10),level_(0),folderName_(std::move(name)),
                                  father_(nullptr) {}
 
+/* unused */
   ~Folder() {
     for(auto & subfolder : subfolders_)
       delete subfolder;
@@ -144,6 +151,7 @@ public:
   void setId(unsigned int id)  {id_ = id;}
   unsigned int id()  {return id_;}
   void setLevel(unsigned int value) {level_=value;}
+/* unused */
   unsigned int level() {return level_;}
   
   
@@ -197,6 +205,7 @@ public:
       for(auto & subfolder : subfolders_)
         subfolder->dump(indent) ;
     }
+/* unused */
   VIterator<Folder*> CreateIterator()
     {
       return VIterator<Folder *>(&subfolders_) ;
@@ -328,7 +337,7 @@ private:
   std::pair<unsigned int, unsigned int> readMemoryEntry( ) const;
   void print();
   
-  DQMStore* dbe_;
+  std::unique_ptr<DQMStore> dbe_;
   edm::ParameterSet parameters_;
 
   std::string subsystem_;

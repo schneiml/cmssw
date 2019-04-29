@@ -24,9 +24,8 @@
 
 // for selection cut
 #include "CommonTools/Utils/interface/StringCutObjectSelector.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
-class DQMStore;
-class MonitorElement;
 class MuonServiceProxy;
 class TrackAssociatorBase;
 
@@ -66,7 +65,7 @@ class RecoMuonValidator : public DQMEDAnalyzer
   edm::ParameterSet pset;
 
   MuonServiceProxy * theMuonService;
-  DQMStore * dbe_;
+  std::unique_ptr<DQMStore> dbe_;
   
   bool doAbsEta_;
   bool doAssoc_;

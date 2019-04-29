@@ -29,6 +29,7 @@ class DQMGenericClient : public DQMEDHarvester
 {
  public:
   DQMGenericClient(const edm::ParameterSet& pset);
+/* unused */
   ~DQMGenericClient() override {};
 
   void dqmEndLuminosityBlock(DQMStore::IBooker& ibooker,DQMStore::IGetter& igetter,const edm::LuminosityBlock& lumiSeg, const edm::EventSetup& c) override;
@@ -122,7 +123,7 @@ class DQMGenericClient : public DQMEDHarvester
   bool isWildcardUsed_;
   bool resLimitedFit_;
 
-  DQMStore* theDQM;
+  std::unique_ptr<DQMStore> theDQM;
   std::vector<std::string> subDirs_;
   std::string outputFileName_;
 

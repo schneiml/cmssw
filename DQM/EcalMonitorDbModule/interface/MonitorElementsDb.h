@@ -21,9 +21,8 @@
 #include "MonitorXMLParser.h"
 
 #include "RelationalAccess/ISessionProxy.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
-class MonitorElement;
-class DQMStore;
 
 class MonitorElementsDb{
 
@@ -61,7 +60,7 @@ class MonitorElementsDb{
   std::vector<DB_ME>            MEinfo_;
   std::vector<MonitorElement*>  MEs_;
   int                           ievt_;
-  DQMStore*        dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
   
 };
 

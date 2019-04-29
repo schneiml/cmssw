@@ -1,0 +1,39 @@
+
+# Used to find places where dqmstore_ is in scope:
+# sed -i 's/make_unique<DQMStore>()/unique_ptr<DQMStore>(dqmstore_.release())/g' $(ag -l --cpp 'make_unique<DQMStore>()')
+# git checkout DQMServices/Core
+# scram b -k -j12 &> dump
+# bash DQMServices/Components/scripts/reset-lines-with-errors
+
+
+# file with compiler output
+DUMPFILE="dump"
+
+grep -o "src/.*: error:" dump | cut -d: -f1-2 | cut -d/ -f2- > linestoreset
+
+for f in $(cut -d: -f1 linestoreset | sort | uniq); do
+  echo "processing $f"
+  git show HEAD:$f > oldfile
+  sqlite3 <<SQL > newfile
+CREATE TABLE oldcode(line);
+CREATE TABLE newcode(line);
+CREATE TABLE toreset(file, line);
+.separator ":"
+.import linestoreset toreset
+
+.mode list
+.separator "\v"
+.import $f newcode
+.import oldfile oldcode
+
+
+.mode list
+SELECT 
+  CASE WHEN oldcode.rowid IN (SELECT line FROM toreset WHERE file = "$f") THEN oldcode.line
+  ELSE newcode.line END
+FROM oldcode, newcode WHERE oldcode.rowid = newcode.rowid;
+
+SQL
+  mv newfile $f 
+done
+

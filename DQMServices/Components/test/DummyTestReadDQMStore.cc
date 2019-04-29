@@ -91,7 +91,7 @@ class TH1FReader : public ReaderBase {
  private:
   std::string folder_;
   std::string m_name;
-  DQMStore* m_store;
+  std::unique_ptr<DQMStore> m_store;
   MonitorElement* m_element;
   std::vector<double> m_means;
   std::vector<double> m_entries;
@@ -159,7 +159,7 @@ class TH2FReader : public ReaderBase {
  private:
   std::string folder_;
   std::string m_name;
-  DQMStore* m_store;
+  std::unique_ptr<DQMStore> m_store;
   MonitorElement* m_element;
   std::vector<double> m_means;
   std::vector<double> m_entries;
@@ -193,7 +193,7 @@ class DummyTestReadDQMStore :  public edm::EDAnalyzer {
   using PSets = std::vector<edm::ParameterSet>;
   PSets runElements;
   PSets lumiElements;
-  edm::Service<DQMStore> dstore;
+  std::unique_ptr<DQMStore> dstore = std::make_unique<DQMStore>();
 };
 
 //

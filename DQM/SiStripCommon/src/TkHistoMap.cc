@@ -53,14 +53,7 @@ void TkHistoMap::load(const TkDetMap* tkDetMap, const std::string& path, float b
 }
 
 void TkHistoMap::loadServices(){
-  if(!edm::Service<DQMStore>().isAvailable()){
-    edm::LogError("TkHistoMap") <<
-      "\n------------------------------------------"
-      "\nUnAvailable Service DQMStore: please insert in the configuration file an instance like"
-      "\n\tprocess.load(\"DQMServices.Core.DQMStore_cfg\")"
-      "\n------------------------------------------";
-  }
-  dqmStore_ = edm::Service<DQMStore>().operator->();
+  dqmStore_ = std::make_shared<DQMStore>();
 }
 
 void TkHistoMap::save(const std::string& filename){

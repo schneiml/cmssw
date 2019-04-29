@@ -23,23 +23,31 @@ public:
   DQMEDHarvester();
   ~DQMEDHarvester() override = default;
 
+/* unused */
   void accumulate(edm::Event const& ev, edm::EventSetup const& es) final {};
 
+/* unused */
   void beginRun(edm::Run const&, edm::EventSetup const&) override {};
+/* unused */
   void endRun(edm::Run const&, edm::EventSetup const&) override {};
   void endRunProduce(edm::Run& run, edm::EventSetup const& setup) override;
 
+/* unused */
   void beginLuminosityBlock(edm::LuminosityBlock const &, edm::EventSetup const&) final {};
   void endLuminosityBlock(edm::LuminosityBlock const &, edm::EventSetup const&) final;
   void endLuminosityBlockProduce(edm::LuminosityBlock&, edm::EventSetup const&) final;
 
   void endJob() final;
+/* unused */
   virtual void dqmEndLuminosityBlock(DQMStore::IBooker &, DQMStore::IGetter &, edm::LuminosityBlock const &, edm::EventSetup const&) {};
   virtual void dqmEndJob(DQMStore::IBooker &, DQMStore::IGetter &) = 0;
 
 protected:
   edm::EDPutTokenT<DQMToken> lumiToken_;
   edm::EDPutTokenT<DQMToken> runToken_;
+  std::unique_ptr<DQMStore> dqmstore_;
 };
 
 #endif // CORE_DQMED_HARVESTER_H
+
+#define CHANGED

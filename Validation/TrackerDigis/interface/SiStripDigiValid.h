@@ -3,6 +3,7 @@
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include <DQMServices/Core/interface/DQMEDAnalyzer.h>
 
 #include <string>
@@ -11,8 +12,6 @@ namespace edm {
   template<class T> class DetSetVector;
 }
 class SiStripDigi;
-class DQMStore;
-class MonitorElement;
 
 class  SiStripDigiValid: public DQMEDAnalyzer {
 
@@ -173,7 +172,7 @@ class  SiStripDigiValid: public DQMEDAnalyzer {
 
 
     //Back-End Interface
-    DQMStore* dbe_;
+    std::unique_ptr<DQMStore> dbe_;
     bool runStandalone;
     std::string outputFile_;
     edm::EDGetTokenT< edm::DetSetVector<SiStripDigi> > edmDetSetVector_SiStripDigi_Token_;

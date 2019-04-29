@@ -158,7 +158,7 @@ class SiStripBaseCondObjDQM {
      
     SiStripHistoId hidmanager;                        
     SiStripFolderOrganizer folder_organizer;         
-    DQMStore* dqmStore_;
+    std::unique_ptr<DQMStore> dqmStore_;
     edm::RunNumber_t runNumber_;
 
 };

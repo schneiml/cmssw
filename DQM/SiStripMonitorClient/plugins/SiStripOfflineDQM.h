@@ -29,6 +29,7 @@
 #include "FWCore/Framework/interface/LuminosityBlock.h"
 #include "FWCore/Framework/interface/Run.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 #include <iostream>
 #include <fstream>
@@ -37,7 +38,6 @@
 #include <map>
 #include <TTree.h>
 
-class DQMStore;
 class SiStripDetCabling;
 
 class SiStripOfflineDQM: public edm::EDAnalyzer {
@@ -68,5 +68,6 @@ private:
   bool trackerFEDsFound_;
   bool printFaultyModuleList_;
   TTree* tkinfoTree_{nullptr};
+  std::unique_ptr<DQMStore> dqm_store;
 };
 #endif

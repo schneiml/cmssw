@@ -18,7 +18,7 @@ SiPixelFolderOrganizer::SiPixelFolderOrganizer(bool getStore) :
   topFolderName("Pixel")
 {  
   //Not allowed in multithread framework, but can still be called by other modules not from DQM.
-  if (getStore) dbe_ = edm::Service<DQMStore>().operator->();
+  if (getStore) dbe_ = std::make_unique<DQMStore>();
 }
 
 SiPixelFolderOrganizer::~SiPixelFolderOrganizer() {}

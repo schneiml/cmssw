@@ -5,11 +5,10 @@
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "DQMServices/Core/interface/DQMEDAnalyzer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 #include <string>
 
-class DQMStore;
-class MonitorElement;
 class TrackingParticle;
 
 class TrackingTruthValid  : public  DQMEDAnalyzer {
@@ -29,7 +28,7 @@ class TrackingTruthValid  : public  DQMEDAnalyzer {
   bool runStandalone;
   std::string outputFile;
   
-  DQMStore* dbe_;
+  std::unique_ptr<DQMStore> dbe_;
   MonitorElement* meTPMass;
   MonitorElement* meTPCharge; 
   MonitorElement* meTPId;

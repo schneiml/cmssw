@@ -72,7 +72,7 @@ private:
   
   edm::ParameterSet parameters_;
 
-  DQMStore* dbe_;  
+  std::unique_ptr<DQMStore> dbe_;  
   std::string monitorName_;
   std::string QTestName_;
   int counterClientOperation ; //-- counter on Client Operations

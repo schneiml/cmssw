@@ -20,10 +20,10 @@
 
 //
 #include "DataFormats/SiStripDetId/interface/SiStripDetId.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 #include <string>
 
-class DQMStore;
 class TrackerTopology;
 class SiStripFolderOrganizer
 {
@@ -82,6 +82,6 @@ class SiStripFolderOrganizer
 
    private:
       std::string TopFolderName;
-      DQMStore* dbe_;
+      std::unique_ptr<DQMStore> dbe_;
 };
 #endif

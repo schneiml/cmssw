@@ -123,7 +123,7 @@ void SiStripCablingDQM::getActiveDetIds(const edm::EventSetup & eSetup){
 
 
 
-  DQMStore* dqmStore_=edm::Service<DQMStore>().operator->();
+  std::unique_ptr<DQMStore> dqmStore_ = std::make_unique<DQMStore>();
 
   std::string FolderName=fPSet_.getParameter<std::string>("FolderName_For_QualityAndCabling_SummaryHistos");
 

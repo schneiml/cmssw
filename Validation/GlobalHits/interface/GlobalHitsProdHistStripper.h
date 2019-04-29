@@ -65,7 +65,7 @@ class GlobalHitsProdHistStripper : public edm::EDAnalyzer
   bool printProvenanceInfo;
 
 
-  DQMStore *dbe;
+  std::unique_ptr<DQMStore> dbe;
   std::string outputfile;
   bool doOutput;
 

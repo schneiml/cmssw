@@ -4,9 +4,8 @@
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
-class DQMStore;
-class MonitorElement;
 
 class ESDataCertificationTask: public edm::EDAnalyzer{
 
@@ -26,7 +25,7 @@ class ESDataCertificationTask: public edm::EDAnalyzer{
   
  private:
   
-  DQMStore* dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
   
   std::string prefixME_;
   

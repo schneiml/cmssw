@@ -18,6 +18,7 @@ namespace {
   std::atomic<bool> firstTime{true};
 }
 
+/* unused */
 QTestHandle::QTestHandle()
 {
   qtParser     = new QTestConfigurationParser;
@@ -28,6 +29,7 @@ QTestHandle::QTestHandle()
   
 }
 
+/* unused */
 QTestHandle::~QTestHandle()
 {
   delete qtParser;

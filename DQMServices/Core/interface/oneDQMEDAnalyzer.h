@@ -35,8 +35,10 @@ class DQMRunEDProducer : public edm::one::EDProducer<edm::Accumulator,
                                                      edm::one::WatchRuns, T...> 
 {
 public:
+/* unused */
   DQMRunEDProducer() :
-    runToken_{this-> template produces<DQMToken,edm::Transition::EndRun>("endRun")}
+    runToken_{this-> template produces<DQMToken,edm::Transition::EndRun>("endRun")},
+    dqmstore_{std::make_unique<DQMStore>()}
     {}
   ~DQMRunEDProducer() override = default;
   DQMRunEDProducer(DQMRunEDProducer<T...> const&) = delete;
@@ -44,7 +46,7 @@ public:
 
   void beginRun(edm::Run const& run, edm::EventSetup const& setup) final {
     dqmBeginRun(run, setup);
-    edm::Service<DQMStore>()->bookTransaction(
+    dqmstore_->bookTransaction(
     [this, &run, &setup](DQMStore::IBooker & booker)
     {
       booker.cd();
@@ -55,9 +57,10 @@ public:
     this->getCanSaveByLumi());
   }
 
+/* unused */
   void endRun(edm::Run const& run, edm::EventSetup const& setup) override {}
   void endRunProduce(edm::Run& run, edm::EventSetup const& setup) override {
-    edm::Service<DQMStore>()->cloneRunHistograms(
+    dqmstore_->cloneRunHistograms(
         run.run(),
         this->moduleDescription().id());
 
@@ -72,9 +75,11 @@ public:
     analyze(ev,es);
   }
 
+/* unused */
   virtual bool getCanSaveByLumi() { return false; }
-private:
+protected:
   edm::EDPutTokenT<DQMToken> runToken_;
+  std::unique_ptr<DQMStore> dqmstore_;
 
 };
 
@@ -105,6 +110,7 @@ public:
 template <typename... T> class DQMBaseClass;
 
 template<> class DQMBaseClass<> : public DQMLumisEDProducer {
+/* unused */
   bool getCanSaveByLumi() override { return true; }
 };
 template<> class DQMBaseClass<DQMLuminosityBlockElements> : public DQMLumisEDProducer {};

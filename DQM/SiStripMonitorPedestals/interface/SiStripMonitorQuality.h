@@ -34,12 +34,11 @@
 #include <DQMServices/Core/interface/DQMEDAnalyzer.h>
 
 #include "boost/cstdint.hpp"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include <iostream>
 #include <string>
 #include <vector>
 
-class MonitorElement;
-class DQMStore;
 class SiStripDetCabling;
 class SiStripQuality;
 class TrackerTopology;
@@ -60,7 +59,7 @@ class SiStripMonitorQuality : public DQMEDAnalyzer {
   MonitorElement* getQualityME(uint32_t idet, const TrackerTopology* tTopo);
   
   
-  DQMStore* dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
   edm::ParameterSet conf_;
   edm::ESHandle< SiStripDetCabling > detCabling_;
   edm::ESHandle< SiStripQuality > stripQuality_;

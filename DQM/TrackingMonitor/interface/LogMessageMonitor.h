@@ -34,6 +34,7 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "DQMServices/Core/interface/MonitorElement.h"
 #include "FWCore/MessageLogger/interface/ErrorSummaryEntry.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 #include <DQMServices/Core/interface/DQMEDAnalyzer.h>
 
@@ -41,7 +42,6 @@
 #include <string>
 #include <map>
 
-class DQMStore;
 class GenericTriggerEventFlag;
 
 class GetLumi;
@@ -73,7 +73,7 @@ class LogMessageMonitor : public DQMEDAnalyzer {
 
       std::string histname;  //for naming the histograms according to algorithm used
       
-      DQMStore * dqmStore_;
+      std::unique_ptr<DQMStore> dqmStore_;
       edm::ParameterSet conf_;
 
       std::map<std::string,int> modulesMap;

@@ -377,6 +377,7 @@ public:
     : DQMNet(appname)
     {}
   
+/* unused */
   ~DQMImplNet() override
     = default;
 
@@ -597,6 +598,7 @@ protected:
     }
 
   void
+/* unused */
   updatePeerMasks() override
     {
       typename PeerMap::iterator i, e;

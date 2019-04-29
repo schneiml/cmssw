@@ -12,7 +12,6 @@
 #include <string>
 
 
-class DQMStore;
 class RPCDetId;
 
 

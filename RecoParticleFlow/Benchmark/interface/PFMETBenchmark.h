@@ -23,11 +23,11 @@
 
 #include "TH1F.h"
 #include "TH2F.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include <string>
 #include <TFile.h>
 
 
-class DQMStore;
 
 class PFMETBenchmark {
 	
@@ -178,7 +178,7 @@ class PFMETBenchmark {
   PFBenchmarkAlgo *algo_;
   bool debug_;
   bool plotAgainstReco_;
-  DQMStore *dbe_;
+  DQMStore* dbe_;
 };
 
 #endif // RecoParticleFlow_Benchmark_PFMETBenchmark_h

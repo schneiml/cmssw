@@ -67,7 +67,7 @@ private:
     // event counter
     int counter;
     // back-end interface
-     DQMStore * dbe;
+     std::unique_ptr<DQMStore> dbe;
 
     const int NBINS;
 
@@ -108,7 +108,7 @@ DQMSourceExampleConfig::DQMSourceExampleConfig ( const edm::ParameterSet& iConfi
  	iConfig.getUntrackedParameter<int>("histoNumber", 10); 
 
     //     get hold of back-end interface
-       dbe = edm::Service<DQMStore>().operator->();
+       dbe = std::make_unique<DQMStore>();
   
     XMIN = 0;
     XMAX = 50;
@@ -117,7 +117,7 @@ DQMSourceExampleConfig::DQMSourceExampleConfig ( const edm::ParameterSet& iConfi
     dirCounter = 1;
     dirSpacer = 1;
     
-    recursiveBuild ("", histograms_number/directories_number, histograms_number, iConfig.getUntrackedParameter<int>("lDepth", 2), dbe, directories_number);
+    recursiveBuild ("", histograms_number/directories_number, histograms_number, iConfig.getUntrackedParameter<int>("lDepth", 2), &*dbe, directories_number);
     dbe->showDirStructure ();
 }
 

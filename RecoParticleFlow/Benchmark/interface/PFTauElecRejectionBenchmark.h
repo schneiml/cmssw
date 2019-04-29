@@ -29,7 +29,6 @@ class PFTauElecRejectionBenchmark;
 class TH1F;
 class TH2F;
 
-//class DQMStore; // CMSSW_2_X_X not needed here?
 
 class PFTauElecRejectionBenchmark {
 	
@@ -121,7 +120,7 @@ class PFTauElecRejectionBenchmark {
 
  protected:
 		
-  DQMStore *db_;
+  DQMStore* db_;
 };
 
 #endif // RecoParticleFlow_Benchmark_PFTauElecRejectionBenchmark_h

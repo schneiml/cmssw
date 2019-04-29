@@ -86,7 +86,7 @@ namespace {
     }
   private:
     std::string m_name;
-    DQMStore* m_store;
+    std::unique_ptr<DQMStore> m_store;
     MonitorElement* m_element;
     std::vector<double> m_means;
     std::vector<double> m_entries;
@@ -136,7 +136,7 @@ namespace {
     }
   private:
     std::string m_name;
-    DQMStore* m_store;
+    std::unique_ptr<DQMStore> m_store;
     MonitorElement* m_element;
     std::vector<double> m_means;
     std::vector<double> m_entries;
@@ -181,7 +181,7 @@ class DummyReadDQMStore :  public edm::EDAnalyzer {
 //
 DummyReadDQMStore::DummyReadDQMStore(const edm::ParameterSet& iConfig)
 {
-  edm::Service<DQMStore> dstore;
+  auto dstore = std::make_unique<DQMStore>();
 
   typedef std::vector<edm::ParameterSet> PSets;
   const PSets& runElements = iConfig.getUntrackedParameter<std::vector<edm::ParameterSet> >("runElements");

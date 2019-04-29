@@ -51,7 +51,7 @@ class StripValidationPlots : public edm::EDAnalyzer {
 
   std::ostringstream oss;
 
-  DQMStore* dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
 
   MonitorElement* tmp;
   TProfile* tmp_prof;
@@ -188,7 +188,7 @@ StripValidationPlots::beginJob()
   oss.str("");
   oss << 1; //runNumber
 
-  dqmStore_ = edm::Service<DQMStore>().operator->();
+  dqmStore_ = std::make_unique<DQMStore>();
   dqmStore_->setCurrentFolder("ChannelStatusPlots");
 
   for (int i=0; i<768; i++)

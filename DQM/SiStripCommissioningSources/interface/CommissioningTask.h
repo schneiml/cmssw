@@ -8,13 +8,12 @@
 #include "DataFormats/SiStripDigi/interface/SiStripRawDigi.h"
 #include "DataFormats/SiStripCluster/interface/SiStripCluster.h"
 #include "boost/cstdint.hpp"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include <vector>
 #include <string>
 #include <iomanip>
 
 class TAxis;
-class DQMStore;
-class MonitorElement;
 namespace edm { class EventSetup; }
 
 /**
@@ -169,7 +168,7 @@ class CommissioningTask {
   
   // ---------- Private member data ----------
 
-  DQMStore* dqm_;
+  std::unique_ptr<DQMStore> dqm_;
   
   uint32_t updateFreq_;
   
@@ -196,7 +195,7 @@ const uint32_t& CommissioningTask::updateFreq() const { return updateFreq_; }
 void CommissioningTask::updateFreq( const uint32_t& freq ) { updateFreq_ = freq; }
 const std::string& CommissioningTask::myName() const { return myName_; }
 
-DQMStore* const CommissioningTask::dqm() const { return dqm_; }
+DQMStore* const CommissioningTask::dqm() const { return &*dqm_; }
 const FedChannelConnection& CommissioningTask::connection() const { return connection_; }
 
 const uint32_t& CommissioningTask::fecKey() const { return fecKey_; }

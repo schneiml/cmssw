@@ -34,11 +34,11 @@
 
 
 
-class DQMStore;
 class TProfile;
 
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/MuonReco/interface/MuonFwd.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 
 
@@ -61,7 +61,6 @@ private:
 	
 	std::string histname;  //for naming the histograms according to algorithm used
 	
-	DQMStore * dqmStore_;
 	edm::ParameterSet conf_;
 	
 	edm::ESHandle<TrackerGeometry> theGeometry;
