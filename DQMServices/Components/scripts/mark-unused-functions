@@ -5,6 +5,7 @@
 DB="sqlite3 dxr.sqlite"
 
 $DB <<SQL
+CREATE INDEX IF NOT EXISTS func_override_qualname ON func_override(qualname);
 DROP TABLE unused;
 DROP INDEX unused_loc;
 SQL
@@ -20,7 +21,14 @@ WHERE
     AND ref.loc not like "%/test/%"
     AND ref.loc not like "%DQMStore.cc%"
   ) = 0
-  AND line NOT LIKE "% = %"; 
+  AND line NOT LIKE "% = %"                  -- ignore '= default', '= delete' etc.
+  AND function.name NOT LIKE "~%"            -- ignore descturctors, rarely explicitly called...
+  AND NOT function.name = function.scopename -- ignore constructors, DXR does not properly track them (?)
+                                             -- ignore virtual overrrides, might be called via the parent.
+  AND (SELECT count(*) FROM func_override WHERE func_override.qualname = function.qualname) = 0
+                                             -- and a blacklist, since the override check seems to not really work (DXR's fault)
+  AND function.name NOT IN ("analyze", "beginRun", "endRun", "endLuminosityBlock", "beginLuminosityBlock", "fillDescriptions", "endJob", "beginJob", "produce", "globalBeginRun", "globalEndRun", "endRunProduce", "endLuminosityBlockProduce", "globalBeginLuminosityBlock", "globalEndLuminosityBlock")
+;
 
 CREATE INDEX unused_loc ON unused(loc);
 SQL
