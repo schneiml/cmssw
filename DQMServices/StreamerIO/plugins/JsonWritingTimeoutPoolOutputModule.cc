@@ -22,7 +22,7 @@ JsonWritingTimeoutPoolOutputModule::JsonWritingTimeoutPoolOutputModule(
 }
 
 std::pair<std::string, std::string>
-JsonWritingTimeoutPoolOutputModule::physicalAndLogicalNameForNewFile() {
+/* almost unused */ JsonWritingTimeoutPoolOutputModule::physicalAndLogicalNameForNewFile() {
   sequence_++;
 
   std::string base = str(boost::format("run%06d_ls%04d_%s") % runNumber_ %
@@ -36,7 +36,7 @@ JsonWritingTimeoutPoolOutputModule::physicalAndLogicalNameForNewFile() {
   return std::make_pair(currentFileName_, currentFileName_);
 }
 
-void JsonWritingTimeoutPoolOutputModule::doExtrasAfterCloseFile() {
+/* almost unused */ void JsonWritingTimeoutPoolOutputModule::doExtrasAfterCloseFile() {
   std::string json_tmp_ = currentJsonName_ + ".open";
   std::string transferDest = "";
   std::string mergeType = "ROOT";

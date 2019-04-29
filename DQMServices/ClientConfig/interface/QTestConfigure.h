@@ -33,7 +33,7 @@ class QTestConfigure{
   void disableTests(const std::vector<std::string>& testsOFFList, DQMStore * bei);
   ///Returns the vector containing the names of the quality tests that have been created
 /* unused */
-  std::vector<std::string> testsReady(){return testsConfigured;}
+/* almost unused */   std::vector<std::string> testsReady(){return testsConfigured;}
  
  private:
 

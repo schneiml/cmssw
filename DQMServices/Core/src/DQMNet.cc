@@ -196,7 +196,7 @@ DQMNet::packQualityData(std::string &into, const QReports &qr)
 /// Unpack the quality results from string @a from into @a qr.
 /// Assumes the data was saved with packQualityData().
 void
-DQMNet::unpackQualityData(QReports &qr, uint32_t &flags, const char *from)
+/* almost unused */ DQMNet::unpackQualityData(QReports &qr, uint32_t &flags, const char *from)
 {
   const char *qdata = from;
 
@@ -1108,7 +1108,7 @@ DQMNet::debug(bool doit)
 /// Set the I/O dispatching delay.  Must be called before calling
 /// run() or start().
 void
-DQMNet::delay(int delay)
+/* almost unused */ DQMNet::delay(int delay)
 {
   delay_ = delay;
 }
@@ -1118,7 +1118,7 @@ DQMNet::delay(int delay)
 /// Applies only when data has been received, another time limit is
 /// applied when no data payload has been received at all.
 void
-DQMNet::staleObjectWaitLimit(lat::TimeSpan time)
+/* almost unused */ DQMNet::staleObjectWaitLimit(lat::TimeSpan time)
 {
   waitStale_ = time;
 }
@@ -1165,7 +1165,7 @@ DQMNet::startLocalServer(int port)
 /// system socket.  Must be called before calling run() or start().
 /// May throw an Exception if the server socket cannot be initialised.
 void
-DQMNet::startLocalServer(const char *path)
+/* almost unused */ DQMNet::startLocalServer(const char *path)
 {
   if (server_)
   {
@@ -1219,7 +1219,7 @@ DQMNet::updateToCollector(const std::string &host, int port)
 /// automatically receive updates from upstream DQM sources.  Must be
 /// called before calling run() or start().
 void
-DQMNet::listenToCollector(const std::string &host, int port)
+/* almost unused */ DQMNet::listenToCollector(const std::string &host, int port)
 {
   if (! upstream_.host.empty())
   {

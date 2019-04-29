@@ -83,26 +83,26 @@ private:
   vector<string> testNames;
 
   // create the monitoring structure
-  void createMonitorElements();
+/* almost unused */   void createMonitorElements();
   // create the quality tests
-  void createQualityTests();
+/* almost unused */   void createQualityTests();
   // tune cuts for quality tests
-  void tuneCuts();
+/* almost unused */   void tuneCuts();
 
   // use <ref> as the reference for the quality tests
-  void setReference(MonitorElement * ref);
+/* almost unused */   void setReference(MonitorElement * ref);
   // run quality tests;
   // (see Core/interface/QTestStatus.h)
-  void runTests();
+/* almost unused */   void runTests();
   // show channels that failed test
-  void showBadChannels(QReport *qr);
+/* almost unused */   void showBadChannels(QReport *qr);
 
   // gaussian parameters for generated distribution
   float mean_; float sigma_;
 };
 
 // create the monitoring structure
-void DQMStandaloneExample::createMonitorElements()
+/* almost unused */ void DQMStandaloneExample::createMonitorElements()
 {
   // set # of bins, range for histogram(s)
   const int NBINS = 50;
@@ -121,7 +121,7 @@ void DQMStandaloneExample::createMonitorElements()
 }
 
 // create the quality tests
-void DQMStandaloneExample::createQualityTests()
+/* almost unused */ void DQMStandaloneExample::createQualityTests()
 {
   testNames.emplace_back("my_chi2");
   testNames.emplace_back("my_kolm");
@@ -184,7 +184,7 @@ void DQMStandaloneExample::createQualityTests()
 }
 
 // tune cuts for quality tests
-void DQMStandaloneExample::tuneCuts()
+/* almost unused */ void DQMStandaloneExample::tuneCuts()
 {
   // set reference for chi2, ks tests
   setReference(href);
@@ -224,7 +224,7 @@ DQMStandaloneExample::DQMStandaloneExample(const edm::ParameterSet& iConfig ) : 
 }
 
 // use <ref> as the reference for the quality tests
-void DQMStandaloneExample::setReference(MonitorElement * ref)
+/* almost unused */ void DQMStandaloneExample::setReference(MonitorElement * ref)
 {
 // FIXME, need to use reference in proper location /Reference here
 //  if(chi2_test)chi2_test->setReference(ref);
@@ -242,7 +242,7 @@ void DQMStandaloneExample::endJob()
 
 // run quality tests;
 // (see Core/interface/QTestStatus.h)
-void DQMStandaloneExample::runTests()
+/* almost unused */ void DQMStandaloneExample::runTests()
 {
   dbe->runQTests(); // mui->update() would have the same result
 
@@ -322,7 +322,7 @@ void DQMStandaloneExample::analyze(const edm::Event& iEvent, const edm::EventSet
 }
 
 // show channels that failed test
-void DQMStandaloneExample::showBadChannels(QReport *qr)
+/* almost unused */ void DQMStandaloneExample::showBadChannels(QReport *qr)
 {
   assert(qr);
 

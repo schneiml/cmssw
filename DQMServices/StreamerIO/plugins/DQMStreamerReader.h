@@ -34,7 +34,7 @@ class DQMStreamerReader : public edm::StreamerInputSource {
 
  protected:
   bool checkNextEvent() override; /* from raw input source */
-  void skip(int toSkip) override; /* from raw input source */
+/* almost unused */   void skip(int toSkip) override; /* from raw input source */
 
  private:
   // our own, but we do inherit reset(),

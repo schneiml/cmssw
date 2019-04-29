@@ -51,7 +51,7 @@ private:
   std::unique_ptr<DQMStore> dbe;
   
   // remove all MonitorElements and directories
-  void removeAll();
+/* almost unused */   void removeAll();
 };
 
 //
@@ -89,7 +89,7 @@ DQMReadFileExample::~DQMReadFileExample()
 }
 
 // remove all MonitorElements and directories
-void DQMReadFileExample::removeAll()
+/* almost unused */ void DQMReadFileExample::removeAll()
 {
   // go to top directory
   dbe->cd();

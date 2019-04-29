@@ -45,7 +45,7 @@ protected:
 
 private:
 
-  void initialize();
+/* almost unused */   void initialize();
  
   edm::ParameterSet parameters_;
 

@@ -202,7 +202,7 @@ class DummyHarvestingClient : public edm::EDAnalyzer {
   void endLuminosityBlock(edm::LuminosityBlock const&,
                                   edm::EventSetup const&) override;
 
-  void bookHistograms();
+/* almost unused */   void bookHistograms();
   // ----------member data ---------------------------
   std::vector<boost::shared_ptr<CumulatorBase> > m_lumiCumulators;
   bool m_cumulateRuns;
@@ -257,7 +257,7 @@ DummyHarvestingClient::DummyHarvestingClient(const edm::ParameterSet& iConfig)
   }
 }
 
-void DummyHarvestingClient::bookHistograms() {
+/* almost unused */ void DummyHarvestingClient::bookHistograms() {
 }
 
 

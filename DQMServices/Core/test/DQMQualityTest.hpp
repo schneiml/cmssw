@@ -131,7 +131,7 @@ class DQMQualityTest
   }
 
   // run tests, get probability, printout results
-  void runTests(float * prob_chi2, float * prob_ks, float * prob_xrange, 
+/* almost unused */   void runTests(float * prob_chi2, float * prob_ks, float * prob_xrange, 
 		float * prob_yrange, float * prob_deadChan, 
 		float * prob_noisyChan, 
 		float * probH_equal, float * prob_mean)
@@ -232,7 +232,7 @@ class DQMQualityTest
   // MostProbableLandau *poMPLandau_test_;
 
   // show channels that failed test
-  void showBadChannels(QCriterion *qc)
+/* almost unused */   void showBadChannels(QCriterion *qc)
   {
     std::vector<dqm::me_util::Channel> badChannels = qc->getBadChannels();
     if(!badChannels.empty())

@@ -12,14 +12,14 @@ DQMOldReceiver::DQMOldReceiver()
 DQMOldReceiver::~DQMOldReceiver() = default;
 
 bool
-DQMOldReceiver::update()
+/* almost unused */ DQMOldReceiver::update()
 {
   raiseDQMError("DQMOldReceiver", "DQMOldReceiver::update() is obsolete");
   return true;
 }
 
 bool
-DQMOldReceiver::doMonitoring()
+/* almost unused */ DQMOldReceiver::doMonitoring()
 {
   raiseDQMError("DQMOldReceiver", "DQMOldReceiver::doMonitoring() is obsolete");
   return true;

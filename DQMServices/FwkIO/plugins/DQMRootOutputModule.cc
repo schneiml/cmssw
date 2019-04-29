@@ -73,7 +73,7 @@ namespace {
   template<class T>
   class TreeHelper : public TreeHelperBase {
   public:
-    TreeHelper(TTree* iTree, std::string* iFullNameBufferPtr ):
+/* almost unused */     TreeHelper(TTree* iTree, std::string* iFullNameBufferPtr ):
      m_tree(iTree), m_flagBuffer(0),m_fullNameBufferPtr(iFullNameBufferPtr){ setup();}
      void doFill(MonitorElement* iElement) override {
        *m_fullNameBufferPtr = iElement->getFullname();
@@ -187,12 +187,12 @@ public:
   static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
 private:
-  void write(edm::EventForOutput const& e) override;
-  void writeLuminosityBlock(edm::LuminosityBlockForOutput const&) override;
-  void writeRun(edm::RunForOutput const&) override;
-  bool isFileOpen() const override;
-  void openFile(edm::FileBlock const&) override;
-  void reallyCloseFile() override;
+/* almost unused */   void write(edm::EventForOutput const& e) override;
+/* almost unused */   void writeLuminosityBlock(edm::LuminosityBlockForOutput const&) override;
+/* almost unused */   void writeRun(edm::RunForOutput const&) override;
+/* almost unused */   bool isFileOpen() const override;
+/* almost unused */   void openFile(edm::FileBlock const&) override;
+/* almost unused */   void reallyCloseFile() override;
 
   void startEndFile();
   void finishEndFile();
@@ -312,13 +312,13 @@ DQMRootOutputModule::~DQMRootOutputModule()
 // member functions
 //
 bool
-DQMRootOutputModule::isFileOpen() const
+/* almost unused */ DQMRootOutputModule::isFileOpen() const
 {
   return nullptr!=m_file.get();
 }
 
 void
-DQMRootOutputModule::openFile(edm::FileBlock const&)
+/* almost unused */ DQMRootOutputModule::openFile(edm::FileBlock const&)
 {
   //NOTE: I need to also set the I/O performance settings
 
@@ -377,12 +377,12 @@ DQMRootOutputModule::openFile(edm::FileBlock const&)
 
 
 void
-DQMRootOutputModule::write(edm::EventForOutput const&){
+/* almost unused */ DQMRootOutputModule::write(edm::EventForOutput const&){
 }
 
 
 void
-DQMRootOutputModule::writeLuminosityBlock(edm::LuminosityBlockForOutput const& iLumi) {
+/* almost unused */ DQMRootOutputModule::writeLuminosityBlock(edm::LuminosityBlockForOutput const& iLumi) {
   //std::cout << "DQMRootOutputModule::writeLuminosityBlock"<< std::endl;
   auto dstore = std::make_unique<DQMStore>();
   m_run = iLumi.id().run();
@@ -443,7 +443,7 @@ DQMRootOutputModule::writeLuminosityBlock(edm::LuminosityBlockForOutput const& i
   jr->reportLumiSection(m_jrToken, m_run, m_lumi);
 }
 
-void DQMRootOutputModule::writeRun(edm::RunForOutput const& iRun){
+/* almost unused */ void DQMRootOutputModule::writeRun(edm::RunForOutput const& iRun){
   //std::cout << "DQMRootOutputModule::writeRun"<< std::endl;
   auto dstore = std::make_unique<DQMStore>();
   m_run = iRun.id().run();
@@ -495,7 +495,7 @@ void DQMRootOutputModule::writeRun(edm::RunForOutput const& iRun){
 }
 
 void
-DQMRootOutputModule::reallyCloseFile() {
+/* almost unused */ DQMRootOutputModule::reallyCloseFile() {
    startEndFile();
    finishEndFile();
 }

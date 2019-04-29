@@ -28,7 +28,7 @@ public:
   ///Attaches the quality tests to the MonitorElement
   void attachTests(DQMStore * bei, bool verboseQT=true);
   ///Checks global status of Quality Tests
-  std::pair<std::string,std::string> checkGlobalQTStatus(DQMStore *bei) const;
+/* almost unused */   std::pair<std::string,std::string> checkGlobalQTStatus(DQMStore *bei) const;
   ///Checks alarms for single MonitorElements
   std::map< std::string, std::vector<std::string> > checkDetailedQTStatus(DQMStore *bei) const;
   

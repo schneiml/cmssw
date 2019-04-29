@@ -13,10 +13,10 @@ struct DQMChannel
   int getBinX()       { return binx; }
   int getBinY()       { return biny; }
 /* unused */
-  int getBinZ()       { return binz; }
+/* almost unused */   int getBinZ()       { return binz; }
   float getContents() { return content; }
 /* unused */
-  float getRMS()      { return RMS; }
+/* almost unused */   float getRMS()      { return RMS; }
 
   DQMChannel(int bx, int by, int bz, float data, float rms)
     {

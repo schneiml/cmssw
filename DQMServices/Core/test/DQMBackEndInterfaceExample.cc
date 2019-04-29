@@ -70,7 +70,7 @@ private:
   // back-end interface
   std::unique_ptr<DQMStore> dbe;
   // test back-end interface functionality
-  void integrityChecks();
+/* almost unused */   void integrityChecks();
 };
 
 //
@@ -147,7 +147,7 @@ DQMStoreExample::DQMStoreExample(const edm::ParameterSet&
 }
 
 // test back-end interface functionality
-void DQMStoreExample::integrityChecks()
+/* almost unused */ void DQMStoreExample::integrityChecks()
 {
  
   std::vector<MonitorElement * > contents, dbe_ret;

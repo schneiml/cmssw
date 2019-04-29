@@ -37,10 +37,10 @@ class DQMStreamerOutputRepackerTest : public edm::StreamerOutputModuleBase {
   static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
  private:
-  virtual void start() override;
-  virtual void stop() override;
-  virtual void doOutputHeader(InitMsgBuilder const& init_message) override;
-  virtual void doOutputEvent(EventMsgBuilder const& msg) override;
+/* almost unused */   virtual void start() override;
+/* almost unused */   virtual void stop() override;
+/* almost unused */   virtual void doOutputHeader(InitMsgBuilder const& init_message) override;
+/* almost unused */   virtual void doOutputEvent(EventMsgBuilder const& msg) override;
 
   virtual void beginLuminosityBlock(
       edm::LuminosityBlockForOutput const&) override{};
@@ -48,8 +48,8 @@ class DQMStreamerOutputRepackerTest : public edm::StreamerOutputModuleBase {
       edm::LuminosityBlockForOutput const&) override{};
 
  private:
-  void openFile_(uint32_t run, uint32_t lumi);
-  void closeFile();
+/* almost unused */   void openFile_(uint32_t run, uint32_t lumi);
+/* almost unused */   void closeFile();
 
  private:
   std::string streamLabel_;
@@ -81,7 +81,7 @@ DQMStreamerOutputRepackerTest::DQMStreamerOutputRepackerTest(
 
 DQMStreamerOutputRepackerTest::~DQMStreamerOutputRepackerTest() {}
 
-void DQMStreamerOutputRepackerTest::openFile_(uint32_t run, uint32_t lumi) {
+/* almost unused */ void DQMStreamerOutputRepackerTest::openFile_(uint32_t run, uint32_t lumi) {
   if (streamFile_) {
     closeFile();
   }
@@ -115,7 +115,7 @@ void DQMStreamerOutputRepackerTest::openFile_(uint32_t run, uint32_t lumi) {
   }
 }
 
-void DQMStreamerOutputRepackerTest::closeFile() {
+/* almost unused */ void DQMStreamerOutputRepackerTest::closeFile() {
   edm::LogAbsolute("DQMStreamerOutputRepackerTest") << "Writing json: "
                                                     << currentJsonPath_;
   size_t fsize = boost::filesystem::file_size(currentFilePath_);
@@ -148,11 +148,11 @@ void DQMStreamerOutputRepackerTest::closeFile() {
   streamFile_.reset();
 }
 
-void DQMStreamerOutputRepackerTest::start() {}
+/* almost unused */ void DQMStreamerOutputRepackerTest::start() {}
 
-void DQMStreamerOutputRepackerTest::stop() { closeFile(); }
+/* almost unused */ void DQMStreamerOutputRepackerTest::stop() { closeFile(); }
 
-void DQMStreamerOutputRepackerTest::doOutputHeader(
+/* almost unused */ void DQMStreamerOutputRepackerTest::doOutputHeader(
     InitMsgBuilder const& init_message_bldr) {
   edm::LogWarning("DQMStreamerOutputRepackerTest")
       << "doOutputHeader() method, initializing streams.";
@@ -162,7 +162,7 @@ void DQMStreamerOutputRepackerTest::doOutputHeader(
   init_message_cache_.reset(x);
 }
 
-void DQMStreamerOutputRepackerTest::doOutputEvent(
+/* almost unused */ void DQMStreamerOutputRepackerTest::doOutputEvent(
     EventMsgBuilder const& msg_bldr) {
   EventMsgView view(msg_bldr.startAddress());
 

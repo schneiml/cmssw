@@ -86,16 +86,16 @@ template <class Item>
 class VIterator : public Iterator<Item> 
 {
   public:
-    VIterator(const std::vector<Item>* aVector):vector_(aVector),index(0) {}
+/* almost unused */     VIterator(const std::vector<Item>* aVector):vector_(aVector),index(0) {}
     ~VIterator() override = default; 
 /* unused */
     void First() override     {index=0;}
 /* unused */
     void Next() override      { ++index;}
 /* unused */
-    virtual int  size()      { return vector_->size();}
+/* almost unused */     virtual int  size()      { return vector_->size();}
 /* unused */
-    virtual int  getIndex()  { return (int)index;}
+/* almost unused */     virtual int  getIndex()  { return (int)index;}
 
 /* unused */
     bool IsDone() const override
@@ -152,7 +152,7 @@ public:
   unsigned int id()  {return id_;}
   void setLevel(unsigned int value) {level_=value;}
 /* unused */
-  unsigned int level() {return level_;}
+/* almost unused */   unsigned int level() {return level_;}
   
   
   void add(Folder * f) {

@@ -87,15 +87,15 @@ private:
   // ContentsProf2DWithinRange * zrangeprof2d_test;
 
   // use <ref> as the reference for the quality tests
-  void setReference(MonitorElement * ref);
+/* almost unused */   void setReference(MonitorElement * ref);
   // run quality tests; expected_status: test status that is expected
   // (see Core/interface/QTestStatus.h)
   // test_type: info message on what kind of tests are run
-  void runTests(int expected_status, const string& test_type);
+/* almost unused */   void runTests(int expected_status, const string& test_type);
   // called by runTests; return status
-  int checkTest(QCriterion *qc);
+/* almost unused */   int checkTest(QCriterion *qc);
   // show channels that failed test
-  void showBadChannels(QCriterion *qc);
+/* almost unused */   void showBadChannels(QCriterion *qc);
 
   // gaussian parameters for generated distribution
   float mean_; float sigma_;
@@ -197,7 +197,7 @@ DQMStoreQTestsExample::DQMStoreQTestsExample(const edm::ParameterSet& iConfig ) 
 }
 
 // use <ref> as the reference for the quality tests
-void DQMStoreQTestsExample::setReference(MonitorElement * ref)
+/* almost unused */ void DQMStoreQTestsExample::setReference(MonitorElement * ref)
 {
 // FIXME, need to use reference in proper location /Reference here
 //  if(chi2_test)chi2_test->setReference(ref);
@@ -286,7 +286,7 @@ void DQMStoreQTestsExample::endJob()
 // run quality tests; expected_status: test status that is expected
 // (see Core/interface/QTestStatus.h)
 // test_type: info message on what kind of tests are run
-void DQMStoreQTestsExample::runTests(int expected_status, 
+/* almost unused */ void DQMStoreQTestsExample::runTests(int expected_status, 
 					    const string& test_type)
 {
   cout << " ========================================================== " << endl;
@@ -422,7 +422,7 @@ void DQMStoreQTestsExample::runTests(int expected_status,
 }
 
 // called by runTests; return status
-int DQMStoreQTestsExample::checkTest(QCriterion *qc)
+/* almost unused */ int DQMStoreQTestsExample::checkTest(QCriterion *qc)
 {
   if(!qc)return -1;
   
@@ -487,7 +487,7 @@ void DQMStoreQTestsExample::analyze(const edm::Event& iEvent, const edm::EventSe
 }
 
 // show channels that failed test
-void DQMStoreQTestsExample::showBadChannels(QCriterion *qc)
+/* almost unused */ void DQMStoreQTestsExample::showBadChannels(QCriterion *qc)
 {
   vector<dqm::me_util::Channel> badChannels = qc->getBadChannels();
   if(!badChannels.empty())

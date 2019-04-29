@@ -61,13 +61,13 @@ protected:
 
 private:
   //histos booking function
-  void bookHistos(DQMStore::IBooker &);
+/* almost unused */   void bookHistos(DQMStore::IBooker &);
 
   //other functions
-  bool MediumEle(const edm::Event & iEvent, const edm::EventSetup & iESetup, const reco::GsfElectron & electron);
-  double Distance(const reco::Candidate & c1, const reco::Candidate & c2 );
-  double DistancePhi(const reco::Candidate & c1, const reco::Candidate & c2 );
-  double calcDeltaPhi(double phi1, double phi2);
+/* almost unused */   bool MediumEle(const edm::Event & iEvent, const edm::EventSetup & iESetup, const reco::GsfElectron & electron);
+/* almost unused */   double Distance(const reco::Candidate & c1, const reco::Candidate & c2 );
+/* almost unused */   double DistancePhi(const reco::Candidate & c1, const reco::Candidate & c2 );
+/* almost unused */   double calcDeltaPhi(double phi1, double phi2);
 
   //private variables
   math::XYZPoint PVPoint_;

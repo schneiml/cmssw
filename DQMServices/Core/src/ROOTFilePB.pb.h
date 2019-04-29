@@ -70,7 +70,7 @@ class ROOTFilePB_Histo : public ::google::protobuf::Message /* @@protoc_insertio
 
   ROOTFilePB_Histo(const ROOTFilePB_Histo& from);
 
-  inline ROOTFilePB_Histo& operator=(const ROOTFilePB_Histo& from) {
+/* almost unused */   inline ROOTFilePB_Histo& operator=(const ROOTFilePB_Histo& from) {
     CopyFrom(from);
     return *this;
   }
@@ -89,15 +89,15 @@ class ROOTFilePB_Histo : public ::google::protobuf::Message /* @@protoc_insertio
     return *this;
   }
   #endif
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+/* almost unused */   inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
     return _internal_metadata_.unknown_fields();
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+/* almost unused */   inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
     return _internal_metadata_.mutable_unknown_fields();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const ROOTFilePB_Histo& default_instance();
+/* almost unused */   static const ::google::protobuf::Descriptor* descriptor();
+/* almost unused */   static const ROOTFilePB_Histo& default_instance();
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
   static inline const ROOTFilePB_Histo* internal_default_instance() {
@@ -114,39 +114,39 @@ class ROOTFilePB_Histo : public ::google::protobuf::Message /* @@protoc_insertio
 
   // implements Message ----------------------------------------------
 
-  inline ROOTFilePB_Histo* New() const PROTOBUF_FINAL { return New(nullptr); }
+/* almost unused */   inline ROOTFilePB_Histo* New() const PROTOBUF_FINAL { return New(nullptr); }
 
   ROOTFilePB_Histo* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
-  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+/* almost unused */   void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
   void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
   void CopyFrom(const ROOTFilePB_Histo& from);
   void MergeFrom(const ROOTFilePB_Histo& from);
   void Clear() PROTOBUF_FINAL;
-  bool IsInitialized() const PROTOBUF_FINAL;
+/* almost unused */   bool IsInitialized() const PROTOBUF_FINAL;
 
-  size_t ByteSizeLong() const PROTOBUF_FINAL;
-  bool MergePartialFromCodedStream(
+/* almost unused */   size_t ByteSizeLong() const PROTOBUF_FINAL;
+/* almost unused */   bool MergePartialFromCodedStream(
       ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
-  void SerializeWithCachedSizes(
+/* almost unused */   void SerializeWithCachedSizes(
       ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+/* almost unused */   ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
       bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
-  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+/* almost unused */   int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
   private:
   void SharedCtor();
   void SharedDtor();
-  void SetCachedSize(int size) const PROTOBUF_FINAL;
+/* almost unused */   void SetCachedSize(int size) const PROTOBUF_FINAL;
   void InternalSwap(ROOTFilePB_Histo* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return nullptr;
   }
-  inline void* MaybeArenaPtr() const {
+/* almost unused */   inline void* MaybeArenaPtr() const {
     return nullptr;
   }
   public:
 
-  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+/* almost unused */   ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
 
   // nested types ----------------------------------------------------
 
@@ -154,44 +154,44 @@ class ROOTFilePB_Histo : public ::google::protobuf::Message /* @@protoc_insertio
 
   // required string full_pathname = 1;
   bool has_full_pathname() const;
-  void clear_full_pathname();
+/* almost unused */   void clear_full_pathname();
   static const int kFullPathnameFieldNumber = 1;
   const ::std::string& full_pathname() const;
   void set_full_pathname(const ::std::string& value);
   #if LANG_CXX11
-  void set_full_pathname(::std::string&& value);
+/* almost unused */   void set_full_pathname(::std::string&& value);
   #endif
-  void set_full_pathname(const char* value);
-  void set_full_pathname(const char* value, size_t size);
+/* almost unused */   void set_full_pathname(const char* value);
+/* almost unused */   void set_full_pathname(const char* value, size_t size);
   ::std::string* mutable_full_pathname();
-  ::std::string* release_full_pathname();
-  void set_allocated_full_pathname(::std::string* full_pathname);
+/* almost unused */   ::std::string* release_full_pathname();
+/* almost unused */   void set_allocated_full_pathname(::std::string* full_pathname);
 
   // required bytes streamed_histo = 3;
   bool has_streamed_histo() const;
-  void clear_streamed_histo();
+/* almost unused */   void clear_streamed_histo();
   static const int kStreamedHistoFieldNumber = 3;
   const ::std::string& streamed_histo() const;
-  void set_streamed_histo(const ::std::string& value);
+/* almost unused */   void set_streamed_histo(const ::std::string& value);
   #if LANG_CXX11
-  void set_streamed_histo(::std::string&& value);
+/* almost unused */   void set_streamed_histo(::std::string&& value);
   #endif
-  void set_streamed_histo(const char* value);
+/* almost unused */   void set_streamed_histo(const char* value);
   void set_streamed_histo(const void* value, size_t size);
   ::std::string* mutable_streamed_histo();
-  ::std::string* release_streamed_histo();
-  void set_allocated_streamed_histo(::std::string* streamed_histo);
+/* almost unused */   ::std::string* release_streamed_histo();
+/* almost unused */   void set_allocated_streamed_histo(::std::string* streamed_histo);
 
   // required uint32 size = 2;
   bool has_size() const;
-  void clear_size();
+/* almost unused */   void clear_size();
   static const int kSizeFieldNumber = 2;
   ::google::protobuf::uint32 size() const;
   void set_size(::google::protobuf::uint32 value);
 
   // required uint32 flags = 4;
   bool has_flags() const;
-  void clear_flags();
+/* almost unused */   void clear_flags();
   static const int kFlagsFieldNumber = 4;
   ::google::protobuf::uint32 flags() const;
   void set_flags(::google::protobuf::uint32 value);
@@ -229,7 +229,7 @@ class ROOTFilePB : public ::google::protobuf::Message /* @@protoc_insertion_poin
 
   ROOTFilePB(const ROOTFilePB& from);
 
-  inline ROOTFilePB& operator=(const ROOTFilePB& from) {
+/* almost unused */   inline ROOTFilePB& operator=(const ROOTFilePB& from) {
     CopyFrom(from);
     return *this;
   }
@@ -248,15 +248,15 @@ class ROOTFilePB : public ::google::protobuf::Message /* @@protoc_insertion_poin
     return *this;
   }
   #endif
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+/* almost unused */   inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
     return _internal_metadata_.unknown_fields();
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+/* almost unused */   inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
     return _internal_metadata_.mutable_unknown_fields();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const ROOTFilePB& default_instance();
+/* almost unused */   static const ::google::protobuf::Descriptor* descriptor();
+/* almost unused */   static const ROOTFilePB& default_instance();
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
   static inline const ROOTFilePB* internal_default_instance() {
@@ -273,39 +273,39 @@ class ROOTFilePB : public ::google::protobuf::Message /* @@protoc_insertion_poin
 
   // implements Message ----------------------------------------------
 
-  inline ROOTFilePB* New() const PROTOBUF_FINAL { return New(nullptr); }
+/* almost unused */   inline ROOTFilePB* New() const PROTOBUF_FINAL { return New(nullptr); }
 
   ROOTFilePB* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
-  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+/* almost unused */   void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
   void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
   void CopyFrom(const ROOTFilePB& from);
   void MergeFrom(const ROOTFilePB& from);
   void Clear() PROTOBUF_FINAL;
-  bool IsInitialized() const PROTOBUF_FINAL;
+/* almost unused */   bool IsInitialized() const PROTOBUF_FINAL;
 
-  size_t ByteSizeLong() const PROTOBUF_FINAL;
-  bool MergePartialFromCodedStream(
+/* almost unused */   size_t ByteSizeLong() const PROTOBUF_FINAL;
+/* almost unused */   bool MergePartialFromCodedStream(
       ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
-  void SerializeWithCachedSizes(
+/* almost unused */   void SerializeWithCachedSizes(
       ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+/* almost unused */   ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
       bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
-  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+/* almost unused */   int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
   private:
   void SharedCtor();
   void SharedDtor();
-  void SetCachedSize(int size) const PROTOBUF_FINAL;
+/* almost unused */   void SetCachedSize(int size) const PROTOBUF_FINAL;
   void InternalSwap(ROOTFilePB* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return nullptr;
   }
-  inline void* MaybeArenaPtr() const {
+/* almost unused */   inline void* MaybeArenaPtr() const {
     return nullptr;
   }
   public:
 
-  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+/* almost unused */   ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
 
   // nested types ----------------------------------------------------
 
@@ -315,13 +315,13 @@ class ROOTFilePB : public ::google::protobuf::Message /* @@protoc_insertion_poin
 
   // repeated .dqmstorepb.ROOTFilePB.Histo histo = 1;
   int histo_size() const;
-  void clear_histo();
+/* almost unused */   void clear_histo();
   static const int kHistoFieldNumber = 1;
   const ::dqmstorepb::ROOTFilePB_Histo& histo(int index) const;
-  ::dqmstorepb::ROOTFilePB_Histo* mutable_histo(int index);
+/* almost unused */   ::dqmstorepb::ROOTFilePB_Histo* mutable_histo(int index);
   ::dqmstorepb::ROOTFilePB_Histo* add_histo();
   ::google::protobuf::RepeatedPtrField< ::dqmstorepb::ROOTFilePB_Histo >*
-      mutable_histo();
+/* almost unused */       mutable_histo();
   const ::google::protobuf::RepeatedPtrField< ::dqmstorepb::ROOTFilePB_Histo >&
       histo() const;
 
@@ -356,7 +356,7 @@ inline void ROOTFilePB_Histo::set_has_full_pathname() {
 inline void ROOTFilePB_Histo::clear_has_full_pathname() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void ROOTFilePB_Histo::clear_full_pathname() {
+/* almost unused */ inline void ROOTFilePB_Histo::clear_full_pathname() {
   full_pathname_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   clear_has_full_pathname();
 }
@@ -370,20 +370,20 @@ inline void ROOTFilePB_Histo::set_full_pathname(const ::std::string& value) {
   // @@protoc_insertion_point(field_set:dqmstorepb.ROOTFilePB.Histo.full_pathname)
 }
 #if LANG_CXX11
-inline void ROOTFilePB_Histo::set_full_pathname(::std::string&& value) {
+/* almost unused */ inline void ROOTFilePB_Histo::set_full_pathname(::std::string&& value) {
   set_has_full_pathname();
   full_pathname_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:dqmstorepb.ROOTFilePB.Histo.full_pathname)
 }
 #endif
-inline void ROOTFilePB_Histo::set_full_pathname(const char* value) {
+/* almost unused */ inline void ROOTFilePB_Histo::set_full_pathname(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   set_has_full_pathname();
   full_pathname_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:dqmstorepb.ROOTFilePB.Histo.full_pathname)
 }
-inline void ROOTFilePB_Histo::set_full_pathname(const char* value, size_t size) {
+/* almost unused */ inline void ROOTFilePB_Histo::set_full_pathname(const char* value, size_t size) {
   set_has_full_pathname();
   full_pathname_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
@@ -394,12 +394,12 @@ inline ::std::string* ROOTFilePB_Histo::mutable_full_pathname() {
   // @@protoc_insertion_point(field_mutable:dqmstorepb.ROOTFilePB.Histo.full_pathname)
   return full_pathname_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* ROOTFilePB_Histo::release_full_pathname() {
+/* almost unused */ inline ::std::string* ROOTFilePB_Histo::release_full_pathname() {
   // @@protoc_insertion_point(field_release:dqmstorepb.ROOTFilePB.Histo.full_pathname)
   clear_has_full_pathname();
   return full_pathname_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void ROOTFilePB_Histo::set_allocated_full_pathname(::std::string* full_pathname) {
+/* almost unused */ inline void ROOTFilePB_Histo::set_allocated_full_pathname(::std::string* full_pathname) {
   if (full_pathname != nullptr) {
     set_has_full_pathname();
   } else {
@@ -419,7 +419,7 @@ inline void ROOTFilePB_Histo::set_has_size() {
 inline void ROOTFilePB_Histo::clear_has_size() {
   _has_bits_[0] &= ~0x00000004u;
 }
-inline void ROOTFilePB_Histo::clear_size() {
+/* almost unused */ inline void ROOTFilePB_Histo::clear_size() {
   size_ = 0u;
   clear_has_size();
 }
@@ -443,7 +443,7 @@ inline void ROOTFilePB_Histo::set_has_streamed_histo() {
 inline void ROOTFilePB_Histo::clear_has_streamed_histo() {
   _has_bits_[0] &= ~0x00000002u;
 }
-inline void ROOTFilePB_Histo::clear_streamed_histo() {
+/* almost unused */ inline void ROOTFilePB_Histo::clear_streamed_histo() {
   streamed_histo_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   clear_has_streamed_histo();
 }
@@ -451,20 +451,20 @@ inline const ::std::string& ROOTFilePB_Histo::streamed_histo() const {
   // @@protoc_insertion_point(field_get:dqmstorepb.ROOTFilePB.Histo.streamed_histo)
   return streamed_histo_.GetNoArena();
 }
-inline void ROOTFilePB_Histo::set_streamed_histo(const ::std::string& value) {
+/* almost unused */ inline void ROOTFilePB_Histo::set_streamed_histo(const ::std::string& value) {
   set_has_streamed_histo();
   streamed_histo_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:dqmstorepb.ROOTFilePB.Histo.streamed_histo)
 }
 #if LANG_CXX11
-inline void ROOTFilePB_Histo::set_streamed_histo(::std::string&& value) {
+/* almost unused */ inline void ROOTFilePB_Histo::set_streamed_histo(::std::string&& value) {
   set_has_streamed_histo();
   streamed_histo_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:dqmstorepb.ROOTFilePB.Histo.streamed_histo)
 }
 #endif
-inline void ROOTFilePB_Histo::set_streamed_histo(const char* value) {
+/* almost unused */ inline void ROOTFilePB_Histo::set_streamed_histo(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   set_has_streamed_histo();
   streamed_histo_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
@@ -481,12 +481,12 @@ inline ::std::string* ROOTFilePB_Histo::mutable_streamed_histo() {
   // @@protoc_insertion_point(field_mutable:dqmstorepb.ROOTFilePB.Histo.streamed_histo)
   return streamed_histo_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* ROOTFilePB_Histo::release_streamed_histo() {
+/* almost unused */ inline ::std::string* ROOTFilePB_Histo::release_streamed_histo() {
   // @@protoc_insertion_point(field_release:dqmstorepb.ROOTFilePB.Histo.streamed_histo)
   clear_has_streamed_histo();
   return streamed_histo_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void ROOTFilePB_Histo::set_allocated_streamed_histo(::std::string* streamed_histo) {
+/* almost unused */ inline void ROOTFilePB_Histo::set_allocated_streamed_histo(::std::string* streamed_histo) {
   if (streamed_histo != nullptr) {
     set_has_streamed_histo();
   } else {
@@ -506,7 +506,7 @@ inline void ROOTFilePB_Histo::set_has_flags() {
 inline void ROOTFilePB_Histo::clear_has_flags() {
   _has_bits_[0] &= ~0x00000008u;
 }
-inline void ROOTFilePB_Histo::clear_flags() {
+/* almost unused */ inline void ROOTFilePB_Histo::clear_flags() {
   flags_ = 0u;
   clear_has_flags();
 }
@@ -528,14 +528,14 @@ inline void ROOTFilePB_Histo::set_flags(::google::protobuf::uint32 value) {
 inline int ROOTFilePB::histo_size() const {
   return histo_.size();
 }
-inline void ROOTFilePB::clear_histo() {
+/* almost unused */ inline void ROOTFilePB::clear_histo() {
   histo_.Clear();
 }
 inline const ::dqmstorepb::ROOTFilePB_Histo& ROOTFilePB::histo(int index) const {
   // @@protoc_insertion_point(field_get:dqmstorepb.ROOTFilePB.histo)
   return histo_.Get(index);
 }
-inline ::dqmstorepb::ROOTFilePB_Histo* ROOTFilePB::mutable_histo(int index) {
+/* almost unused */ inline ::dqmstorepb::ROOTFilePB_Histo* ROOTFilePB::mutable_histo(int index) {
   // @@protoc_insertion_point(field_mutable:dqmstorepb.ROOTFilePB.histo)
   return histo_.Mutable(index);
 }
@@ -544,7 +544,7 @@ inline ::dqmstorepb::ROOTFilePB_Histo* ROOTFilePB::add_histo() {
   return histo_.Add();
 }
 inline ::google::protobuf::RepeatedPtrField< ::dqmstorepb::ROOTFilePB_Histo >*
-ROOTFilePB::mutable_histo() {
+/* almost unused */ ROOTFilePB::mutable_histo() {
   // @@protoc_insertion_point(field_mutable_list:dqmstorepb.ROOTFilePB.histo)
   return &histo_;
 }

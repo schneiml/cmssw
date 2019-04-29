@@ -389,7 +389,7 @@ bool DQMStreamerReader::acceptEvent(const EventMsgView* evtmsg) {
   }
 }
 
-void DQMStreamerReader::skip(int toSkip) {
+/* almost unused */ void DQMStreamerReader::skip(int toSkip) {
   try {
     for (int i = 0; i != toSkip; ++i) {
       EventMsgView const* evMsg = prepareNextEvent();

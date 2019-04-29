@@ -20,7 +20,7 @@ class DQMTestMultiThread
                               edm::Run const &,
                               edm::EventSetup const &) override;
 
-  void dumpMe(MonitorElement const&, bool printStat = false);
+/* almost unused */   void dumpMe(MonitorElement const&, bool printStat = false);
 
  private:
   MonitorElement * myHisto;
@@ -58,7 +58,7 @@ void DQMTestMultiThread::analyze(const edm::Event &iEvent,
   myHisto->Fill(fill_value_);
 }
 
-void DQMTestMultiThread::dumpMe(MonitorElement const& me,
+/* almost unused */ void DQMTestMultiThread::dumpMe(MonitorElement const& me,
                                 bool printStat /* = false */) {
   std::cout << "Run: " << me.run()
             << " Lumi: " << me.lumi()

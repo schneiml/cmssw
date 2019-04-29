@@ -20,9 +20,9 @@ class FitSlicesYTool {
   /// Destructor
   ~FitSlicesYTool();
   /// Fill the ME with the mean value of the gaussian fit in each slice
-  void getFittedMean(MonitorElement*);
+/* almost unused */   void getFittedMean(MonitorElement*);
   /// Fill the ME with the sigma value of the gaussian fit in each slice
-  void getFittedSigma(MonitorElement*);
+/* almost unused */   void getFittedSigma(MonitorElement*);
   /// Fill the ME with the mean value (with error) of the gaussian fit in each slice
   void getFittedMeanWithError(MonitorElement*);
   /// Fill the ME with the sigma value (with error) of the gaussian fit in each slice

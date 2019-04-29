@@ -80,7 +80,7 @@ public:
   }
 
 /* unused */
-  operator bool() const
+/* almost unused */   operator bool() const
   {
     std::lock_guard<tbb::spin_mutex> guard(lock_);
     return (me_ != nullptr);
@@ -89,12 +89,12 @@ public:
   // non-const methods to manipulate axes and titles.
   // these are not concurrent-safe, and should be used only when the underlying
   // MonitorElement is being booked.
-  void setTitle(std::string const& title)
+/* almost unused */   void setTitle(std::string const& title)
   {
     me_->setTitle(title);
   }
 
-  void setXTitle(std::string const& title)
+/* almost unused */   void setXTitle(std::string const& title)
   {
     me_->getTH1()->SetXTitle(title.c_str());
   }
@@ -104,7 +104,7 @@ public:
     me_->getTH1()->SetXTitle(title);
   }
 
-  void setYTitle(std::string const& title)
+/* almost unused */   void setYTitle(std::string const& title)
   {
     me_->getTH1()->SetYTitle(title.c_str());
   }

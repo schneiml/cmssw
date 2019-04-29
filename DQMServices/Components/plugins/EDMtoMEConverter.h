@@ -101,10 +101,10 @@ class EDMtoMEConverter : public edm::one::EDProducer<edm::one::WatchRuns,
 
     Tokens() = default;
 
-    void set(const edm::InputTag& runInputTag, const edm::InputTag& lumiInputTag, edm::ConsumesCollector& iC);
+/* almost unused */     void set(const edm::InputTag& runInputTag, const edm::InputTag& lumiInputTag, edm::ConsumesCollector& iC);
 
-    void getData(const edm::Run& iRun, edm::Handle<Product>& handle) const;
-    void getData(const edm::LuminosityBlock& iLumi, edm::Handle<Product>& handle) const;
+/* almost unused */     void getData(const edm::Run& iRun, edm::Handle<Product>& handle) const;
+/* almost unused */     void getData(const edm::LuminosityBlock& iLumi, edm::Handle<Product>& handle) const;
     
   private:
     edm::EDGetTokenT<Product> runToken;

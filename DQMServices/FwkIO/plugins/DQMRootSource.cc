@@ -229,7 +229,7 @@ namespace {
   template<class T>
     class TreeObjectReader: public TreeReaderBase {
       public:
-        TreeObjectReader():m_tree(nullptr),m_fullName(nullptr),m_buffer(nullptr),m_tag(0){
+/* almost unused */         TreeObjectReader():m_tree(nullptr),m_fullName(nullptr),m_buffer(nullptr),m_tag(0){
         }
         MonitorElement* doRead(ULong64_t iIndex, DQMStore& iStore, bool iIsLumi) override {
           m_tree->GetEntry(iIndex);
@@ -265,7 +265,7 @@ namespace {
   template<class T>
     class TreeSimpleReader : public TreeReaderBase {
       public:
-        TreeSimpleReader():m_tree(nullptr),m_fullName(nullptr),m_buffer(0),m_tag(0){
+/* almost unused */         TreeSimpleReader():m_tree(nullptr),m_fullName(nullptr),m_buffer(0),m_tag(0){
         }
         MonitorElement* doRead(ULong64_t iIndex, DQMStore& iStore,bool iIsLumi) override {
           m_tree->GetEntry(iIndex);
@@ -324,7 +324,7 @@ class DQMRootSource : public edm::InputSource
           processHistoryID_(phid), run_(run) { }
         edm::ProcessHistoryID const& processHistoryID() const { return processHistoryID_; }
         unsigned int run() const { return run_; }
-        bool operator<(RunPHIDKey const& right) const {
+/* almost unused */         bool operator<(RunPHIDKey const& right) const {
           if (processHistoryID_ == right.processHistoryID()) {
             return run_ < right.run();
           }
@@ -342,7 +342,7 @@ class DQMRootSource : public edm::InputSource
         edm::ProcessHistoryID const& processHistoryID() const { return processHistoryID_; }
         unsigned int run() const { return run_; }
         unsigned int lumi() const { return lumi_; }
-        bool operator<(RunLumiPHIDKey const& right) const {
+/* almost unused */         bool operator<(RunLumiPHIDKey const& right) const {
           if (processHistoryID_ == right.processHistoryID()) {
             if (run_ == right.run()) {
               return lumi_ < right.lumi();
@@ -357,16 +357,16 @@ class DQMRootSource : public edm::InputSource
         unsigned int lumi_;
       };
 
-      edm::InputSource::ItemType getNextItemType() override;
+/* almost unused */       edm::InputSource::ItemType getNextItemType() override;
       //NOTE: the following is really read next run auxiliary
-      std::shared_ptr<edm::RunAuxiliary> readRunAuxiliary_() override ;
-      std::shared_ptr<edm::LuminosityBlockAuxiliary> readLuminosityBlockAuxiliary_() override ;
-      void readRun_(edm::RunPrincipal& rpCache) override;
-      void readLuminosityBlock_(edm::LuminosityBlockPrincipal& lbCache) override;
-      void readEvent_(edm::EventPrincipal&) override ;
+/* almost unused */       std::shared_ptr<edm::RunAuxiliary> readRunAuxiliary_() override ;
+/* almost unused */       std::shared_ptr<edm::LuminosityBlockAuxiliary> readLuminosityBlockAuxiliary_() override ;
+/* almost unused */       void readRun_(edm::RunPrincipal& rpCache) override;
+/* almost unused */       void readLuminosityBlock_(edm::LuminosityBlockPrincipal& lbCache) override;
+/* almost unused */       void readEvent_(edm::EventPrincipal&) override ;
       
-      std::unique_ptr<edm::FileBlock> readFile_() override;
-      void closeFile_() override;
+/* almost unused */       std::unique_ptr<edm::FileBlock> readFile_() override;
+/* almost unused */       void closeFile_() override;
       
       void logFileAction(char const* msg, char const* fileName) const;
       
@@ -513,18 +513,18 @@ DQMRootSource::~DQMRootSource()
 //
 // member functions
 //
-void DQMRootSource::readEvent_(edm::EventPrincipal&)
+/* almost unused */ void DQMRootSource::readEvent_(edm::EventPrincipal&)
 {
   //std::cout << "readEvent_" << std::endl;
 }
 
-edm::InputSource::ItemType DQMRootSource::getNextItemType()
+/* almost unused */ edm::InputSource::ItemType DQMRootSource::getNextItemType()
 {
   //std::cout <<"getNextItemType "<<m_nextItemType<<std::endl;
   return m_nextItemType;
 }
 
-std::shared_ptr<edm::RunAuxiliary> DQMRootSource::readRunAuxiliary_()
+/* almost unused */ std::shared_ptr<edm::RunAuxiliary> DQMRootSource::readRunAuxiliary_()
 {
   //std::cout <<"readRunAuxiliary_"<<std::endl;
   assert(m_nextIndexItr != m_orderedIndices.end());
@@ -540,7 +540,7 @@ std::shared_ptr<edm::RunAuxiliary> DQMRootSource::readRunAuxiliary_()
 }
 
 std::shared_ptr<edm::LuminosityBlockAuxiliary>
-DQMRootSource::readLuminosityBlockAuxiliary_()
+/* almost unused */ DQMRootSource::readLuminosityBlockAuxiliary_()
 {
   //std::cout <<"readLuminosityBlockAuxiliary_"<<std::endl;
   assert(m_nextIndexItr != m_orderedIndices.end());
@@ -556,7 +556,7 @@ DQMRootSource::readLuminosityBlockAuxiliary_()
 }
 
 void
-DQMRootSource::readRun_(edm::RunPrincipal& rpCache)
+/* almost unused */ DQMRootSource::readRun_(edm::RunPrincipal& rpCache)
 {
   assert(m_presentIndexItr != m_orderedIndices.end());
   RunLumiToRange runLumiRange = m_runlumiToRange[*m_presentIndexItr];
@@ -610,7 +610,7 @@ DQMRootSource::readRun_(edm::RunPrincipal& rpCache)
 
 
 void
-DQMRootSource::readLuminosityBlock_( edm::LuminosityBlockPrincipal& lbCache)
+/* almost unused */ DQMRootSource::readLuminosityBlock_( edm::LuminosityBlockPrincipal& lbCache)
 {
   assert(m_presentIndexItr != m_orderedIndices.end());
   RunLumiToRange runLumiRange = m_runlumiToRange[*m_presentIndexItr];
@@ -646,7 +646,7 @@ DQMRootSource::readLuminosityBlock_( edm::LuminosityBlockPrincipal& lbCache)
 }
 
 std::unique_ptr<edm::FileBlock>
-DQMRootSource::readFile_() {
+/* almost unused */ DQMRootSource::readFile_() {
   auto const numFiles = m_catalog.fileNames().size();
   while(m_fileIndex < numFiles && not setupFile(m_fileIndex++)) {}
 
@@ -675,7 +675,7 @@ DQMRootSource::readFile_() {
 }
 
 void
-DQMRootSource::closeFile_() {
+/* almost unused */ DQMRootSource::closeFile_() {
   if(m_file.get()==nullptr) { return; }
   edm::Service<edm::JobReport> jr;
   jr->inputFileClosed(edm::InputType::Primary, m_jrToken);

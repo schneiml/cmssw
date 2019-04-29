@@ -158,7 +158,7 @@ class DummyBookFillDQMStoreMultiThread :  public one::DQMEDAnalyzer<one::DQMLumi
                                   edm::EventSetup const&) override;
 
   void bookHistograms(DQMStore::IBooker &, edm::Run const &, edm::EventSetup const &) override;
-  void fillerDispose();
+/* almost unused */   void fillerDispose();
 
   // ----------member data ---------------------------
   std::vector<boost::shared_ptr<FillerBase> > m_runFillers;
@@ -189,7 +189,7 @@ DummyBookFillDQMStoreMultiThread::DummyBookFillDQMStoreMultiThread(const edm::Pa
   // TODO(rovere): assert on multiple book conditions
 }
 
-void DummyBookFillDQMStoreMultiThread::fillerDispose() {
+/* almost unused */ void DummyBookFillDQMStoreMultiThread::fillerDispose() {
   std::cout << "fillerDispose" << std::endl;
   m_runFillers.erase(m_runFillers.begin(), m_runFillers.end());
   m_lumiFillers.erase(m_lumiFillers.begin(), m_lumiFillers.end());

@@ -125,7 +125,7 @@ struct MicroME {
 
   uint32_t flags;
 
-  bool operator<(const MicroME &rhs) const {
+/* almost unused */   bool operator<(const MicroME &rhs) const {
     const MicroME &lhs = *this;
     int diff = lhs.dirname.compare(rhs.dirname);
     return (diff < 0 ? true

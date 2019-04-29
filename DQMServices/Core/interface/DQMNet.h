@@ -162,12 +162,12 @@ public:
   virtual ~DQMNet();
 
   void			debug(bool doit);
-  void			delay(int delay);
+/* almost unused */   void			delay(int delay);
   void			startLocalServer(int port);
-  void			startLocalServer(const char *path);
-  void			staleObjectWaitLimit(lat::TimeSpan time);
+/* almost unused */   void			startLocalServer(const char *path);
+/* almost unused */   void			staleObjectWaitLimit(lat::TimeSpan time);
   void			updateToCollector(const std::string &host, int port);
-  void			listenToCollector(const std::string &host, int port);
+/* almost unused */   void			listenToCollector(const std::string &host, int port);
   void			shutdown();
   void			lock();
   void			unlock();
@@ -199,7 +199,7 @@ public:
 
   struct HashOp
   {
-    uint32_t operator()(const Object &a) const
+/* almost unused */     uint32_t operator()(const Object &a) const
       {
         return a.hash;
       }
@@ -207,7 +207,7 @@ public:
 
   struct HashEqual
   {
-    bool operator()(const Object &a, const Object &b) const
+/* almost unused */     bool operator()(const Object &a, const Object &b) const
       {
         return a.hash == b.hash && *a.dirname == *b.dirname && a.objname == b.objname;
       }
@@ -286,7 +286,7 @@ public:
     }
 
   static void		packQualityData(std::string &into, const QReports &qr);
-  static void		unpackQualityData(QReports &qr, uint32_t &flags, const char *from);
+/* almost unused */   static void		unpackQualityData(QReports &qr, uint32_t &flags, const char *from);
 
 protected:
   std::ostream &	logme();

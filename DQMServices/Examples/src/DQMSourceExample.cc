@@ -30,7 +30,7 @@ DQMSourceExample::~DQMSourceExample(){
 //==================================================================//
 //======================= Initialise ===============================//
 //==================================================================//
-void DQMSourceExample::initialize() {
+/* almost unused */ void DQMSourceExample::initialize() {
 
   ////---- initialise Event and LS counters
   counterEvt_ = 0; counterLS_  = 0;

@@ -22,14 +22,14 @@ class DQMProtobufReader : public edm::PuttableSourceBase {
   static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
  private:
-  edm::InputSource::ItemType getNextItemType() override;
-  std::shared_ptr<edm::RunAuxiliary> readRunAuxiliary_() override;
+/* almost unused */   edm::InputSource::ItemType getNextItemType() override;
+/* almost unused */   std::shared_ptr<edm::RunAuxiliary> readRunAuxiliary_() override;
   std::shared_ptr<edm::LuminosityBlockAuxiliary>
-  readLuminosityBlockAuxiliary_() override;
-  void readRun_(edm::RunPrincipal& rpCache) override;
-  void readLuminosityBlock_(
+/* almost unused */   readLuminosityBlockAuxiliary_() override;
+/* almost unused */   void readRun_(edm::RunPrincipal& rpCache) override;
+/* almost unused */   void readLuminosityBlock_(
       edm::LuminosityBlockPrincipal& lbCache) override;
-  void readEvent_(edm::EventPrincipal&) override;
+/* almost unused */   void readEvent_(edm::EventPrincipal&) override;
 
   // actual reading will happen here
   void beginLuminosityBlock(edm::LuminosityBlock& lb) override;

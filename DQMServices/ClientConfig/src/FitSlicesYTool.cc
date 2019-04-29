@@ -34,7 +34,7 @@ FitSlicesYTool::~FitSlicesYTool(){
   delete h2;  
   delete h3;  
 }
-void FitSlicesYTool::getFittedMean(MonitorElement * me){
+/* almost unused */ void FitSlicesYTool::getFittedMean(MonitorElement * me){
   if (!(h1&&me)) throw cms::Exception("FitSlicesYTool") << "Pointer =0 : h1=" << h1 << " me=" << me;
   if (h1->GetNbinsX()==me->getNbinsX()){
     for (int bin=0;bin!=h1->GetNbinsX();bin++){
@@ -45,7 +45,7 @@ void FitSlicesYTool::getFittedMean(MonitorElement * me){
     throw cms::Exception("FitSlicesYTool") << "Different number of bins!";
   }
 }
-void FitSlicesYTool::getFittedSigma(MonitorElement * me){
+/* almost unused */ void FitSlicesYTool::getFittedSigma(MonitorElement * me){
   if (!(h2&&me)) throw cms::Exception("FitSlicesYTool") << "Pointer =0 : h1=" << h1 << " me=" << me;
   if (h2->GetNbinsX()==me->getNbinsX()){
     for (int bin=0;bin!=h2->GetNbinsX();bin++){

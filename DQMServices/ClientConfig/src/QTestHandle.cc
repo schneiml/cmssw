@@ -93,7 +93,7 @@ void QTestHandle::attachTests(DQMStore *bei, bool verboseQT)
 }
 
 std::pair<std::string,std::string>
-QTestHandle::checkGlobalQTStatus(DQMStore *bei) const
+/* almost unused */ QTestHandle::checkGlobalQTStatus(DQMStore *bei) const
 {
   return qtChecker->checkGlobalStatus(bei);
 }

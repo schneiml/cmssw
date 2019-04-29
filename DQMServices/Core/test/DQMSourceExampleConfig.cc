@@ -54,7 +54,7 @@ public:
 
   void endJob() override;
 
-    void recursiveBuild (string, int, int, int, DQMStore * , int);
+/* almost unused */     void recursiveBuild (string, int, int, int, DQMStore * , int);
     
 private:
       // ----------member data ---------------------------
@@ -160,7 +160,7 @@ void DQMSourceExampleConfig::analyze(const edm::Event& iEvent,
      ++counter;
  }
 
-void DQMSourceExampleConfig::recursiveBuild (string dirName, int histo_X_dir, int histoLeft, int level_depth, DQMStore * dbe2, int directories_left) 
+/* almost unused */ void DQMSourceExampleConfig::recursiveBuild (string dirName, int histo_X_dir, int histoLeft, int level_depth, DQMStore * dbe2, int directories_left) 
 {
     if (histoLeft <= 0) 
 	return;

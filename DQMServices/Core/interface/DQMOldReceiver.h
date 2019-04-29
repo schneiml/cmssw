@@ -49,9 +49,9 @@ public:
       if client acts as server, method runQTests is also sending monitoring & 
       test results to clients downstream;
       returns success flag */
-  bool update() DQM_DEPRECATED;
-  bool doMonitoring() DQM_DEPRECATED;
-  int getNumUpdates() const DQM_DEPRECATED { return 0; }
+/* almost unused */   bool update() DQM_DEPRECATED;
+/* almost unused */   bool doMonitoring() DQM_DEPRECATED;
+/* almost unused */   int getNumUpdates() const DQM_DEPRECATED { return 0; }
 
 private:
   /// use to get hold of structure with monitoring elements that class owns

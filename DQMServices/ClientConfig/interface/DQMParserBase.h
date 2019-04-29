@@ -38,7 +38,7 @@ class DQMParserBase{
 	///Methor that parses the xml file configFile
 	void getDocument(std::string configFile, bool UseDB=false);
 	///Returns the number of nodes with given name
-	int countNodes(std::string tagName);
+/* almost unused */ 	int countNodes(std::string tagName);
 	///Parses a new Document
 	void getNewDocument(std::string configFile, bool UseDB=false);
         /// DOM Document

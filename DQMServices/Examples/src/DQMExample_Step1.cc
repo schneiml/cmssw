@@ -302,7 +302,7 @@ void DQMExample_Step1::endRun(edm::Run const& run, edm::EventSetup const& eSetup
 //
 // -------------------------------------- book histograms --------------------------------------------
 //
-void DQMExample_Step1::bookHistos(DQMStore::IBooker & ibooker_)
+/* almost unused */ void DQMExample_Step1::bookHistos(DQMStore::IBooker & ibooker_)
 {
   ibooker_.cd();
   ibooker_.setCurrentFolder("Physics/TopTest");
@@ -344,16 +344,16 @@ void DQMExample_Step1::bookHistos(DQMStore::IBooker & ibooker_)
 //
 // -------------------------------------- functions --------------------------------------------
 //
-double DQMExample_Step1::Distance( const reco::Candidate & c1, const reco::Candidate & c2 ) {
+/* almost unused */ double DQMExample_Step1::Distance( const reco::Candidate & c1, const reco::Candidate & c2 ) {
         return  deltaR(c1,c2);
 }
 
-double DQMExample_Step1::DistancePhi( const reco::Candidate & c1, const reco::Candidate & c2 ) {
+/* almost unused */ double DQMExample_Step1::DistancePhi( const reco::Candidate & c1, const reco::Candidate & c2 ) {
         return  deltaPhi(c1.p4().phi(),c2.p4().phi());
 }
 
 // This always returns only a positive deltaPhi
-double DQMExample_Step1::calcDeltaPhi(double phi1, double phi2) {
+/* almost unused */ double DQMExample_Step1::calcDeltaPhi(double phi1, double phi2) {
   double deltaPhi = phi1 - phi2;
   if (deltaPhi < 0) deltaPhi = -deltaPhi;
   if (deltaPhi > 3.1415926) {
@@ -365,7 +365,7 @@ double DQMExample_Step1::calcDeltaPhi(double phi1, double phi2) {
 //
 // -------------------------------------- electronID --------------------------------------------
 //
-bool DQMExample_Step1::MediumEle (const edm::Event & iEvent, const edm::EventSetup & iESetup, const reco::GsfElectron & electron)
+/* almost unused */ bool DQMExample_Step1::MediumEle (const edm::Event & iEvent, const edm::EventSetup & iESetup, const reco::GsfElectron & electron)
 {
     
   //********* CONVERSION TOOLS

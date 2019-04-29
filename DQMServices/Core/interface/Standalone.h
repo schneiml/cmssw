@@ -28,7 +28,7 @@ namespace edm
   {
     public:
     template <class T> static const T &
-    getUntrackedParameter(const char * /* key */, const T &value)
+/* almost unused */     getUntrackedParameter(const char * /* key */, const T &value)
     { return value; }
   };
 
@@ -45,21 +45,21 @@ namespace edm
       Operate(const ServiceToken &) {}
     };
 
-    static int createSet(const std::vector<ParameterSet> &) { return 0; }
+/* almost unused */     static int createSet(const std::vector<ParameterSet> &) { return 0; }
   };
 
   template <class T>
   class  Service
   {
   public:
-    bool isAvailable() { return false; }
+/* almost unused */     bool isAvailable() { return false; }
     T *operator->()
     {
       static char buf[sizeof(T)]; static T *x;
       if (! x) x = new (buf) T(ParameterSet());
       return x;
     }
-    T &operator*() { return * operator->(); }
+/* almost unused */     T &operator*() { return * operator->(); }
   };
 
   namespace service {
@@ -70,47 +70,47 @@ namespace edm
 
   struct PreallocationSignal {
     template <typename T>
-    void connect( T&& ) {};
+/* almost unused */     void connect( T&& ) {};
   };
 
   class ActivityRegistry
   {
   public:
     template <typename T>
-    void watchPostSourceRun(void*, T) {}
+/* almost unused */     void watchPostSourceRun(void*, T) {}
 
     template <typename T>
-    void watchPostSourceLumi(void*, T) {}
+/* almost unused */     void watchPostSourceLumi(void*, T) {}
 
     template <typename F>
-    void watchPostSourceRun(F) {}
+/* almost unused */     void watchPostSourceRun(F) {}
 
     template <typename F>
-    void watchPostSourceLumi(F) {}
+/* almost unused */     void watchPostSourceLumi(F) {}
 
     template <typename T>
-    void watchPostGlobalBeginRun(void*, T) {}
+/* almost unused */     void watchPostGlobalBeginRun(void*, T) {}
 
     template <typename T>
-    void watchPostGlobalBeginLumi(void*, T) {}
+/* almost unused */     void watchPostGlobalBeginLumi(void*, T) {}
 
     template <typename T>
-    void watchPostGlobalEndRun(void*, T) {}
+/* almost unused */     void watchPostGlobalEndRun(void*, T) {}
 
     template <typename T>
-    void watchPostGlobalEndLumi(void*, T) {}
+/* almost unused */     void watchPostGlobalEndLumi(void*, T) {}
 
     template <typename T>
-    void watchPostModuleGlobalEndLumi(void*, T) {}
+/* almost unused */     void watchPostModuleGlobalEndLumi(void*, T) {}
 
     template <typename F>
-    void watchPostModuleGlobalEndLumi(F) {}
+/* almost unused */     void watchPostModuleGlobalEndLumi(F) {}
 
     template <typename T>
-    void watchPostModuleGlobalEndRun(void*, T) {}
+/* almost unused */     void watchPostModuleGlobalEndRun(void*, T) {}
 
     template <typename F>
-    void watchPostModuleGlobalEndRun(F) {}
+/* almost unused */     void watchPostModuleGlobalEndRun(F) {}
 
     PreallocationSignal preallocateSignal_;
   };

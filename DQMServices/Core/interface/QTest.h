@@ -53,13 +53,13 @@ class QCriterion
 public:
 
   /// get test status (see Core/interface/DQMDefinitions.h)
-  int getStatus() const             { return status_; }
+/* almost unused */   int getStatus() const             { return status_; }
   /// get message attached to test
-  std::string getMessage() const    { return message_; }
+/* almost unused */   std::string getMessage() const    { return message_; }
   /// get name of quality test
   std::string getName() const       { return qtname_; }
   /// get algorithm name
-  std::string algoName() const      { return algoName_; }
+/* almost unused */   std::string algoName() const      { return algoName_; }
   /// set probability limit for warning and error (default: 90% and 50%)
   void setWarningProb(float prob)       { warningProb_ = prob; }
   void setErrorProb(float prob)         { errorProb_ = prob; }
@@ -670,8 +670,8 @@ public:
   void set_epsilon_max(double epsilon) { epsilon_max = epsilon; }
   void set_S_fail(double S)            { S_fail = S; }
   void set_S_pass(double S)            { S_pass = S; }
-  double get_FailedBins()          { return *FailedBins[1]; } // FIXME: WRONG! OFF BY ONE!?
-  int get_result()                     { return result; }
+/* almost unused */   double get_FailedBins()          { return *FailedBins[1]; } // FIXME: WRONG! OFF BY ONE!?
+/* almost unused */   int get_result()                     { return result; }
 
   float runTest(const MonitorElement*me) override;
 
@@ -698,10 +698,10 @@ public:
   void set_epsilon_max(double epsilon) { epsilon_max = epsilon; }
   void set_S_fail(double S)	       { S_fail = S; }
   void set_S_pass(double S)	       { S_pass = S; }
-  double get_epsilon_obs() 	       { return epsilon_obs; }
-  double get_S_fail_obs()  	       { return S_fail_obs;  }
-  double get_S_pass_obs()  	       { return S_pass_obs;  }
-  int get_result()		       { return result; }
+/* almost unused */   double get_epsilon_obs() 	       { return epsilon_obs; }
+/* almost unused */   double get_S_fail_obs()  	       { return S_fail_obs;  }
+/* almost unused */   double get_S_pass_obs()  	       { return S_pass_obs;  }
+/* almost unused */   int get_result()		       { return result; }
 
   float runTest(const MonitorElement*me) override;
 

@@ -42,7 +42,7 @@ class DQMFileIterator {
     std::size_t n_events;
     std::size_t n_lumi;
 
-    static EorEntry load_json(const std::string& run_path, const std::string& filename);
+/* almost unused */     static EorEntry load_json(const std::string& run_path, const std::string& filename);
   };
 
   enum State {

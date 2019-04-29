@@ -36,7 +36,7 @@ class DQMRunEDProducer : public edm::one::EDProducer<edm::Accumulator,
 {
 public:
 /* unused */
-  DQMRunEDProducer() :
+/* almost unused */   DQMRunEDProducer() :
     runToken_{this-> template produces<DQMToken,edm::Transition::EndRun>("endRun")},
     dqmstore_{std::make_unique<DQMStore>()}
     {}
@@ -71,12 +71,12 @@ public:
   virtual void bookHistograms(DQMStore::IBooker &i, edm::Run const&, edm::EventSetup const&) = 0;
 
   virtual void analyze(edm::Event const&, edm::EventSetup const&) {}
-  void accumulate(edm::Event const& ev, edm::EventSetup const& es) final {
+/* almost unused */   void accumulate(edm::Event const& ev, edm::EventSetup const& es) final {
     analyze(ev,es);
   }
 
 /* unused */
-  virtual bool getCanSaveByLumi() { return false; }
+/* almost unused */   virtual bool getCanSaveByLumi() { return false; }
 protected:
   edm::EDPutTokenT<DQMToken> runToken_;
   std::unique_ptr<DQMStore> dqmstore_;

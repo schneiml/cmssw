@@ -36,7 +36,7 @@ public:
 
   /// get QCriterion
 /* unused */
-  const QCriterion *getQCriterion() const
+/* almost unused */   const QCriterion *getQCriterion() const
     { return qcriterion_; }
 
 private:

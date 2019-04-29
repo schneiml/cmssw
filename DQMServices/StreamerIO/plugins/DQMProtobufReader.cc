@@ -24,7 +24,7 @@ DQMProtobufReader::DQMProtobufReader(edm::ParameterSet const& pset,
 
 DQMProtobufReader::~DQMProtobufReader() {}
 
-edm::InputSource::ItemType DQMProtobufReader::getNextItemType() {
+/* almost unused */ edm::InputSource::ItemType DQMProtobufReader::getNextItemType() {
   typedef DQMFileIterator::State State;
   typedef DQMFileIterator::LumiEntry LumiEntry;
 
@@ -65,7 +65,7 @@ edm::InputSource::ItemType DQMProtobufReader::getNextItemType() {
   // this is unreachable
 }
 
-std::shared_ptr<edm::RunAuxiliary> DQMProtobufReader::readRunAuxiliary_() {
+/* almost unused */ std::shared_ptr<edm::RunAuxiliary> DQMProtobufReader::readRunAuxiliary_() {
   // fiterator_.logFileAction("readRunAuxiliary_");
 
   edm::RunAuxiliary* aux = new edm::RunAuxiliary(
@@ -73,14 +73,14 @@ std::shared_ptr<edm::RunAuxiliary> DQMProtobufReader::readRunAuxiliary_() {
   return std::shared_ptr<edm::RunAuxiliary>(aux);
 }
 
-void DQMProtobufReader::readRun_(edm::RunPrincipal& rpCache) {
+/* almost unused */ void DQMProtobufReader::readRun_(edm::RunPrincipal& rpCache) {
   // fiterator_.logFileAction("readRun_");
   rpCache.fillRunPrincipal(processHistoryRegistryForUpdate());
 
 }
 
 std::shared_ptr<edm::LuminosityBlockAuxiliary>
-DQMProtobufReader::readLuminosityBlockAuxiliary_() {
+/* almost unused */ DQMProtobufReader::readLuminosityBlockAuxiliary_() {
   // fiterator_.logFileAction("readLuminosityBlockAuxiliary_");
 
   currentLumi_ = fiterator_.open();
@@ -91,7 +91,7 @@ DQMProtobufReader::readLuminosityBlockAuxiliary_() {
   return std::shared_ptr<edm::LuminosityBlockAuxiliary>(aux);
 }
 
-void DQMProtobufReader::readLuminosityBlock_(
+/* almost unused */ void DQMProtobufReader::readLuminosityBlock_(
     edm::LuminosityBlockPrincipal& lbCache) {
   // fiterator_.logFileAction("readLuminosityBlock_");
 
@@ -142,7 +142,7 @@ void DQMProtobufReader::beginLuminosityBlock(edm::LuminosityBlock& lb) {
 }
 
 
-void DQMProtobufReader::readEvent_(edm::EventPrincipal&){};
+/* almost unused */ void DQMProtobufReader::readEvent_(edm::EventPrincipal&){};
 
 void DQMProtobufReader::fillDescriptions(
     edm::ConfigurationDescriptions& descriptions) {

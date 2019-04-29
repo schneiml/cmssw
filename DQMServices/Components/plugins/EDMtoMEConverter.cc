@@ -15,18 +15,18 @@
 using namespace lat;
 
 template<typename T>
-void EDMtoMEConverter::Tokens<T>::set(const edm::InputTag& runInputTag, const edm::InputTag& lumiInputTag, edm::ConsumesCollector& iC) {
+/* almost unused */ void EDMtoMEConverter::Tokens<T>::set(const edm::InputTag& runInputTag, const edm::InputTag& lumiInputTag, edm::ConsumesCollector& iC) {
   runToken = iC.mayConsume<MEtoEDM<T>, edm::InRun>(runInputTag);
   lumiToken = iC.mayConsume<MEtoEDM<T>, edm::InLumi>(lumiInputTag);
 }
 
 template<typename T>
-void EDMtoMEConverter::Tokens<T>::getData(const edm::Run& iRun, edm::Handle<Product>& handle) const {
+/* almost unused */ void EDMtoMEConverter::Tokens<T>::getData(const edm::Run& iRun, edm::Handle<Product>& handle) const {
   iRun.getByToken(runToken, handle);
 }
 
 template<typename T>
-void EDMtoMEConverter::Tokens<T>::getData(const edm::LuminosityBlock& iLumi, edm::Handle<Product>& handle) const {
+/* almost unused */ void EDMtoMEConverter::Tokens<T>::getData(const edm::LuminosityBlock& iLumi, edm::Handle<Product>& handle) const {
   iLumi.getByToken(lumiToken, handle);
 }
 
@@ -36,7 +36,7 @@ namespace {
   struct ForEachHelper {
     template <typename Tuple, typename Func>
     static
-    void call(Tuple&& tpl, Func&& func) {
+/* almost unused */     void call(Tuple&& tpl, Func&& func) {
       func(std::get<I-1>(tpl));
       ForEachHelper<I+1, N>::call(std::forward<Tuple>(tpl), std::forward<Func>(func));
     }
@@ -46,7 +46,7 @@ namespace {
   struct ForEachHelper<N, N> {
     template <typename Tuple, typename Func>
     static
-    void call(Tuple&& tpl, Func&& func) {
+/* almost unused */     void call(Tuple&& tpl, Func&& func) {
       func(std::get<N-1>(tpl));
     }
   };
@@ -61,56 +61,56 @@ namespace {
 
   template <typename T> struct HistoTraits;
   template <> struct HistoTraits<TH1F> {
-    static TH1F *get(MonitorElement *me) { return me->getTH1F(); }
-    template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
+/* almost unused */     static TH1F *get(MonitorElement *me) { return me->getTH1F(); }
+/* almost unused */     template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
       return iBooker.book1D(std::forward<Args>(args)...);
     }
   };
   template <> struct HistoTraits<TH1S> {
-    static TH1S *get(MonitorElement *me) { return me->getTH1S(); }
-    template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
+/* almost unused */     static TH1S *get(MonitorElement *me) { return me->getTH1S(); }
+/* almost unused */     template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
       return iBooker.book1S(std::forward<Args>(args)...);
     }
   };
   template <> struct HistoTraits<TH1D> {
-    static TH1D *get(MonitorElement *me) { return me->getTH1D(); }
-    template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
+/* almost unused */     static TH1D *get(MonitorElement *me) { return me->getTH1D(); }
+/* almost unused */     template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
       return iBooker.book1DD(std::forward<Args>(args)...);
     }
   };
   template <> struct HistoTraits<TH2F> {
-    static TH2F *get(MonitorElement *me) { return me->getTH2F(); }
-    template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
+/* almost unused */     static TH2F *get(MonitorElement *me) { return me->getTH2F(); }
+/* almost unused */     template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
       return iBooker.book2D(std::forward<Args>(args)...);
     }
   };
   template <> struct HistoTraits<TH2S> {
-    static TH2S *get(MonitorElement *me) { return me->getTH2S(); }
-    template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
+/* almost unused */     static TH2S *get(MonitorElement *me) { return me->getTH2S(); }
+/* almost unused */     template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
       return iBooker.book2S(std::forward<Args>(args)...);
     }
   };
   template <> struct HistoTraits<TH2D> {
-    static TH2D *get(MonitorElement *me) { return me->getTH2D(); }
-    template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
+/* almost unused */     static TH2D *get(MonitorElement *me) { return me->getTH2D(); }
+/* almost unused */     template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
       return iBooker.book2DD(std::forward<Args>(args)...);
     }
   };
   template <> struct HistoTraits<TH3F> {
-    static TH3F *get(MonitorElement *me) { return me->getTH3F(); }
-    template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
+/* almost unused */     static TH3F *get(MonitorElement *me) { return me->getTH3F(); }
+/* almost unused */     template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
       return iBooker.book3D(std::forward<Args>(args)...);
     }
   };
   template <> struct HistoTraits<TProfile>{
-    static TProfile *get(MonitorElement *me) { return me->getTProfile(); }
-    template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
+/* almost unused */     static TProfile *get(MonitorElement *me) { return me->getTProfile(); }
+/* almost unused */     template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
       return iBooker.bookProfile(std::forward<Args>(args)...);
     }
   };
   template <> struct HistoTraits<TProfile2D> {
-    static TProfile2D *get(MonitorElement *me) { return me->getTProfile2D(); }
-    template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
+/* almost unused */     static TProfile2D *get(MonitorElement *me) { return me->getTProfile2D(); }
+/* almost unused */     template <typename ...Args> static MonitorElement *book(DQMStore::IBooker &iBooker, Args&&... args) {
       return iBooker.bookProfile2D(std::forward<Args>(args)...);
     }
   };
@@ -120,7 +120,7 @@ namespace {
   struct AddMonitorElement {
     template <typename MEtoEDMObject_object, typename RunOrLumi>
     static
-    MonitorElement *call(DQMStore::IBooker &iBooker, DQMStore::IGetter &iGetter, MEtoEDMObject_object *metoedmobject, const std::string& dir, const std::string& name, const RunOrLumi& runOrLumi) {
+/* almost unused */     MonitorElement *call(DQMStore::IBooker &iBooker, DQMStore::IGetter &iGetter, MEtoEDMObject_object *metoedmobject, const std::string& dir, const std::string& name, const RunOrLumi& runOrLumi) {
       MonitorElement *me = iGetter.get(dir+"/"+metoedmobject->GetName());
 
       if(me) {
@@ -144,7 +144,7 @@ namespace {
   struct AddMonitorElement<double> {
     template <typename MEtoEDMObject_object, typename RunOrLumi>
     static
-    MonitorElement *call(DQMStore::IBooker &iBooker, DQMStore::IGetter &iGetter, MEtoEDMObject_object *metoedmobject, const std::string& dir, const std::string& name, const RunOrLumi& runOrLumi) {
+/* almost unused */     MonitorElement *call(DQMStore::IBooker &iBooker, DQMStore::IGetter &iGetter, MEtoEDMObject_object *metoedmobject, const std::string& dir, const std::string& name, const RunOrLumi& runOrLumi) {
       iBooker.setCurrentFolder(dir);
       MonitorElement *me = iBooker.bookFloat(name);
       me->Fill(*metoedmobject);
@@ -157,7 +157,7 @@ namespace {
   struct AddMonitorElementForIntegers {
     template <typename MEtoEDMObject_object, typename RunOrLumi>
     static
-    MonitorElement *call(DQMStore::IBooker &iBooker, DQMStore::IGetter &iGetter, MEtoEDMObject_object *metoedmobject, const std::string& dir, const std::string& name, const RunOrLumi& runOrLumi) {
+/* almost unused */     MonitorElement *call(DQMStore::IBooker &iBooker, DQMStore::IGetter &iGetter, MEtoEDMObject_object *metoedmobject, const std::string& dir, const std::string& name, const RunOrLumi& runOrLumi) {
       iBooker.setCurrentFolder(dir);
       iGetter.setCurrentFolder(dir);
       T ival = getProcessedEvents(iGetter, dir, name, runOrLumi);
@@ -167,7 +167,7 @@ namespace {
     }
 
     static
-    T getProcessedEvents(DQMStore::IGetter &iGetter, const std::string& dir, const std::string& name, const edm::Run&) {
+/* almost unused */     T getProcessedEvents(DQMStore::IGetter &iGetter, const std::string& dir, const std::string& name, const edm::Run&) {
       if(name.find("processedEvents") != std::string::npos) {
         if(const MonitorElement *me = iGetter.get(dir+"/"+name)) {
           return me->getIntValue();
@@ -177,7 +177,7 @@ namespace {
     }
 
     static
-    T getProcessedEvents(DQMStore::IGetter &iGetter, const std::string& dir, const std::string& name, const edm::LuminosityBlock&) {
+/* almost unused */     T getProcessedEvents(DQMStore::IGetter &iGetter, const std::string& dir, const std::string& name, const edm::LuminosityBlock&) {
       return 0;
     }
   };
@@ -185,7 +185,7 @@ namespace {
   struct AddMonitorElement<long long> {
     template <typename ...Args>
     static
-    MonitorElement *call(Args&&... args) {
+/* almost unused */     MonitorElement *call(Args&&... args) {
       return AddMonitorElementForIntegers<long long>::call(std::forward<Args>(args)...);
     }
   };
@@ -193,7 +193,7 @@ namespace {
   struct AddMonitorElement<int> {
     template <typename ...Args>
     static
-    MonitorElement *call(Args&&... args) {
+/* almost unused */     MonitorElement *call(Args&&... args) {
       return AddMonitorElementForIntegers<int>::call(std::forward<Args>(args)...);
     }
   };
@@ -203,7 +203,7 @@ namespace {
   struct AddMonitorElement<TString> {
     template <typename MEtoEDMObject_object, typename RunOrLumi>
     static
-    MonitorElement *call(DQMStore::IBooker &iBooker, DQMStore::IGetter &iGetter, MEtoEDMObject_object *metoedmobject, const std::string& dir, const std::string& name, const RunOrLumi& runOrLumi) {
+/* almost unused */     MonitorElement *call(DQMStore::IBooker &iBooker, DQMStore::IGetter &iGetter, MEtoEDMObject_object *metoedmobject, const std::string& dir, const std::string& name, const RunOrLumi& runOrLumi) {
       iBooker.setCurrentFolder(dir);
       std::string scont = metoedmobject->Data();
       return iBooker.bookString(name, scont);

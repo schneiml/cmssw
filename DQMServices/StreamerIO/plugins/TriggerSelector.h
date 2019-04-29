@@ -54,7 +54,7 @@ class TriggerSelector {
   /**
    * Evaluates if trigger results pass selection
    */
-  bool acceptEvent(edm::TriggerResults const&) const;
+/* almost unused */   bool acceptEvent(edm::TriggerResults const&) const;
 
   /*
    * Takes array of trigger results and a number of triggers in array and
@@ -66,19 +66,19 @@ class TriggerSelector {
   /*
    * Returns if HLTGlobalStatus passes selection
    */
-  bool returnStatus(edm::HLTGlobalStatus const& trStatus) const {
+/* almost unused */   bool returnStatus(edm::HLTGlobalStatus const& trStatus) const {
     return masterElement_->returnStatus(trStatus);
   }
 
   /*
    * Does XMl compatible formatting of the selection string
    */
-  static std::string makeXMLString(std::string const& input);
+/* almost unused */   static std::string makeXMLString(std::string const& input);
 
   /*
    * Obsolete: Returns SelectedEvents vector from ParameterSet
    */
-  static std::vector<std::string> getEventSelectionVString(
+/* almost unused */   static std::vector<std::string> getEventSelectionVString(
       edm::ParameterSet const& pset);
 
  private:
@@ -118,12 +118,12 @@ class TriggerSelector {
     /*
      * Returns operator type of the element
      */
-    TreeOperator op() const { return op_; }
+/* almost unused */     TreeOperator op() const { return op_; }
 
     /*
      * Returns parent element
      */
-    TreeElement* parent() const { return parent_; }
+/* almost unused */     TreeElement* parent() const { return parent_; }
 
    private:
     TreeElement* parent_;

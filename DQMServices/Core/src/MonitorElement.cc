@@ -65,7 +65,7 @@ MonitorElement::initialise(Kind kind)
 }
 
 MonitorElement *
-MonitorElement::initialise(Kind kind, TH1 *rootobj)
+/* almost unused */ MonitorElement::initialise(Kind kind, TH1 *rootobj)
 {
   initialise(kind);
   switch (kind)
@@ -136,7 +136,7 @@ MonitorElement::initialise(Kind kind, TH1 *rootobj)
 }
 
 MonitorElement *
-MonitorElement::initialise(Kind kind, const std::string &value)
+/* almost unused */ MonitorElement::initialise(Kind kind, const std::string &value)
 {
   initialise(kind);
   if (kind == DQM_KIND_STRING)
@@ -513,7 +513,7 @@ MonitorElement::packScalarData(std::string &into, const char *prefix) const
 
 /// serialise quality report information into a string.
 void
-MonitorElement::packQualityData(std::string &into) const
+/* almost unused */ MonitorElement::packQualityData(std::string &into) const
 {
   DQMNet::packQualityData(into, data_.qreports);
 }
@@ -540,7 +540,7 @@ MonitorElement::valueString() const
 /// (eg. <name>f=3.14151926</name> for double numbers);
 /// relevant only for sending scalar or string MEs over TSocket
 std::string
-MonitorElement::tagString() const
+/* almost unused */ MonitorElement::tagString() const
 {
   std::string result;
   std::string val(valueString());
@@ -553,7 +553,7 @@ MonitorElement::tagString() const
 
 /// return label string for the monitor element tag (eg. <name>t=12345</name>)
 std::string
-MonitorElement::tagLabelString() const
+/* almost unused */ MonitorElement::tagLabelString() const
 {
   char buf[32];
   std::string result;
@@ -568,7 +568,7 @@ MonitorElement::tagLabelString() const
 
 /// return label string for the monitor element tag (eg. <name>t=12345</name>)
 std::string
-MonitorElement::effLabelString() const
+/* almost unused */ MonitorElement::effLabelString() const
 {
   std::string result;
 
@@ -580,7 +580,7 @@ MonitorElement::effLabelString() const
 }
 
 std::string
-MonitorElement::qualityTagString(const DQMNet::QValue &qv) const
+/* almost unused */ MonitorElement::qualityTagString(const DQMNet::QValue &qv) const
 {
   char buf[64];
   std::string result;
@@ -666,7 +666,7 @@ MonitorElement::getQOthers() const
 
 /// run all quality tests
 void
-MonitorElement::runQTests()
+/* almost unused */ MonitorElement::runQTests()
 {
   assert(qreports_.size() == data_.qreports.size());
 
@@ -774,7 +774,7 @@ MonitorElement::getBinContent(int binx, int biny) const
 
 /// get content of bin (3-D)
 double
-MonitorElement::getBinContent(int binx, int biny, int binz) const
+/* almost unused */ MonitorElement::getBinContent(int binx, int biny, int binz) const
 { return accessRootObject(__PRETTY_FUNCTION__, 3)
     ->GetBinContent(binx, biny, binz); }
 
@@ -792,7 +792,7 @@ MonitorElement::getBinError(int binx, int biny) const
 
 /// get uncertainty on content of bin (3-D) - See TH1::GetBinError for details
 double
-MonitorElement::getBinError(int binx, int biny, int binz) const
+/* almost unused */ MonitorElement::getBinError(int binx, int biny, int binz) const
 { return accessRootObject(__PRETTY_FUNCTION__, 3)
     ->GetBinError(binx, biny, binz); }
 
@@ -821,7 +821,7 @@ MonitorElement::getBinEntries(int bin) const
 
 /// get min Y value (for profiles)
 double
-MonitorElement::getYmin() const
+/* almost unused */ MonitorElement::getYmin() const
 {
   if (kind() == DQM_KIND_TPROFILE)
     return static_cast<TProfile *>(accessRootObject(__PRETTY_FUNCTION__, 1))
@@ -835,7 +835,7 @@ MonitorElement::getYmin() const
 
 /// get max Y value (for profiles)
 double
-MonitorElement::getYmax() const
+/* almost unused */ MonitorElement::getYmax() const
 {
   if (kind() == DQM_KIND_TPROFILE)
     return static_cast<TProfile *>(accessRootObject(__PRETTY_FUNCTION__, 1))
@@ -880,7 +880,7 @@ MonitorElement::setBinContent(int binx, int biny, double content)
 
 /// set content of bin (3-D)
 void
-MonitorElement::setBinContent(int binx, int biny, int binz, double content)
+/* almost unused */ MonitorElement::setBinContent(int binx, int biny, int binz, double content)
 {
   update();
   accessRootObject(__PRETTY_FUNCTION__, 3)
@@ -906,7 +906,7 @@ MonitorElement::setBinError(int binx, int biny, double error)
 
 /// set uncertainty on content of bin (3-D)
 void
-MonitorElement::setBinError(int binx, int biny, int binz, double error)
+/* almost unused */ MonitorElement::setBinError(int binx, int biny, int binz, double error)
 {
   update();
   accessRootObject(__PRETTY_FUNCTION__, 3)
@@ -1038,7 +1038,7 @@ MonitorElement::getAxis(const char *func, int axis) const
 /// reset contents (does not erase contents permanently)
 /// (makes copy of current contents; will be subtracted from future contents)
 void
-MonitorElement::softReset()
+/* almost unused */ MonitorElement::softReset()
 {
   update();
 
@@ -1178,7 +1178,7 @@ MonitorElement::softReset()
 
 /// reverts action of softReset
 void
-MonitorElement::disableSoftReset()
+/* almost unused */ MonitorElement::disableSoftReset()
 {
   if (refvalue_)
   {
@@ -1345,7 +1345,7 @@ MonitorElement::copyFunctions(TH1 *from, TH1 *to)
 }
 
 void
-MonitorElement::copyFrom(TH1 *from)
+/* almost unused */ MonitorElement::copyFrom(TH1 *from)
 {
   TH1 *orig = accessRootObject(__PRETTY_FUNCTION__, 1);
   if (orig->GetTitle() != from->GetTitle())
@@ -1420,7 +1420,7 @@ MonitorElement::getQReport(bool create, const std::string &qtname, QReport *&qr,
 
 /// Add quality report, from DQMStore.
 void
-MonitorElement::addQReport(const DQMNet::QValue &desc, QCriterion *qc)
+/* almost unused */ MonitorElement::addQReport(const DQMNet::QValue &desc, QCriterion *qc)
 {
   QReport *qr;
   DQMNet::QValue *qv;
@@ -1431,7 +1431,7 @@ MonitorElement::addQReport(const DQMNet::QValue &desc, QCriterion *qc)
 }
 
 void
-MonitorElement::addQReport(QCriterion *qc)
+/* almost unused */ MonitorElement::addQReport(QCriterion *qc)
 {
   QReport *qr;
   DQMNet::QValue *qv;

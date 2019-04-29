@@ -57,7 +57,7 @@ std::string DQMFileIterator::LumiEntry::get_json_path() const {
 
 // Contents of Eor json file are ignored for the moment.
 // This function will not be called.
-DQMFileIterator::EorEntry DQMFileIterator::EorEntry::load_json(
+/* almost unused */ DQMFileIterator::EorEntry DQMFileIterator::EorEntry::load_json(
     const std::string& run_path,
     const std::string& filename) {
   boost::property_tree::ptree pt;

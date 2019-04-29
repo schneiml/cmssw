@@ -63,8 +63,8 @@ class MEtoMEComparitor : public edm::EDAnalyzer {
       void endJob() override ;
 
   template <class W,class T> void compare(const W& where,const std::string & instance);
-  template <class T> void book(const std::string & directory,const std::string & type, const T * h);
-  template <class T> void keepBadHistograms(const std::string & directory, const T * h_new, const T * h_ref);
+/* almost unused */   template <class T> void book(const std::string & directory,const std::string & type, const T * h);
+/* almost unused */   template <class T> void keepBadHistograms(const std::string & directory, const T * h_new, const T * h_ref);
 
   std::unique_ptr<DQMStore> _dbe;
   std::string _moduleLabel;

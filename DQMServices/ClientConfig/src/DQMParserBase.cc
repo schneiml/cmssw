@@ -57,7 +57,7 @@ void DQMParserBase::getNewDocument(std::string configFile, bool UseDB){
   assert(doc);
 
 }
-int DQMParserBase::countNodes(std::string tagName){
+/* almost unused */ int DQMParserBase::countNodes(std::string tagName){
 	unsigned int tagsNum  = 
 	  parser->getDocument()->getElementsByTagName(qtxml::_toDOMS(tagName))->getLength();
 	return tagsNum;

@@ -38,7 +38,7 @@ class QTestConfigurationParser : public DQMParserBase {
 	 bool monitorElementTestsMap();
 	 std::map<std::string, std::string> getParams(xercesc::DOMElement* qtestElement, std::string test);
 /* unused */
-	 int instances(){return s_numberOfInstances;}
+/* almost unused */ 	 int instances(){return s_numberOfInstances;}
 	 bool checkParameters(std::string qtestName, std::string qtestType);
 	 
 	 

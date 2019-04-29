@@ -16,9 +16,9 @@ class JsonWritingTimeoutPoolOutputModule : public edm::TimeoutPoolOutputModule {
   static void fillDescriptions(edm::ConfigurationDescriptions&);
 
  protected:
-  std::pair<std::string, std::string> physicalAndLogicalNameForNewFile()
+/* almost unused */   std::pair<std::string, std::string> physicalAndLogicalNameForNewFile()
       override;
-  void doExtrasAfterCloseFile() override;
+/* almost unused */   void doExtrasAfterCloseFile() override;
 
  protected:
   uint32_t sequence_;

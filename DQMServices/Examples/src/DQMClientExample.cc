@@ -46,7 +46,7 @@ DQMClientExample::~DQMClientExample(){
 //==================================================================//
 //======================= Initialise ===============================//
 //==================================================================//
-void DQMClientExample::initialize(){ 
+/* almost unused */ void DQMClientExample::initialize(){ 
 
   ////---- initialise Event and LS counters
   counterEvt_=0;   counterLS_  = 0; 
@@ -142,7 +142,7 @@ void DQMClientExample::endJob(){
 //==================================================================//
 //======================= performClient ============================//
 //==================================================================//
-void DQMClientExample::performClient(){
+/* almost unused */ void DQMClientExample::performClient(){
 
    std::cout << "***** run  Client operations as defined in: *****" << std::endl;
    std::cout << "***** DQMClientExample::performClient    ********" << std::endl;

@@ -50,7 +50,7 @@ protected:
   void analyze(const edm::Event& e, const edm::EventSetup& c) override ;
 
   ////---- performClient
-  void performClient();
+/* almost unused */   void performClient();
 
   ////---- beginLuminosityBlock
   void beginLuminosityBlock(const edm::LuminosityBlock& lumiSeg, 
@@ -68,7 +68,7 @@ protected:
 
 private:
   ////---- initialize
-  void initialize();
+/* almost unused */   void initialize();
   
   edm::ParameterSet parameters_;
 

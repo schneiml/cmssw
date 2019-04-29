@@ -93,12 +93,12 @@ void TriggerSelector::init(std::string const& expression,
 /*
       Obsolete
 */
-std::vector<std::string> TriggerSelector::getEventSelectionVString(
+/* almost unused */ std::vector<std::string> TriggerSelector::getEventSelectionVString(
     edm::ParameterSet const& pset) {
   return edm::EventSelector::getEventSelectionVString(pset);
 }
 
-bool TriggerSelector::acceptEvent(edm::TriggerResults const& tr) const {
+/* almost unused */ bool TriggerSelector::acceptEvent(edm::TriggerResults const& tr) const {
   if (useOld_) {
     return eventSelector_->acceptEvent(tr);
   }
@@ -352,7 +352,7 @@ std::string TriggerSelector::trim(std::string input) {
   return input;
 }
 
-std::string TriggerSelector::makeXMLString(std::string const& input) {
+/* almost unused */ std::string TriggerSelector::makeXMLString(std::string const& input) {
   std::string output;
   if (!input.empty()) {
     for (size_t pos = 0; pos < input.size(); pos++) {

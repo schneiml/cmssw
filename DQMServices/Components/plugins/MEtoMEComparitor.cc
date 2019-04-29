@@ -86,7 +86,7 @@ MEtoMEComparitor::endRun(const edm::Run& iRun, const edm::EventSetup& iSetup)
 
 
 template <class T>
-void MEtoMEComparitor::book(const std::string & directory,const std::string & type, const T * h){
+/* almost unused */ void MEtoMEComparitor::book(const std::string & directory,const std::string & type, const T * h){
   _dbe->setCurrentFolder(type);
   std::type_info const & tp = typeid(*h);
   if (tp == typeid(TH1S))
@@ -97,7 +97,7 @@ void MEtoMEComparitor::book(const std::string & directory,const std::string & ty
     _dbe->book1DD(h->GetName(),dynamic_cast<TH1D*>(const_cast<T*>(h)));
 }
 template <class T> 
-void MEtoMEComparitor::keepBadHistograms(const std::string & directory, const T * h_new, const T * h_ref){
+/* almost unused */ void MEtoMEComparitor::keepBadHistograms(const std::string & directory, const T * h_new, const T * h_ref){
   //put it in a collection rather.
 
   

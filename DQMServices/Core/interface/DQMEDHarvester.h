@@ -24,7 +24,7 @@ public:
   ~DQMEDHarvester() override = default;
 
 /* unused */
-  void accumulate(edm::Event const& ev, edm::EventSetup const& es) final {};
+/* almost unused */   void accumulate(edm::Event const& ev, edm::EventSetup const& es) final {};
 
 /* unused */
   void beginRun(edm::Run const&, edm::EventSetup const&) override {};
