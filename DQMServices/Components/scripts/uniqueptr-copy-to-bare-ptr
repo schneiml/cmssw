@@ -1,0 +1,28 @@
+DB="sqlite3 dxr.sqlite"
+
+for f in $(echo '
+  SELECT DISTINCT rtrim(defcode.loc, "1234567890:")
+  FROM ref NATURAL JOIN code INNER JOIN variable ON variable.qualname = ref.qualname INNER JOIN code AS defcode ON variable.loc = defcode.loc 
+  WHERE code.line LIKE "%unique_ptr%release%" AND variable.type LIKE "%DQMStore%"
+  UNION SELECT DISTINCT rtrim(code.loc, "1234567890:")
+  FROM ref NATURAL JOIN code INNER JOIN variable ON variable.qualname = ref.qualname INNER JOIN code AS defcode ON variable.loc = defcode.loc 
+  WHERE code.line LIKE "%unique_ptr%release%" AND variable.type LIKE "%DQMStore%";
+' | $DB); do
+  $DB <<SQL > $f
+.load /build/schneiml/newdqmstore/CMSSW_10_6_CLANG_X_2019-04-16-2300/src/DQMServices/Components/scripts/glib_replace.so
+  SELECT CASE
+    WHEN loc in (
+      SELECT defcode.loc
+      FROM ref NATURAL JOIN code INNER JOIN variable ON variable.qualname = ref.qualname INNER JOIN code AS defcode ON variable.loc = defcode.loc 
+      WHERE code.line LIKE "%unique_ptr%release%" AND variable.type LIKE "%DQMStore%")
+    THEN regex_replace("std::unique_ptr<DQMStore>", line, "DQMStore*")
+    WHEN loc in (
+      SELECT code.loc
+      FROM ref NATURAL JOIN code INNER JOIN variable ON variable.qualname = ref.qualname INNER JOIN code AS defcode ON variable.loc = defcode.loc 
+      WHERE code.line LIKE "%unique_ptr%release%" AND variable.type LIKE "%DQMStore%")
+    THEN regex_replace("std::unique_ptr<DQMStore>.dqmstore_.release...", line, "&*dqmstore_")
+    ELSE line END
+  FROM code 
+  WHERE rtrim(loc, "0123456789:") = "$f" ;
+SQL
+done
