@@ -297,7 +297,7 @@ void DQMStandaloneExample::showBadChannels(QReport *qr) {
   auto it = badChannels.begin();
   while (it != badChannels.end()) {
     // could use getBinX, getBinY, getBinZ for 2D, 3D histograms
-    cout << " Channel #: " << it->getBin() << " Contents: " << it->getContents() << " +- " << it->getRMS() << endl;
+    cout << " Channel #: " << it->getBin() << endl;
 
     ++it;
   }
