@@ -2,7 +2,6 @@
 # include "DQMServices/Core/src/DQMService.h"
 # include "DQMServices/Core/interface/DQMNet.h"
 # include "DQMServices/Core/interface/DQMStore.h"
-# include "DQMServices/Core/interface/DQMScope.h"
 # include "DQMServices/Core/interface/MonitorElement.h"
 # include "FWCore/ServiceRegistry/interface/Service.h"
 # include "classlib/utils/Regexp.h"
@@ -12,18 +11,6 @@
 # include <string>
 # include <memory>
 #include "TBufferFile.h"
-
-// -------------------------------------------------------------------
-static std::recursive_mutex s_mutex;
-
-/// Acquire lock and access to the DQM core from a thread other than
-/// the "main" CMSSW processing thread, such as in extra XDAQ threads.
-DQMScope::DQMScope()
-{ s_mutex.lock(); }
-
-/// Release access lock to the DQM core.
-DQMScope::~DQMScope()
-{ s_mutex.unlock(); }
 
 // -------------------------------------------------------------------
 DQMService::DQMService(const edm::ParameterSet &pset, edm::ActivityRegistry &ar)
