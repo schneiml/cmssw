@@ -23,6 +23,8 @@
 
 #include <classlib/utils/Regexp.h>
 
+class QCriterion;
+
 struct DQMChannel {
   int binx;       //< bin # in x-axis (or bin # for 1D histogram)
   int biny;       //< bin # in y-axis (for 2D or 3D histograms)
@@ -52,8 +54,9 @@ namespace dqm {
   }
 }  // namespace dqm
 
+/** Currently used (only?) for Online. We might decide to drop DQMNet entirely
+ * and use files for the online mode, to get rid of a lot of complexity. */
 #include "DQMServices/Core/interface/DQMNet.h"
-class QCriterion;
 
 /** Class for reporting results of quality tests for Monitoring Elements */
 class QReport {
@@ -74,10 +77,6 @@ public:
   /// get vector of channels that failed test
   /// (not relevant for all quality tests!)
   const std::vector<DQMChannel>& getBadChannels() const { return badChannels_; }
-
-  /// get QCriterion
-  /* unused */
-  /* almost unused */ const QCriterion* getQCriterion() const { return qcriterion_; }
 
 private:
   friend class QCriterion;
