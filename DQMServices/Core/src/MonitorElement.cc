@@ -1,6 +1,6 @@
 #define __STDC_FORMAT_MACROS 1
 #define DQM_ROOT_METHODS 1
-#include "DQMServices/Core/interface/MonitorElement.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include "DQMServices/Core/interface/QTest.h"
 #include "DQMServices/Core/src/DQMError.h"
 #include "TClass.h"
