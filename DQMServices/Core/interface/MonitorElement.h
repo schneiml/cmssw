@@ -1,8 +1,6 @@
 #ifndef DQMSERVICES_CORE_MONITOR_ELEMENT_H
 # define DQMSERVICES_CORE_MONITOR_ELEMENT_H
 
-# include "DQMServices/Core/interface/DQMNet.h"
-# include "DQMServices/Core/interface/QReport.h"
 # include "TF1.h"
 # include "TH1F.h"
 # include "TH1S.h"
