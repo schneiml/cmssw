@@ -11,7 +11,6 @@
 #include "DQM/SiPixelCommon/interface/SiPixelFolderOrganizer.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "FWCore/ParameterSet/interface/FileInPath.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"

@@ -19,7 +19,6 @@
 //
 //  Updated by: Lukas Wehrli
 //  for pixel offline DQM 
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DataFormats/SiPixelCluster/interface/SiPixelCluster.h"
 #include "DataFormats/Common/interface/DetSetVectorNew.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"

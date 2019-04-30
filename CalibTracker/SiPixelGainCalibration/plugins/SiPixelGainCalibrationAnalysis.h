@@ -37,7 +37,7 @@ Implementation:
 
 //#include "CalibTracker/SiPixelESProducers/interface/SiPixelGainCalibrationService.h"
 
-#include "DQMServices/Core/interface/MonitorElement.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include "TLinearFitter.h"
 #include "TGraphErrors.h"
 #include <fstream>

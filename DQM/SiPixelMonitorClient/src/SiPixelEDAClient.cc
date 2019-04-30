@@ -29,7 +29,6 @@
 #include "Geometry/CommonTopologies/interface/PixelTopology.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "DQM/SiPixelMonitorClient/interface/SiPixelActionExecutor.h"
 #include "DQM/SiPixelMonitorClient/interface/SiPixelInformationExtractor.h"

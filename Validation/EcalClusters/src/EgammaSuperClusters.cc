@@ -11,7 +11,7 @@
 #include "DataFormats/EgammaReco/interface/BasicCluster.h"
 #include "DataFormats/Math/interface/deltaPhi.h"
 
-#include "DQMServices/Core/interface/MonitorElement.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 #include "FWCore/Framework/interface/MakerMacros.h"
 

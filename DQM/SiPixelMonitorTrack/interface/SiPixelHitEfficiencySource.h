@@ -25,7 +25,6 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "DQMServices/Core/interface/DQMStore.h"
 #include "DQMServices/Core/interface/DQMEDAnalyzer.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DQM/SiPixelMonitorTrack/interface/SiPixelHitEfficiencyModule.h"
 
 //Files added for monitoring track quantities

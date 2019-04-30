@@ -18,7 +18,7 @@
 
 //DQM services
 #include "FWCore/ServiceRegistry/interface/Service.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include <DQMServices/Core/interface/DQMEDAnalyzer.h>
 
 #include "FWCore/Utilities/interface/transform.h"

@@ -49,7 +49,6 @@
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/DetId/interface/DetId.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DQMServices/Core/interface/DQMEDAnalyzer.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"

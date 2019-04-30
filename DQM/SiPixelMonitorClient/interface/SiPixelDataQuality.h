@@ -1,7 +1,6 @@
 #ifndef _SiPixelDataQuality_h_
 #define _SiPixelDataQuality_h_
 
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DQMServices/Core/interface/DQMStore.h"
 #include "DQM/SiPixelMonitorClient/interface/SiPixelConfigParser.h"
 #include "DQM/SiPixelMonitorClient/interface/SiPixelConfigWriter.h"

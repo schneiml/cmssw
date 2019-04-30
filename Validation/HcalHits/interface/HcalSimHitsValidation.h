@@ -37,7 +37,6 @@
 #include <string>
 #include <algorithm>
 #include <cmath>
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 
 class HcalSimHitsValidation : public DQMEDAnalyzer {

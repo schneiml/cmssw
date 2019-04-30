@@ -32,7 +32,6 @@
 #include <fstream>
 #include <vector>
 #include <map>
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DQMServices/Core/interface/DQMEDAnalyzer.h"
 
 class EcalEndcapRecHitsValidation: public DQMEDAnalyzer{

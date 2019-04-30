@@ -22,7 +22,7 @@
 
 //DQM services
 #include "FWCore/ServiceRegistry/interface/Service.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include "FWCore/Framework/interface/ConsumesCollector.h"
 #include <DQMServices/Core/interface/DQMEDAnalyzer.h>
 

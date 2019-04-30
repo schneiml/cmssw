@@ -46,7 +46,6 @@
 #include <cmath>
 
 #include "TString.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 
 class GlobalDigisHistogrammer : public DQMEDAnalyzer {

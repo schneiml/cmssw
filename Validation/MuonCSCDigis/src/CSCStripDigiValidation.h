@@ -7,7 +7,6 @@
 #include "DataFormats/CSCDigi/interface/CSCStripDigiCollection.h"
 #include "Validation/MuonCSCDigis/interface/CSCBaseValidation.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 class CSCStripDigiValidation : public CSCBaseValidation
 {

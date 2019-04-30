@@ -3,7 +3,6 @@
 
 #include "DataFormats/HcalDigi/interface/HcalUnpackerReport.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DataFormats/HcalDigi/interface/HcalDigiCollections.h"
 #include "CalibFormats/CastorObjects/interface/CastorDbService.h"
 #include "CalibFormats/CastorObjects/interface/CastorDbRecord.h"

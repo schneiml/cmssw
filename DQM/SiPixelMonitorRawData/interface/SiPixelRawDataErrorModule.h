@@ -18,7 +18,6 @@
 // Original Author:  Andrew York
 //         Created:  
 //
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DQMServices/Core/interface/DQMStore.h"
 #include "DataFormats/SiPixelRawData/interface/SiPixelRawDataError.h"
 #include "DataFormats/Common/interface/DetSetVector.h"

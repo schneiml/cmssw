@@ -9,7 +9,7 @@
 #include "TH1.h"
 #include "TF1.h"
 #include "TMath.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 

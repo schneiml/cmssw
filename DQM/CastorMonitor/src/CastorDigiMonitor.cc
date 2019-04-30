@@ -15,7 +15,6 @@
 #include "CondFormats/CastorObjects/interface/CastorChannelQuality.h"
 #include "DQM/CastorMonitor/interface/CastorLEDMonitor.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/LuminosityBlock.h"

@@ -7,7 +7,6 @@
 #include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "Geometry/CSCGeometry/interface/CSCLayer.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 class CSCSegmentValidation : public CSCBaseValidation
 {

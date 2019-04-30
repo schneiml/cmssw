@@ -8,7 +8,6 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 
 #include <DQMServices/Core/interface/DQMStore.h>
-#include <DQMServices/Core/interface/MonitorElement.h>
 #include <DQMServices/Core/interface/DQMEDAnalyzer.h>
 
 #include "Geometry/CSCGeometry/interface/CSCGeometry.h"

@@ -27,7 +27,7 @@
 #include <string>
 #include <cmath>
 #include "TH1.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include "DQMServices/Core/interface/DQMEDHarvester.h"
 #include <iostream>
 #include "FWCore/ParameterSet/interface/ParameterSet.h"

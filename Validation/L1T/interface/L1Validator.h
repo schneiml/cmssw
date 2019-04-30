@@ -56,7 +56,7 @@
 #include "DataFormats/JetReco/interface/GenJetCollection.h"
 #include "DataFormats/JetReco/interface/GenJet.h"
 
-#include <DQMServices/Core/interface/MonitorElement.h>
+#include <DQMServices/Core/interface/DQMStore.h>
 #include <DQMServices/Core/interface/DQMEDAnalyzer.h>
 
 #include <Validation/L1T/interface/L1ValidatorHists.h>

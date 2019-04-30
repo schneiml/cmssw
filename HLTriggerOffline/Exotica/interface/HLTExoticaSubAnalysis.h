@@ -47,7 +47,6 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "CommonTools/Utils/interface/StringCutObjectSelector.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
 #include "HLTriggerOffline/Exotica/interface/HLTExoticaPlotter.h"

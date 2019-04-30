@@ -1,7 +1,6 @@
 #ifndef _SiPixelInformationExtractor_h_
 #define _SiPixelInformationExtractor_h_
 
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "DQM/SiPixelMonitorClient/interface/SiPixelConfigParser.h"
 #include "DQM/SiPixelMonitorClient/interface/SiPixelConfigWriter.h"

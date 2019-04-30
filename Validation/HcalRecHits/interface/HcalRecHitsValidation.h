@@ -35,7 +35,7 @@
 #include <string>
 #include <algorithm>
 #include <cmath>
-#include "DQMServices/Core/interface/MonitorElement.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 #include "DataFormats/DetId/interface/DetId.h"
 // channel status
