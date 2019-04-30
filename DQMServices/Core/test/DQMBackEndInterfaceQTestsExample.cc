@@ -468,8 +468,7 @@ void DQMStoreQTestsExample::showBadChannels(QCriterion* qc) {
 
   auto it = badChannels.begin();
   while (it != badChannels.end()) {
-    cout << " Channel (" << it->getBinX() << "," << it->getBinY() << "," << it->getBinZ()
-         << ") Contents: " << it->getContents() << " +- " << it->getRMS() << endl;
+    cout << " Channel (" << it->getBinX() << "," << it->getBinY() << ")" << endl;
 
     ++it;
   }

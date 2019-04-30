@@ -226,8 +226,7 @@ protected:
 
     auto it = badChannels.begin();
     while (it != badChannels.end()) {
-      std::cout << " Channel (" << it->getBinX() << "," << it->getBinY() << "," << it->getBinZ()
-                << ") Contents: " << it->getContents() << " +- " << it->getRMS() << std::endl;
+      std::cout << " Channel (" << it->getBinX() << "," << it->getBinY() << "," << std::endl;
       ++it;
     }
   }
