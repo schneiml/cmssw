@@ -160,7 +160,7 @@ float Comp2RefEqualH::runTest(const MonitorElement*me)
     if (contents != ref_->GetBinContent(bin)) 
     {
       failure = true;
-      DQMChannel chan(bin, 0, 0, contents, h->GetBinError(bin));
+      DQMChannel chan(bin, 0, contents, h->GetBinError(bin));
       badChannels_.push_back(chan);
     }
   }
@@ -710,7 +710,7 @@ float ContentsYRange::runTest(const MonitorElement*me)
       failure = (contents < ymin_ || contents > ymax_); // allowed y-range: [ymin_, ymax_]
       if (failure) 
       { 
-        DQMChannel chan(bin, 0, 0, contents, h->GetBinError(bin));
+        DQMChannel chan(bin, 0, contents, h->GetBinError(bin));
         badChannels_.push_back(chan);
         ++fail;
       }
@@ -807,7 +807,7 @@ float DeadChannel::runTest(const MonitorElement*me)
       failure = contents <= ymin_; // dead channel: equal to or less than ymin_
       if (failure)
       { 
-        DQMChannel chan(bin, 0, 0, contents, h1->GetBinError(bin));
+        DQMChannel chan(bin, 0, contents, h1->GetBinError(bin));
         badChannels_.push_back(chan);
         ++fail;
       }
@@ -833,7 +833,7 @@ float DeadChannel::runTest(const MonitorElement*me)
 	failure = contents <= ymin_; // dead channel: equal to or less than ymin_
 	if (failure)
 	{ 
-          DQMChannel chan(cx, cy, 0, contents, h2->GetBinError(h2->GetBin(cx, cy)));
+          DQMChannel chan(cx, cy, contents, h2->GetBinError(h2->GetBin(cx, cy)));
           badChannels_.push_back(chan);
           ++fail;
 	}
@@ -946,7 +946,7 @@ float NoisyChannel::runTest(const MonitorElement *me)
       if (failure)
       {
         ++fail;
-        DQMChannel chan(bin, 0, 0, contents, h->GetBinError(bin));
+        DQMChannel chan(bin, 0, contents, h->GetBinError(bin));
         badChannels_.push_back(chan);
       }
     }
@@ -965,7 +965,7 @@ float NoisyChannel::runTest(const MonitorElement *me)
         if (failure)
         {
           ++fail;
-          DQMChannel chan(binX, 0, 0, contents, h2->GetBinError(binX));
+          DQMChannel chan(binX, 0, contents, h2->GetBinError(binX));
           badChannels_.push_back(chan);
         }
       }//end x loop
@@ -1609,35 +1609,37 @@ float ContentsWithinExpected::runTest(const MonitorElement*me)
 
 	  if (me->kind() == MonitorElement::DQM_KIND_TH2F) 
 	  {
-            DQMChannel chan(cx, cy, 0,
+            DQMChannel chan(cx, cy, 
 			    h->GetBinContent(h->GetBin(cx, cy)),
 			    h->GetBinError(h->GetBin(cx, cy)));
             badChannels_.push_back(chan);
 	  }
 	  else if (me->kind() == MonitorElement::DQM_KIND_TH2S) 
 	  {
-            DQMChannel chan(cx, cy, 0,
+            DQMChannel chan(cx, cy,
 			    h->GetBinContent(h->GetBin(cx, cy)),
 			    h->GetBinError(h->GetBin(cx, cy)));
             badChannels_.push_back(chan);
 	  }
 	  else if (me->kind() == MonitorElement::DQM_KIND_TH2D) 
 	  {
-            DQMChannel chan(cx, cy, 0,
+            DQMChannel chan(cx, cy,
 			    h->GetBinContent(h->GetBin(cx, cy)),
 			    h->GetBinError(h->GetBin(cx, cy)));
             badChannels_.push_back(chan);
 	  }
 	  else if (me->kind() == MonitorElement::DQM_KIND_TPROFILE) 
 	  {
-	    DQMChannel chan(cx, cy, int(me->getTProfile()->GetBinEntries(h->GetBin(cx))),
-			    0,
+            assert(!"Code may be broken since 2008 (1259767ed501), please check semantics before continuing.");
+	    DQMChannel chan(cx, cy,
+                            me->getTProfile()->GetBinContent(h->GetBin(cx)),
 			    h->GetBinError(h->GetBin(cx)));
             badChannels_.push_back(chan);
 	  }
 	  else if (me->kind() == MonitorElement::DQM_KIND_TPROFILE2D) 
 	  {
-	    DQMChannel chan(cx, cy, int(me->getTProfile2D()->GetBinEntries(h->GetBin(cx, cy))),
+            assert(!"Code may be broken since 2008 (1259767ed501), please check semantics before continuing.");
+	    DQMChannel chan(cx, cy,
 			    h->GetBinContent(h->GetBin(cx, cy)),
 			    h->GetBinError(h->GetBin(cx, cy)));
             badChannels_.push_back(chan);
@@ -1919,7 +1921,7 @@ float CompareToMedian::runTest(const MonitorElement *me){
 	if ( entries == 0 )
           continue;
 	if (content > _maxMed || content < _minMed){ 
-	    DQMChannel chan(binX,binY, 0, content, h->GetBinError(bin));
+	    DQMChannel chan(binX,binY, content, h->GetBinError(bin));
 	    badChannels_.push_back(chan);
 	    failed++;
 	}
@@ -1939,7 +1941,7 @@ float CompareToMedian::runTest(const MonitorElement *me){
 	entries = me->getTProfile2D()->GetBinEntries(bin);
          if ( entries == 0 )
           continue;
-	 DQMChannel chan(binX,binY, 0, content/median, h->GetBinError(bin));
+	 DQMChannel chan(binX,binY, content/median, h->GetBinError(bin));
 	 badChannels_.push_back(chan);
 	 failed++;
       }
@@ -1956,7 +1958,7 @@ float CompareToMedian::runTest(const MonitorElement *me){
         if ( entries == 0 )
           continue;
         if (content > maxCut || content < minCut){
-          DQMChannel chan(binX,binY, 0, content/median, h->GetBinError(bin));
+          DQMChannel chan(binX,binY,  content/median, h->GetBinError(bin));
           badChannels_.push_back(chan);
           failed++;
         }

@@ -498,10 +498,8 @@ void DQMStoreQTestsExample::analyze(const edm::Event& iEvent, const edm::EventSe
     {
       cout << " Channel ("
            << it->getBinX() << ","
-           << it->getBinY() << ","
-           << it->getBinZ()
-	   << ") Contents: " << it->getContents() << " +- " 
-	   << it->getRMS() << endl;
+           << it->getBinY() << ")"
+	   << endl;
 
       ++it;
     }
