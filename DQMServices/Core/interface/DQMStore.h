@@ -23,6 +23,7 @@
 
 #include <classlib/utils/Regexp.h>
 
+class QCriterion;
 
 struct DQMChannel
 {
@@ -58,8 +59,9 @@ namespace dqm
   }
 }
 
+/** Currently used (only?) for Online. We might decide to drop DQMNet entirely
+ * and use files for the online mode, to get rid of a lot of complexity. */
 # include "DQMServices/Core/interface/DQMNet.h"
-class QCriterion;
 
 /** Class for reporting results of quality tests for Monitoring Elements */
 class QReport
@@ -86,11 +88,6 @@ public:
   /// (not relevant for all quality tests!)
   const std::vector<DQMChannel> &getBadChannels() const
     { return badChannels_; }
-
-  /// get QCriterion
-/* unused */
-/* almost unused */   const QCriterion *getQCriterion() const
-    { return qcriterion_; }
 
 private:
   friend class QCriterion;
