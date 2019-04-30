@@ -1,7 +1,7 @@
 #ifndef DQM_SiStripCommon_ExtractTObject_H
 #define DQM_SiStripCommon_ExtractTObject_H
 
-#include "DQMServices/Core/interface/MonitorElement.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include <string>
 
 class MonitorElement;

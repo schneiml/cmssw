@@ -14,7 +14,7 @@
 #include "DQMServices/Core/interface/DQMGlobalEDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "DQMServices/Core/interface/ConcurrentMonitorElement.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 //
 // class declaration
