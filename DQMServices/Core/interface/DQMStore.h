@@ -23,7 +23,85 @@
 
 #include <classlib/utils/Regexp.h>
 
-#include "DQMServices/Core/interface/DQMDefinitions.h"
+struct DQMChannel {
+  int binx;       //< bin # in x-axis (or bin # for 1D histogram)
+  int biny;       //< bin # in y-axis (for 2D or 3D histograms)
+  int binz;       //< bin # in z-axis (for 3D histograms)
+  float content;  //< bin content
+  float RMS;      //< RMS of bin content
+
+  int getBin() { return getBinX(); }
+  int getBinX() { return binx; }
+  int getBinY() { return biny; }
+  /* unused */
+  /* almost unused */ int getBinZ() { return binz; }
+  float getContents() { return content; }
+  /* unused */
+  /* almost unused */ float getRMS() { return RMS; }
+
+  DQMChannel(int bx, int by, int bz, float data, float rms) {
+    binx = bx;
+    biny = by;
+    binz = bz;
+    content = data;
+    RMS = rms;
+  }
+
+  /* unused */
+  DQMChannel() {
+    binx = 0;
+    biny = 0;
+    binz = 0;
+    content = 0;
+    RMS = 0;
+  }
+};
+
+namespace dqm {
+  namespace me_util {
+    using Channel = DQMChannel;
+  }
+}  // namespace dqm
+
+#include "DQMServices/Core/interface/DQMNet.h"
+class QCriterion;
+
+/** Class for reporting results of quality tests for Monitoring Elements */
+class QReport {
+public:
+  /// get test status (see Core/interface/QTestStatus.h)
+  int getStatus() const { return qvalue_->code; }
+
+  /// get test result i.e. prob value
+  float getQTresult() const { return qvalue_->qtresult; }
+
+  /// get message attached to test
+  const std::string& getMessage() const { return qvalue_->message; }
+
+  /// get name of quality test
+  /* unused */
+  const std::string& getQRName() const { return qvalue_->qtname; }
+
+  /// get vector of channels that failed test
+  /// (not relevant for all quality tests!)
+  const std::vector<DQMChannel>& getBadChannels() const { return badChannels_; }
+
+  /// get QCriterion
+  /* unused */
+  /* almost unused */ const QCriterion* getQCriterion() const { return qcriterion_; }
+
+private:
+  friend class QCriterion;
+  friend class MonitorElement;  // for running the quality test
+  friend class DQMStore;        // for setting QReport parameters after receiving report
+
+  QReport(DQMNet::QValue* value, QCriterion* qc) : qvalue_(value), qcriterion_(qc) {}
+
+  DQMNet::QValue* qvalue_;               //< Pointer to the actual data.
+  QCriterion* qcriterion_;               //< Pointer to QCriterion algorithm.
+  std::vector<DQMChannel> badChannels_;  //< Bad channels from QCriterion.
+};
+
 #include "DQMServices/Core/interface/ConcurrentMonitorElement.h"
 
 namespace edm {
@@ -390,7 +468,7 @@ public:
     // class. We therefore need to store a pointer to the main
     // DQMStore instance (owner_).
     DQMStore* owner_;
-  }; //IGetter
+  };  //IGetter
 
   // Template function to be used inside each DQM Modules' lambda
   // functions to book MonitorElements into the DQMStore. The function
