@@ -3,7 +3,6 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 
 #include "DataFormats/HcalCalibObjects/interface/HOCalibVariables.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DQMServices/Core/interface/DQMStore.h"
 #include "DQMServices/Core/interface/DQMEDAnalyzer.h"
 

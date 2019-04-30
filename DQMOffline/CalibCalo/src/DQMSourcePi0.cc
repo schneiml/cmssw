@@ -5,7 +5,6 @@
 
 // DQM include files
 
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 // work on collections
 #include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"

@@ -9,7 +9,6 @@ class FreeTrajectoryState;
 #include "TString.h" 
 #include <string>
 #include <DQMServices/Core/interface/DQMStore.h>
-#include <DQMServices/Core/interface/MonitorElement.h>
 
 class HTrack{
 

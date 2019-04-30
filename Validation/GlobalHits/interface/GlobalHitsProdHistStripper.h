@@ -37,7 +37,6 @@
 #include <vector>
 
 #include "TString.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 class GlobalHitsProdHistStripper : public edm::EDAnalyzer
 {

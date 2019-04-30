@@ -10,7 +10,6 @@
 #include <fstream>
 #include <cmath>
 
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
 

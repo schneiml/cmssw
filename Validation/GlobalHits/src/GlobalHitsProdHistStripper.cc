@@ -7,7 +7,6 @@
 
 #include "Validation/GlobalHits/interface/GlobalHitsProdHistStripper.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 GlobalHitsProdHistStripper::GlobalHitsProdHistStripper(const 
 						       edm::ParameterSet& 

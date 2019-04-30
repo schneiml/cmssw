@@ -11,7 +11,6 @@
 #include "DataFormats/DetId/interface/DetId.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 // tracker info
 #include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"

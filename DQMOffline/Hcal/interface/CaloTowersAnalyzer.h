@@ -35,7 +35,6 @@
 #include <string>
 #include <algorithm>
 #include <cmath>
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 
 class CaloTowersAnalyzer : public DQMEDAnalyzer {

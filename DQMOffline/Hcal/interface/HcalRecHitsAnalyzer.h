@@ -36,7 +36,6 @@
 #include <string>
 #include <algorithm>
 #include <cmath>
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DQMServices/Core/interface/DQMEDAnalyzer.h"
 
 #include "DataFormats/DetId/interface/DetId.h"

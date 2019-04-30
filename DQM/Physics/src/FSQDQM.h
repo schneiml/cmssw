@@ -29,7 +29,6 @@
 #include "DataFormats/GeometryVector/interface/GlobalVector.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 // ParticleFlow
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"

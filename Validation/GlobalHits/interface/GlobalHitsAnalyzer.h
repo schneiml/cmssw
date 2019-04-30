@@ -68,7 +68,6 @@
 #include <vector>
 
 #include "TString.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DQMServices/Core/interface/DQMEDAnalyzer.h"
 
 class GlobalHitsAnalyzer : public DQMEDAnalyzer

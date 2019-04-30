@@ -1,7 +1,6 @@
 #ifndef DQMSERVICES_CORE_Q_CRITERION_H
 # define DQMSERVICES_CORE_Q_CRITERION_H
 
-# include "DQMServices/Core/interface/MonitorElement.h"
 # include "TProfile2D.h"
 # include "TProfile.h"
 # include "TH2F.h"
@@ -11,7 +10,7 @@
 # include <map>
 #include <utility>
 
-//#include "DQMServices/Core/interface/DQMStore.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 class Comp2RefChi2;			using Comp2RefChi2ROOT = Comp2RefChi2;
 class Comp2Ref2DChi2;			using Comp2Ref2DChi2ROOT = Comp2Ref2DChi2;

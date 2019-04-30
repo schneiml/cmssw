@@ -17,7 +17,6 @@
 
 // DQM include files
 
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 // work on collections
 #include "DataFormats/EcalDetId/interface/EBDetId.h"

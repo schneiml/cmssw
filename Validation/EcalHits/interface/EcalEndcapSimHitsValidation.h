@@ -31,7 +31,6 @@
 #include <fstream>
 #include <vector>
 #include <map>
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 
 class EcalEndcapSimHitsValidation: public edm::EDAnalyzer{

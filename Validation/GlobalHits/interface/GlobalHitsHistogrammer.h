@@ -69,7 +69,6 @@
 #include <vector>
 
 #include "TString.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 class GlobalHitsHistogrammer : public DQMEDAnalyzer {
 

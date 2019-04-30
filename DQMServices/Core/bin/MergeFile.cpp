@@ -1,6 +1,5 @@
 #include "DQMServices/Core/interface/Standalone.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "classlib/utils/DebugAids.h"
 #include "classlib/utils/Signal.h"
 #include "TROOT.h"

@@ -3,7 +3,6 @@
 #include "DataFormats/METReco/interface/MET.h"
 
 
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DQMServices/Core/interface/DQMStore.h"
 
 
