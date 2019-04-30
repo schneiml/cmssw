@@ -245,9 +245,7 @@ class DQMQualityTest
 	std::cout << " Channel ("
                   << it->getBinX() << ","
                   << it->getBinY() << ","
-                  << it->getBinZ()
-		  << ") Contents: " << it->getContents()
-		  << " +- " << it->getRMS() << std::endl;	
+		  << std::endl;	
 	++it;
       }
   }
