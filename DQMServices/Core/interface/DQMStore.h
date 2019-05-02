@@ -8,7 +8,10 @@
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
+#include <cstdint>
 #include <iosfwd>
+#include <sstream>
+#include <iomanip>
 #include <list>
 #include <map>
 #include <memory>
@@ -20,8 +23,23 @@
 #include <memory>
 #include <cxxabi.h>
 #include <execinfo.h>
+#include <sys/time.h>
 
 #include <classlib/utils/Regexp.h>
+
+#include "TF1.h"
+#include "TH1F.h"
+#include "TH1S.h"
+#include "TH1D.h"
+#include "TH2F.h"
+#include "TH2S.h"
+#include "TH2D.h"
+#include "TH3F.h"
+#include "TProfile.h"
+#include "TProfile2D.h"
+#include "TObjString.h"
+#include "TAxis.h"
+
 
 class QCriterion;
 
@@ -34,6 +52,7 @@ struct DQMChannel
   int getBin()        { return getBinX(); }
   int getBinX()       { return binx; }
   int getBinY()       { return biny; }
+  float getContents()  { return content; }
 
   DQMChannel(int bx, int by, float data, float /* rms */)
     {
@@ -105,27 +124,6 @@ private:
 }; 
 
 
-
-# include "TF1.h"
-# include "TH1F.h"
-# include "TH1S.h"
-# include "TH1D.h"
-# include "TH2F.h"
-# include "TH2S.h"
-# include "TH2D.h"
-# include "TH3F.h"
-# include "TProfile.h"
-# include "TProfile2D.h"
-# include "TObjString.h"
-# include "TAxis.h"
-# include <sys/time.h>
-# include <string>
-# include <set>
-# include <map>
-# include <sstream>
-# include <iomanip>
-# include <cassert>
-# include <cstdint>
 
 # ifndef DQM_ROOT_METHODS
 #  define DQM_ROOT_METHODS 1
@@ -668,30 +666,12 @@ public:
   }
 };
 
-
-
-
 namespace edm { class DQMHttpSource; class ParameterSet; class ActivityRegistry; class GlobalContext; }
 namespace lat { class Regexp; }
 namespace dqmstorepb {class ROOTFilePB; class ROOTFilePB_Histo;}
 
-class MonitorElement;
-class QCriterion;
 class TFile;
 class TBufferFile;
-class TObject;
-class TH1;
-class TObjString;
-class TH1F;
-class TH1S;
-class TH1D;
-class TH2F;
-class TH2S;
-class TH2D;
-class TH3F;
-class TProfile;
-class TProfile2D;
-class TNamed;
 
 /** Implements RegEx patterns which occur often in a high-performant
     mattern. For all other expressions, the full RegEx engine is used.
@@ -1301,10 +1281,8 @@ private:
 
   std::mutex book_mutex_;
 
-  friend class edm::DQMHttpSource;
   friend class DQMService;
   friend class DQMNet;
-  friend class DQMArchiver;
   friend class DQMStoreExample; // for get{All,Matching}Contents -- sole user of this method!
   friend class DQMRootOutputModule;
   friend class DQMRootSource;
