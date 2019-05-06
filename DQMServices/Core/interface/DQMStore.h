@@ -40,6 +40,8 @@
 #include "TObjString.h"
 #include "TAxis.h"
 
+#include <tbb/spin_mutex.h>
+
 
 class QCriterion;
 
@@ -165,6 +167,7 @@ public:
   };
 
 private:
+  mutable tbb::spin_mutex lock_;
   DQMNet::CoreObject    data_;       //< Core object information.
   mutable Scalar        scalar_;     //< Current scalar value.
   TH1                   *object_;    //< Current ROOT object value.
@@ -540,68 +543,6 @@ public:
 /* almost unused */   const uint32_t moduleId() const {return data_.moduleId;}
 };
 
-/* Encapsulate of MonitorElement to expose *limited* support for concurrency.
- *
- * ...
- */
-
-#include <mutex>
-#include <tbb/spin_mutex.h>
-
-class ConcurrentMonitorElement
-{
-private:
-  mutable MonitorElement* me_;
-  mutable tbb::spin_mutex lock_;
-
-public:
-/* unused */
-  ConcurrentMonitorElement(void) :
-    me_(nullptr)
-  { }
-
-  explicit ConcurrentMonitorElement(MonitorElement* me) :
-    me_(me)
-  { }
-
-  // non-copiable
-  ConcurrentMonitorElement(ConcurrentMonitorElement const&) = delete;
-
-  // movable
-  ConcurrentMonitorElement(ConcurrentMonitorElement && other)
-  {
-    std::lock_guard<tbb::spin_mutex> guard(other.lock_);
-    me_ = other.me_;
-    other.me_ = nullptr;
-  }
-
-  // not copy-assignable
-  ConcurrentMonitorElement& operator=(ConcurrentMonitorElement const&) = delete;
-
-  // move-assignable
-  ConcurrentMonitorElement& operator=(ConcurrentMonitorElement && other)
-  {
-    // FIXME replace with std::scoped_lock once C++17 is available
-    std::lock(lock_, other.lock_);
-    std::lock_guard<tbb::spin_mutex> ours(lock_, std::adopt_lock);
-    std::lock_guard<tbb::spin_mutex> others(other.lock_, std::adopt_lock);
-    me_ = other.me_;
-    other.me_ = nullptr;
-    return *this;
-  }
-
-  // nothing to do, we do not own the MonitorElement
-  ~ConcurrentMonitorElement(void) = default;
-
-  // expose as a const method to mean that it is concurrent-safe
-  template <typename... Args>
-  void fill(Args && ... args) const
-  {
-    std::lock_guard<tbb::spin_mutex> guard(lock_);
-    me_->Fill(std::forward<Args>(args)...);
-  }
-
-};
 
 namespace edm { class DQMHttpSource; class ParameterSet; class ActivityRegistry; class GlobalContext; }
 namespace lat { class Regexp; }
@@ -701,51 +642,6 @@ public:
     DQMStore* owner_;
   };  // IBooker
 
-  class ConcurrentBooker : public IBooker {
-  public:
-    friend class DQMStore;
-
-#define CONCURRENTBOOKER_FUNCTION_WITH_SUFFIX(suffix)                   \
-    template <typename... Args>                                         \
-    ConcurrentMonitorElement book##suffix(Args&&... args)               \
-    {                                                                   \
-      MonitorElement* me = IBooker::book##suffix(std::forward<Args>(args)...); \
-      return ConcurrentMonitorElement(me);                              \
-    }
-
-    // For the supported interface, see the DQMStore function that
-    // starts with "book" and ends with the supplied suffix.  For
-    // example, giving an argument of "String" generates a function
-    // that interfaces with DQMStore::bookString.
-    CONCURRENTBOOKER_FUNCTION_WITH_SUFFIX(String);
-    CONCURRENTBOOKER_FUNCTION_WITH_SUFFIX(Int);
-    CONCURRENTBOOKER_FUNCTION_WITH_SUFFIX(Float);
-    CONCURRENTBOOKER_FUNCTION_WITH_SUFFIX(1D);
-    CONCURRENTBOOKER_FUNCTION_WITH_SUFFIX(1S);
-    CONCURRENTBOOKER_FUNCTION_WITH_SUFFIX(1DD);
-    CONCURRENTBOOKER_FUNCTION_WITH_SUFFIX(2D);
-    CONCURRENTBOOKER_FUNCTION_WITH_SUFFIX(2S);
-    CONCURRENTBOOKER_FUNCTION_WITH_SUFFIX(2DD);
-    CONCURRENTBOOKER_FUNCTION_WITH_SUFFIX(3D);
-    CONCURRENTBOOKER_FUNCTION_WITH_SUFFIX(Profile);
-    CONCURRENTBOOKER_FUNCTION_WITH_SUFFIX(Profile2D);
-
-#undef CONCURRENTBOOKER_FUNCTION_WITH_SUFFIX
-
-    ConcurrentBooker() = delete;
-    ConcurrentBooker(ConcurrentBooker const&) = delete;
-    ConcurrentBooker(ConcurrentBooker &&) = delete;
-    ConcurrentBooker& operator=(ConcurrentBooker const&) = delete;
-    ConcurrentBooker& operator=(ConcurrentBooker &&) = delete;
-
-  private:
-    explicit ConcurrentBooker(DQMStore* store) noexcept :
-      IBooker{store}
-    {}
-
-    ~ConcurrentBooker() = default;
-  };
-
   class IGetter {
   public:
     friend class DQMStore;
@@ -820,25 +716,6 @@ public:
       run_ = 0;
       moduleId_ = 0;
       canSaveByLumi_ = false;
-    }
-  }
-
-  // Similar function used to book "global" histograms via the
-  // ConcurrentMonitorElement interface.
-  template <typename iFunc>
-  void bookConcurrentTransaction(iFunc f, uint32_t run)
-  {
-    std::lock_guard<std::mutex> guard(book_mutex_);
-    /* Set the run_ member only if enableMultiThread is enabled */
-    if (enableMultiThread_) {
-      run_ = run;
-    }
-    ConcurrentBooker booker(this);
-    f(booker);
-
-    /* Reset the run_ member only if enableMultiThread is enabled */
-    if (enableMultiThread_) {
-      run_ = 0;
     }
   }
 
