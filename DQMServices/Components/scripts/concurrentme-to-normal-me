@@ -1,0 +1,63 @@
+DB="sqlite3 dxr.sqlite"
+
+
+$DB <<SQL
+CREATE INDEX IF NOT EXISTS ref_qualname on ref(qualname);
+ANALYZE;
+DROP TABLE relevantrefs;
+DROP TABLE relevantvars;
+SQL
+
+$DB <<SQL
+CREATE TABLE relevantrefs AS
+SELECT DISTINCT ref.loc, variable.qualname, variable.type, variable.name
+FROM variable INNER JOIN ref ON ref.qualname = variable.qualname
+WHERE variable.type LIKE '%ConcurrentMonitorElement%' AND ref.loc NOT LIKE 'DQMServices/%';
+CREATE TABLE relevantvars AS
+SELECT DISTINCT variable.loc, variable.qualname, variable.type
+FROM variable
+WHERE variable.type LIKE '%ConcurrentMonitorElement%' AND variable.loc NOT LIKE 'DQMServices/%';
+SQL
+
+
+for f in $(echo '
+  SELECT DISTINCT rtrim(loc, "1234567890:") 
+  FROM relevantrefs  
+  UNION SELECT DISTINCT rtrim(loc, "1234567890:") 
+  FROM relevantvars;
+' | $DB); do
+  echo "Processing $f ..."
+  $DB <<SQL > $f
+.load /build/schneiml/newdqmstore/CMSSW_10_6_CLANG_X_2019-04-16-2300/src/DQMServices/Components/scripts/glib_replace.so
+  SELECT CASE
+    WHEN loc in (SELECT DISTINCT loc FROM relevantrefs) AND (SELECT type FROM relevantrefs WHERE code.loc = relevantrefs.loc) = 'ConcurrentMonitorElement'
+    THEN regex_replace(
+      "(" || (SELECT name FROM relevantrefs WHERE code.loc = relevantrefs.loc) || ")[.]",
+      regex_replace(
+        "fill",
+        line,
+        "Fill"), 
+      "\1->"
+    )
+    WHEN loc in (SELECT DISTINCT loc FROM relevantrefs) 
+    THEN regex_replace(
+      "->fill",
+      line, "->Fill"
+    )
+    WHEN loc in (SELECT DISTINCT loc FROM relevantvars) 
+    THEN regex_replace(
+      "ConcurrentMonitorElement",
+      line, 
+      "MonitorElement*"
+    )
+    WHEN line LIKE '%ConcurrentBooker%'
+    THEN regex_replace(
+      "ConcurrentBooker",
+      line, 
+      "IBooker"
+    )
+    ELSE line END
+  FROM code 
+  WHERE rtrim(loc, "0123456789:") = "$f"
+SQL
+done
