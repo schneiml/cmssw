@@ -108,7 +108,7 @@ DTRecHitQuality::DTRecHitQuality(const ParameterSet& pset) {
   local_ = pset.getUntrackedParameter<bool>("local", true);
 }
 
-void DTRecHitQuality::bookHistograms(DQMStore::ConcurrentBooker & booker, edm::Run const& run, edm::EventSetup const& setup, Histograms & histograms) const {
+void DTRecHitQuality::bookHistograms(DQMStore::IBooker & booker, edm::Run const& run, edm::EventSetup const& setup, Histograms & histograms) const {
   if (doall_ && doStep1_) {
     histograms.hRes_S1RPhi    = std::make_unique<HRes1DHit>("S1RPhi", booker, true, local_);      // RecHits, 1. step, RPhi
     histograms.hRes_S1RPhi_W0 = std::make_unique<HRes1DHit>("S1RPhi_W0", booker, true, local_);   // RecHits, 1. step, RZ, wheel 0

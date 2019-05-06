@@ -76,7 +76,7 @@ class SiStripGainsPCLWorker : public  DQMGlobalEDAnalyzer<APVGain::APVGainHistog
 public:
     explicit SiStripGainsPCLWorker(const edm::ParameterSet&);
      
-    void bookHistograms(DQMStore::ConcurrentBooker &, edm::Run const&, edm::EventSetup const&, APVGain::APVGainHistograms &) const override;
+    void bookHistograms(DQMStore::IBooker &, edm::Run const&, edm::EventSetup const&, APVGain::APVGainHistograms &) const override;
     void dqmAnalyze(edm::Event const&, edm::EventSetup const&, APVGain::APVGainHistograms const&) const override;
 
     static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);

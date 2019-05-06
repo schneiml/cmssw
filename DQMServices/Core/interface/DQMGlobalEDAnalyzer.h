@@ -22,7 +22,7 @@ private:
 
   // this will run while holding the DQMStore lock
   virtual void
-  bookHistograms(DQMStore::ConcurrentBooker &, edm::Run const&, edm::EventSetup const&, H &) const = 0;
+  bookHistograms(DQMStore::IBooker &, edm::Run const&, edm::EventSetup const&, H &) const = 0;
 
   void
   analyze(edm::StreamID, edm::Event const&, edm::EventSetup const&) const final;
@@ -39,12 +39,12 @@ DQMGlobalEDAnalyzer<H, Args...>::globalBeginRun(edm::Run const& run, edm::EventS
 {
   auto h = std::make_shared<H>();
   dqmBeginRun(run, setup, *h);
-  dqmstore_->bookConcurrentTransaction([&, this](DQMStore::ConcurrentBooker &b) {
+  dqmstore_->bookTransaction([&, this](DQMStore::IBooker &b) {
       // this runs while holding the DQMStore lock
       b.cd();
       bookHistograms(b, run, setup, *h);
     },
-    run.run() );
+    run.run(), 0 /* moduleId */, false /* canSaveByLumi */ );
   return h;
 }
 

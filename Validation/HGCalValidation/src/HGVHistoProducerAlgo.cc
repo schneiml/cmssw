@@ -218,10 +218,10 @@ void HGVHistoProducerAlgo::bookClusterHistos(DQMStore::IBooker& ibook, Histogram
     histograms.h_numMerge_layercl_phi_perlayer[ilayer] = ibook.book1D("NumMerge_LayerCluster_Phi_perlayer"+istr1, "Num Merge LayerCluster Phi per Layer Cluster for layer "+istr2, nintPhi_, minPhi_, maxPhi_);
     histograms.h_denom_layercl_phi_perlayer[ilayer] = ibook.book1D("Denom_LayerCluster_Phi_perlayer"+istr1, "Denom LayerCluster Phi per Layer Cluster for layer "+istr2, nintPhi_, minPhi_, maxPhi_);
     histograms.h_cellAssociation_perlayer[ilayer] = ibook.book1D("cellAssociation_perlayer"+istr1, "Cell Association for layer "+istr2, 5, -4., 1.);
-    histograms.h_cellAssociation_perlayer[ilayer].setBinLabel(2, "TN(purity)");
-    histograms.h_cellAssociation_perlayer[ilayer].setBinLabel(3, "FN(ineff.)");
-    histograms.h_cellAssociation_perlayer[ilayer].setBinLabel(4, "FP(fake)");
-    histograms.h_cellAssociation_perlayer[ilayer].setBinLabel(5, "TP(eff.)");
+    histograms.h_cellAssociation_perlayer[ilayer]->setBinLabel(2, "TN(purity)");
+    histograms.h_cellAssociation_perlayer[ilayer]->setBinLabel(3, "FN(ineff.)");
+    histograms.h_cellAssociation_perlayer[ilayer]->setBinLabel(4, "FP(fake)");
+    histograms.h_cellAssociation_perlayer[ilayer]->setBinLabel(5, "TP(eff.)");
   }
 
   //---------------------------------------------------------------------------------------------------------------------------
@@ -292,12 +292,12 @@ void HGVHistoProducerAlgo::fill_caloparticle_histos(const Histograms& histograms
 						    std::vector<SimVertex> const & simVertices) const {
 
   const auto eta = getEta(caloparticle.eta());
-  if (histograms.h_caloparticle_eta.count(pdgid)){ histograms.h_caloparticle_eta.at(pdgid).fill(eta); }
-  if (histograms.h_caloparticle_eta_Zorigin.count(pdgid)){ histograms.h_caloparticle_eta_Zorigin.at(pdgid).fill( simVertices.at(caloparticle.g4Tracks()[0].vertIndex()).position().z(), eta ); }
+  if (histograms.h_caloparticle_eta.count(pdgid)){ histograms.h_caloparticle_eta.at(pdgid)->Fill(eta); }
+  if (histograms.h_caloparticle_eta_Zorigin.count(pdgid)){ histograms.h_caloparticle_eta_Zorigin.at(pdgid)->Fill( simVertices.at(caloparticle.g4Tracks()[0].vertIndex()).position().z(), eta ); }
 
-  if (histograms.h_caloparticle_energy.count(pdgid)){ histograms.h_caloparticle_energy.at(pdgid).fill( caloparticle.energy()  ); }
-  if (histograms.h_caloparticle_pt.count(pdgid)){ histograms.h_caloparticle_pt.at(pdgid).fill( caloparticle.pt()  ); }
-  if (histograms.h_caloparticle_phi.count(pdgid)){ histograms.h_caloparticle_phi.at(pdgid).fill( caloparticle.phi()  ); }
+  if (histograms.h_caloparticle_energy.count(pdgid)){ histograms.h_caloparticle_energy.at(pdgid)->Fill( caloparticle.energy()  ); }
+  if (histograms.h_caloparticle_pt.count(pdgid)){ histograms.h_caloparticle_pt.at(pdgid)->Fill( caloparticle.pt()  ); }
+  if (histograms.h_caloparticle_phi.count(pdgid)){ histograms.h_caloparticle_phi.at(pdgid)->Fill( caloparticle.phi()  ); }
 
 
 }
@@ -307,7 +307,7 @@ void HGVHistoProducerAlgo::fill_cluster_histos(const Histograms& histograms,
 					       const reco::CaloCluster & cluster) const {
 
   const auto eta = getEta(cluster.eta());
-  histograms.h_cluster_eta[count].fill(eta);
+  histograms.h_cluster_eta[count]->Fill(eta);
 }
 
 void HGVHistoProducerAlgo::layerClusters_to_CaloParticles (const Histograms& histograms,
@@ -450,7 +450,7 @@ void HGVHistoProducerAlgo::layerClusters_to_CaloParticles (const Histograms& his
         }
         hitsToCaloParticleId[hitId] = maxCPId;
       }
-      histograms.h_cellAssociation_perlayer.at(lcLayerId%52+1).fill(hitsToCaloParticleId[hitId] > 0. ? 0. : hitsToCaloParticleId[hitId]);
+      histograms.h_cellAssociation_perlayer.at(lcLayerId%52+1)->Fill(hitsToCaloParticleId[hitId] > 0. ? 0. : hitsToCaloParticleId[hitId]);
     }
 
     for(auto& c: hitsToCaloParticleId)
@@ -534,7 +534,7 @@ void HGVHistoProducerAlgo::layerClusters_to_CaloParticles (const Histograms& his
           << "\t CP id: \t" << cpPair.first
           << "\t score \t" << cpPair.second
           << "\n";
-        histograms.h_score_layercl2caloparticle_perlayer.at(lcLayerId%52+1).fill(cpPair.second);
+        histograms.h_score_layercl2caloparticle_perlayer.at(lcLayerId%52+1)->Fill(cpPair.second);
       }
       continue;
     }
@@ -572,10 +572,10 @@ void HGVHistoProducerAlgo::layerClusters_to_CaloParticles (const Histograms& his
                 << "\t CP id: \t" << cpPair.first
                 << "\t score \t" << cpPair.second
                 << "\n";
-      histograms.h_score_layercl2caloparticle_perlayer.at(lcLayerId).fill(cpPair.second);
+      histograms.h_score_layercl2caloparticle_perlayer.at(lcLayerId)->Fill(cpPair.second);
       auto const & cp_linked = cPOnLayer[cpPair.first][lcLayerId].layerClusterIdToEnergyAndScore[lcId];
-      histograms.h_sharedenergy_layercl2caloparticle_perlayer.at(lcLayerId).fill(cp_linked.first/clusters[lcId].energy());
-      histograms.h_energy_vs_score_layercl2caloparticle_perlayer.at(lcLayerId).fill(cpPair.second  > 1. ? 1. : cpPair.second, cp_linked.first/clusters[lcId].energy());
+      histograms.h_sharedenergy_layercl2caloparticle_perlayer.at(lcLayerId)->Fill(cp_linked.first/clusters[lcId].energy());
+      histograms.h_energy_vs_score_layercl2caloparticle_perlayer.at(lcLayerId)->Fill(cpPair.second  > 1. ? 1. : cpPair.second, cp_linked.first/clusters[lcId].energy());
     }
 
     auto assoc = std::count_if(
@@ -583,22 +583,22 @@ void HGVHistoProducerAlgo::layerClusters_to_CaloParticles (const Histograms& his
         std::end(cpsInLayerCluster[lcId]),
         [](const auto &obj){return obj.second < ScoreCutLCtoCP_;});
     if (assoc) {
-      histograms.h_num_layercl_eta_perlayer.at(lcLayerId).fill(clusters[lcId].eta());
-      histograms.h_num_layercl_phi_perlayer.at(lcLayerId).fill(clusters[lcId].phi());
+      histograms.h_num_layercl_eta_perlayer.at(lcLayerId)->Fill(clusters[lcId].eta());
+      histograms.h_num_layercl_phi_perlayer.at(lcLayerId)->Fill(clusters[lcId].phi());
       if (assoc > 1) {
-        histograms.h_numMerge_layercl_eta_perlayer.at(lcLayerId).fill(clusters[lcId].eta());
-        histograms.h_numMerge_layercl_phi_perlayer.at(lcLayerId).fill(clusters[lcId].phi());
+        histograms.h_numMerge_layercl_eta_perlayer.at(lcLayerId)->Fill(clusters[lcId].eta());
+        histograms.h_numMerge_layercl_phi_perlayer.at(lcLayerId)->Fill(clusters[lcId].phi());
       }
       auto best = std::min_element(
           std::begin(cpsInLayerCluster[lcId]),
           std::end(cpsInLayerCluster[lcId]),
           [](const auto &obj1, const auto &obj2){return obj1.second < obj2.second;});
       auto const & best_cp_linked = cPOnLayer[best->first][lcLayerId].layerClusterIdToEnergyAndScore[lcId];
-      histograms.h_sharedenergy_layercl2caloparticle_vs_eta_perlayer.at(lcLayerId).fill(clusters[lcId].eta(), best_cp_linked.first/clusters[lcId].energy());
-      histograms.h_sharedenergy_layercl2caloparticle_vs_phi_perlayer.at(lcLayerId).fill(clusters[lcId].phi(), best_cp_linked.first/clusters[lcId].energy());
+      histograms.h_sharedenergy_layercl2caloparticle_vs_eta_perlayer.at(lcLayerId)->Fill(clusters[lcId].eta(), best_cp_linked.first/clusters[lcId].energy());
+      histograms.h_sharedenergy_layercl2caloparticle_vs_phi_perlayer.at(lcLayerId)->Fill(clusters[lcId].phi(), best_cp_linked.first/clusters[lcId].energy());
     }
-    histograms.h_denom_layercl_eta_perlayer.at(lcLayerId).fill(clusters[lcId].eta());
-    histograms.h_denom_layercl_phi_perlayer.at(lcLayerId).fill(clusters[lcId].phi());
+    histograms.h_denom_layercl_eta_perlayer.at(lcLayerId)->Fill(clusters[lcId].eta());
+    histograms.h_denom_layercl_phi_perlayer.at(lcLayerId)->Fill(clusters[lcId].phi());
   }
 
 
@@ -694,30 +694,30 @@ void HGVHistoProducerAlgo::layerClusters_to_CaloParticles (const Histograms& his
                   << lcPair.second.second << "\t"
                   << "shared energy:\t" << lcPair.second.first << "\t"
                   << "shared energy fraction:\t" << (lcPair.second.first/CPenergy) << "\n";
-        histograms.h_score_caloparticle2layercl_perlayer.at(layerId).fill(lcPair.second.second > 1. ? 1. : lcPair.second.second);
-        histograms.h_sharedenergy_caloparticle2layercl_perlayer.at(layerId).fill(lcPair.second.first/CPenergy);
-        histograms.h_energy_vs_score_caloparticle2layercl_perlayer.at(layerId).fill(lcPair.second.second  > 1. ? 1. : lcPair.second.second, lcPair.second.first/CPenergy);
+        histograms.h_score_caloparticle2layercl_perlayer.at(layerId)->Fill(lcPair.second.second > 1. ? 1. : lcPair.second.second);
+        histograms.h_sharedenergy_caloparticle2layercl_perlayer.at(layerId)->Fill(lcPair.second.first/CPenergy);
+        histograms.h_energy_vs_score_caloparticle2layercl_perlayer.at(layerId)->Fill(lcPair.second.second  > 1. ? 1. : lcPair.second.second, lcPair.second.first/CPenergy);
       }
       auto assoc = std::count_if(
             std::begin(cPOnLayer[cpId][layerId].layerClusterIdToEnergyAndScore),
             std::end(cPOnLayer[cpId][layerId].layerClusterIdToEnergyAndScore),
             [](const auto &obj){return obj.second.second < ScoreCutCPtoLC_;});
       if (assoc) {
-        histograms.h_num_caloparticle_eta_perlayer.at(layerId).fill(cP[cpId].g4Tracks()[0].momentum().eta());
-        histograms.h_num_caloparticle_phi_perlayer.at(layerId).fill(cP[cpId].g4Tracks()[0].momentum().phi());
+        histograms.h_num_caloparticle_eta_perlayer.at(layerId)->Fill(cP[cpId].g4Tracks()[0].momentum().eta());
+        histograms.h_num_caloparticle_phi_perlayer.at(layerId)->Fill(cP[cpId].g4Tracks()[0].momentum().phi());
         if (assoc > 1) {
-          histograms.h_numDup_caloparticle_eta_perlayer.at(layerId).fill(cP[cpId].g4Tracks()[0].momentum().eta());
-          histograms.h_numDup_caloparticle_phi_perlayer.at(layerId).fill(cP[cpId].g4Tracks()[0].momentum().phi());
+          histograms.h_numDup_caloparticle_eta_perlayer.at(layerId)->Fill(cP[cpId].g4Tracks()[0].momentum().eta());
+          histograms.h_numDup_caloparticle_phi_perlayer.at(layerId)->Fill(cP[cpId].g4Tracks()[0].momentum().phi());
         }
         auto best = std::min_element(
             std::begin(cPOnLayer[cpId][layerId].layerClusterIdToEnergyAndScore),
             std::end(cPOnLayer[cpId][layerId].layerClusterIdToEnergyAndScore),
               [](const auto &obj1, const auto &obj2){return obj1.second.second < obj2.second.second;});
-        histograms.h_sharedenergy_caloparticle2layercl_vs_eta_perlayer.at(layerId).fill(cP[cpId].g4Tracks()[0].momentum().eta(), best->second.first/CPenergy);
-        histograms.h_sharedenergy_caloparticle2layercl_vs_phi_perlayer.at(layerId).fill(cP[cpId].g4Tracks()[0].momentum().phi(), best->second.first/CPenergy);
+        histograms.h_sharedenergy_caloparticle2layercl_vs_eta_perlayer.at(layerId)->Fill(cP[cpId].g4Tracks()[0].momentum().eta(), best->second.first/CPenergy);
+        histograms.h_sharedenergy_caloparticle2layercl_vs_phi_perlayer.at(layerId)->Fill(cP[cpId].g4Tracks()[0].momentum().phi(), best->second.first/CPenergy);
       }
-      histograms.h_denom_caloparticle_eta_perlayer.at(layerId).fill(cP[cpId].g4Tracks()[0].momentum().eta());
-      histograms.h_denom_caloparticle_phi_perlayer.at(layerId).fill(cP[cpId].g4Tracks()[0].momentum().phi());
+      histograms.h_denom_caloparticle_eta_perlayer.at(layerId)->Fill(cP[cpId].g4Tracks()[0].momentum().eta());
+      histograms.h_denom_caloparticle_phi_perlayer.at(layerId)->Fill(cP[cpId].g4Tracks()[0].momentum().phi());
     }
   }
 }
@@ -851,17 +851,17 @@ void HGVHistoProducerAlgo::fill_generic_cluster_histos(const Histograms& histogr
       double distancetoseed = distance(seedx, seedy, hit_x, hit_y);
       double distancetomax = distance(maxx, maxy, hit_x, hit_y);
       if ( distancetoseed != 0. && histograms.h_distancetoseedcell_perthickperlayer.count(curistr)){ 
-      	histograms.h_distancetoseedcell_perthickperlayer.at(curistr).fill( distancetoseed  );    
+      	histograms.h_distancetoseedcell_perthickperlayer.at(curistr)->Fill( distancetoseed  );    
       } 
       //----
       if ( distancetoseed != 0. && histograms.h_distancetoseedcell_perthickperlayer_eneweighted.count(curistr)){
-      	histograms.h_distancetoseedcell_perthickperlayer_eneweighted.at(curistr).fill( distancetoseed , hit->energy() );    }
+      	histograms.h_distancetoseedcell_perthickperlayer_eneweighted.at(curistr)->Fill( distancetoseed , hit->energy() );    }
       //----
       if ( distancetomax != 0. && histograms.h_distancetomaxcell_perthickperlayer.count(curistr)){
-      	histograms.h_distancetomaxcell_perthickperlayer.at(curistr).fill( distancetomax  );    }
+      	histograms.h_distancetomaxcell_perthickperlayer.at(curistr)->Fill( distancetomax  );    }
       //----
       if ( distancetomax != 0. && histograms.h_distancetomaxcell_perthickperlayer_eneweighted.count(curistr)){ 
-      	histograms.h_distancetomaxcell_perthickperlayer_eneweighted.at(curistr).fill( distancetomax , hit->energy() );    } 
+      	histograms.h_distancetomaxcell_perthickperlayer_eneweighted.at(curistr)->Fill( distancetomax , hit->energy() );    } 
 
       //Let's check the density
       std::map< DetId, float >::const_iterator dit = densities.find( rh_detid );
@@ -871,7 +871,7 @@ void HGVHistoProducerAlgo::fill_generic_cluster_histos(const Histograms& histogr
       }
 
       if ( histograms.h_cellsenedens_perthick.count( (int) thickness ) ){
-	histograms.h_cellsenedens_perthick.at( (int) thickness ).fill( dit->second );
+	histograms.h_cellsenedens_perthick.at( (int) thickness )->Fill( dit->second );
       }
 	
     } // end of loop through hits and fractions
@@ -908,7 +908,7 @@ void HGVHistoProducerAlgo::fill_generic_cluster_histos(const Histograms& histogr
     istr += "_" + lay_string;
 
     //Here for the per cluster plots that need the thickness_layer info
-    if (histograms.h_cellsnum_perthickperlayer.count(istr)){ histograms.h_cellsnum_perthickperlayer.at(istr).fill( hits_and_fractions.size() ); }
+    if (histograms.h_cellsnum_perthickperlayer.count(istr)){ histograms.h_cellsnum_perthickperlayer.at(istr)->Fill( hits_and_fractions.size() ); }
     
     //Now, with the distance between seed and max cell. 
     double distancebetseedandmax = distance(seedx, seedy, maxx, maxy);
@@ -916,10 +916,10 @@ void HGVHistoProducerAlgo::fill_generic_cluster_histos(const Histograms& histogr
     std::string seedstr = std::to_string( (int) recHitTools_->getSiThickness(seedid) )+ "_" + std::to_string(layerid);
     seedstr += "_" + lay_string;
     if (histograms.h_distancebetseedandmaxcell_perthickperlayer.count(seedstr)){ 
-      histograms.h_distancebetseedandmaxcell_perthickperlayer.at(seedstr).fill( distancebetseedandmax ); 
+      histograms.h_distancebetseedandmaxcell_perthickperlayer.at(seedstr)->Fill( distancebetseedandmax ); 
     }
     if (histograms.h_distancebetseedandmaxcellvsclusterenergy_perthickperlayer.count(seedstr)){ 
-      histograms.h_distancebetseedandmaxcellvsclusterenergy_perthickperlayer.at(seedstr).fill( distancebetseedandmax , clusters[layerclusterIndex].energy() ); 
+      histograms.h_distancebetseedandmaxcellvsclusterenergy_perthickperlayer.at(seedstr)->Fill( distancebetseedandmax , clusters[layerclusterIndex].energy() ); 
     }
 
     //Energy clustered per layer
@@ -936,14 +936,14 @@ void HGVHistoProducerAlgo::fill_generic_cluster_histos(const Histograms& histogr
   //Per layer : Loop 0->103
   for (unsigned ilayer = 0; ilayer < layers*2; ++ilayer) {
     if (histograms.h_clusternum_perlayer.count(ilayer)){ 
-      histograms.h_clusternum_perlayer.at(ilayer).fill( tnlcpl[ilayer] ); 
+      histograms.h_clusternum_perlayer.at(ilayer)->Fill( tnlcpl[ilayer] ); 
     }
     // Two times one for plus and one for minus
     //First with the -z endcap
     if (ilayer < layers){
       if (histograms.h_energyclustered_perlayer.count(ilayer)){ 
 	if ( caloparteneminus != 0.) {
-	  histograms.h_energyclustered_perlayer.at(ilayer).fill( 100. * tecpl[ilayer]/caloparteneminus ); 
+	  histograms.h_energyclustered_perlayer.at(ilayer)->Fill( 100. * tecpl[ilayer]/caloparteneminus ); 
 	}
       }
       //Keep here the total energy for the event in -z
@@ -953,7 +953,7 @@ void HGVHistoProducerAlgo::fill_generic_cluster_histos(const Histograms& histogr
     } else { //Then for the +z
       if (histograms.h_energyclustered_perlayer.count(ilayer)){ 
 	if ( caloparteneplus != 0.) {
-	  histograms.h_energyclustered_perlayer.at(ilayer).fill( 100. * tecpl[ilayer]/caloparteneplus ); 
+	  histograms.h_energyclustered_perlayer.at(ilayer)->Fill( 100. * tecpl[ilayer]/caloparteneplus ); 
 	}
       }
       //Keep here the total energy for the event in -z
@@ -967,21 +967,21 @@ void HGVHistoProducerAlgo::fill_generic_cluster_histos(const Histograms& histogr
   //Per thickness
   for(std::vector<int>::iterator it = thicknesses.begin(); it != thicknesses.end(); ++it) { 
     if ( histograms.h_clusternum_perthick.count(*it) ){ 
-      histograms.h_clusternum_perthick.at(*it).fill( tnlcpthplus[std::to_string(*it)] ); 
-      histograms.h_clusternum_perthick.at(*it).fill( tnlcpthminus[std::to_string(*it)] ); 
+      histograms.h_clusternum_perthick.at(*it)->Fill( tnlcpthplus[std::to_string(*it)] ); 
+      histograms.h_clusternum_perthick.at(*it)->Fill( tnlcpthminus[std::to_string(*it)] ); 
     } 
   }
   //Mixed thickness clusters
-  histograms.h_mixedhitscluster_zplus[count].fill( tnlcpthplus["mixed"]  );
-  histograms.h_mixedhitscluster_zminus[count].fill( tnlcpthminus["mixed"]  );
+  histograms.h_mixedhitscluster_zplus[count]->Fill( tnlcpthplus["mixed"]  );
+  histograms.h_mixedhitscluster_zminus[count]->Fill( tnlcpthminus["mixed"]  );
 
   //Total energy clustered from all layer clusters (fraction)
-  if ( caloparteneplus != 0.) {histograms.h_energyclustered_zplus[count].fill( 100. * sumeneallcluspl /caloparteneplus ); }
-  if ( caloparteneminus != 0.) {histograms.h_energyclustered_zminus[count].fill( 100. * sumeneallclusmi /caloparteneminus ); }
+  if ( caloparteneplus != 0.) {histograms.h_energyclustered_zplus[count]->Fill( 100. * sumeneallcluspl /caloparteneplus ); }
+  if ( caloparteneminus != 0.) {histograms.h_energyclustered_zminus[count]->Fill( 100. * sumeneallclusmi /caloparteneminus ); }
 
   //For the longitudinal depth barycenter
-  histograms.h_longdepthbarycentre_zplus[count].fill( sumldbarpl / sumeneallcluspl ); 
-  histograms.h_longdepthbarycentre_zminus[count].fill( sumldbarmi / sumeneallclusmi ); 
+  histograms.h_longdepthbarycentre_zplus[count]->Fill( sumldbarpl / sumeneallcluspl ); 
+  histograms.h_longdepthbarycentre_zminus[count]->Fill( sumldbarmi / sumeneallclusmi ); 
 
 }
 

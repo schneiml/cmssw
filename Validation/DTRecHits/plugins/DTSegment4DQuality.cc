@@ -76,7 +76,7 @@ DTSegment4DQuality::DTSegment4DQuality(const ParameterSet& pset)  {
   local_ = pset.getUntrackedParameter<bool>("local", false);
 }
 
-void DTSegment4DQuality::bookHistograms(DQMStore::ConcurrentBooker & booker, edm::Run const& run, edm::EventSetup const& setup, Histograms & histograms) const {
+void DTSegment4DQuality::bookHistograms(DQMStore::IBooker & booker, edm::Run const& run, edm::EventSetup const& setup, Histograms & histograms) const {
   histograms.h4DHit     = std::make_unique<HRes4DHit>("All", booker, doall_, local_);
   histograms.h4DHit_W0  = std::make_unique<HRes4DHit>("W0", booker, doall_, local_);
   histograms.h4DHit_W1  = std::make_unique<HRes4DHit>("W1", booker, doall_, local_);

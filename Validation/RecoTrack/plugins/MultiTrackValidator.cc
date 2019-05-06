@@ -932,9 +932,9 @@ void MultiTrackValidator::dqmAnalyze(const edm::Event& event, const edm::EventSe
 
           if(doSummaryPlots_) {
             if(dRtpSelector(tp)) {
-              histograms.h_simul_coll[ww].fill(www);
+              histograms.h_simul_coll[ww]->Fill(www);
               if (matchedTrackPointer) {
-                histograms.h_assoc_coll[ww].fill(www);
+                histograms.h_assoc_coll[ww]->Fill(www);
               }
             }
           }
@@ -1031,14 +1031,14 @@ void MultiTrackValidator::dqmAnalyze(const edm::Event& event, const edm::EventSe
         mvaValues.clear();
 
         if(doSummaryPlots_) {
-          histograms.h_reco_coll[ww].fill(www);
+          histograms.h_reco_coll[ww]->Fill(www);
           if(isSimMatched) {
-            histograms.h_assoc2_coll[ww].fill(www);
+            histograms.h_assoc2_coll[ww]->Fill(www);
             if(numAssocRecoTracks>1) {
-              histograms.h_looper_coll[ww].fill(www);
+              histograms.h_looper_coll[ww]->Fill(www);
             }
             if(!isSigSimMatched) {
-              histograms.h_pileup_coll[ww].fill(www);
+              histograms.h_pileup_coll[ww]->Fill(www);
             }
           }
         }

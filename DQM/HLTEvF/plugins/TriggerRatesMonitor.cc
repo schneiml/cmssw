@@ -175,7 +175,7 @@ TriggerRatesMonitor::TriggerRatesMonitor(edm::ParameterSet const & config) :
 
 void TriggerRatesMonitor::dqmBeginRun(edm::Run const& run, edm::EventSetup const& setup, RunBasedHistograms& histograms) const
 {
-  histograms.events_processed->reset();
+  histograms.events_processed->Reset();
   histograms.tcds_counts.clear();
   histograms.tcds_counts.resize(sizeof(s_tcds_trigger_types)/sizeof(const char *));
 
@@ -312,7 +312,7 @@ void TriggerRatesMonitor::dqmAnalyze(edm::Event const & event, edm::EventSetup c
   // monitor the overall event count and event types rates
   histograms.events_processed->Fill(lumisection);
   if (histograms.tcds_counts[event.experimentType()])
-    histograms.tcds_counts[event.experimentType()].fill(lumisection);
+    histograms.tcds_counts[event.experimentType()]->Fill(lumisection);
 
   // monitor the L1 triggers rates
   auto const & bxvector = edm::get(event, m_l1t_results);
@@ -321,7 +321,7 @@ void TriggerRatesMonitor::dqmAnalyze(edm::Event const & event, edm::EventSetup c
     for (unsigned int i = 0; i < GlobalAlgBlk::maxPhysicsTriggers; ++i)
       if (results.getAlgoDecisionFinal(i))
         if (histograms.l1t_counts[i])
-          histograms.l1t_counts[i].fill(lumisection);
+          histograms.l1t_counts[i]->Fill(lumisection);
   }
 
   // monitor the HLT triggers and datsets rates
@@ -335,7 +335,7 @@ void TriggerRatesMonitor::dqmAnalyze(edm::Event const & event, edm::EventSetup c
     for (unsigned int d = 0; d < histograms.datasets.size(); ++d) {
       for (unsigned int i: histograms.datasets[d])
         if (hltResults.at(i).accept()) {
-          histograms.dataset_counts[d].fill(lumisection);
+          histograms.dataset_counts[d]->Fill(lumisection);
           // ensure each dataset is incremented only once per event
           break;
         }
@@ -350,7 +350,7 @@ void TriggerRatesMonitor::dqmAnalyze(edm::Event const & event, edm::EventSetup c
         if (path.accept())
           histograms.hlt_by_dataset_counts[d][i].accept->Fill(lumisection);
         else if (path.error())
-          histograms.hlt_by_dataset_counts[d][i].error .Fill(lumisection);
+          histograms.hlt_by_dataset_counts[d][i].error ->Fill(lumisection);
         else
           histograms.hlt_by_dataset_counts[d][i].reject->Fill(lumisection);
       }
@@ -359,7 +359,7 @@ void TriggerRatesMonitor::dqmAnalyze(edm::Event const & event, edm::EventSetup c
     for (unsigned int i = 0; i < histograms.streams.size(); ++i)
       for (unsigned int j: histograms.streams[i])
         if (hltResults.at(j).accept()) {
-          histograms.stream_counts[i].fill(lumisection);
+          histograms.stream_counts[i]->Fill(lumisection);
           // ensure each stream is incremented only once per event
           break;
         }

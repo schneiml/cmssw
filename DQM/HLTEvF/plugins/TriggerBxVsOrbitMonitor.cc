@@ -144,8 +144,8 @@ void TriggerBxVsOrbitMonitor::bookHistograms(DQMStore::IBooker & booker, edm::Ru
         "Event orbits vs. bunch crossing, for lumisection " + iname,
         nBX, m_minBX - 0.5, m_maxBX + 0.5,
         s_orbit_range + 1, -0.5, s_orbit_range + 0.5);
-    histograms.orbit_bx_all_byLS[i].setXTitle("BX");
-    histograms.orbit_bx_all_byLS[i].setYTitle("orbit");
+    histograms.orbit_bx_all_byLS[i]->setXTitle("BX");
+    histograms.orbit_bx_all_byLS[i]->setYTitle("orbit");
   }
 
   booker.setCurrentFolder( m_dqm_path + "/orbitVsBX/TCDS" );
@@ -156,8 +156,8 @@ void TriggerBxVsOrbitMonitor::bookHistograms(DQMStore::IBooker & booker, edm::Ru
           "Event orbits vs. bunch crossing " + std::string(s_tcds_trigger_types[i]),
           nBX, m_minBX - 0.5, m_maxBX + 0.5,
           s_orbit_range + 1, -0.5, s_orbit_range + 0.5);
-      histograms.orbit_bx[i].setXTitle("BX");
-      histograms.orbit_bx[i].setYTitle("orbit");
+      histograms.orbit_bx[i]->setXTitle("BX");
+      histograms.orbit_bx[i]->setYTitle("orbit");
     }
   }
 }
@@ -173,12 +173,12 @@ void TriggerBxVsOrbitMonitor::dqmAnalyze(edm::Event const& event, edm::EventSetu
 
   int iLS = ls - m_minLS;
   if (iLS >= 0 and iLS < int(histograms.orbit_bx_all_byLS.size()))
-    histograms.orbit_bx_all_byLS[iLS].fill(bx, orbit);
+    histograms.orbit_bx_all_byLS[iLS]->Fill(bx, orbit);
 
   // monitor the bx distribution for the TCDS trigger types
   size_t size = std::size(s_tcds_trigger_types);
   if (type < size and histograms.orbit_bx[type]) {
-    histograms.orbit_bx[type].fill(bx, orbit);
+    histograms.orbit_bx[type]->Fill(bx, orbit);
   }
 }
 

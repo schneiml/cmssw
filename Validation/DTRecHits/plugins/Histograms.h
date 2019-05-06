@@ -90,13 +90,13 @@ class HRes1DHit {
         hResVsAngle->Fill(thetaSimHit, res);
         hResVsDistFE->Fill(distFESimHit, res);
       }
-      hRes->Fill(res); hResSt[station-1].Fill(res);
+      hRes->Fill(res); hResSt[station-1]->Fill(res);
       hResVsEta->Fill(etaSimHit, res);
       hResVsPhi->Fill(phiSimHit, res);
       hResVsPos->Fill(distSimHit, res);
       if (errRecHit != 0) {
         float pull=res/errRecHit;
-        hPull->Fill(pull);hPullSt[station-1].Fill(pull);
+        hPull->Fill(pull);hPullSt[station-1]->Fill(pull);
         if (doall_) {
           hPullVsPos->Fill(distSimHit, pull);
           hPullVsAngle->Fill(thetaSimHit, pull);

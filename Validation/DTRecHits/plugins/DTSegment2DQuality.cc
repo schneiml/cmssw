@@ -65,7 +65,7 @@ DTSegment2DQuality::DTSegment2DQuality(const ParameterSet& pset)  {
 }
 }
 
-void DTSegment2DQuality::bookHistograms(DQMStore::ConcurrentBooker & booker, edm::Run const& run, edm::EventSetup const& setup, Histograms & histograms) const {
+void DTSegment2DQuality::bookHistograms(DQMStore::IBooker & booker, edm::Run const& run, edm::EventSetup const& setup, Histograms & histograms) const {
   histograms.h2DHitRPhi = std::make_unique<HRes2DHit> ("RPhi", booker, true, true);
   histograms.h2DHitRZ = std::make_unique<HRes2DHit> ("RZ", booker, true, true);
   histograms.h2DHitRZ_W0 = std::make_unique<HRes2DHit> ("RZ_W0", booker, true, true);

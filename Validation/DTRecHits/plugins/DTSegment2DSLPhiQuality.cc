@@ -55,7 +55,7 @@ DTSegment2DSLPhiQuality::DTSegment2DSLPhiQuality(const ParameterSet& pset)  {
   local_ = pset.getUntrackedParameter<bool>("local", false);
 }
 
-void DTSegment2DSLPhiQuality::bookHistograms(DQMStore::ConcurrentBooker & booker, edm::Run const& run, edm::EventSetup const& setup, Histograms & histograms) const {
+void DTSegment2DSLPhiQuality::bookHistograms(DQMStore::IBooker & booker, edm::Run const& run, edm::EventSetup const& setup, Histograms & histograms) const {
   // Book the histos
   histograms.h2DHitSuperPhi = std::make_unique<HRes2DHit> ("SuperPhi", booker, doall_, local_);
   if (doall_) { histograms.h2DHitEff_SuperPhi = std::make_unique<HEff2DHit> ("SuperPhi", booker);

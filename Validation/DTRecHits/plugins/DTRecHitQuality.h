@@ -51,7 +51,7 @@ public:
 
 private:
   /// Book the DQM plots
-  void bookHistograms(DQMStore::ConcurrentBooker &, edm::Run const&, edm::EventSetup const&, dtrechit::Histograms &) const override;
+  void bookHistograms(DQMStore::IBooker &, edm::Run const&, edm::EventSetup const&, dtrechit::Histograms &) const override;
 
   /// Perform the real analysis
   void dqmAnalyze(edm::Event const&, edm::EventSetup const&, dtrechit::Histograms const&) const override;
