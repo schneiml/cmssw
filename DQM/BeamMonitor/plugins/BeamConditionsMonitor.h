@@ -22,8 +22,8 @@
 namespace beamcond {
   struct RunCache {
     // MonitorElements
-    ConcurrentMonitorElement h_x0_lumi;
-    ConcurrentMonitorElement h_y0_lumi;
+    MonitorElement* h_x0_lumi;
+    MonitorElement* h_y0_lumi;
   };
 };
 
@@ -35,7 +35,7 @@ class BeamConditionsMonitor : public DQMGlobalEDAnalyzer<beamcond::RunCache, edm
  protected:
    
   // Book Histograms
-  void bookHistograms(DQMStore::ConcurrentBooker& i, const edm::Run& r, const edm::EventSetup& c, beamcond::RunCache& ) const override;
+  void bookHistograms(DQMStore::IBooker& i, const edm::Run& r, const edm::EventSetup& c, beamcond::RunCache& ) const override;
   
   // Fake Analyze
   void dqmAnalyze(const edm::Event& e, const edm::EventSetup& c, beamcond::RunCache const& ) const override;

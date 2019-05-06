@@ -26,7 +26,7 @@ touch $(find src/ -name '*.cc' )
 # run scram b with indexer active
 PLUGIN="-Xclang -load -Xclang $PWD/src/DQMServices/Components/scripts/dxr-index.so -Xclang -plugin -Xclang dxr-index  -Xclang -plugin-arg-dxr-index -Xclang $PWD/src"
 echo PLUGIN=$PLUGIN
-USER_CXXFLAGS="$PLUGIN" report scram build -k  -j8 
+USER_CXXFLAGS="$PLUGIN" report scram build -k  -j2
 
 # convert .csv to sqlite
 report cd $CMSSW_BASE/src/

@@ -129,7 +129,6 @@ private:
 #  define DQM_ROOT_METHODS 1
 # endif
 
-class QCriterion;
 
 // tag for a special constructor, see below
 struct MonitorElementNoCloneTag {};

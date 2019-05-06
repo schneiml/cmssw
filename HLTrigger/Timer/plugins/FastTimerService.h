@@ -314,28 +314,28 @@ private:
   class PlotsPerElement {
   public:
     PlotsPerElement() = default;
-    void book(DQMStore::ConcurrentBooker &, std::string const& name, std::string const& title, PlotRanges const& ranges, unsigned int lumisections, bool byls);
+    void book(DQMStore::IBooker &, std::string const& name, std::string const& title, PlotRanges const& ranges, unsigned int lumisections, bool byls);
     void fill(Resources const&, unsigned int lumisection);
     void fill(AtomicResources const&, unsigned int lumisection);
     void fill_fraction(Resources const&, Resources const&, unsigned int lumisection);
 
   private:
     // resources spent in the module
-    ConcurrentMonitorElement time_thread_;          // TH1F
-    ConcurrentMonitorElement time_thread_byls_;     // TProfile
-    ConcurrentMonitorElement time_real_;            // TH1F
-    ConcurrentMonitorElement time_real_byls_;       // TProfile
-    ConcurrentMonitorElement allocated_;            // TH1F
-    ConcurrentMonitorElement allocated_byls_;       // TProfile
-    ConcurrentMonitorElement deallocated_;          // TH1F
-    ConcurrentMonitorElement deallocated_byls_;     // TProfile
+    MonitorElement* time_thread_;          // TH1F
+    MonitorElement* time_thread_byls_;     // TProfile
+    MonitorElement* time_real_;            // TH1F
+    MonitorElement* time_real_byls_;       // TProfile
+    MonitorElement* allocated_;            // TH1F
+    MonitorElement* allocated_byls_;       // TProfile
+    MonitorElement* deallocated_;          // TH1F
+    MonitorElement* deallocated_byls_;     // TProfile
   };
 
   // plots associated to each path or endpath
   class PlotsPerPath {
   public:
     PlotsPerPath() = default;
-    void book(DQMStore::ConcurrentBooker &, std::string const &, ProcessCallGraph const&, ProcessCallGraph::PathType const&, PlotRanges const& ranges, unsigned int lumisections, bool byls);
+    void book(DQMStore::IBooker &, std::string const &, ProcessCallGraph const&, ProcessCallGraph::PathType const&, PlotRanges const& ranges, unsigned int lumisections, bool byls);
     void fill(ProcessCallGraph::PathType const&, ResourcesPerJob const&, ResourcesPerPath const&, unsigned int lumisection);
 
   private:
@@ -348,18 +348,18 @@ private:
     //   be better suited than a double, but there is no "TH1L" in ROOT.
 
     // how many times each module and their dependencies has run
-    ConcurrentMonitorElement module_counter_;               // TH1D
+    MonitorElement* module_counter_;               // TH1D
     // resources spent in each module and their dependencies
-    ConcurrentMonitorElement module_time_thread_total_;     // TH1D
-    ConcurrentMonitorElement module_time_real_total_;       // TH1D
-    ConcurrentMonitorElement module_allocated_total_;       // TH1D
-    ConcurrentMonitorElement module_deallocated_total_;     // TH1D
+    MonitorElement* module_time_thread_total_;     // TH1D
+    MonitorElement* module_time_real_total_;       // TH1D
+    MonitorElement* module_allocated_total_;       // TH1D
+    MonitorElement* module_deallocated_total_;     // TH1D
   };
 
   class PlotsPerProcess {
   public:
     PlotsPerProcess(ProcessCallGraph::ProcessType const&);
-    void book(DQMStore::ConcurrentBooker &, ProcessCallGraph const&, ProcessCallGraph::ProcessType const&,
+    void book(DQMStore::IBooker &, ProcessCallGraph const&, ProcessCallGraph::ProcessType const&,
         PlotRanges const& event_ranges, PlotRanges const& path_ranges,
         unsigned int lumisections, bool bypath, bool byls);
     void fill(ProcessCallGraph::ProcessType const&, ResourcesPerJob const&, ResourcesPerProcess const&, unsigned int ls);
@@ -375,7 +375,7 @@ private:
   class PlotsPerJob {
   public:
     PlotsPerJob(ProcessCallGraph const& job, std::vector<GroupOfModules> const& groups);
-    void book(DQMStore::ConcurrentBooker &, ProcessCallGraph const&, std::vector<GroupOfModules> const&,
+    void book(DQMStore::IBooker &, ProcessCallGraph const&, std::vector<GroupOfModules> const&,
         PlotRanges const&  event_ranges, PlotRanges const&  path_ranges,
         PlotRanges const&  module_ranges, unsigned int lumisections,
         bool bymodule, bool bypath, bool byls, bool transitions);

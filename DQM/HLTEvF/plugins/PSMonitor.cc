@@ -26,7 +26,7 @@ namespace {
   };
 
   struct Histograms {
-    ConcurrentMonitorElement psColumnIndexVsLS;
+    MonitorElement* psColumnIndexVsLS;
   };
 }
 
@@ -44,7 +44,7 @@ public:
 
 protected:
 
-  void bookHistograms(DQMStore::ConcurrentBooker &, edm::Run const&, edm::EventSetup const&, Histograms &) const override;
+  void bookHistograms(DQMStore::IBooker &, edm::Run const&, edm::EventSetup const&, Histograms &) const override;
   void dqmAnalyze(edm::Event const& event, edm::EventSetup const& setup, Histograms const&) const override;
 
 private:
@@ -86,7 +86,7 @@ void PSMonitor::getHistoPSet(edm::ParameterSet& pset, MEbinning& mebinning)
 }
 
 
-void PSMonitor::bookHistograms(DQMStore::ConcurrentBooker & booker, edm::Run const& run, edm::EventSetup const& setup, Histograms & histograms) const
+void PSMonitor::bookHistograms(DQMStore::IBooker & booker, edm::Run const& run, edm::EventSetup const& setup, Histograms & histograms) const
 {  
   
   std::string histname, histtitle;
@@ -103,12 +103,12 @@ void PSMonitor::bookHistograms(DQMStore::ConcurrentBooker & booker, edm::Run con
   histograms.psColumnIndexVsLS = booker.book2D(histname, histtitle, 
                                       ls_binning_.nbins, ls_binning_.xmin, ls_binning_.xmax,
                                       nbins, xmin, xmax);
-  histograms.psColumnIndexVsLS.setAxisTitle("LS", 1);
-  histograms.psColumnIndexVsLS.setAxisTitle("PS column index", 2);
+  histograms.psColumnIndexVsLS->setAxisTitle("LS", 1);
+  histograms.psColumnIndexVsLS->setAxisTitle("PS column index", 2);
   
   int ibin = 1;
   for ( auto l : psLabels ) {
-    histograms.psColumnIndexVsLS.setBinLabel(ibin, l, 2);
+    histograms.psColumnIndexVsLS->setBinLabel(ibin, l, 2);
     ibin++;
   }
 
@@ -124,7 +124,7 @@ void PSMonitor::dqmAnalyze(edm::Event const& event, edm::EventSetup const& setup
   if (ugtBXhandle.isValid() and not ugtBXhandle->isEmpty(0)) {
     psColumn = ugtBXhandle->at(0, 0).getPreScColumn();
   }
-  histograms.psColumnIndexVsLS.fill(ls, psColumn);
+  histograms.psColumnIndexVsLS->Fill(ls, psColumn);
 }
 
 void PSMonitor::fillHistoPSetDescription(edm::ParameterSetDescription & pset, int value)

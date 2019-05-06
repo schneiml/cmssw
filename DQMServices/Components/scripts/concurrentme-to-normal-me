@@ -3,7 +3,6 @@ DB="sqlite3 dxr.sqlite"
 
 $DB <<SQL
 CREATE INDEX IF NOT EXISTS ref_qualname on ref(qualname);
-ANALYZE;
 DROP TABLE relevantrefs;
 DROP TABLE relevantvars;
 SQL
