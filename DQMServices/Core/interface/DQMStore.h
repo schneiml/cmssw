@@ -166,7 +166,7 @@ public:
 
 private:
   DQMNet::CoreObject    data_;       //< Core object information.
-  Scalar                scalar_;     //< Current scalar value.
+  mutable Scalar        scalar_;     //< Current scalar value.
   TH1                   *object_;    //< Current ROOT object value.
   TH1                   *reference_; //< Current ROOT reference object.
   TH1                   *refvalue_;  //< Soft reference if any.
@@ -271,32 +271,33 @@ public:
     int checkArray[sizeof(int64_t) - sizeof(T) + 1];
   };
 
-  void Fill(long long x) { fits_in_int64_t<long long>(); doFill(static_cast<int64_t>(x)); }
-  void Fill(unsigned long long x) { fits_in_int64_t<unsigned long long>(); doFill(static_cast<int64_t>(x)); }
-  void Fill(unsigned long x) { fits_in_int64_t<unsigned long>(); doFill(static_cast<int64_t>(x)); }
-  void Fill(long x) { fits_in_int64_t<long>(); doFill(static_cast<int64_t>(x)); }
-  void Fill(unsigned int x) { fits_in_int64_t<unsigned int>(); doFill(static_cast<int64_t>(x)); }
-  void Fill(int x) { fits_in_int64_t<int>(); doFill(static_cast<int64_t>(x)); }
-  void Fill(short x) { fits_in_int64_t<short>(); doFill(static_cast<int64_t>(x)); }
-  void Fill(unsigned short x) { fits_in_int64_t<unsigned short>(); doFill(static_cast<int64_t>(x)); }
-/* almost unused */   void Fill(char x) { fits_in_int64_t<char>(); doFill(static_cast<int64_t>(x)); }
-  void Fill(unsigned char x) { fits_in_int64_t<unsigned char>(); doFill(static_cast<int64_t>(x)); }
+  void Fill(long long x) const { fits_in_int64_t<long long>(); doFill(static_cast<int64_t>(x)); }
+  void Fill(unsigned long long x) const { fits_in_int64_t<unsigned long long>(); doFill(static_cast<int64_t>(x)); }
+  void Fill(unsigned long x) const { fits_in_int64_t<unsigned long>(); doFill(static_cast<int64_t>(x)); }
+  void Fill(long x) const { fits_in_int64_t<long>(); doFill(static_cast<int64_t>(x)); }
+  void Fill(unsigned int x) const { fits_in_int64_t<unsigned int>(); doFill(static_cast<int64_t>(x)); }
+  void Fill(int x) const { fits_in_int64_t<int>(); doFill(static_cast<int64_t>(x)); }
+  void Fill(short x) const { fits_in_int64_t<short>(); doFill(static_cast<int64_t>(x)); }
+  void Fill(unsigned short x) const { fits_in_int64_t<unsigned short>(); doFill(static_cast<int64_t>(x)); }
+/* almost unused */   void Fill(char x) const { fits_in_int64_t<char>(); doFill(static_cast<int64_t>(x)); }
+  void Fill(unsigned char x) const { fits_in_int64_t<unsigned char>(); doFill(static_cast<int64_t>(x)); }
 
-  void Fill(float x)    { Fill(static_cast<double>(x)); }
-  void Fill(double x);
-  void Fill(std::string &value);
+  void Fill(float x) const { Fill(static_cast<double>(x)); }
+  void Fill(double x) const;
+  void Fill(std::string &value) const;
 
-  void Fill(double x, double yw);
-  void Fill(double x, double y, double zw);
-  void Fill(double x, double y, double z, double w);
-  void ShiftFillLast(double y, double ye = 0., int32_t xscale = 1);
+  void Fill(double x, double yw) const;
+  void Fill(double x, double y, double zw) const;
+  void Fill(double x, double y, double z, double w) const;
+  void ShiftFillLast(double y, double ye = 0., int32_t xscale = 1) const;
   void Reset();
 
   std::string valueString() const;
-/* almost unused */   std::string tagString() const;
-/* almost unused */   std::string tagLabelString() const;
-/* almost unused */   std::string effLabelString() const;
-/* almost unused */   std::string qualityTagString(const DQMNet::QValue &qv) const;
+  /* almost unused */   std::string tagString() const;
+  /* almost unused */   std::string tagLabelString() const;
+  /* almost unused */   std::string effLabelString() const;
+  /* almost unused */   std::string qualityTagString(const DQMNet::QValue &qv) const;
+
   void packScalarData(std::string &into, const char *prefix) const;
 /* almost unused */   void packQualityData(std::string &into) const;
 
@@ -340,7 +341,7 @@ public:
 /* almost unused */   void runQTests();
 
 private:
-  void doFill(int64_t x);
+  void doFill(int64_t x) const;
   void incompatible(const char *func) const;
   TH1 *accessRootObject(const char *func, int reqdim) const;
 
@@ -490,7 +491,6 @@ public:
       assert(kind() == DQM_KIND_STRING);
       return scalar_.str;
     }
-
 /* unused */
   DQMNet::TagList getTags() const // DEPRECATED
     {
@@ -501,8 +501,36 @@ public:
     }
 
 /* unused */
+
   const uint32_t getTag() const
     { return data_.tag; }
+
+
+    // --- Operations that origianted in ConcurrentME ---
+  void setXTitle(std::string const& title)
+  {
+    this->getTH1()->SetXTitle(title.c_str());
+  }
+
+  void setYTitle(std::string const& title)
+  {
+    this->getTH1()->SetYTitle(title.c_str());
+  }
+
+  void enableSumw2()
+  {
+    this->getTH1()->Sumw2();
+  }
+
+  void disableAlphanumeric()
+  {
+    this->getTH1()->GetXaxis()->SetNoAlphanumeric(false);
+    this->getTH1()->GetYaxis()->SetNoAlphanumeric(false);
+  }
+
+  void setOption(const char* option) {
+    this->getTH1()->SetOption(option);
+  }
 
 /* unused */
 /* almost unused */   const uint32_t run() const {return data_.run;}
@@ -573,97 +601,6 @@ public:
     me_->Fill(std::forward<Args>(args)...);
   }
 
-  // expose as a const method to mean that it is concurrent-safe
-  void shiftFillLast(double y, double ye = 0., int32_t xscale = 1) const
-  {
-    std::lock_guard<tbb::spin_mutex> guard(lock_);
-    me_->ShiftFillLast(y, ye, xscale);
-  }
-
-  // reset the internal pointer
-/* unused */
-  void reset()
-  {
-    std::lock_guard<tbb::spin_mutex> guard(lock_);
-    me_ = nullptr;
-  }
-
-/* unused */
-/* almost unused */   operator bool() const
-  {
-    std::lock_guard<tbb::spin_mutex> guard(lock_);
-    return (me_ != nullptr);
-  }
-
-  // non-const methods to manipulate axes and titles.
-  // these are not concurrent-safe, and should be used only when the underlying
-  // MonitorElement is being booked.
-/* almost unused */   void setTitle(std::string const& title)
-  {
-    me_->setTitle(title);
-  }
-
-/* almost unused */   void setXTitle(std::string const& title)
-  {
-    me_->getTH1()->SetXTitle(title.c_str());
-  }
-
-  void setXTitle(const char* title)
-  {
-    me_->getTH1()->SetXTitle(title);
-  }
-
-/* almost unused */   void setYTitle(std::string const& title)
-  {
-    me_->getTH1()->SetYTitle(title.c_str());
-  }
-
-  void setYTitle(const char* title)
-  {
-    me_->getTH1()->SetYTitle(title);
-  }
-
-  void setAxisRange(double xmin, double xmax, int axis = 1)
-  {
-    me_->setAxisRange(xmin, xmax, axis);
-  }
-
-  void setAxisTitle(std::string const& title, int axis = 1)
-  {
-    me_->setAxisTitle(title, axis);
-  }
-
-  void setAxisTimeDisplay(int value, int axis = 1)
-  {
-    me_->setAxisTimeDisplay(value, axis);
-  }
-
-  void setAxisTimeFormat(const char* format = "", int axis = 1)
-  {
-    me_->setAxisTimeFormat(format, axis);
-  }
-
-  void setBinLabel(int bin, std::string const& label, int axis = 1)
-  {
-    me_->setBinLabel(bin, label, axis);
-  }
-
-/* unused */
-  void enableSumw2()
-  {
-    me_->getTH1()->Sumw2();
-  }
-
-/* unused */
-  void disableAlphanumeric()
-  {
-    me_->getTH1()->GetXaxis()->SetNoAlphanumeric(false);
-    me_->getTH1()->GetYaxis()->SetNoAlphanumeric(false);
-  }
-
-  void setOption(const char* option) {
-    me_->getTH1()->SetOption(option);
-  }
 };
 
 namespace edm { class DQMHttpSource; class ParameterSet; class ActivityRegistry; class GlobalContext; }
