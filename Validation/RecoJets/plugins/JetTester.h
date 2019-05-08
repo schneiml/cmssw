@@ -37,7 +37,6 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include <DQMServices/Core/interface/DQMEDAnalyzer.h>
-class MonitorElement;
 
 class JetTester : public DQMEDAnalyzer {
  public:

@@ -4,7 +4,6 @@
 #include "DQMServices/Core/interface/DQMStore.h"
 #include <string>
 
-class MonitorElement;
 
 /** */
 template <class T> 

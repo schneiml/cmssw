@@ -44,7 +44,6 @@
 #include <fstream>
 #include <vector>
 
-class MonitorElement;
 
 class HcalRecHitsDQMClient : public DQMEDHarvester {
  

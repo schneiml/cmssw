@@ -11,7 +11,6 @@
 #include <TH1.h>
 #include <TEfficiency.h>
 
-class MonitorElement;
 
 class TrackingDQMClientHeavyIons : public DQMEDHarvester
 {

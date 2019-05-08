@@ -21,7 +21,6 @@
 #include "DQMServices/Core/interface/DQMStore.h"
 #include "DQMServices/Core/interface/DQMEDAnalyzer.h"
 
-class MonitorElement;
 
 class DQMHcalIsolatedBunchAlCaReco : public DQMEDAnalyzer {
 

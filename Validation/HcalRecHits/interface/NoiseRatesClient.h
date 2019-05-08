@@ -29,7 +29,6 @@
 #include <fstream>
 #include <vector>
 
-class MonitorElement;
 
 class NoiseRatesClient : public DQMEDHarvester {
  

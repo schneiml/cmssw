@@ -77,7 +77,6 @@
 #include <utility>
 
 
-class MonitorElement;
 
 class JetAnalyzer_HeavyIons_matching : public DQMEDAnalyzer {
  public:

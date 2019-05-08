@@ -56,8 +56,8 @@
 
 // DQM
 #include "DQMServices/Core/interface/DQMEDAnalyzer.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
-class MonitorElement;
 
 // class declaration
 class PrimaryVertexAnalyzer4PUSlimmed : public DQMEDAnalyzer {

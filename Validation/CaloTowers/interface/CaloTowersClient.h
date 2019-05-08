@@ -32,7 +32,6 @@
 #include "DQMServices/Core/interface/DQMEDAnalyzer.h"
 #include "DQMServices/Core/interface/DQMEDHarvester.h"
 
-class MonitorElement;
 
 class CaloTowersClient : public DQMEDHarvester {
  

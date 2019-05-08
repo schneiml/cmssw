@@ -13,7 +13,6 @@
 #include <vector>
 #include <string>
 
-class MonitorElement;
 class TrackingDetCabling;
 
 class TrackingQualityChecker {

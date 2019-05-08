@@ -30,7 +30,6 @@
 #include <fstream>
 #include <vector>
 
-class MonitorElement;
 
 class HcalSimHitsClient : public DQMEDHarvester {
  
