@@ -18,6 +18,8 @@
 // class declaration
 //
 namespace {
+  using dqm::reco::MonitorElement;
+  using dqm::reco::DQMStore;
 class FillerBase {
  public:
   virtual ~FillerBase() = default;

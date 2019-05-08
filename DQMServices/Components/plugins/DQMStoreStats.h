@@ -31,6 +31,8 @@
 // class declarations
 //
 
+using dqm::legacy::DQMStore;
+using dqm::legacy::MonitorElement;
 
 ///
 /// DQMStoreStats helper class for

@@ -33,6 +33,8 @@ class QTestHandle;
 class QualityTester: public edm::EDAnalyzer{
 
 public:
+  typedef dqm::harvesting::DQMStore DQMStore;
+  typedef dqm::harvesting::MonitorElement MonitorElement;
 
   /// Constructor
   QualityTester(const edm::ParameterSet& ps);

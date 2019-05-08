@@ -87,7 +87,7 @@ MEtoMEComparitor::endRun(const edm::Run& iRun, const edm::EventSetup& iSetup)
 
 template <class T>
 /* almost unused */ void MEtoMEComparitor::book(const std::string & directory,const std::string & type, const T * h){
-  _dbe->setCurrentFolder(type);
+  _dbe->IBooker::setCurrentFolder(type);
   std::type_info const & tp = typeid(*h);
   if (tp == typeid(TH1S))
     _dbe->book1S(h->GetName(),dynamic_cast<TH1S*>(const_cast<T*>(h)));

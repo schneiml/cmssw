@@ -13,6 +13,8 @@
 #include "DataFormats/Histograms/interface/DQMToken.h"
 
 using namespace lat;
+using dqm::legacy::MonitorElement;
+using dqm::legacy::DQMStore;
 
 template<typename T>
 /* almost unused */ void EDMtoMEConverter::Tokens<T>::set(const edm::InputTag& runInputTag, const edm::InputTag& lumiInputTag, edm::ConsumesCollector& iC) {
@@ -267,9 +269,7 @@ void EDMtoMEConverter::endRunProduce(edm::Run& iRun, edm::EventSetup const& iSet
 {
   if (convertOnEndRun) {
     std::unique_ptr<DQMStore> store = std::make_unique<DQMStore>();
-    store->meBookerGetter([&](DQMStore::IBooker &b, DQMStore::IGetter &g) {
-      getData(b, g, iRun);
-    });
+    getData(*store, *store, iRun);
   }
 
 
@@ -280,9 +280,7 @@ void EDMtoMEConverter::endLuminosityBlockProduce(edm::LuminosityBlock& iLumi, ed
 {
   if (convertOnEndLumi) {
     std::unique_ptr<DQMStore> store = std::make_unique<DQMStore>();
-    store->meBookerGetter([&](DQMStore::IBooker &b, DQMStore::IGetter &g) {
-      getData(b, g, iLumi);
-    });
+    getData(*store, *store, iLumi);
   }
 
   iLumi.put(dqmLumiToken_, std::make_unique<DQMToken>());

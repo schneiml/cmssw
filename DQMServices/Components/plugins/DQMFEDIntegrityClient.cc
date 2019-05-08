@@ -46,7 +46,7 @@ void DQMFEDIntegrityClient::beginJob() {
 
   // ----------------------------------------------------------------------------------
   std::string currentFolder = moduleName + "/" + fedFolderName ;
-  dbe_->setCurrentFolder(currentFolder);
+  dbe_->IBooker::setCurrentFolder(currentFolder);
 
   FedEntries  = dbe_->book1D("FedEntries",  "FED Entries",          NBINS, XMIN, XMAX);
   FedFatal    = dbe_->book1D("FedFatal",    "FED Fatal Errors",     NBINS, XMIN, XMAX);
@@ -98,7 +98,7 @@ void DQMFEDIntegrityClient::beginJob() {
 
   //-----------------------------------------------------------------------------------
   currentFolder = moduleName + "/EventInfo";
-  dbe_->setCurrentFolder(currentFolder);
+  dbe_->IBooker::setCurrentFolder(currentFolder);
 
   reportSummary = dbe_->bookFloat("reportSummary");
 
@@ -107,7 +107,7 @@ void DQMFEDIntegrityClient::beginJob() {
   if(reportSummary) reportSummary->Fill(1.);
 
   currentFolder = moduleName + "/EventInfo/reportSummaryContents";
-  dbe_->setCurrentFolder(currentFolder);
+  dbe_->IBooker::setCurrentFolder(currentFolder);
 
   reportSummaryContent[0]  = dbe_->bookFloat("CSC FEDs");
   reportSummaryContent[1]  = dbe_->bookFloat("DT FEDs");
@@ -127,7 +127,7 @@ void DQMFEDIntegrityClient::beginJob() {
   }
 
   currentFolder = moduleName + "/EventInfo";
-  dbe_->setCurrentFolder(currentFolder);
+  dbe_->IBooker::setCurrentFolder(currentFolder);
 
   reportSummaryMap = dbe_->book2D("reportSummaryMap",
                       "FED Report Summary Map", 1, 1, 2, 10, 1, 11);

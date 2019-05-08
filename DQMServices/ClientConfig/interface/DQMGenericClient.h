@@ -23,8 +23,6 @@
 #include <TGraphAsymmErrors.h>
 #endif
 
-class MonitorElement;
-
 class DQMGenericClient : public DQMEDHarvester
 {
  public:

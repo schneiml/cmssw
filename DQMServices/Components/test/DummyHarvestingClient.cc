@@ -57,6 +57,8 @@
 // class declaration
 //
 namespace {
+  using dqm::harvesting::DQMStore;
+  using dqm::harvesting::MonitorElement;
 class CumulatorBase {
  public:
   virtual ~CumulatorBase()  = default;
@@ -100,7 +102,7 @@ class TH1FCumulator : public CumulatorBase {
     auto it = entries_per_LS_.begin();
     auto ite = entries_per_LS_.end();
     std::string extension("_cumulative");
-    store_->setCurrentFolder(folder_);
+    store_->IBooker::setCurrentFolder(folder_);
     MonitorElement *tmp = store_->book1D(name_ + extension,
                                          name_ + extension,
                                          (--(entries_per_LS_.end()))->first,
@@ -157,7 +159,7 @@ class TH2FCumulator : public CumulatorBase {
     auto it = entries_per_LS_.begin();
     auto ite = entries_per_LS_.end();
     std::string extension("_cumulative");
-    store_->setCurrentFolder(folder_);
+    store_->IBooker::setCurrentFolder(folder_);
     MonitorElement *tmp = store_->book1D(name_ + extension,
                                          name_ + extension,
                                          (--(entries_per_LS_.end()))->first,

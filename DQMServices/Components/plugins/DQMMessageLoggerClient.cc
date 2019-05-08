@@ -35,7 +35,7 @@ void DQMMessageLoggerClient::beginJob() {
   theDbe = std::make_unique<DQMStore>();
 
   if(theDbe!=nullptr){   
-    theDbe->setCurrentFolder(directoryName);
+    theDbe->IBooker::setCurrentFolder(directoryName);
   }
 
 }
@@ -106,7 +106,7 @@ void DQMMessageLoggerClient::fillHistograms(){
       
       switch(mel){
       case 1:
-	theDbe->setCurrentFolder(directoryName + "/Warnings");
+	theDbe->IBooker::setCurrentFolder(directoryName + "/Warnings");
         modulesWarningsFound = theDbe->get(directoryName + "/Warnings/modulesWarningsFound");
         if (modulesWarningsFound) theDbe->removeElement(modulesWarningsFound->getName());
 	if(nonzeros>0){
@@ -126,7 +126,7 @@ void DQMMessageLoggerClient::fillHistograms(){
 	if(nonzeros>4) modulesWarningsFound->getTH1()->GetXaxis()->LabelsOption("v");
 	break;
       case 2:
-	theDbe->setCurrentFolder(directoryName + "/Errors");
+	theDbe->IBooker::setCurrentFolder(directoryName + "/Errors");
         modulesErrorsFound = theDbe->get(directoryName + "/Errors/modulesErrorsFound");
         if (modulesErrorsFound) theDbe->removeElement(modulesErrorsFound->getName());
 	if(nonzeros>0){
@@ -145,7 +145,7 @@ void DQMMessageLoggerClient::fillHistograms(){
 	if(nonzeros>4) modulesErrorsFound->getTH1()->GetXaxis()->LabelsOption("v");
 	break;
       case 3:
-	theDbe->setCurrentFolder(directoryName + "/Warnings");
+	theDbe->IBooker::setCurrentFolder(directoryName + "/Warnings");
         categoriesWarningsFound = theDbe->get(directoryName + "/Warnings/categoriesWarningsFound");
         if (categoriesWarningsFound) theDbe->removeElement(categoriesWarningsFound->getName());
 	if(nonzeros>0){
@@ -165,7 +165,7 @@ void DQMMessageLoggerClient::fillHistograms(){
 	if(nonzeros>4) categoriesWarningsFound->getTH1()->GetXaxis()->LabelsOption("v");
 	break;
       case 4:
-	theDbe->setCurrentFolder(directoryName + "/Errors");
+	theDbe->IBooker::setCurrentFolder(directoryName + "/Errors");
         categoriesErrorsFound = theDbe->get(directoryName + "/Errors/categoriesErrorsFound");
         if (categoriesErrorsFound) theDbe->removeElement(categoriesErrorsFound->getName());
 	if(nonzeros>0){
