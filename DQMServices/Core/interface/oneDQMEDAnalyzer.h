@@ -35,6 +35,8 @@ class DQMRunEDProducer : public edm::one::EDProducer<edm::Accumulator,
                                                      edm::one::WatchRuns, T...> 
 {
 public:
+  typedef dqm::reco::DQMStore DQMStore;
+  typedef dqm::reco::MonitorElement MonitorElement;
 /* unused */
 /* almost unused */   DQMRunEDProducer() :
     runToken_{this-> template produces<DQMToken,edm::Transition::EndRun>("endRun")},
@@ -46,23 +48,12 @@ public:
 
   void beginRun(edm::Run const& run, edm::EventSetup const& setup) final {
     dqmBeginRun(run, setup);
-    dqmstore_->bookTransaction(
-    [this, &run, &setup](DQMStore::IBooker & booker)
-    {
-      booker.cd();
-      this->bookHistograms(booker, run, setup);
-    },
-    run.run(),
-    this->moduleDescription().id(),
-    this->getCanSaveByLumi());
+    this->bookHistograms(*dqmstore_, run, setup);
   }
 
 /* unused */
   void endRun(edm::Run const& run, edm::EventSetup const& setup) override {}
   void endRunProduce(edm::Run& run, edm::EventSetup const& setup) override {
-    dqmstore_->cloneRunHistograms(
-        run.run(),
-        this->moduleDescription().id());
 
     run.emplace<DQMToken>(runToken_);
   }
