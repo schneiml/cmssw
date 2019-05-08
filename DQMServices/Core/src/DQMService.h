@@ -5,7 +5,8 @@
 # include "FWCore/ParameterSet/interface/ParameterSet.h"
 # include "FWCore/ServiceRegistry/interface/ActivityRegistry.h"
 
-class DQMStore;
+# include "DQMServices/Core/interface/DQMStore.h"
+
 class DQMBasicNet;
 namespace lat { class Regexp; }
 
@@ -13,6 +14,7 @@ namespace lat { class Regexp; }
 class DQMService
 {
 public:
+  typedef dqm::legacy::DQMStore DQMStore;
   DQMService(const edm::ParameterSet &pset, edm::ActivityRegistry &ar);
   ~DQMService();
    
