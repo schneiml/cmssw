@@ -94,16 +94,16 @@ struct MonitorElementData
 
   // The main ME data. We don't keep references/QTest results, instead we use
   // only the fields stored in DQMIO files.
-  Kind kind;
-  Scalar scalar;
-  TH1* object;
+  Kind kind_;
+  Scalar scalar_;
+  TH1* object_;
   // ROOT will serialize that correctly, I hope? or do we need to do the 
   // template dance as in MEtoEDM? 
 
   // Metadata about the ME.
   // We could use pointers to interned strings here to save some space.
-  std::string dirname;
-  std::string objname;
+  std::string dirname_;
+  std::string objname_;
 
   // The range from the first to the last event that actually went into this
   // histogram. When merging, we extend this range; merging overlapping but not
@@ -111,8 +111,8 @@ struct MonitorElementData
   // discussion: https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuidePerRunAndPerLumiBlockData#Merging_Run_and_Luminosity_Block
   // We could also keep event numbers, to make it easier to see if there is
   // double counting for debugging.
-  edm::LuminosityBlockRange coveredrange;
-  Scope scope;
+  edm::LuminosityBlockRange coveredrange_;
+  Scope scope_;
   
   // Copying this stucture would be dangerous due to the ROOT object pointer,
   // but moving should be fine.
@@ -148,9 +148,9 @@ class MonitorElementCollection : public std::vector<MonitorElementData>
   ~MonitorElementCollection() 
   {
     for (auto& me : *this) {
-      if (me.object) {
-        delete me.object;
-        me.object = nullptr;
+      if (me.object_) {
+        delete me.object_;
+        me.object_ = nullptr;
       }
     }
   }
