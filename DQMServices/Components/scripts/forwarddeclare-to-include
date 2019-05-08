@@ -1,6 +1,7 @@
 DB="sqlite3"
 
-ag -l --cpp 'class DQMStore;' > files
+ag -l --cpp 'class\s+DQMStore\s*;' > files
+ag -l --cpp 'class\s+MonitorElement\s*;' >> files
 
 for f in $(cat files); do
   $DB <<SQL > temp
