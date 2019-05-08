@@ -14,7 +14,5 @@ void DQMLumisEDProducer::dqmBeginLuminosityBlock(edm::LuminosityBlock const& lum
 void DQMLumisEDProducer::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) {}
 
 void DQMLumisEDProducer::endLuminosityBlockProduce(edm::LuminosityBlock& lumi, edm::EventSetup const& setup) {
-  dqmstore_->cloneLumiHistograms(lumi.run(), lumi.luminosityBlock(), moduleDescription().id());
-
   lumi.emplace<DQMToken>(lumiToken_);
 }
