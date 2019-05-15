@@ -128,7 +128,7 @@ string DTLocalTriggerBaseTest::getMEName(string histoTag, string subfolder, cons
 
   string folderName = topFolder(hwSource=="TM") + "Wheel" +  wheel.str() +
     "/Sector" + sector.str() + "/Station" + station.str() + "/" ; 
-  if (subfolder!="") { folderName += subfolder + "/"; }
+  if (!subfolder.empty()) { folderName += subfolder + "/"; }
 
   string histoname = sourceFolder + folderName 
     + fullName(histoTag) 
@@ -145,7 +145,7 @@ string DTLocalTriggerBaseTest::getMEName(string histoTag, string subfolder, int 
   stringstream wheel; wheel << wh;
 
   string folderName =  topFolder(hwSource=="TM") + "Wheel" + wheel.str() + "/";
-  if (subfolder!="") { folderName += subfolder + "/"; }  
+  if (!subfolder.empty()) { folderName += subfolder + "/"; }  
 
   string histoname = sourceFolder + folderName 
     + fullName(histoTag) + "_W" + wheel.str();
@@ -162,7 +162,7 @@ void DTLocalTriggerBaseTest::bookSectorHistos(DQMStore::IBooker & ibooker,
   int sectorid = (wheel+3) + (sector-1)*5;
   bool isTM = hwSource=="TM" ;
   string basedir = topFolder(isTM)+"Wheel"+wh.str()+"/Sector"+sc.str()+"/";
-  if (folder!="") {
+  if (!folder.empty()) {
     basedir += folder +"/";
   }
 
@@ -224,7 +224,7 @@ void DTLocalTriggerBaseTest::bookCmsHistos(DQMStore::IBooker & ibooker,
 
   bool isTM = hwSource == "TM"; 
   string basedir = topFolder(isTM);
-  if (folder != "") {
+  if (!folder.empty()) {
     basedir += folder +"/" ;
   }
 
@@ -251,7 +251,7 @@ void DTLocalTriggerBaseTest::bookWheelHistos(DQMStore::IBooker & ibooker,int whe
     basedir = topFolder(isTM) + "Wheel" + wh.str() + "/" ;
     
   }
-  if (folder != "") {
+  if (!folder.empty()) {
     basedir += folder +"/" ;
   }
 
