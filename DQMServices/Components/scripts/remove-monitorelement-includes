@@ -1,0 +1,5 @@
+sed -i 's|DQMServices/Core/interface/DQMStore.h|DQMServices/Core/interface/DQMStore.h|g' $(ag -l 'DQMServices/Core/interface/DQMStore.h')
+  mv newfile $f
+done
+git checkout DQMServices/Core
+
