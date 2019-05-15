@@ -19,11 +19,12 @@ report gcc pcre.c -o pcre.so -shared -fPIC -O2 $EXTERNALBASE/pcre/*-$VERSIONSUFF
 # build another plugin for regexp replace
 report gcc -fPIC -O2 -Wall -shared -o glib_replace.so `pkg-config --cflags glib-2.0` glib_replace.c `pkg-config --libs glib-2.0` -I $EXTERNALBASE/sqlite/*-$VERSIONSUFFIX/include/
 
+# run scram b with indexer active
+
+report cd $CMSSW_BASE/
 # touch a lot  of files to trigger a full recompile
 touch $(find src/ -name '*.cc' )
 
-# run scram b with indexer active
-report cd $CMSSW_BASE/
 PLUGIN="-Xclang -load -Xclang $PWD/src/DQMServices/Components/scripts/dxr-index.so -Xclang -plugin -Xclang dxr-index  -Xclang -plugin-arg-dxr-index -Xclang $PWD/src"
 echo PLUGIN=$PLUGIN
 USER_CXXFLAGS="$PLUGIN" report scram build -k  -j8 
