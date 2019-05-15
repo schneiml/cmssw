@@ -22,7 +22,7 @@ for f in $(cat files); do
       ELSE line END
     ELSE line END
   FROM code
-  WHERE line not like "%class DQMStore;%" and line not like "%class MonitorElement;%";
+  WHERE line not like "%class DQMStore;%" and line not like "%class MonitorElement;%" and line not like "%DQMServices/Core/interface/MonitorElement.h%";
 SQL
   mv temp $f
 done

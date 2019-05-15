@@ -21,14 +21,13 @@
 #include "FWCore/Framework/interface/ESHandle.h"
 
 #include "DataFormats/DTRecHit/interface/DTRecSegment4DCollection.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 
 #include <string>
 #include <map>
 #include <vector>
 
-class DQMStore;
-class MonitorElement;
 class DTGeometry;
 
 class DTResolutionAnalysisTask: public one::DQMEDAnalyzer<edm::one::WatchLuminosityBlocks> {

@@ -5,6 +5,7 @@
 #define DQM_DEPRECATED __attribute__((deprecated))
 #endif
 
+#define CHANGED
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
@@ -24,12 +25,12 @@
 
 #include "DQMServices/Core/interface/DQMDefinitions.h"
 #include "DQMServices/Core/interface/ConcurrentMonitorElement.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 namespace edm { class DQMHttpSource; class ParameterSet; class ActivityRegistry; class GlobalContext; }
 namespace lat { class Regexp; }
 namespace dqmstorepb {class ROOTFilePB; class ROOTFilePB_Histo;}
 
-class MonitorElement;
 class QCriterion;
 class TFile;
 class TBufferFile;
@@ -87,7 +88,6 @@ public:
 
   class IBooker {
   public:
-    friend class DQMStore;
 
 #define IBOOKER_FUNCTION_WITH_SUFFIX(suffix)                            \
     template <typename... Args>                                         \
@@ -140,7 +140,6 @@ public:
 
   class ConcurrentBooker : public IBooker {
   public:
-    friend class DQMStore;
 
 #define CONCURRENTBOOKER_FUNCTION_WITH_SUFFIX(suffix)                   \
     template <typename... Args>                                         \
@@ -185,7 +184,6 @@ public:
 
   class IGetter {
   public:
-    friend class DQMStore;
 
     // for the supported syntaxes, see the declarations of DQMStore::getContents
     template <typename... Args>

@@ -33,10 +33,10 @@
 
 class DTGeometry;
 class DTChamberId;
-class DQMStore;
 
 #include "TFile.h"
 #include "TNtuple.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 class DTOccupancyTestML: public DQMEDHarvester{
 

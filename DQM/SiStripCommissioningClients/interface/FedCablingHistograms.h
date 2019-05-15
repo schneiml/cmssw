@@ -4,9 +4,9 @@
 #include "DQM/SiStripCommissioningClients/interface/CommissioningHistograms.h"
 #include "DQM/SiStripCommissioningSummary/interface/FedCablingSummaryFactory.h"
 #include "CondFormats/SiStripObjects/interface/FedCablingAnalysis.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 
-class DQMStore;
 
 class FedCablingHistograms : virtual public CommissioningHistograms {
 

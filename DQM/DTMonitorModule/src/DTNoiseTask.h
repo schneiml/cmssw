@@ -33,7 +33,6 @@ namespace edm {
   class Event;
 }
 
-class DQMStore;
 class DTGeometry;
 
 

@@ -36,8 +36,6 @@
 
 
 class DTGeometry;
-class DQMStore;
-class MonitorElement;
 class DTTimeEvolutionHisto;
 
 class DTSegmentAnalysisTask: public one::DQMEDAnalyzer<edm::one::WatchLuminosityBlocks>{
