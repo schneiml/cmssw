@@ -46,7 +46,6 @@
 
 // Include DQM core
 #include <DQMServices/Core/interface/DQMStore.h>
-#include <DQMServices/Core/interface/MonitorElement.h>
 #include <DQMServices/Core/interface/DQMEDAnalyzer.h>
 
 typedef math::XYZTLorentzVectorD  LV;

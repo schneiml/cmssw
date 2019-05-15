@@ -27,7 +27,7 @@
 #include "DataFormats/MuonReco/interface/MuonFwd.h"
 
 
-#include "DQMServices/Core/interface/MonitorElement.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 
 
