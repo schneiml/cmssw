@@ -39,6 +39,8 @@ public:
 
 private:
   friend class QCriterion;
+  friend class MonitorElement;  // for running the quality test
+  friend class DQMStore;        // for setting QReport parameters after receiving report
 
   QReport(DQMNet::QValue *value, QCriterion *qc)
     : qvalue_ (value),
@@ -51,4 +53,3 @@ private:
 }; 
 
 #endif // DQMSERVICES_CORE_Q_REPORT_H
-#include "DQMServices/Core/interface/DQMStore.h"

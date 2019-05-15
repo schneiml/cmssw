@@ -5,6 +5,7 @@
 # include "FWCore/ParameterSet/interface/ParameterSet.h"
 # include "FWCore/ServiceRegistry/interface/ActivityRegistry.h"
 
+class DQMStore;
 class DQMBasicNet;
 namespace lat { class Regexp; }
 
@@ -30,4 +31,3 @@ public:
 };
 
 #endif // DQMSERVICES_CORE_DQM_SERVICE_H
-#include "DQMServices/Core/interface/DQMStore.h"

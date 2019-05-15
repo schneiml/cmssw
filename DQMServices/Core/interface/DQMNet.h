@@ -18,6 +18,7 @@
 # include <set>
 # include <ext/hash_set>
 
+//class DQMStore;
 
 class DQMNet
 {
@@ -623,4 +624,3 @@ private:
 
 
 #endif // DQMSERVICES_CORE_DQM_NET_H
-#include "DQMServices/Core/interface/DQMStore.h"
