@@ -26,7 +26,7 @@ AlcaBeamMonitorClient::AlcaBeamMonitorClient(const ParameterSet& ps)
       monitorName_(parameters_.getUntrackedParameter<string>(
           "MonitorName", "YourSubsystemName")),
       numberOfValuesToSave_(0) {
-  dbe_ = Service<DQMStore>().operator->();
+  dbe_ = std::make_unique<DQMStore>();
 
   if (!monitorName_.empty()) monitorName_ = monitorName_ + "/";
 

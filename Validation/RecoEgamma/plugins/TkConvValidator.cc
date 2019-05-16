@@ -169,7 +169,7 @@ void  TkConvValidator::bookHistograms( DQMStore::IBooker & iBooker, edm::Run con
   nInvalidPCA_=0;
 
   dbe_ = nullptr;
-  dbe_ = edm::Service<DQMStore>().operator->();
+  dbe_ = std::make_unique<DQMStore>();
 
 
   double etMin = parameters_.getParameter<double>("etMin");

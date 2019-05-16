@@ -74,7 +74,7 @@ class SiPixelErrorsDigisToCalibDigis : public edm::EDAnalyzer {
       edm::InputTag siPixelProducerLabel_;
       edm::EDGetTokenT <edm::DetSetVector<SiPixelCalibDigiError> > tPixelCalibDigiError;
 
-      DQMStore* daqBE_;
+      std::unique_ptr<DQMStore> daqBE_;
       SiPixelHistogramId * theHistogramIdWorker_;
       std::string outputFilename_;
       bool createOutputFile_;

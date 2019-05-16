@@ -21,7 +21,7 @@ public:
 private:
   void shutdown();
 
-  DQMStore	*store_;
+  std::unique_ptr<DQMStore> store_;
   DQMBasicNet	*net_;
   lat::Regexp	*filter_;
   double	lastFlush_;

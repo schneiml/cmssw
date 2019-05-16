@@ -24,7 +24,7 @@ using namespace std;
 
 ESDataCertificationTask::ESDataCertificationTask(const ParameterSet& ps) {
 
-  dqmStore_ = Service<DQMStore>().operator->();
+  dqmStore_ = std::make_unique<DQMStore>();
 
   prefixME_ = ps.getUntrackedParameter<string>("prefixME", "");
 

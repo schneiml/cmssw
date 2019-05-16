@@ -45,7 +45,7 @@ private:
 
   edm::ParameterSet parameters_;
 
-  DQMStore *dbe_;
+  std::unique_ptr<DQMStore> dbe_;
   std::string monitorName_;
 
   int counterEvt_;

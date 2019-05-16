@@ -191,7 +191,7 @@ void
 FourVectorHLT::beginJob()
 {
   nev_ = 0;
-  DQMStore *dbe = nullptr;
+  std::unique_ptr<DQMStore> dbe = nullptr;
   dbe = Service<DQMStore>().operator->();
   
   if (dbe) {

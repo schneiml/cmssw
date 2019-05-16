@@ -90,7 +90,7 @@ class SiStripGainFromData : public ConditionDBWriter<SiStripApvGain> {
       void algoAnalyze(const edm::Event &, const edm::EventSetup &) override;
 
       std::unique_ptr<SiStripApvGain> getNewObject() override;
-      DQMStore* dqmStore_;
+      std::unique_ptr<DQMStore> dqmStore_;
 
       double              ComputeChargeOverPath(const SiStripCluster*   Cluster,TrajectoryStateOnSurface trajState, const edm::EventSetup* iSetup, const Track* track, double trajChi2OverN);
       bool                IsFarFromBorder(TrajectoryStateOnSurface trajState, const uint32_t detid, const edm::EventSetup* iSetup);
@@ -314,7 +314,7 @@ SiStripGainFromData::SiStripGainFromData(const edm::ParameterSet& iConfig) : Con
    if( strcmp(AlgoMode.c_str(),"WriteOnDB")==0 )
    VInputFiles         = iConfig.getParameter<vector<string> >("VInputFiles");
 
-   dqmStore_       = edm::Service<DQMStore>().operator->();
+   dqmStore_       = std::make_unique<DQMStore>();
 
    //if( OutputHistos!="" )
    //  dqmStore_->open(OutputHistos.c_str(), true);

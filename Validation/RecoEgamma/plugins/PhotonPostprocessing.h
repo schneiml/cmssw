@@ -73,7 +73,7 @@ class PhotonPostprocessing : public edm::EDAnalyzer
   void dividePlots(MonitorElement* dividend, MonitorElement* numerator, double denominator); 
   virtual void runPostprocessing();      
 
-  DQMStore *dbe_;
+  std::unique_ptr<DQMStore> dbe_;
   int verbosity_;
 
   edm::ParameterSet parameters_;

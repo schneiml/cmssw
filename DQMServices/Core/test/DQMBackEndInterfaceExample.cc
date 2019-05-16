@@ -68,7 +68,7 @@ private:
   // event counter
   int counter;
   // back-end interface
-  DQMStore * dbe;
+  std::unique_ptr<DQMStore> dbe;
   // test back-end interface functionality
   void integrityChecks();
 };
@@ -89,7 +89,7 @@ DQMStoreExample::DQMStoreExample(const edm::ParameterSet&
   : counter(0)
 {
   // get hold of back-end interface
-  dbe = edm::Service<DQMStore>().operator->();
+  dbe = std::make_unique<DQMStore>();
 
   const float XMIN = 0; const float XMAX = 50;
   h0 = dbe->book1D("histo0", "Example 1D histogram.", NBINS, XMIN, XMAX );

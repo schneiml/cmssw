@@ -46,7 +46,7 @@ class dEdxAnalyzer : public DQMEDAnalyzer {
   
  private:
   // ----------member data ---------------------------
-  DQMStore * dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
   edm::ParameterSet fullconf_;
   edm::ParameterSet conf_;
   

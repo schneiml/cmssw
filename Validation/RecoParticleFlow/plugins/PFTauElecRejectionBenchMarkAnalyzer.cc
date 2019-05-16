@@ -33,7 +33,7 @@ private:
   // ----------member data ---------------------------
 
   string outputfile;
-  DQMStore *db;
+  std::unique_ptr<DQMStore> db;
   string benchmarkLabel;
   double maxDeltaR;
   double minMCPt;
@@ -83,7 +83,7 @@ PFTauElecRejectionBenchmarkAnalyzer::PFTauElecRejectionBenchmarkAnalyzer(const e
   sGenMatchObjectLabel = iConfig.getParameter<string>("GenMatchObjectLabel");
   applyEcalCrackCut = iConfig.getParameter<bool>("ApplyEcalCrackCut");
 
-  db = edm::Service<DQMStore>().operator->();
+  db = std::make_unique<DQMStore>();
 
   PFTauElecRejectionBenchmark_.setup(outputfile,
                                      benchmarkLabel,

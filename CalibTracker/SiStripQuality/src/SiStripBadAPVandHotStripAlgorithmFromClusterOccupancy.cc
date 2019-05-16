@@ -837,7 +837,7 @@ void SiStripBadAPVandHotStripAlgorithmFromClusterOccupancy::initializeDQMHistogr
   oss.str("");
   oss << 1;  //runNumber
 
-  dqmStore = edm::Service<DQMStore>().operator->();
+  dqmStore = std::make_unique<DQMStore>();
   dqmStore->setCurrentFolder("ChannelStatusPlots");
 
   // Initialize histograms

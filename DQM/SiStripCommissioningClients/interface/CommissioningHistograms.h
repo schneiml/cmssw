@@ -141,7 +141,7 @@ class CommissioningHistograms {
   
   sistrip::RunType task_;
   
-  DQMStore* bei_;
+  std::unique_ptr<DQMStore> bei_;
   
   Analyses data_;
   

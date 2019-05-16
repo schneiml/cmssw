@@ -29,7 +29,7 @@ class DQMGenericTnPClient : public edm::EDAnalyzer{
   void calculateEfficiency(const std::string& dirName, const ParameterSet& pset);
     void findAllSubdirectories (const std::string& dir, std::set<std::string> * myList, TString pattern);
   private:
-    DQMStore * dqmStore;
+    std::unique_ptr<DQMStore> dqmStore;
     TFile * plots;
     vstring subDirs;
     std::string myDQMrootFolder;
@@ -55,7 +55,7 @@ void DQMGenericTnPClient::endRun(const edm::Run &run, const edm::EventSetup &set
 
   TPRegexp metacharacters("[\\^\\$\\.\\*\\+\\?\\|\\(\\)\\{\\}\\[\\]]");
 
-  dqmStore = Service<DQMStore>().operator->();
+  dqmStore = std::make_unique<DQMStore>();
   if( !dqmStore ){
     LogError("DQMGenericTnPClient")<<"Could not find DQMStore service\n";
     return;

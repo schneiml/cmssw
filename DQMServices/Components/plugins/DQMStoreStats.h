@@ -327,7 +327,7 @@ private:
   std::pair<unsigned int, unsigned int> readMemoryEntry( ) const;
   void print();
   
-  DQMStore* dbe_;
+  std::unique_ptr<DQMStore> dbe_;
   edm::ParameterSet parameters_;
 
   std::string subsystem_;

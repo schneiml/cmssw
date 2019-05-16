@@ -72,7 +72,7 @@ class HLTOverallSummary : public edm::EDAnalyzer {
 
    private:
 
-      DQMStore *dbe_;
+      std::unique_ptr<DQMStore> dbe_;
       edm::ParameterSet parameters_;
 
       bool verbose_;
@@ -88,7 +88,7 @@ HLTOverallSummary::HLTOverallSummary(const edm::ParameterSet& pset)
 
   using namespace edm;
   dbe_ = nullptr;
-  dbe_ = edm::Service<DQMStore>().operator->();
+  dbe_ = std::make_unique<DQMStore>();
   if (!dbe_) {
     LogInfo ("HLTMuonVal") << "Can't find DQMStore, no results will be saved"
                            << endl;

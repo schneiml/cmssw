@@ -21,7 +21,7 @@ void HarvestingAnalyzer::beginJob() { return; }
 
 void HarvestingAnalyzer::endJob() {
   dbe = nullptr;
-  dbe = edm::Service<DQMStore>().operator->();
+  dbe = std::make_unique<DQMStore>();
 
   if (dbe) {
     // monitoring element numerator and denominator histogram
