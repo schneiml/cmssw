@@ -35,8 +35,8 @@ EcalCondDBWriter::EcalCondDBWriter(edm::ParameterSet const &_ps)
     edm::LogInfo("EcalDQM") << "Initializing DQMStore from input ROOT files";
 
   // use parent instance instead
-  auto dqmStore_instance = std::make_unique<DQMStore>();
-  DQMStore &dqmStore(*dqmStore_instance);
+  auto dqmStore_instance = std::unique_ptr<DQMStore>(dqmstore_.release());
+  DQMStore& dqmStore(*dqmStore_instance);
 
   for (unsigned iF(0); iF < inputRootFiles.size(); ++iF) {
     std::string &fileName(inputRootFiles[iF]);

@@ -40,8 +40,8 @@
 #include <cstdlib>
 #include <numeric>
 
-SiStripMonitorQuality::SiStripMonitorQuality(edm::ParameterSet const &iConfig)
-    : dqmStore_(std::make_unique<DQMStore>()),
+SiStripMonitorQuality::SiStripMonitorQuality(edm::ParameterSet const& iConfig)
+    : dqmStore_(std::unique_ptr<DQMStore>(dqmstore_.release())),
       conf_(iConfig),
       m_cacheID_(0)
 
