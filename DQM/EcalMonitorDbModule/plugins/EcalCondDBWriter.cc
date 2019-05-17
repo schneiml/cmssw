@@ -36,7 +36,7 @@ EcalCondDBWriter::EcalCondDBWriter(edm::ParameterSet const &_ps)
 
   // use parent instance instead
   auto dqmStore_instance = std::make_unique<DQMStore>();
-  DQMStore& dqmStore(*dqmStore_instance);
+  DQMStore &dqmStore(*dqmStore_instance);
 
   for (unsigned iF(0); iF < inputRootFiles.size(); ++iF) {
     std::string &fileName(inputRootFiles[iF]);

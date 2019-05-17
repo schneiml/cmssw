@@ -50,7 +50,7 @@ const std::string SiStripMonitorPedestals::RunMode1 = "ConDBPlotsOnly";
 const std::string SiStripMonitorPedestals::RunMode2 = "CalculatedPlotsOnly";
 const std::string SiStripMonitorPedestals::RunMode3 = "AllPlots";
 
-SiStripMonitorPedestals::SiStripMonitorPedestals(edm::ParameterSet const& iConfig)
+SiStripMonitorPedestals::SiStripMonitorPedestals(edm::ParameterSet const &iConfig)
     : dqmStore_(std::make_unique<DQMStore>()),
       conf_(iConfig),
       pedsPSet_(iConfig.getParameter<edm::ParameterSet>("PedestalsPSet")),
