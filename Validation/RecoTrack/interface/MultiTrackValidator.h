@@ -33,7 +33,7 @@ class DeDxData;
 
 struct MultiTrackValidatorHistograms {
   MTVHistoProducerAlgoForTrackerHistograms histoProducerAlgo;
-  std::vector<ConcurrentMonitorElement> h_reco_coll, h_assoc_coll, h_assoc2_coll, h_simul_coll, h_looper_coll, h_pileup_coll;
+  std::vector<MonitorElement*> h_reco_coll, h_assoc_coll, h_assoc2_coll, h_simul_coll, h_looper_coll, h_pileup_coll;
 };
 
 class MultiTrackValidator : public DQMGlobalEDAnalyzer<MultiTrackValidatorHistograms> {
@@ -50,7 +50,7 @@ class MultiTrackValidator : public DQMGlobalEDAnalyzer<MultiTrackValidatorHistog
   /// Method called once per event
   void dqmAnalyze(const edm::Event&, const edm::EventSetup&, const Histograms& ) const override;
   /// Method called to book the DQM histograms
-  void bookHistograms(DQMStore::ConcurrentBooker&, edm::Run const&, edm::EventSetup const&, Histograms&) const override;
+  void bookHistograms(DQMStore::IBooker&, edm::Run const&, edm::EventSetup const&, Histograms&) const override;
 
 
  protected:

@@ -38,7 +38,7 @@ BeamConditionsMonitor::BeamConditionsMonitor( const ParameterSet& ps ):
 
 
 //--------------------------------------------------------
-void BeamConditionsMonitor::bookHistograms(DQMStore::ConcurrentBooker& i, const edm::Run& r, const edm::EventSetup& c, 
+void BeamConditionsMonitor::bookHistograms(DQMStore::IBooker& i, const edm::Run& r, const edm::EventSetup& c, 
                                            beamcond::RunCache& cache) const {
   
   // book some histograms here
@@ -46,14 +46,14 @@ void BeamConditionsMonitor::bookHistograms(DQMStore::ConcurrentBooker& i, const 
   i.setCurrentFolder(monitorName_+"Conditions");
   
   cache.h_x0_lumi = i.book1D("x0_lumi_cond","x coordinate of beam spot vs lumi (Cond)",10,0,10);
-  cache.h_x0_lumi.setAxisTitle("Lumisection",1);
-  cache.h_x0_lumi.setAxisTitle("x_{0} (cm)",2);
-  cache.h_x0_lumi.setOption("E1");
+  cache.h_x0_lumi->setAxisTitle("Lumisection",1);
+  cache.h_x0_lumi->setAxisTitle("x_{0} (cm)",2);
+  cache.h_x0_lumi->setOption("E1");
 
   cache.h_y0_lumi = i.book1D("y0_lumi_cond","y coordinate of beam spot vs lumi (Cond)",10,0,10);
-  cache.h_y0_lumi.setAxisTitle("Lumisection",1);
-  cache.h_y0_lumi.setAxisTitle("y_{0} (cm)",2);
-  cache.h_y0_lumi.setOption("E1");
+  cache.h_y0_lumi->setAxisTitle("Lumisection",1);
+  cache.h_y0_lumi->setAxisTitle("y_{0} (cm)",2);
+  cache.h_y0_lumi->setOption("E1");
   
 }
 
@@ -67,8 +67,8 @@ BeamConditionsMonitor::globalBeginLuminosityBlock(const edm::LuminosityBlock& lu
 
   auto cache = runCache(lumiSeg.getRun().index() );
   LogInfo("BeamConditions") << "[BeamConditionsMonitor]:" << condBeamSpot << endl;
-  cache->h_x0_lumi.shiftFillLast( condBeamSpot.GetX(), condBeamSpot.GetXError(), 1 );
-  cache->h_y0_lumi.shiftFillLast( condBeamSpot.GetY(), condBeamSpot.GetYError(), 1 );
+  cache->h_x0_lumi->shiftFillLast( condBeamSpot.GetX(), condBeamSpot.GetXError(), 1 );
+  cache->h_y0_lumi->shiftFillLast( condBeamSpot.GetY(), condBeamSpot.GetYError(), 1 );
 
   return std::shared_ptr<void>{};
 }

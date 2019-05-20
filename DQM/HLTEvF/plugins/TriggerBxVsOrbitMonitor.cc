@@ -27,9 +27,9 @@
 
 namespace {
   struct RunBasedHistograms {
-    ConcurrentMonitorElement              orbit_bx_all;
-    std::vector<ConcurrentMonitorElement> orbit_bx;
-    std::vector<ConcurrentMonitorElement> orbit_bx_all_byLS;
+    MonitorElement*              orbit_bx_all;
+    std::vector<MonitorElement*> orbit_bx;
+    std::vector<MonitorElement*> orbit_bx_all_byLS;
   };
 }
 
@@ -42,7 +42,7 @@ public:
 
 private:
   void dqmBeginRun(edm::Run const&, edm::EventSetup const&, RunBasedHistograms &) const override;
-  void bookHistograms(DQMStore::ConcurrentBooker &, edm::Run const&, edm::EventSetup const&, RunBasedHistograms &) const override;
+  void bookHistograms(DQMStore::IBooker &, edm::Run const&, edm::EventSetup const&, RunBasedHistograms &) const override;
   void dqmAnalyze(edm::Event const&, edm::EventSetup const&, RunBasedHistograms const&) const override;
 
   // number of bunch crossings
@@ -120,7 +120,7 @@ void TriggerBxVsOrbitMonitor::dqmBeginRun(edm::Run const& run, edm::EventSetup c
   histograms.orbit_bx.resize(std::size(s_tcds_trigger_types));
 }
 
-void TriggerBxVsOrbitMonitor::bookHistograms(DQMStore::ConcurrentBooker & booker, edm::Run const& run, edm::EventSetup const& setup, RunBasedHistograms & histograms) const
+void TriggerBxVsOrbitMonitor::bookHistograms(DQMStore::IBooker & booker, edm::Run const& run, edm::EventSetup const& setup, RunBasedHistograms & histograms) const
 {
 // TCDS trigger type plots
   size_t size = std::size(s_tcds_trigger_types);
@@ -134,8 +134,8 @@ void TriggerBxVsOrbitMonitor::bookHistograms(DQMStore::ConcurrentBooker & booker
       "Event orbits vs. bunch crossing",
       nBX, m_minBX - 0.5, m_maxBX + 0.5,
       s_orbit_range + 1, -0.5, s_orbit_range + 0.5);
-  histograms.orbit_bx_all.setXTitle("BX");
-  histograms.orbit_bx_all.setYTitle("orbit");
+  histograms.orbit_bx_all->setXTitle("BX");
+  histograms.orbit_bx_all->setYTitle("orbit");
 
   for (unsigned int i = 0; i < nLS; ++i) {
     std::string iname = std::to_string(i);
@@ -169,7 +169,7 @@ void TriggerBxVsOrbitMonitor::dqmAnalyze(edm::Event const& event, edm::EventSetu
   unsigned int ls    = event.id().luminosityBlock();
   unsigned int orbit = event.orbitNumber() % s_orbit_range;
   unsigned int bx    = event.bunchCrossing();
-  histograms.orbit_bx_all.fill(bx, orbit);
+  histograms.orbit_bx_all->Fill(bx, orbit);
 
   int iLS = ls - m_minLS;
   if (iLS >= 0 and iLS < int(histograms.orbit_bx_all_byLS.size()))

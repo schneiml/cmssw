@@ -41,7 +41,7 @@ inline void divide(MonitorElement *eff, const MonitorElement *numerator, const M
 /// A set of histograms of residuals and pulls for 1D RecHits
 class HRes1DHit {
 public:
-  HRes1DHit(const std::string &name, DQMStore::ConcurrentBooker &booker, bool doall = true, bool local = true) {
+  HRes1DHit(const std::string &name, DQMStore::IBooker &booker, bool doall = true, bool local = true) {
     std::string pre = "1D_";
     pre += name;
     doall_ = doall;
@@ -86,23 +86,23 @@ public:
     // Reso, pull
     float res = distRecHit - distSimHit;
     if (doall_) {
-      hDist.fill(distRecHit);
-      hResVsAngle.fill(thetaSimHit, res);
-      hResVsDistFE.fill(distFESimHit, res);
+      hDist->Fill(distRecHit);
+      hResVsAngle->Fill(thetaSimHit, res);
+      hResVsDistFE->Fill(distFESimHit, res);
     }
-    hRes.fill(res);
+    hRes->Fill(res);
     hResSt[station - 1].fill(res);
-    hResVsEta.fill(etaSimHit, res);
-    hResVsPhi.fill(phiSimHit, res);
-    hResVsPos.fill(distSimHit, res);
+    hResVsEta->Fill(etaSimHit, res);
+    hResVsPhi->Fill(phiSimHit, res);
+    hResVsPos->Fill(distSimHit, res);
     if (errRecHit != 0) {
       float pull = res / errRecHit;
-      hPull.fill(pull);
+      hPull->Fill(pull);
       hPullSt[station - 1].fill(pull);
       if (doall_) {
-        hPullVsPos.fill(distSimHit, pull);
-        hPullVsAngle.fill(thetaSimHit, pull);
-        hPullVsDistFE.fill(distFESimHit, pull);
+        hPullVsPos->Fill(distSimHit, pull);
+        hPullVsAngle->Fill(thetaSimHit, pull);
+        hPullVsDistFE->Fill(distFESimHit, pull);
       }
     } else {
       std::cout << "Error: RecHit error = 0" << std::endl;
@@ -110,20 +110,20 @@ public:
   }
 
 private:
-  ConcurrentMonitorElement hDist;
-  ConcurrentMonitorElement hRes;
-  ConcurrentMonitorElement hResSt[4];
-  ConcurrentMonitorElement hResVsEta;
-  ConcurrentMonitorElement hResVsPhi;
-  ConcurrentMonitorElement hResVsPos;
-  ConcurrentMonitorElement hResVsAngle;
-  ConcurrentMonitorElement hResVsDistFE;
+  MonitorElement* hDist;
+  MonitorElement* hRes;
+  MonitorElement* hResSt[4];
+  MonitorElement* hResVsEta;
+  MonitorElement* hResVsPhi;
+  MonitorElement* hResVsPos;
+  MonitorElement* hResVsAngle;
+  MonitorElement* hResVsDistFE;
 
-  ConcurrentMonitorElement hPull;
-  ConcurrentMonitorElement hPullSt[4];
-  ConcurrentMonitorElement hPullVsPos;
-  ConcurrentMonitorElement hPullVsAngle;
-  ConcurrentMonitorElement hPullVsDistFE;
+  MonitorElement* hPull;
+  MonitorElement* hPullSt[4];
+  MonitorElement* hPullVsPos;
+  MonitorElement* hPullVsAngle;
+  MonitorElement* hPullVsDistFE;
   bool doall_;
   std::string name_;
 };
@@ -132,7 +132,7 @@ private:
 /// A set of histograms fo efficiency computation for 1D RecHits (producer)
 class HEff1DHit {
 public:
-  HEff1DHit(const std::string &name, DQMStore::ConcurrentBooker &booker) {
+  HEff1DHit(const std::string &name, DQMStore::IBooker &booker) {
     std::string pre = "1D_";
     pre += name;
     name_ = pre;
@@ -147,25 +147,25 @@ public:
   }
 
   void fill(float distSimHit, float etaSimHit, float phiSimHit, bool fillRecHit) {
-    hEtaMuSimHit.fill(etaSimHit);
-    hPhiMuSimHit.fill(phiSimHit);
-    hDistMuSimHit.fill(distSimHit);
+    hEtaMuSimHit->Fill(etaSimHit);
+    hPhiMuSimHit->Fill(phiSimHit);
+    hDistMuSimHit->Fill(distSimHit);
     if (fillRecHit) {
-      hEtaRecHit.fill(etaSimHit);
-      hPhiRecHit.fill(phiSimHit);
-      hDistRecHit.fill(distSimHit);
+      hEtaRecHit->Fill(etaSimHit);
+      hPhiRecHit->Fill(phiSimHit);
+      hDistRecHit->Fill(distSimHit);
     }
   }
 
 private:
-  ConcurrentMonitorElement hEtaMuSimHit;
-  ConcurrentMonitorElement hEtaRecHit;
+  MonitorElement* hEtaMuSimHit;
+  MonitorElement* hEtaRecHit;
 
-  ConcurrentMonitorElement hPhiMuSimHit;
-  ConcurrentMonitorElement hPhiRecHit;
+  MonitorElement* hPhiMuSimHit;
+  MonitorElement* hPhiRecHit;
 
-  ConcurrentMonitorElement hDistMuSimHit;
-  ConcurrentMonitorElement hDistRecHit;
+  MonitorElement* hDistMuSimHit;
+  MonitorElement* hDistRecHit;
 
   std::string name_;
 };
@@ -205,7 +205,7 @@ private:
 // Histos of residuals for 2D rechits
 class HRes2DHit {
 public:
-  HRes2DHit(const std::string &name, DQMStore::ConcurrentBooker &booker, bool doall = true, bool local = true) {
+  HRes2DHit(const std::string &name, DQMStore::IBooker &booker, bool doall = true, bool local = true) {
     doall_ = doall;
     std::string pre = "2D_";
     pre += name;
@@ -277,36 +277,36 @@ public:
             float sigmaPos,
             float sigmaAngle) {
     float resAngle = angleRecSegment - angleSimSegment;
-    hResAngle.fill(resAngle);
+    hResAngle->Fill(resAngle);
     float resPos = posRecSegment - posSimSegment;
-    hResPos.fill(resPos);
-    hPullAngle.fill(resAngle / sigmaAngle);
-    hPullPos.fill(resPos / sigmaPos);
+    hResPos->Fill(resPos);
+    hPullAngle->Fill(resAngle / sigmaAngle);
+    hPullPos->Fill(resPos / sigmaPos);
     if (doall_) {
-      hRecAngle.fill(angleRecSegment);
-      hSimAngle.fill(angleSimSegment);
-      hRecVsSimAngle.fill(angleSimSegment, angleRecSegment);
-      hResAngleVsEta.fill(etaSimSegment, resAngle);
-      hResAngleVsPhi.fill(phiSimSegment, resAngle);
-      hResPosVsEta.fill(etaSimSegment, resPos);
-      hResPosVsPhi.fill(phiSimSegment, resPos);
-      hResPosVsResAngle.fill(resAngle, resPos);
+      hRecAngle->Fill(angleRecSegment);
+      hSimAngle->Fill(angleSimSegment);
+      hRecVsSimAngle->Fill(angleSimSegment, angleRecSegment);
+      hResAngleVsEta->Fill(etaSimSegment, resAngle);
+      hResAngleVsPhi->Fill(phiSimSegment, resAngle);
+      hResPosVsEta->Fill(etaSimSegment, resPos);
+      hResPosVsPhi->Fill(phiSimSegment, resPos);
+      hResPosVsResAngle->Fill(resAngle, resPos);
     }
   }
 
 private:
-  ConcurrentMonitorElement hRecAngle;
-  ConcurrentMonitorElement hSimAngle;
-  ConcurrentMonitorElement hRecVsSimAngle;
-  ConcurrentMonitorElement hResAngle;
-  ConcurrentMonitorElement hResAngleVsEta;
-  ConcurrentMonitorElement hResAngleVsPhi;
-  ConcurrentMonitorElement hResPos;
-  ConcurrentMonitorElement hResPosVsEta;
-  ConcurrentMonitorElement hResPosVsPhi;
-  ConcurrentMonitorElement hResPosVsResAngle;
-  ConcurrentMonitorElement hPullAngle;
-  ConcurrentMonitorElement hPullPos;
+  MonitorElement* hRecAngle;
+  MonitorElement* hSimAngle;
+  MonitorElement* hRecVsSimAngle;
+  MonitorElement* hResAngle;
+  MonitorElement* hResAngleVsEta;
+  MonitorElement* hResAngleVsPhi;
+  MonitorElement* hResPos;
+  MonitorElement* hResPosVsEta;
+  MonitorElement* hResPosVsPhi;
+  MonitorElement* hResPosVsResAngle;
+  MonitorElement* hPullAngle;
+  MonitorElement* hPullPos;
 
   std::string name_;
   bool doall_;
@@ -316,7 +316,7 @@ private:
 // Histos for 2D RecHit efficiency (producer)
 class HEff2DHit {
 public:
-  HEff2DHit(const std::string &name, DQMStore::ConcurrentBooker &booker) {
+  HEff2DHit(const std::string &name, DQMStore::IBooker &booker) {
     std::string pre = "2D_";
     pre += name;
     name_ = pre;
@@ -335,28 +335,28 @@ public:
   }
 
   void fill(float etaSimSegm, float phiSimSegm, float posSimSegm, float angleSimSegm, bool fillRecHit) {
-    hEtaSimSegm.fill(etaSimSegm);
-    hPhiSimSegm.fill(phiSimSegm);
-    hPosSimSegm.fill(posSimSegm);
-    hAngleSimSegm.fill(angleSimSegm);
+    hEtaSimSegm->Fill(etaSimSegm);
+    hPhiSimSegm->Fill(phiSimSegm);
+    hPosSimSegm->Fill(posSimSegm);
+    hAngleSimSegm->Fill(angleSimSegm);
 
     if (fillRecHit) {
-      hEtaRecHit.fill(etaSimSegm);
-      hPhiRecHit.fill(phiSimSegm);
-      hPosRecHit.fill(posSimSegm);
-      hAngleRecHit.fill(angleSimSegm);
+      hEtaRecHit->Fill(etaSimSegm);
+      hPhiRecHit->Fill(phiSimSegm);
+      hPosRecHit->Fill(posSimSegm);
+      hAngleRecHit->Fill(angleSimSegm);
     }
   }
 
 private:
-  ConcurrentMonitorElement hEtaSimSegm;
-  ConcurrentMonitorElement hEtaRecHit;
-  ConcurrentMonitorElement hPhiSimSegm;
-  ConcurrentMonitorElement hPhiRecHit;
-  ConcurrentMonitorElement hPosSimSegm;
-  ConcurrentMonitorElement hPosRecHit;
-  ConcurrentMonitorElement hAngleSimSegm;
-  ConcurrentMonitorElement hAngleRecHit;
+  MonitorElement* hEtaSimSegm;
+  MonitorElement* hEtaRecHit;
+  MonitorElement* hPhiSimSegm;
+  MonitorElement* hPhiRecHit;
+  MonitorElement* hPosSimSegm;
+  MonitorElement* hPosRecHit;
+  MonitorElement* hAngleSimSegm;
+  MonitorElement* hAngleRecHit;
 
   std::string name_;
 };
@@ -400,7 +400,7 @@ private:
 // Histos of residuals for 4D rechits
 class HRes4DHit {
 public:
-  HRes4DHit(const std::string &name, DQMStore::ConcurrentBooker &booker, bool doall = true, bool local = true)
+  HRes4DHit(const std::string &name, DQMStore::IBooker &booker, bool doall = true, bool local = true)
       : local_(local) {
     std::string pre = "4D_";
     pre += name;
@@ -787,126 +787,126 @@ public:
             float t0Phi,
             float t0Theta) {
     float resAlpha = recDirectionAlpha - simDirectionAlpha;
-    hResAlpha.fill(resAlpha);
-    hPullAlpha.fill(resAlpha / sigmaAlpha);
+    hResAlpha->Fill(resAlpha);
+    hPullAlpha->Fill(resAlpha / sigmaAlpha);
     float resBeta = recDirectionBeta - simDirectionBeta;
-    hResBeta.fill(resBeta);
-    hPullBeta.fill(resBeta / sigmaBeta);
+    hResBeta->Fill(resBeta);
+    hPullBeta->Fill(resBeta / sigmaBeta);
     float resX = recX - simX;
-    hResX.fill(resX);
-    hPullX.fill(resX / sigmaX);
+    hResX->Fill(resX);
+    hPullX->Fill(resX / sigmaX);
     float resY = recY - simY;
-    hResY.fill(resY);
-    hPullY.fill(resY / sigmaY);
+    hResY->Fill(resY);
+    hPullY->Fill(resY / sigmaY);
 
     float resBetaRZ = recBetaRZ - simBetaRZ;
-    hResBetaRZ.fill(resBetaRZ);
-    hPullBetaRZ.fill(resBetaRZ / sigmaBetaRZ);
+    hResBetaRZ->Fill(resBetaRZ);
+    hPullBetaRZ->Fill(resBetaRZ / sigmaBetaRZ);
     float resYRZ = recYRZ - simYRZ;
-    hResYRZ.fill(resYRZ);
-    hPullYRZ.fill(resYRZ / sigmaYRZ);
+    hResYRZ->Fill(resYRZ);
+    hPullYRZ->Fill(resYRZ / sigmaYRZ);
     if (doall_) {
-      hRecAlpha.fill(recDirectionAlpha);
-      hRecBeta.fill(recDirectionBeta);
-      hSimAlpha.fill(simDirectionAlpha);
-      hSimBeta.fill(simDirectionBeta);
-      hRecVsSimAlpha.fill(simDirectionAlpha, recDirectionAlpha);
-      hRecVsSimBeta.fill(simDirectionBeta, recDirectionBeta);
-      hResAlphaVsEta.fill(simEta, resAlpha);
-      hResAlphaVsPhi.fill(simPhi, resAlpha);
-      hPullAlphaVsEta.fill(simEta, resAlpha / sigmaAlpha);
-      hPullAlphaVsPhi.fill(simPhi, resAlpha / sigmaAlpha);
-      hResBetaVsEta.fill(simEta, resBeta);
-      hResBetaVsPhi.fill(simPhi, resBeta);
-      hPullBetaVsEta.fill(simEta, resBeta / sigmaBeta);
-      hPullBetaVsPhi.fill(simPhi, resBeta / sigmaBeta);
-      hResXVsEta.fill(simEta, resX);
-      hResXVsPhi.fill(simPhi, resX);
-      hPullXVsEta.fill(simEta, resX / sigmaX);
-      hPullXVsPhi.fill(simPhi, resX / sigmaX);
-      hResYVsEta.fill(simEta, resY);
-      hResYVsPhi.fill(simPhi, resY);
-      hPullYVsEta.fill(simEta, resY / sigmaY);
-      hPullYVsPhi.fill(simPhi, resY / sigmaY);
-      hResAlphaVsResBeta.fill(resBeta, resAlpha);
-      hResXVsResY.fill(resY, resX);
-      hResAlphaVsResX.fill(resX, resAlpha);
-      hResAlphaVsResY.fill(resY, resAlpha);
+      hRecAlpha->Fill(recDirectionAlpha);
+      hRecBeta->Fill(recDirectionBeta);
+      hSimAlpha->Fill(simDirectionAlpha);
+      hSimBeta->Fill(simDirectionBeta);
+      hRecVsSimAlpha->Fill(simDirectionAlpha, recDirectionAlpha);
+      hRecVsSimBeta->Fill(simDirectionBeta, recDirectionBeta);
+      hResAlphaVsEta->Fill(simEta, resAlpha);
+      hResAlphaVsPhi->Fill(simPhi, resAlpha);
+      hPullAlphaVsEta->Fill(simEta, resAlpha / sigmaAlpha);
+      hPullAlphaVsPhi->Fill(simPhi, resAlpha / sigmaAlpha);
+      hResBetaVsEta->Fill(simEta, resBeta);
+      hResBetaVsPhi->Fill(simPhi, resBeta);
+      hPullBetaVsEta->Fill(simEta, resBeta / sigmaBeta);
+      hPullBetaVsPhi->Fill(simPhi, resBeta / sigmaBeta);
+      hResXVsEta->Fill(simEta, resX);
+      hResXVsPhi->Fill(simPhi, resX);
+      hPullXVsEta->Fill(simEta, resX / sigmaX);
+      hPullXVsPhi->Fill(simPhi, resX / sigmaX);
+      hResYVsEta->Fill(simEta, resY);
+      hResYVsPhi->Fill(simPhi, resY);
+      hPullYVsEta->Fill(simEta, resY / sigmaY);
+      hPullYVsPhi->Fill(simPhi, resY / sigmaY);
+      hResAlphaVsResBeta->Fill(resBeta, resAlpha);
+      hResXVsResY->Fill(resY, resX);
+      hResAlphaVsResX->Fill(resX, resAlpha);
+      hResAlphaVsResY->Fill(resY, resAlpha);
 
       // RZ SuperLayer
-      hRecBetaRZ.fill(recBetaRZ);
-      hSimBetaRZ.fill(simBetaRZ);
-      hRecVsSimBetaRZ.fill(simBetaRZ, recBetaRZ);
-      hResBetaVsEtaRZ.fill(simEta, resBetaRZ);
-      hResBetaVsPhiRZ.fill(simPhi, resBetaRZ);
-      hPullBetaVsEtaRZ.fill(simEta, resBetaRZ / sigmaBetaRZ);
-      hPullBetaVsPhiRZ.fill(simPhi, resBetaRZ / sigmaBetaRZ);
-      hResYVsEtaRZ.fill(simEta, resYRZ);
-      hResYVsPhiRZ.fill(simPhi, resYRZ);
-      hPullYVsEtaRZ.fill(simEta, resYRZ / sigmaYRZ);
-      hPullYVsPhiRZ.fill(simPhi, resYRZ / sigmaYRZ);
+      hRecBetaRZ->Fill(recBetaRZ);
+      hSimBetaRZ->Fill(simBetaRZ);
+      hRecVsSimBetaRZ->Fill(simBetaRZ, recBetaRZ);
+      hResBetaVsEtaRZ->Fill(simEta, resBetaRZ);
+      hResBetaVsPhiRZ->Fill(simPhi, resBetaRZ);
+      hPullBetaVsEtaRZ->Fill(simEta, resBetaRZ / sigmaBetaRZ);
+      hPullBetaVsPhiRZ->Fill(simPhi, resBetaRZ / sigmaBetaRZ);
+      hResYVsEtaRZ->Fill(simEta, resYRZ);
+      hResYVsPhiRZ->Fill(simPhi, resYRZ);
+      hPullYVsEtaRZ->Fill(simEta, resYRZ / sigmaYRZ);
+      hPullYVsPhiRZ->Fill(simPhi, resYRZ / sigmaYRZ);
     }
     if (local_) {
-      hHitMult.fill(nHitsPhi, nHitsTheta);
-      ht0.fill(t0Phi, t0Theta);
+      hHitMult->Fill(nHitsPhi, nHitsTheta);
+      ht0->Fill(t0Phi, t0Theta);
     }
   }
 
 private:
-  ConcurrentMonitorElement hRecAlpha;
-  ConcurrentMonitorElement hRecBeta;
-  ConcurrentMonitorElement hSimAlpha;
-  ConcurrentMonitorElement hSimBeta;
-  ConcurrentMonitorElement hRecVsSimAlpha;
-  ConcurrentMonitorElement hRecVsSimBeta;
-  ConcurrentMonitorElement hResAlpha;
-  ConcurrentMonitorElement hResAlphaVsEta;
-  ConcurrentMonitorElement hResAlphaVsPhi;
-  ConcurrentMonitorElement hResBeta;
-  ConcurrentMonitorElement hResBetaVsEta;
-  ConcurrentMonitorElement hResBetaVsPhi;
-  ConcurrentMonitorElement hResX;
-  ConcurrentMonitorElement hResXVsEta;
-  ConcurrentMonitorElement hResXVsPhi;
-  ConcurrentMonitorElement hResY;
-  ConcurrentMonitorElement hResYVsEta;
-  ConcurrentMonitorElement hResYVsPhi;
-  ConcurrentMonitorElement hResAlphaVsResBeta;
-  ConcurrentMonitorElement hResXVsResY;
-  ConcurrentMonitorElement hResAlphaVsResX;
-  ConcurrentMonitorElement hResAlphaVsResY;
-  ConcurrentMonitorElement hPullAlpha;
-  ConcurrentMonitorElement hPullAlphaVsEta;
-  ConcurrentMonitorElement hPullAlphaVsPhi;
-  ConcurrentMonitorElement hPullBeta;
-  ConcurrentMonitorElement hPullBetaVsEta;
-  ConcurrentMonitorElement hPullBetaVsPhi;
-  ConcurrentMonitorElement hPullX;
-  ConcurrentMonitorElement hPullXVsEta;
-  ConcurrentMonitorElement hPullXVsPhi;
-  ConcurrentMonitorElement hPullY;
-  ConcurrentMonitorElement hPullYVsEta;
-  ConcurrentMonitorElement hPullYVsPhi;
+  MonitorElement* hRecAlpha;
+  MonitorElement* hRecBeta;
+  MonitorElement* hSimAlpha;
+  MonitorElement* hSimBeta;
+  MonitorElement* hRecVsSimAlpha;
+  MonitorElement* hRecVsSimBeta;
+  MonitorElement* hResAlpha;
+  MonitorElement* hResAlphaVsEta;
+  MonitorElement* hResAlphaVsPhi;
+  MonitorElement* hResBeta;
+  MonitorElement* hResBetaVsEta;
+  MonitorElement* hResBetaVsPhi;
+  MonitorElement* hResX;
+  MonitorElement* hResXVsEta;
+  MonitorElement* hResXVsPhi;
+  MonitorElement* hResY;
+  MonitorElement* hResYVsEta;
+  MonitorElement* hResYVsPhi;
+  MonitorElement* hResAlphaVsResBeta;
+  MonitorElement* hResXVsResY;
+  MonitorElement* hResAlphaVsResX;
+  MonitorElement* hResAlphaVsResY;
+  MonitorElement* hPullAlpha;
+  MonitorElement* hPullAlphaVsEta;
+  MonitorElement* hPullAlphaVsPhi;
+  MonitorElement* hPullBeta;
+  MonitorElement* hPullBetaVsEta;
+  MonitorElement* hPullBetaVsPhi;
+  MonitorElement* hPullX;
+  MonitorElement* hPullXVsEta;
+  MonitorElement* hPullXVsPhi;
+  MonitorElement* hPullY;
+  MonitorElement* hPullYVsEta;
+  MonitorElement* hPullYVsPhi;
 
   // RZ SL
-  ConcurrentMonitorElement hRecBetaRZ;
-  ConcurrentMonitorElement hSimBetaRZ;
-  ConcurrentMonitorElement hRecVsSimBetaRZ;
-  ConcurrentMonitorElement hResBetaRZ;
-  ConcurrentMonitorElement hResBetaVsEtaRZ;
-  ConcurrentMonitorElement hResBetaVsPhiRZ;
-  ConcurrentMonitorElement hResYRZ;
-  ConcurrentMonitorElement hResYVsEtaRZ;
-  ConcurrentMonitorElement hResYVsPhiRZ;
-  ConcurrentMonitorElement hPullBetaRZ;
-  ConcurrentMonitorElement hPullBetaVsEtaRZ;
-  ConcurrentMonitorElement hPullBetaVsPhiRZ;
-  ConcurrentMonitorElement hPullYRZ;
-  ConcurrentMonitorElement hPullYVsEtaRZ;
-  ConcurrentMonitorElement hPullYVsPhiRZ;
+  MonitorElement* hRecBetaRZ;
+  MonitorElement* hSimBetaRZ;
+  MonitorElement* hRecVsSimBetaRZ;
+  MonitorElement* hResBetaRZ;
+  MonitorElement* hResBetaVsEtaRZ;
+  MonitorElement* hResBetaVsPhiRZ;
+  MonitorElement* hResYRZ;
+  MonitorElement* hResYVsEtaRZ;
+  MonitorElement* hResYVsPhiRZ;
+  MonitorElement* hPullBetaRZ;
+  MonitorElement* hPullBetaVsEtaRZ;
+  MonitorElement* hPullBetaVsPhiRZ;
+  MonitorElement* hPullYRZ;
+  MonitorElement* hPullYVsEtaRZ;
+  MonitorElement* hPullYVsPhiRZ;
 
-  ConcurrentMonitorElement hHitMult;
-  ConcurrentMonitorElement ht0;
+  MonitorElement* hHitMult;
+  MonitorElement* ht0;
 
   bool doall_;
   bool local_;
@@ -917,7 +917,7 @@ private:
 /// A set of histograms for efficiency 4D RecHits (producer)
 class HEff4DHit {
 public:
-  HEff4DHit(const std::string &name, DQMStore::ConcurrentBooker &booker) {
+  HEff4DHit(const std::string &name, DQMStore::IBooker &booker) {
     std::string pre = "4D_";
     pre += name;
     name_ = pre;
@@ -955,39 +955,39 @@ public:
             float betaSimSegm,
             bool fillRecHit,
             int nSeg) {
-    hEtaSimSegm.fill(etaSimSegm);
-    hPhiSimSegm.fill(phiSimSegm);
-    hXSimSegm.fill(xSimSegm);
-    hYSimSegm.fill(ySimSegm);
-    hAlphaSimSegm.fill(alphaSimSegm);
-    hBetaSimSegm.fill(betaSimSegm);
-    hNSeg.fill(nSeg);
+    hEtaSimSegm->Fill(etaSimSegm);
+    hPhiSimSegm->Fill(phiSimSegm);
+    hXSimSegm->Fill(xSimSegm);
+    hYSimSegm->Fill(ySimSegm);
+    hAlphaSimSegm->Fill(alphaSimSegm);
+    hBetaSimSegm->Fill(betaSimSegm);
+    hNSeg->Fill(nSeg);
 
     if (fillRecHit) {
-      hEtaRecHit.fill(etaSimSegm);
-      hPhiRecHit.fill(phiSimSegm);
-      hXRecHit.fill(xSimSegm);
-      hYRecHit.fill(ySimSegm);
-      hAlphaRecHit.fill(alphaSimSegm);
-      hBetaRecHit.fill(betaSimSegm);
+      hEtaRecHit->Fill(etaSimSegm);
+      hPhiRecHit->Fill(phiSimSegm);
+      hXRecHit->Fill(xSimSegm);
+      hYRecHit->Fill(ySimSegm);
+      hAlphaRecHit->Fill(alphaSimSegm);
+      hBetaRecHit->Fill(betaSimSegm);
     }
   }
 
 private:
-  ConcurrentMonitorElement hEtaSimSegm;
-  ConcurrentMonitorElement hEtaRecHit;
-  ConcurrentMonitorElement hPhiSimSegm;
-  ConcurrentMonitorElement hPhiRecHit;
-  ConcurrentMonitorElement hXSimSegm;
-  ConcurrentMonitorElement hXRecHit;
-  ConcurrentMonitorElement hYSimSegm;
-  ConcurrentMonitorElement hYRecHit;
-  ConcurrentMonitorElement hAlphaSimSegm;
-  ConcurrentMonitorElement hAlphaRecHit;
-  ConcurrentMonitorElement hBetaSimSegm;
-  ConcurrentMonitorElement hBetaRecHit;
+  MonitorElement* hEtaSimSegm;
+  MonitorElement* hEtaRecHit;
+  MonitorElement* hPhiSimSegm;
+  MonitorElement* hPhiRecHit;
+  MonitorElement* hXSimSegm;
+  MonitorElement* hXRecHit;
+  MonitorElement* hYSimSegm;
+  MonitorElement* hYRecHit;
+  MonitorElement* hAlphaSimSegm;
+  MonitorElement* hAlphaRecHit;
+  MonitorElement* hBetaSimSegm;
+  MonitorElement* hBetaRecHit;
 
-  ConcurrentMonitorElement hNSeg;
+  MonitorElement* hNSeg;
 
   std::string name_;
 };

@@ -512,7 +512,7 @@ SiStripGainsPCLWorker::fillDescriptions(edm::ConfigurationDescriptions& descript
 
 //********************************************************************************//
 void 
-SiStripGainsPCLWorker::bookHistograms(DQMStore::ConcurrentBooker & ibooker, edm::Run const& run, edm::EventSetup const& setup, APVGain::APVGainHistograms & histograms) const {
+SiStripGainsPCLWorker::bookHistograms(DQMStore::IBooker & ibooker, edm::Run const& run, edm::EventSetup const& setup, APVGain::APVGainHistograms & histograms) const {
 
   ibooker.cd();
   std::string dqm_dir = m_DQMdir;
