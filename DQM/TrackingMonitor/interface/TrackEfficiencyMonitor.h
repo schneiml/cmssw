@@ -70,7 +70,6 @@ class TrackEfficiencyMonitor : public DQMEDAnalyzer {
 
   std::string histname;  //for naming the histograms 
   
-  std::unique_ptr<DQMStore> dqmStore_;
   edm::ParameterSet conf_;
   
   double theRadius_;

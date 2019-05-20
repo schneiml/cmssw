@@ -75,8 +75,7 @@
 //
 // constructors and destructor
 //
-LogMessageMonitor::LogMessageMonitor(const edm::ParameterSet& iConfig)
-    : dqmStore_(std::unique_ptr<DQMStore>(dqmstore_.release())),
+LogMessageMonitor::LogMessageMonitor(const edm::ParameterSet& iConfig) :
       conf_(iConfig),
       pluginsMonName_(iConfig.getParameter<std::string>("pluginsMonName")),
       modules_vector_(iConfig.getParameter<std::vector<std::string> >("modules")),
@@ -264,8 +263,8 @@ void LogMessageMonitor::endJob() {
   bool outputMEsInRootFile = conf_.getParameter<bool>("OutputMEsInRootFile");
   std::string outputFileName = conf_.getParameter<std::string>("OutputFileName");
   if (outputMEsInRootFile) {
-    dqmStore_->showDirStructure();
-    dqmStore_->save(outputFileName);
+    dqmstore_->showDirStructure();
+    dqmstore_->save(outputFileName);
   }
 }
 

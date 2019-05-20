@@ -19,8 +19,7 @@
 #include <string>
 #include "TMath.h"
 
-dEdxAnalyzer::dEdxAnalyzer(const edm::ParameterSet& iConfig)
-    : dqmStore_(std::unique_ptr<DQMStore>(dqmstore_.release())),
+dEdxAnalyzer::dEdxAnalyzer(const edm::ParameterSet& iConfig) :
       fullconf_(iConfig),
       conf_(fullconf_.getParameter<edm::ParameterSet>("dEdxParameters")),
       doAllPlots_(conf_.getParameter<bool>("doAllPlots")),
@@ -46,8 +45,8 @@ void dEdxAnalyzer::endJob() {
   bool outputMEsInRootFile = conf_.getParameter<bool>("OutputMEsInRootFile");
   std::string outputFileName = conf_.getParameter<std::string>("OutputFileName");
   if (outputMEsInRootFile) {
-    dqmStore_->showDirStructure();
-    dqmStore_->save(outputFileName);
+    dqmstore_->showDirStructure();
+    dqmstore_->save(outputFileName);
   }
 }
 

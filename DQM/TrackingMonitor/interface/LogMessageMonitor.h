@@ -72,7 +72,6 @@ class LogMessageMonitor : public DQMEDAnalyzer {
 
       std::string histname;  //for naming the histograms according to algorithm used
       
-      std::unique_ptr<DQMStore> dqmStore_;
       edm::ParameterSet conf_;
 
       std::map<std::string,int> modulesMap;

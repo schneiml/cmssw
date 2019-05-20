@@ -80,7 +80,6 @@ private:
   
  private:
   
-  std::unique_ptr<DQMStore> dbe_;
   std::string dirName_;
   std::string subsystemname_;
   edm::ParameterSet pset;

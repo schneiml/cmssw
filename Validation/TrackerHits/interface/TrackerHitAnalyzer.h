@@ -50,7 +50,6 @@ private:
   edm::EDGetTokenT<edm::PSimHitContainer> edmPSimHitContainer_siTECLow_Token_, edmPSimHitContainer_siTECHigh_Token_;
   edm::EDGetTokenT<edm::SimTrackContainer> edmSimTrackContainerToken_;
 
-  std::unique_ptr<DQMStore> fDBE;
   edm::ParameterSet conf_;
 
   MonitorElement *htofeta;

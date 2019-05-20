@@ -87,7 +87,6 @@ class MuonTrackAnalyzer: public DQMEDAnalyzer {
 
   TrajectoryStateOnSurface getSeedTSOS(const TrajectorySeed& seed);
 
-  std::unique_ptr<DQMStore> dbe_;
   std::string dirName_;
 
   std::string out;
