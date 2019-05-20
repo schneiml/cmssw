@@ -604,8 +604,8 @@ void MTVHistoProducerAlgoForTracker::bookRecoHistos(DQMStore::IBooker& ibook,
   histograms.h_algo.push_back(
       ibook.book1D("h_algo", "Tracks by algo", reco::TrackBase::algoSize, 0., double(reco::TrackBase::algoSize)));
   for (size_t ibin = 0; ibin < reco::TrackBase::algoSize - 1; ibin++)
-    histograms.h_algo.back().setBinLabel(ibin + 1, reco::TrackBase::algoNames[ibin]);
-  histograms.h_algo.back().disableAlphanumeric();
+    histograms.h_algo.back()->setBinLabel(ibin + 1, reco::TrackBase::algoNames[ibin]);
+  histograms.h_algo.back()->disableAlphanumeric();
 
   /// these are needed to calculate efficiency during the harvesting for the automated validation
   histograms.h_recoeta.push_back(ibook.book1D("num_reco_eta", "N of reco track vs eta", nintEta, minEta, maxEta));

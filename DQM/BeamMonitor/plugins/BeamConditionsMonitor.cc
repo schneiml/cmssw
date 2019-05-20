@@ -64,8 +64,8 @@ std::shared_ptr<void> BeamConditionsMonitor::globalBeginLuminosityBlock(const ed
 
   auto cache = runCache(lumiSeg.getRun().index());
   LogInfo("BeamConditions") << "[BeamConditionsMonitor]:" << condBeamSpot << endl;
-  cache->h_x0_lumi->shiftFillLast(condBeamSpot.GetX(), condBeamSpot.GetXError(), 1);
-  cache->h_y0_lumi->shiftFillLast(condBeamSpot.GetY(), condBeamSpot.GetYError(), 1);
+  cache->h_x0_lumi->ShiftFillLast(condBeamSpot.GetX(), condBeamSpot.GetXError(), 1);
+  cache->h_y0_lumi->ShiftFillLast(condBeamSpot.GetY(), condBeamSpot.GetYError(), 1);
 
   return std::shared_ptr<void>{};
 }
