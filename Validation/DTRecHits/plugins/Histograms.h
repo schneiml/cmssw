@@ -17,10 +17,10 @@
 
 //---------------------------------------------------------------------------------------
 /// Function to fill an efficiency histograms with binomial errors
-inline void divide(MonitorElement *eff, const MonitorElement *numerator, const MonitorElement *denominator) {
-  TH1 *effH = eff->getTH1();
-  TH1 *numH = numerator->getTH1();
-  TH1 *denH = denominator->getTH1();
+inline void divide(MonitorElement* eff, const MonitorElement* numerator, const MonitorElement* denominator) {
+  TH1* effH = eff->getTH1();
+  TH1* numH = numerator->getTH1();
+  TH1* denH = denominator->getTH1();
   effH->Divide(numH, denH);
 
   // Set the error accordingly to binomial statistics
@@ -41,7 +41,7 @@ inline void divide(MonitorElement *eff, const MonitorElement *numerator, const M
 /// A set of histograms of residuals and pulls for 1D RecHits
 class HRes1DHit {
 public:
-  HRes1DHit(const std::string &name, DQMStore::IBooker &booker, bool doall = true, bool local = true) {
+  HRes1DHit(const std::string& name, DQMStore::IBooker& booker, bool doall = true, bool local = true) {
     std::string pre = "1D_";
     pre += name;
     doall_ = doall;
@@ -132,7 +132,7 @@ private:
 /// A set of histograms fo efficiency computation for 1D RecHits (producer)
 class HEff1DHit {
 public:
-  HEff1DHit(const std::string &name, DQMStore::IBooker &booker) {
+  HEff1DHit(const std::string& name, DQMStore::IBooker& booker) {
     std::string pre = "1D_";
     pre += name;
     name_ = pre;
@@ -174,7 +174,7 @@ private:
 /// A set of histograms fo efficiency computation for 1D RecHits (harvesting)
 class HEff1DHitHarvest {
 public:
-  HEff1DHitHarvest(const std::string &name, DQMStore::IBooker &booker, DQMStore::IGetter &getter) {
+  HEff1DHitHarvest(const std::string& name, DQMStore::IBooker& booker, DQMStore::IGetter& getter) {
     std::string pre = "1D_";
     pre += name;
     name_ = pre;
@@ -186,7 +186,7 @@ public:
     computeEfficiency(getter);
   }
 
-  void computeEfficiency(DQMStore::IGetter &getter) {
+  void computeEfficiency(DQMStore::IGetter& getter) {
     std::string pre = "DT/1DRecHits/" + name_;
     divide(hEffVsEta, getter.get(pre + "_hEtaMuRecHit"), getter.get(pre + "_hEtaMuSimHit"));
     divide(hEffVsPhi, getter.get(pre + "_hPhiMuRecHit"), getter.get(pre + "_hPhiMuSimHit"));
@@ -194,9 +194,9 @@ public:
   }
 
 private:
-  MonitorElement *hEffVsEta;
-  MonitorElement *hEffVsPhi;
-  MonitorElement *hEffVsDist;
+  MonitorElement* hEffVsEta;
+  MonitorElement* hEffVsPhi;
+  MonitorElement* hEffVsDist;
 
   std::string name_;
 };
@@ -205,7 +205,7 @@ private:
 // Histos of residuals for 2D rechits
 class HRes2DHit {
 public:
-  HRes2DHit(const std::string &name, DQMStore::IBooker &booker, bool doall = true, bool local = true) {
+  HRes2DHit(const std::string& name, DQMStore::IBooker& booker, bool doall = true, bool local = true) {
     doall_ = doall;
     std::string pre = "2D_";
     pre += name;
@@ -316,7 +316,7 @@ private:
 // Histos for 2D RecHit efficiency (producer)
 class HEff2DHit {
 public:
-  HEff2DHit(const std::string &name, DQMStore::IBooker &booker) {
+  HEff2DHit(const std::string& name, DQMStore::IBooker& booker) {
     std::string pre = "2D_";
     pre += name;
     name_ = pre;
@@ -365,7 +365,7 @@ private:
 // Histos for 2D RecHit efficiency (harvesting)
 class HEff2DHitHarvest {
 public:
-  HEff2DHitHarvest(const std::string &name, DQMStore::IBooker &booker, DQMStore::IGetter &getter) {
+  HEff2DHitHarvest(const std::string& name, DQMStore::IBooker& booker, DQMStore::IGetter& getter) {
     std::string pre = "2D_";
     pre += name;
     name_ = pre;
@@ -379,7 +379,7 @@ public:
     computeEfficiency(getter);
   }
 
-  void computeEfficiency(DQMStore::IGetter &getter) {
+  void computeEfficiency(DQMStore::IGetter& getter) {
     std::string pre = "DT/2DSegments/" + name_;
     divide(hEffVsEta, getter.get(pre + "_hEtaRecHit"), getter.get(pre + "_hEtaSimSegm"));
     divide(hEffVsPhi, getter.get(pre + "_hPhiRecHit"), getter.get(pre + "_hPhiSimSegm"));
@@ -388,10 +388,10 @@ public:
   }
 
 private:
-  MonitorElement *hEffVsEta;
-  MonitorElement *hEffVsPhi;
-  MonitorElement *hEffVsPos;
-  MonitorElement *hEffVsAngle;
+  MonitorElement* hEffVsEta;
+  MonitorElement* hEffVsPhi;
+  MonitorElement* hEffVsPos;
+  MonitorElement* hEffVsAngle;
 
   std::string name_;
 };
@@ -400,8 +400,7 @@ private:
 // Histos of residuals for 4D rechits
 class HRes4DHit {
 public:
-  HRes4DHit(const std::string &name, DQMStore::IBooker &booker, bool doall = true, bool local = true)
-      : local_(local) {
+  HRes4DHit(const std::string& name, DQMStore::IBooker& booker, bool doall = true, bool local = true) : local_(local) {
     std::string pre = "4D_";
     pre += name;
     doall_ = doall;
@@ -917,7 +916,7 @@ private:
 /// A set of histograms for efficiency 4D RecHits (producer)
 class HEff4DHit {
 public:
-  HEff4DHit(const std::string &name, DQMStore::IBooker &booker) {
+  HEff4DHit(const std::string& name, DQMStore::IBooker& booker) {
     std::string pre = "4D_";
     pre += name;
     name_ = pre;
@@ -996,7 +995,7 @@ private:
 /// A set of histograms for efficiency 4D RecHits (harvesting)
 class HEff4DHitHarvest {
 public:
-  HEff4DHitHarvest(const std::string &name, DQMStore::IBooker &booker, DQMStore::IGetter &getter) {
+  HEff4DHitHarvest(const std::string& name, DQMStore::IBooker& booker, DQMStore::IGetter& getter) {
     std::string pre = "4D_";
     pre += name;
     name_ = pre;
@@ -1013,7 +1012,7 @@ public:
     computeEfficiency(getter);
   }
 
-  void computeEfficiency(DQMStore::IGetter &getter) {
+  void computeEfficiency(DQMStore::IGetter& getter) {
     std::string pre = "DT/4DSegments/" + name_;
     divide(hEffVsEta, getter.get(pre + "_hEtaRecHit"), getter.get(pre + "_hEtaSimSegm"));
     divide(hEffVsPhi, getter.get(pre + "_hPhiRecHit"), getter.get(pre + "_hPhiSimSegm"));
@@ -1024,14 +1023,14 @@ public:
   }
 
 private:
-  MonitorElement *hEffVsEta;
-  MonitorElement *hEffVsPhi;
+  MonitorElement* hEffVsEta;
+  MonitorElement* hEffVsPhi;
 
-  MonitorElement *hEffVsX;
-  MonitorElement *hEffVsY;
+  MonitorElement* hEffVsX;
+  MonitorElement* hEffVsY;
 
-  MonitorElement *hEffVsAlpha;
-  MonitorElement *hEffVsBeta;
+  MonitorElement* hEffVsAlpha;
+  MonitorElement* hEffVsBeta;
 
   std::string name_;
 };
