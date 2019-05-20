@@ -156,7 +156,7 @@ public:
   public:
     explicit HistFiller(const edm::ParameterSet& config);
     static edm::ParameterSetDescription makePSetDescription();
-    void operator()(const trigger::TriggerObject& probe, float mass, const ConcurrentMonitorElement& hist) const;
+    void operator()(const trigger::TriggerObject& probe, float mass, const MonitorElement* hist) const;
 
   private:
     VarRangeCutColl<trigger::TriggerObject> localCuts_;
@@ -170,10 +170,10 @@ public:
     public:
       explicit Data(const edm::ParameterSet& config);
       static edm::ParameterSetDescription makePSetDescription();
-      ConcurrentMonitorElement book(DQMStore::IBooker& iBooker,
-                                    const std::string& name,
-                                    const std::string& title,
-                                    const std::vector<float>& massBins) const;
+      MonitorElement* book(DQMStore::IBooker& iBooker,
+                           const std::string& name,
+                           const std::string& title,
+                           const std::vector<float>& massBins) const;
       const HistFiller& filler() const { return histFiller_; }
 
     private:
@@ -186,9 +186,9 @@ public:
   public:
     explicit HistDefs(const edm::ParameterSet& config);
     static edm::ParameterSetDescription makePSetDescription();
-    std::vector<std::pair<HistFiller, ConcurrentMonitorElement> > bookHists(DQMStore::IBooker& iBooker,
-                                                                            const std::string& name,
-                                                                            const std::string& title) const;
+    std::vector<std::pair<HistFiller, MonitorElement*> > bookHists(DQMStore::IBooker& iBooker,
+                                                                   const std::string& name,
+                                                                   const std::string& title) const;
 
   private:
     std::vector<Data> histData_;

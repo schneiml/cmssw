@@ -53,7 +53,7 @@ namespace {
 }
 
 // Constructor
-DTSegment4DQuality::DTSegment4DQuality(const ParameterSet &pset) {
+DTSegment4DQuality::DTSegment4DQuality(const ParameterSet& pset) {
   // Get the debug parameter for verbose output
   debug_ = pset.getUntrackedParameter<bool>("debug");
   DTHitQualityUtils::debug = debug_;
@@ -75,10 +75,10 @@ DTSegment4DQuality::DTSegment4DQuality(const ParameterSet &pset) {
   local_ = pset.getUntrackedParameter<bool>("local", false);
 }
 
-void DTSegment4DQuality::bookHistograms(DQMStore::ConcurrentBooker &booker,
-                                        edm::Run const &run,
-                                        edm::EventSetup const &setup,
-                                        Histograms &histograms) const {
+void DTSegment4DQuality::bookHistograms(DQMStore::IBooker& booker,
+                                        edm::Run const& run,
+                                        edm::EventSetup const& setup,
+                                        Histograms& histograms) const {
   histograms.h4DHit = std::make_unique<HRes4DHit>("All", booker, doall_, local_);
   histograms.h4DHit_W0 = std::make_unique<HRes4DHit>("W0", booker, doall_, local_);
   histograms.h4DHit_W1 = std::make_unique<HRes4DHit>("W1", booker, doall_, local_);
@@ -106,9 +106,9 @@ void DTSegment4DQuality::bookHistograms(DQMStore::ConcurrentBooker &booker,
 };
 
 // The real analysis
-void DTSegment4DQuality::dqmAnalyze(edm::Event const &event,
-                                    edm::EventSetup const &setup,
-                                    Histograms const &histograms) const {
+void DTSegment4DQuality::dqmAnalyze(edm::Event const& event,
+                                    edm::EventSetup const& setup,
+                                    Histograms const& histograms) const {
   const float epsilon = 5e-5;  // numerical accuracy on angles [rad}
 
   // Get the DT Geometry
@@ -121,9 +121,8 @@ void DTSegment4DQuality::dqmAnalyze(edm::Event const &event,
 
   // Map simHits by chamber
   map<DTChamberId, PSimHitContainer> simHitsPerCh;
-  for (const auto &simHit : *simHits) {
-    // Consider only muon simhits; the others are not considered elsewhere in
-    // this class!
+  for (const auto& simHit : *simHits) {
+    // Consider only muon simhits; the others are not considered elsewhere in this class!
     if (abs(simHit.particleType()) == 13) {
       // Create the id of the chamber (the simHits in the DT known their wireId)
       DTChamberId chamberId = (((DTWireId(simHit.detUnitId())).layerId()).superlayerId()).chamberId();
@@ -145,7 +144,7 @@ void DTSegment4DQuality::dqmAnalyze(edm::Event const &event,
   }
 
   // Loop over all chambers containing a (muon) simhit
-  for (auto &simHitsInChamber : simHitsPerCh) {
+  for (auto& simHitsInChamber : simHitsPerCh) {
     DTChamberId chamberId = simHitsInChamber.first;
     int station = chamberId.station();
     if (station == 4 && !(local_)) {
@@ -155,11 +154,11 @@ void DTSegment4DQuality::dqmAnalyze(edm::Event const &event,
 
     //------------------------- simHits ---------------------------//
     // Get simHits of this chamber
-    const PSimHitContainer &simHits = simHitsInChamber.second;
+    const PSimHitContainer& simHits = simHitsInChamber.second;
 
     // Map simhits per wire
-    auto const &simHitsPerWire = DTHitQualityUtils::mapSimHitsPerWire(simHits);
-    auto const &muSimHitPerWire = DTHitQualityUtils::mapMuSimHitsPerWire(simHitsPerWire);
+    auto const& simHitsPerWire = DTHitQualityUtils::mapSimHitsPerWire(simHits);
+    auto const& muSimHitPerWire = DTHitQualityUtils::mapMuSimHitsPerWire(simHitsPerWire);
     int nMuSimHit = muSimHitPerWire.size();
     if (nMuSimHit < 2) {  // Skip chamber with less than 2 cells with mu hits
       continue;
@@ -169,7 +168,7 @@ void DTSegment4DQuality::dqmAnalyze(edm::Event const &event,
     }
 
     // Find outer and inner mu SimHit to build a segment
-    pair<const PSimHit *, const PSimHit *> inAndOutSimHit = DTHitQualityUtils::findMuSimSegment(muSimHitPerWire);
+    pair<const PSimHit*, const PSimHit*> inAndOutSimHit = DTHitQualityUtils::findMuSimSegment(muSimHitPerWire);
 
     // Consider only sim segments crossing at least 2 SLs
     if ((DTWireId(inAndOutSimHit.first->detUnitId())).superlayer() ==
@@ -183,7 +182,7 @@ void DTSegment4DQuality::dqmAnalyze(edm::Event const &event,
 
     LocalVector simSegmLocalDir = dirAndPosSimSegm.first;
     LocalPoint simSegmLocalPos = dirAndPosSimSegm.second;
-    const DTChamber *chamber = dtGeom->chamber(chamberId);
+    const DTChamber* chamber = dtGeom->chamber(chamberId);
     GlobalPoint simSegmGlobalPos = chamber->toGlobal(simSegmLocalPos);
     GlobalVector simSegmGlobalDir = chamber->toGlobal(simSegmLocalDir);
 
@@ -221,7 +220,7 @@ void DTSegment4DQuality::dqmAnalyze(edm::Event const &event,
       // RecHits must have delta alpha and delta position within 5 sigma of
       // the residual distribution (we are looking for residuals of segments
       // usefull to the track fit) for efficency purpose
-      const DTRecSegment4D *bestRecHit = nullptr;
+      const DTRecSegment4D* bestRecHit = nullptr;
       double deltaAlpha = 99999;
       double deltaBeta = 99999;
 
@@ -293,13 +292,12 @@ void DTSegment4DQuality::dqmAnalyze(edm::Event const &event,
         // reference frame). Note that x (and y) are swapped wrt to Chamber
         // frame
         // if (bestRecHit->hasZed()) //
-        const DTSLRecSegment2D *zedRecSeg = bestRecHit->zSegment();
+        const DTSLRecSegment2D* zedRecSeg = bestRecHit->zSegment();
         LocalPoint bestRecHitLocalPosRZ;
         LocalVector bestRecHitLocalDirRZ;
         LocalError bestRecHitLocalPosErrRZ;
         LocalError bestRecHitLocalDirErrRZ;
-        LocalPoint simSegLocalPosRZ;  // FIXME: this is not set for segments with
-                                      // only the phi view.
+        LocalPoint simSegLocalPosRZ;  // FIXME: this is not set for segments with only the phi view.
         float alphaBestRHitRZ = 0;    // angle measured in the RZ SL, in its own frame
         float alphaSimSegRZ = betaSimSeg;
         if (zedRecSeg) {
@@ -313,7 +311,7 @@ void DTSegment4DQuality::dqmAnalyze(edm::Event const &event,
           alphaBestRHitRZ = DTHitQualityUtils::findSegmentAlphaAndBeta(bestRecHitLocalDirRZ).first;
 
           // Get SimSeg position and Direction in rZ SL frame
-          const DTSuperLayer *sl = dtGeom->superLayer(zedRecSeg->superLayerId());
+          const DTSuperLayer* sl = dtGeom->superLayer(zedRecSeg->superLayerId());
           LocalPoint simSegLocalPosRZTmp = sl->toLocal(simSegmGlobalPos);
           LocalVector simSegLocalDirRZ = sl->toLocal(simSegmGlobalDir);
           simSegLocalPosRZ =
@@ -329,7 +327,7 @@ void DTSegment4DQuality::dqmAnalyze(edm::Event const &event,
         }
 
         // get nhits and t0
-        const DTChamberRecSegment2D *phiSeg = bestRecHit->phiSegment();
+        const DTChamberRecSegment2D* phiSeg = bestRecHit->phiSegment();
 
         float t0phi = -999;
         float t0theta = -999;
@@ -348,18 +346,16 @@ void DTSegment4DQuality::dqmAnalyze(edm::Event const &event,
 
         recHitFound = true;
 
-        // Mirror alpha in phi SLs so that + and - wheels can be plotted
-        // together
+        // Mirror alpha in phi SLs so that + and - wheels can be plotted together
         if (mirrorMinusWheels && wheel < 0) {
           alphaSimSeg *= -1.;
           alphaBestRHit *= -1.;
-          // Note: local X (xSimSeg, bestRecHitLocalPos.x() would have to be
-          // mirrored as well; but at the moment there is no plot of dependency
-          // vs X, except for efficiency.
+          // Note: local X (xSimSeg, bestRecHitLocalPos.x() would have to be mirrored as well;
+          // but at the moment there is no plot of dependency vs X, except for efficiency.
         }
 
         // Fill Residual histos
-        HRes4DHit *histo = nullptr;
+        HRes4DHit* histo = nullptr;
 
         if (wheel == 0) {
           histo = histograms.h4DHit_W0.get();
@@ -370,10 +366,9 @@ void DTSegment4DQuality::dqmAnalyze(edm::Event const &event,
         }
 
         float sigmaAlphaBestRhit = sqrt(DTHitQualityUtils::sigmaAngle(alphaBestRHit, bestRecHitLocalDirErr.xx()));
-        float sigmaBetaBestRhit =
-            sqrt(DTHitQualityUtils::sigmaAngle(betaBestRHit,
-                                               bestRecHitLocalDirErr.yy()));  // FIXME this misses the contribution
-                                                                              // from uncertainty in extrapolation!
+        float sigmaBetaBestRhit = sqrt(DTHitQualityUtils::sigmaAngle(
+            betaBestRHit,
+            bestRecHitLocalDirErr.yy()));  // FIXME this misses the contribution from uncertainty in extrapolation!
         float sigmaAlphaBestRhitRZ = sqrt(DTHitQualityUtils::sigmaAngle(alphaBestRHitRZ, bestRecHitLocalDirErrRZ.xx()));
 
         histo->fill(alphaSimSeg,
@@ -459,7 +454,7 @@ void DTSegment4DQuality::dqmAnalyze(edm::Event const &event,
 
     // Fill Efficiency plot
     if (doall_) {
-      HEff4DHit *heff = nullptr;
+      HEff4DHit* heff = nullptr;
 
       if (wheel == 0) {
         heff = histograms.hEff_W0.get();

@@ -286,9 +286,9 @@ void TriggerBxMonitor::dqmAnalyze(edm::Event const& event,
     unsigned int type = event.experimentType();
     if (type < size) {
       if (m_make_1d_plots and histograms.tcds_bx.at(type))
-        histograms.tcds_bx[type].fill(bx);
+        histograms.tcds_bx[type]->Fill(bx);
       if (m_make_2d_plots and histograms.tcds_bx_2d.at(type))
-        histograms.tcds_bx_2d[type].fill(bx, ls);
+        histograms.tcds_bx_2d[type]->Fill(bx, ls);
     }
     histograms.tcds_bx_all->Fill(bx, type);
   }
@@ -301,9 +301,9 @@ void TriggerBxMonitor::dqmAnalyze(edm::Event const& event,
       for (unsigned int i = 0; i < GlobalAlgBlk::maxPhysicsTriggers; ++i)
         if (results.getAlgoDecisionFinal(i)) {
           if (m_make_1d_plots and histograms.l1t_bx.at(i))
-            histograms.l1t_bx[i].fill(bx);
+            histograms.l1t_bx[i]->Fill(bx);
           if (m_make_2d_plots and histograms.l1t_bx_2d.at(i))
-            histograms.l1t_bx_2d[i].fill(bx, ls);
+            histograms.l1t_bx_2d[i]->Fill(bx, ls);
           histograms.l1t_bx_all->Fill(bx, i);
         }
     }
@@ -315,9 +315,9 @@ void TriggerBxMonitor::dqmAnalyze(edm::Event const& event,
     for (unsigned int i = 0; i < hltResults.size(); ++i) {
       if (hltResults.at(i).accept()) {
         if (m_make_1d_plots and histograms.hlt_bx.at(i))
-          histograms.hlt_bx[i].fill(bx);
+          histograms.hlt_bx[i]->Fill(bx);
         if (m_make_2d_plots and histograms.hlt_bx_2d.at(i))
-          histograms.hlt_bx_2d[i].fill(bx, ls);
+          histograms.hlt_bx_2d[i]->Fill(bx, ls);
         histograms.hlt_bx_all->Fill(bx, i);
       }
     }
