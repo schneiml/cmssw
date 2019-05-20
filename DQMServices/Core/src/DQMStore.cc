@@ -1,6 +1,5 @@
 #include "DQMServices/Core/interface/Standalone.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/QReport.h"
 #include "DQMServices/Core/interface/QTest.h"
 #include "DQMServices/Core/src/ROOTFilePB.pb.h"
 #include "DQMServices/Core/src/DQMError.h"
