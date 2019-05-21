@@ -84,9 +84,9 @@ template<class ME, class STORE>
   }
 
 template<class ME, class STORE>
-  std::vector<dqm::legacy::MonitorElement*> IGetter<ME, STORE>::getContents(std::string const& path) const { assert(!"NIY"); }
+  std::vector<dqm::harvesting::MonitorElement*> IGetter<ME, STORE>::getContents(std::string const& path) const { assert(!"NIY"); }
 template<class ME, class STORE>
-  std::vector<dqm::legacy::MonitorElement*> IGetter<ME, STORE>::getContents(std::string const& path, unsigned int tag) const { assert(!"NIY"); }
+  std::vector<dqm::harvesting::MonitorElement*> IGetter<ME, STORE>::getContents(std::string const& path, unsigned int tag) const { assert(!"NIY"); }
 template<class ME, class STORE>
   void IGetter<ME, STORE>::getContents(std::vector<std::string> &into, bool showContents) const { assert(!"NIY"); }
 
@@ -100,24 +100,24 @@ template<class ME, class STORE>
   void IGetter<ME, STORE>::removeElement(std::string const& dir, std::string const& name, bool warning) { assert(!"NIY"); }
 
 template<class ME, class STORE>
-  std::vector<dqm::legacy::MonitorElement*> IGetter<ME, STORE>::getAllContents(std::string const& path) { assert(!"NIY"); }
+  std::vector<dqm::harvesting::MonitorElement*> IGetter<ME, STORE>::getAllContents(std::string const& path) const { assert(!"NIY"); }
 template<class ME, class STORE>
-  std::vector<dqm::legacy::MonitorElement*> IGetter<ME, STORE>::getAllContents(std::string const& path,
+  std::vector<dqm::harvesting::MonitorElement*> IGetter<ME, STORE>::getAllContents(std::string const& path,
                                        uint32_t runNumber,
-                                       uint32_t lumi) { assert(!"NIY"); }
+                                       uint32_t lumi) const { assert(!"NIY"); }
 
 template<class ME, class STORE>
-  ME* IGetter<ME, STORE>::get(std::string const& path) { assert(!"NIY"); }
+  ME* IGetter<ME, STORE>::get(std::string const& path) const { assert(!"NIY"); }
 
 template<class ME, class STORE>
-  ME* IGetter<ME, STORE>::getElement(std::string const& path) { assert(!"NIY"); }
+  ME* IGetter<ME, STORE>::getElement(std::string const& path) const { assert(!"NIY"); }
 
 template<class ME, class STORE>
-  std::vector<std::string> IGetter<ME, STORE>::getSubdirs() { assert(!"NIY"); }
+  std::vector<std::string> IGetter<ME, STORE>::getSubdirs() const { assert(!"NIY"); }
 template<class ME, class STORE>
-  std::vector<std::string> IGetter<ME, STORE>::getMEs() { assert(!"NIY"); }
+  std::vector<std::string> IGetter<ME, STORE>::getMEs() const { assert(!"NIY"); }
 template<class ME, class STORE>
-  bool IGetter<ME, STORE>::dirExists(std::string const& path) { assert(!"NIY"); }
+  bool IGetter<ME, STORE>::dirExists(std::string const& path) const { assert(!"NIY"); }
 template<class ME, class STORE>
   void IGetter<ME, STORE>::cd() { assert(!"NIY"); }
 template<class ME, class STORE>
