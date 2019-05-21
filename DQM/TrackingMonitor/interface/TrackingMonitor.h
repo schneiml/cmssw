@@ -48,9 +48,7 @@ Monitoring source for general quantities related to tracks.
 
 #include "CommonTools/Utils/interface/StringCutObjectSelector.h"
 
-namespace dqm {
-  class TrackAnalyzer;
-}
+class TrackAnalyzer;
 class TrackBuildingAnalyzer;
 class VertexMonitor;
 class GetLumi;
@@ -118,7 +116,7 @@ class TrackingMonitor : public one::DQMEDAnalyzer<one::DQMLuminosityBlockElement
 	std::string AlgoName_;
 
 
-        dqm::TrackAnalyzer * theTrackAnalyzer;
+        TrackAnalyzer * theTrackAnalyzer;
         TrackBuildingAnalyzer  * theTrackBuildingAnalyzer;
 	std::vector<VertexMonitor*> theVertexMonitor;
 	GetLumi*                    theLumiDetails_;

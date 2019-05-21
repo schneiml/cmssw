@@ -25,6 +25,8 @@ class SiStripConfigWriter;
 class TrackingActionExecutor {
 
  public:
+ typedef dqm::harvesting::DQMStore DQMStore;
+ typedef dqm::harvesting::MonitorElement MonitorElement;
 
   TrackingActionExecutor(edm::ParameterSet const& ps);
   virtual ~TrackingActionExecutor();

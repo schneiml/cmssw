@@ -19,6 +19,8 @@ class TrackerTopology;
 class TrackingUtility
 {
  public:
+ typedef dqm::harvesting::DQMStore DQMStore;
+ typedef dqm::harvesting::MonitorElement MonitorElement;
  
  static int getMEList(std::string name, std::vector<std::string>& values);
  static bool checkME(std::string element, std::string name, std::string& full_path);

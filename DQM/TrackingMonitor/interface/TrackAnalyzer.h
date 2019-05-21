@@ -29,10 +29,12 @@ Monitoring source for general quantities related to tracks.
 
 
 class BeamSpot;
-namespace dqm {
 class TrackAnalyzer 
 {
     public:
+        typedef dqm::legacy::DQMStore DQMStore;
+        typedef dqm::legacy::MonitorElement MonitorElement;
+
         TrackAnalyzer(const edm::ParameterSet&);
         TrackAnalyzer(const edm::ParameterSet&, edm::ConsumesCollector& iC);
         ~TrackAnalyzer();
@@ -468,5 +470,4 @@ class TrackAnalyzer
 
         std::string histname;  //for naming the histograms according to algorithm used
 };
-}
 #endif

@@ -193,7 +193,7 @@ SiStripSummaryCreator::fillGrandSummaryHistos(DQMStore& dqm_store)
   }
 }
 
-MonitorElement*
+SiStripSummaryCreator::MonitorElement*
 SiStripSummaryCreator::getSummaryME(DQMStore& dqm_store,
                                     std::string& name,
                                     std::string htype)

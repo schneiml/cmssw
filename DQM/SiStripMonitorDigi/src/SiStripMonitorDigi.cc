@@ -936,7 +936,7 @@ void SiStripMonitorDigi::ResetModuleMEs(uint32_t idet){
 
 }
 //------------------------------------------------------------------------------------------
-MonitorElement* SiStripMonitorDigi::bookMETrend(DQMStore::IBooker & ibooker , const char* ParameterSetLabel, const char* HistoName )
+SiStripMonitorDigi::MonitorElement* SiStripMonitorDigi::bookMETrend(DQMStore::IBooker & ibooker , const char* ParameterSetLabel, const char* HistoName )
 {
   edm::ParameterSet ParametersTrend =  conf_.getParameter<edm::ParameterSet>("Trending");
   MonitorElement* me = ibooker.bookProfile(HistoName,HistoName,
@@ -957,7 +957,7 @@ MonitorElement* SiStripMonitorDigi::bookMETrend(DQMStore::IBooker & ibooker , co
 }
 
 //------------------------------------------------------------------------------------------
-MonitorElement* SiStripMonitorDigi::bookME1D(DQMStore::IBooker & ibooker , const char* ParameterSetLabel, const char* HistoName )
+SiStripMonitorDigi::MonitorElement* SiStripMonitorDigi::bookME1D(DQMStore::IBooker & ibooker , const char* ParameterSetLabel, const char* HistoName )
 {
   edm::ParameterSet Parameters =  conf_.getParameter<edm::ParameterSet>(ParameterSetLabel);
   return ibooker.book1D(HistoName,HistoName,

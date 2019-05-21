@@ -103,11 +103,11 @@ CommissioningTask::CompactHistoSet::CompactHistoSet() :
 
 // -----------------------------------------------------------------------------
 //
-MonitorElement* CommissioningTask::HistoSet::histo() { return histo_; }
+CommissioningTask::MonitorElement* CommissioningTask::HistoSet::histo() { return histo_; }
 
 // -----------------------------------------------------------------------------
 //
-MonitorElement* CommissioningTask::CompactHistoSet::histo() { return histo_; }
+CommissioningTask::MonitorElement* CommissioningTask::CompactHistoSet::histo() { return histo_; }
 
 // -----------------------------------------------------------------------------
 //

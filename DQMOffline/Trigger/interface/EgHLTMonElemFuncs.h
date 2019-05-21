@@ -23,6 +23,9 @@
 #include <boost/algorithm/string.hpp>
 
 namespace egHLT {
+  using dqm::legacy::DQMStore;
+  using dqm::legacy::MonitorElement;
+
 
   struct CutMasks;
 

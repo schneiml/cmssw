@@ -33,6 +33,7 @@ namespace {
 
   struct RunBasedHistograms {
   public:
+    typedef dqm::reco::MonitorElement MonitorElement;
     RunBasedHistograms()
         :  // L1T and HLT configuration
           hltConfig(),

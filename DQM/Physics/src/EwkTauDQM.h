@@ -68,6 +68,9 @@ class EwkTauDQM : public DQMEDAnalyzer {
 
 class EwkElecTauHistManager {
  public:
+ typedef EwkTauDQM::DQMStore DQMStore;
+ typedef EwkTauDQM::MonitorElement MonitorElement;
+
   EwkElecTauHistManager(const edm::ParameterSet&);
 
   void bookHistograms(DQMStore::IBooker&);
@@ -215,6 +218,9 @@ class EwkElecTauHistManager {
 
 class EwkMuTauHistManager {
  public:
+ typedef EwkTauDQM::DQMStore DQMStore;
+ typedef EwkTauDQM::MonitorElement MonitorElement;
+
   EwkMuTauHistManager(const edm::ParameterSet&);
 
   void bookHistograms(DQMStore::IBooker&);

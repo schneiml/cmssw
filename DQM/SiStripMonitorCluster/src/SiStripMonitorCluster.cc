@@ -1840,7 +1840,7 @@ void SiStripMonitorCluster::fillLayerMEs(LayerMEs& layerMEs,
   }
 }
 //------------------------------------------------------------------------------------------
-MonitorElement* SiStripMonitorCluster::bookMETrend(const char* HistoName,
+SiStripMonitorCluster::MonitorElement* SiStripMonitorCluster::bookMETrend(const char* HistoName,
                                                    DQMStore::IBooker& ibooker) {
   edm::ParameterSet ParametersTrend =
       trendVs10Ls_ ? conf_.getParameter<edm::ParameterSet>("TrendingLS")
@@ -1857,7 +1857,7 @@ MonitorElement* SiStripMonitorCluster::bookMETrend(const char* HistoName,
 }
 
 //------------------------------------------------------------------------------------------
-MonitorElement* SiStripMonitorCluster::bookME1D(const char* ParameterSetLabel,
+SiStripMonitorCluster::MonitorElement* SiStripMonitorCluster::bookME1D(const char* ParameterSetLabel,
                                                 const char* HistoName,
                                                 DQMStore::IBooker& ibooker) {
   Parameters = conf_.getParameter<edm::ParameterSet>(ParameterSetLabel);
@@ -1868,7 +1868,7 @@ MonitorElement* SiStripMonitorCluster::bookME1D(const char* ParameterSetLabel,
 }
 
 //------------------------------------------------------------------------------------------
-MonitorElement* SiStripMonitorCluster::bookME2D(const char* ParameterSetLabel,
+SiStripMonitorCluster::MonitorElement* SiStripMonitorCluster::bookME2D(const char* ParameterSetLabel,
                                                 const char* HistoName,
                                                 DQMStore::IBooker& ibooker) {
   Parameters = conf_.getParameter<edm::ParameterSet>(ParameterSetLabel);

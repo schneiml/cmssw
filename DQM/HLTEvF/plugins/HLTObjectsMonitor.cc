@@ -41,6 +41,7 @@
 
 
 struct hltPlot {
+  typedef dqm::reco::MonitorElement MonitorElement;
   
   std::pair<MonitorElement*,bool> nME;
   std::pair<MonitorElement*,bool> etaME;

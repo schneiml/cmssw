@@ -27,6 +27,9 @@
  * @brief cscdqm::MonitorObject implementation used in CSCMonitorModuleCmn
  */
 class CSCMonitorObject : public cscdqm::MonitorObject {
+  protected:
+    typedef dqm::legacy::DQMStore DQMStore;
+    typedef dqm::legacy::MonitorElement MonitorElement;
 
   private:
 

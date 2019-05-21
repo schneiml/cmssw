@@ -27,6 +27,9 @@
 #include <iomanip>
 
 namespace {
+  using dqm::reco::MonitorElement;
+  using dqm::reco::DQMStore;
+
   template<typename T> void fillNoFlow(MonitorElement* me, T val){
     auto h = me->getTH1();
     const auto xaxis = h->GetXaxis();

@@ -10,6 +10,7 @@ template <class T>
 class ExtractTObject {
 
  public:
+  typedef dqm::legacy::MonitorElement MonitorElement;
 
   static T* extract( MonitorElement* me );
 

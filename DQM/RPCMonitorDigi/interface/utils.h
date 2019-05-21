@@ -10,6 +10,8 @@
 
 
 namespace rpcdqm{
+  using dqm::legacy::MonitorElement;
+  using dqm::legacy::DQMStore;
 
   enum RPCMeFLag{OCCUPANCY = 1, CLUSTERSIZE = 2, MULTIPLICITY =3, BX=4};
 

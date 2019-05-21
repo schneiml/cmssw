@@ -24,7 +24,7 @@ inline std::string ScoutingAnalyzerBase::newName(const std::string &name) {
 
 void ScoutingAnalyzerBase::prepareBooking(DQMStore::IBooker &iBooker) { iBooker.setCurrentFolder(m_MEsPath); }
 
-MonitorElement *ScoutingAnalyzerBase::bookH1(DQMStore::IBooker &iBooker,
+ScoutingAnalyzerBase::MonitorElement *ScoutingAnalyzerBase::bookH1(DQMStore::IBooker &iBooker,
                                              const std::string &name,
                                              const std::string &title,
                                              int nchX,
@@ -46,7 +46,7 @@ MonitorElement *ScoutingAnalyzerBase::bookH1(DQMStore::IBooker &iBooker,
   return me;
 }
 
-MonitorElement *ScoutingAnalyzerBase::bookH1withSumw2(DQMStore::IBooker &iBooker,
+ScoutingAnalyzerBase::MonitorElement *ScoutingAnalyzerBase::bookH1withSumw2(DQMStore::IBooker &iBooker,
                                                       const std::string &name,
                                                       const std::string &title,
                                                       int nchX,
@@ -70,7 +70,7 @@ MonitorElement *ScoutingAnalyzerBase::bookH1withSumw2(DQMStore::IBooker &iBooker
   return me;
 }
 
-MonitorElement *ScoutingAnalyzerBase::bookH1BinArray(DQMStore::IBooker &iBooker,
+ScoutingAnalyzerBase::MonitorElement *ScoutingAnalyzerBase::bookH1BinArray(DQMStore::IBooker &iBooker,
                                                      const std::string &name,
                                                      const std::string &title,
                                                      int nchX,
@@ -92,7 +92,7 @@ MonitorElement *ScoutingAnalyzerBase::bookH1BinArray(DQMStore::IBooker &iBooker,
   return me;
 }
 
-MonitorElement *ScoutingAnalyzerBase::bookH1withSumw2BinArray(DQMStore::IBooker &iBooker,
+ScoutingAnalyzerBase::MonitorElement *ScoutingAnalyzerBase::bookH1withSumw2BinArray(DQMStore::IBooker &iBooker,
                                                               const std::string &name,
                                                               const std::string &title,
                                                               int nchX,
@@ -116,7 +116,7 @@ MonitorElement *ScoutingAnalyzerBase::bookH1withSumw2BinArray(DQMStore::IBooker 
   return me;
 }
 
-MonitorElement *ScoutingAnalyzerBase::bookH2(DQMStore::IBooker &iBooker,
+ScoutingAnalyzerBase::MonitorElement *ScoutingAnalyzerBase::bookH2(DQMStore::IBooker &iBooker,
                                              const std::string &name,
                                              const std::string &title,
                                              int nchX,
@@ -141,7 +141,7 @@ MonitorElement *ScoutingAnalyzerBase::bookH2(DQMStore::IBooker &iBooker,
   return me;
 }
 
-MonitorElement *ScoutingAnalyzerBase::bookH2withSumw2(DQMStore::IBooker &iBooker,
+ScoutingAnalyzerBase::MonitorElement *ScoutingAnalyzerBase::bookH2withSumw2(DQMStore::IBooker &iBooker,
                                                       const std::string &name,
                                                       const std::string &title,
                                                       int nchX,
@@ -167,7 +167,7 @@ MonitorElement *ScoutingAnalyzerBase::bookH2withSumw2(DQMStore::IBooker &iBooker
   return me;
 }
 
-MonitorElement *ScoutingAnalyzerBase::bookP1(DQMStore::IBooker &iBooker,
+ScoutingAnalyzerBase::MonitorElement *ScoutingAnalyzerBase::bookP1(DQMStore::IBooker &iBooker,
                                              const std::string &name,
                                              const std::string &title,
                                              int nchX,
@@ -191,7 +191,7 @@ MonitorElement *ScoutingAnalyzerBase::bookP1(DQMStore::IBooker &iBooker,
   return me;
 }
 
-MonitorElement *ScoutingAnalyzerBase::bookH1andDivide(DQMStore::IBooker &iBooker,
+ScoutingAnalyzerBase::MonitorElement *ScoutingAnalyzerBase::bookH1andDivide(DQMStore::IBooker &iBooker,
                                                       const std::string &name,
                                                       MonitorElement *num,
                                                       MonitorElement *denom,
@@ -215,7 +215,7 @@ MonitorElement *ScoutingAnalyzerBase::bookH1andDivide(DQMStore::IBooker &iBooker
   return me;
 }
 
-MonitorElement *ScoutingAnalyzerBase::bookH2andDivide(DQMStore::IBooker &iBooker,
+ScoutingAnalyzerBase::MonitorElement *ScoutingAnalyzerBase::bookH2andDivide(DQMStore::IBooker &iBooker,
                                                       const std::string &name,
                                                       MonitorElement *num,
                                                       MonitorElement *denom,
@@ -239,7 +239,7 @@ MonitorElement *ScoutingAnalyzerBase::bookH2andDivide(DQMStore::IBooker &iBooker
   return me;
 }
 
-MonitorElement *ScoutingAnalyzerBase::profileX(DQMStore::IBooker &iBooker,
+ScoutingAnalyzerBase::MonitorElement *ScoutingAnalyzerBase::profileX(DQMStore::IBooker &iBooker,
                                                MonitorElement *me2d,
                                                const std::string &title,
                                                const std::string &titleX,
@@ -268,7 +268,7 @@ MonitorElement *ScoutingAnalyzerBase::profileX(DQMStore::IBooker &iBooker,
   return me;
 }
 
-MonitorElement *ScoutingAnalyzerBase::profileY(DQMStore::IBooker &iBooker,
+ScoutingAnalyzerBase::MonitorElement *ScoutingAnalyzerBase::profileY(DQMStore::IBooker &iBooker,
                                                MonitorElement *me2d,
                                                const std::string &title,
                                                const std::string &titleX,

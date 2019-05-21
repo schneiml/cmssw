@@ -21,6 +21,9 @@ namespace edm { class EventSetup; }
 
 class SiStripTrackerMapCreator {
 public:
+  typedef dqm::harvesting::MonitorElement MonitorElement; 
+  typedef dqm::harvesting::DQMStore DQMStore; 
+
   SiStripTrackerMapCreator(edm::EventSetup const& eSetup);
   bool readConfiguration();
 

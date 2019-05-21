@@ -10,6 +10,8 @@
 class ESDataCertificationTask: public edm::EDAnalyzer{
 
  public:
+  typedef dqm::legacy::MonitorElement MonitorElement;
+  typedef dqm::legacy::DQMStore DQMStore;
 
   ESDataCertificationTask(const edm::ParameterSet& ps);
   ~ESDataCertificationTask() override;

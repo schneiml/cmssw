@@ -113,7 +113,7 @@ TrackingMonitor::TrackingMonitor(const edm::ParameterSet& iConfig)
 {
 
   edm::ConsumesCollector c{ consumesCollector() };
-  theTrackAnalyzer = new dqm::TrackAnalyzer( iConfig,c );
+  theTrackAnalyzer = new TrackAnalyzer( iConfig,c );
 
   // input tags for collections from the configuration
   bsSrc_ = iConfig.getParameter<edm::InputTag>("beamSpot");

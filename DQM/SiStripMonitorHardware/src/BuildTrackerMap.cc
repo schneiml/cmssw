@@ -55,6 +55,8 @@
 class BuildTrackerMapPlugin : public edm::EDAnalyzer
 {
  public:
+  typedef dqm::legacy::MonitorElement MonitorElement;
+  typedef dqm::legacy::DQMStore DQMStore;
 
   explicit BuildTrackerMapPlugin(const edm::ParameterSet&);
   ~BuildTrackerMapPlugin() override {}

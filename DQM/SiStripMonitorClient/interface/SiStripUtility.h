@@ -20,6 +20,9 @@ class TrackerTopology;
 
 class SiStripUtility {
 public:
+  typedef dqm::harvesting::DQMStore DQMStore;
+  typedef dqm::harvesting::MonitorElement MonitorElement;
+
   static int getMEList(std::string const& name,
                        std::vector<std::string>& values);
   static bool checkME(std::string const& element,

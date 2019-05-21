@@ -26,6 +26,9 @@
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
 namespace {
+  typedef dqm::reco::DQMStore DQMStore;
+  typedef dqm::reco::MonitorElement MonitorElement;
+
   struct RunBasedHistograms {
     MonitorElement* orbit_bx_all;
     std::vector<MonitorElement*> orbit_bx;

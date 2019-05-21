@@ -61,6 +61,8 @@ class HLTMuonMatchAndPlot
 {
 
  public:
+  typedef dqm::legacy::DQMStore DQMStore;
+  typedef dqm::legacy::MonitorElement MonitorElement;
 
   /// Constructor
   HLTMuonMatchAndPlot(const edm::ParameterSet &, std::string,std::string, bool);
