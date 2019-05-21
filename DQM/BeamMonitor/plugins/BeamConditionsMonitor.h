@@ -21,6 +21,7 @@
 //
 namespace beamcond {
   struct RunCache {
+    typedef dqm::reco::MonitorElement MonitorElement;
     // MonitorElements
     MonitorElement* h_x0_lumi;
     MonitorElement* h_y0_lumi;
@@ -33,6 +34,9 @@ public:
   ~BeamConditionsMonitor() override = default;
 
 protected:
+  typedef dqm::reco::DQMStore DQMStore;
+  typedef dqm::reco::MonitorElement MonitorElement;
+
   // Book Histograms
   void bookHistograms(DQMStore::IBooker& i,
                       const edm::Run& r,

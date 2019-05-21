@@ -322,8 +322,10 @@ edm::ParameterSetDescription TrigObjTnPHistColl::HistDefs::makePSetDescription()
   return desc;
 }
 
-std::vector<std::pair<TrigObjTnPHistColl::HistFiller, MonitorElement*>> TrigObjTnPHistColl::HistDefs::bookHists(
-    DQMStore::IBooker& iBooker, const std::string& name, const std::string& title) const {
+std::vector<std::pair<TrigObjTnPHistColl::HistFiller, TrigObjTnPHistColl::MonitorElement*>>
+TrigObjTnPHistColl::HistDefs::bookHists(DQMStore::IBooker& iBooker,
+                                        const std::string& name,
+                                        const std::string& title) const {
   std::vector<std::pair<HistFiller, MonitorElement*>> hists;
   for (const auto& data : histData_) {
     hists.push_back({data.filler(), data.book(iBooker, name, title, massBins_)});
@@ -346,10 +348,10 @@ edm::ParameterSetDescription TrigObjTnPHistColl::HistDefs::Data::makePSetDescrip
   return desc;
 }
 
-MonitorElement* TrigObjTnPHistColl::HistDefs::Data::book(DQMStore::IBooker& iBooker,
-                                                         const std::string& name,
-                                                         const std::string& title,
-                                                         const std::vector<float>& massBins) const {
+TrigObjTnPHistColl::MonitorElement* TrigObjTnPHistColl::HistDefs::Data::book(DQMStore::IBooker& iBooker,
+                                                                             const std::string& name,
+                                                                             const std::string& title,
+                                                                             const std::vector<float>& massBins) const {
   return iBooker.book2D((name + nameSuffex_).c_str(),
                         (title + titleSuffex_).c_str(),
                         bins_.size() - 1,
