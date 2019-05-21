@@ -283,6 +283,8 @@ void SiStripHistoPlotter::createStaticPlot(MonitorElement* me, const std::string
     setDrawingOption(hist1);
     hist1->Draw();
     std::string name = hist1->GetName();
+#if 0
+    assert(!"Reference objects no longer supported.");
     if (me->getRefRootObject()) {
       TH1* hist1_ref = me->getRefTH1();
       if (hist1_ref) {
@@ -294,6 +296,7 @@ void SiStripHistoPlotter::createStaticPlot(MonitorElement* me, const std::string
           hist1_ref->DrawNormalized("same", hist1->GetEntries());
       }
     }
+#endif
   }
   canvas->Update();
   std::string command = "rm -f " + file_name;

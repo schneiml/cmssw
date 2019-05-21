@@ -27,7 +27,6 @@
 #include <string>
 #include <vector>
 
-
 class SiStripPedestalsDQM;
 class SiStripNoisesDQM;
 class SiStripQualityDQM;
@@ -39,6 +38,9 @@ class SiStripThresholdDQM;
 
 class SiStripClassToMonitorCondData {
 public:
+  typedef dqm::legacy::MonitorElement MonitorElement;
+  typedef dqm::legacy::DQMStore DQMStore;
+
   explicit SiStripClassToMonitorCondData(edm::ParameterSet const &iConfig);
 
   ~SiStripClassToMonitorCondData();

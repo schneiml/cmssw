@@ -8,9 +8,11 @@
 #include "Geometry/EcalMapping/interface/ESElectronicsMapper.h"  // definition in line 75
 #include "DQMServices/Core/interface/DQMStore.h"
 
-
 class ESDaqInfoTask : public edm::EDAnalyzer {
 public:
+  typedef dqm::legacy::MonitorElement MonitorElement;
+  typedef dqm::legacy::DQMStore DQMStore;
+
   /// Constructor
   ESDaqInfoTask(const edm::ParameterSet& ps);
 

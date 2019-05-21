@@ -12,9 +12,10 @@
 
 #include "DQMServices/Core/interface/DQMStore.h"
 
-
 class DTTimeEvolutionHisto {
 public:
+  typedef dqm::legacy::DQMStore DQMStore;
+  typedef dqm::legacy::MonitorElement MonitorElement;
   /// Constructor
   /// Parameters are: <br>
   ///    - pointer to DQMStore <br>
