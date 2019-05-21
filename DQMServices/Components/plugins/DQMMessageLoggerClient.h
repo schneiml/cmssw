@@ -2,7 +2,6 @@
 #ifndef DQMMESSAGELOGGERCLIENT_H
 #define DQMMESSAGELOGGERCLIENT_H
 
-
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DQMServices/Core/interface/DQMStore.h"
@@ -11,34 +10,30 @@
 #include <map>
 
 class DQMMessageLoggerClient : public edm::EDAnalyzer {
- public:
+public:
   // Constructor
-  DQMMessageLoggerClient(const edm::ParameterSet&);
+  DQMMessageLoggerClient(const edm::ParameterSet &);
   // Destructor
   ~DQMMessageLoggerClient() override;
-  
- protected:
-  
+
+protected:
   void beginJob() override;
   //void beginRun(const edm::Run&, const edm::EventSetup&);
 
-  void beginRun(const edm::Run&, const edm::EventSetup&) override;
-  
-  
-  // Get the analysis
-  void analyze(const edm::Event&, const edm::EventSetup&) override;
+  void beginRun(const edm::Run &, const edm::EventSetup &) override;
 
-  
+  // Get the analysis
+  void analyze(const edm::Event &, const edm::EventSetup &) override;
+
   // Save the histos
-  void endRun(const edm::Run&, const edm::EventSetup&) override;
+  void endRun(const edm::Run &, const edm::EventSetup &) override;
   void endJob() override;
 
- private:
-
+private:
   void fillHistograms();
 
   // ----------member data ---------------------------
-  
+
   std::unique_ptr<DQMStore> theDbe;
   edm::ParameterSet parameters;
   std::string directoryName;
@@ -53,8 +48,5 @@ class DQMMessageLoggerClient : public edm::EDAnalyzer {
   MonitorElement *modulesWarningsFound;
   MonitorElement *categoriesErrorsFound;
   MonitorElement *categoriesWarningsFound;
-
 };
-#endif  
-
-
+#endif
