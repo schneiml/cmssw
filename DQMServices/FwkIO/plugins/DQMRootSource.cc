@@ -65,6 +65,9 @@
 #include "format.h"
 
 namespace {
+  using dqm::harvesting::DQMStore;
+  using dqm::harvesting::MonitorElement;
+
   //adapter functions
   MonitorElement* createElement(DQMStore& iStore, const char* iName, TH1F* iHist) {
     //std::cout <<"create: hist size "<<iName <<" "<<iHist->GetEffectiveEntries()<<std::endl;
@@ -87,10 +90,7 @@ namespace {
           iOriginal->GetYaxis()->GetXmax() == iToAdd->GetYaxis()->GetXmax() &&
           iOriginal->GetNbinsZ() == iToAdd->GetNbinsZ() &&
           iOriginal->GetZaxis()->GetXmin() == iToAdd->GetZaxis()->GetXmin() &&
-          iOriginal->GetZaxis()->GetXmax() == iToAdd->GetZaxis()->GetXmax() &&
-          MonitorElement::CheckBinLabels(iOriginal->GetXaxis(), iToAdd->GetXaxis()) &&
-          MonitorElement::CheckBinLabels(iOriginal->GetYaxis(), iToAdd->GetYaxis()) &&
-          MonitorElement::CheckBinLabels(iOriginal->GetZaxis(), iToAdd->GetZaxis())) {
+          iOriginal->GetZaxis()->GetXmax() == iToAdd->GetZaxis()->GetXmax()) {
         iOriginal->Add(iToAdd);
       } else {
         edm::LogError("MergeFailure") << "Found histograms with different axis limits or different labels'"
@@ -561,10 +561,6 @@ void DQMRootSource::readRun_(edm::RunPrincipal& rpCache) {
   if (m_lastSeenRun != runID || m_lastSeenReducedPHID != m_reducedHistoryIDs.at(runLumiRange.m_historyIDIndex)) {
     if (m_shouldReadMEs) {
       std::vector<MonitorElement*> allMEs = (*m_store).getAllContents("");
-      for (auto const& ME : allMEs) {
-        if (!(*m_store).isCollate())
-          ME->Reset();
-      }
     }
     m_lastSeenReducedPHID = m_reducedHistoryIDs.at(runLumiRange.m_historyIDIndex);
     m_lastSeenRun = runID;
