@@ -36,6 +36,9 @@
 // class declaration
 //
 namespace {
+  using dqm::legacy::DQMStore;
+  using dqm::legacy::MonitorElement;
+
   class ReaderBase {
   public:
     virtual ~ReaderBase()  = default;
