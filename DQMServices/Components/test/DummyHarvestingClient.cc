@@ -97,7 +97,7 @@ namespace {
       auto it = entries_per_LS_.begin();
       auto ite = entries_per_LS_.end();
       std::string extension("_cumulative");
-      store_->IBooker::setCurrentFolder(folder_);
+      store_->setCurrentFolder(folder_);
       MonitorElement* tmp = store_->book1D(name_ + extension,
                                            name_ + extension,
                                            (--(entries_per_LS_.end()))->first,
@@ -149,7 +149,7 @@ namespace {
       auto it = entries_per_LS_.begin();
       auto ite = entries_per_LS_.end();
       std::string extension("_cumulative");
-      store_->IBooker::setCurrentFolder(folder_);
+      store_->setCurrentFolder(folder_);
       MonitorElement* tmp = store_->book1D(name_ + extension,
                                            name_ + extension,
                                            (--(entries_per_LS_.end()))->first,
