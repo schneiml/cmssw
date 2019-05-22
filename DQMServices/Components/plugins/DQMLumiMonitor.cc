@@ -42,7 +42,7 @@ void DQMLumiMonitor::bookHistograms() {
   edm::ParameterSet LumiSecHistoPar = parameters_.getParameter<edm::ParameterSet>("TH1LSPar");
 
   std::string currentFolder = moduleName_ + "/" + folderName_;
-  dbe_->IBooker::setCurrentFolder(currentFolder);
+  dbe_->setCurrentFolder(currentFolder);
 
   if (nClusME_ == nullptr)
     nClusME_ = dbe_->book1D("nPlxClus",

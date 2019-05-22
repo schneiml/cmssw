@@ -198,7 +198,7 @@ void DummyBookFillDQMStore::bookHistograms() {
 
   auto dstore = std::make_unique<DQMStore>();
 
-  (*dstore).IBooker::setCurrentFolder(folder_);
+  (*dstore).setCurrentFolder(folder_);
 
   if (m_fillRuns) {
     m_runFillers.reserve(elements_.size());
