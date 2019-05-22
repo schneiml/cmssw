@@ -26,11 +26,11 @@ void DQMFileReader::beginJob() {
 
     // now open file, quietly continuing if it does not exist
     if (dbe_->open(ff, true, "", "Reference", DQMStore::StripRunDirs, false)) {
-      dbe_->IBooker::setCurrentFolder("Info/ProvInfo");
+      dbe_->setCurrentFolder("Info/ProvInfo");
       dbe_->bookString("referenceFileName", ff);
       std::cout << "DQMFileReader: reference file '" << ff << "' successfully read in \n";
     } else {
-      dbe_->IBooker::setCurrentFolder("Info/ProvInfo");
+      dbe_->setCurrentFolder("Info/ProvInfo");
       dbe_->bookString("referenceFileName", "non-existent:" + ff);
       std::cout << "DQMFileReader: reference file '" << ff << "' does not exist \n";
     }

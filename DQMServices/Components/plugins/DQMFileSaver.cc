@@ -88,7 +88,7 @@ void DQMFileSaver::saveForOffline(const std::string &workflow, int run, int lumi
   if (lumi == 0)  // save for run
   {
     // set run end flag
-    dbe_->IBooker::setCurrentFolder("Info/ProvInfo");
+    dbe_->setCurrentFolder("Info/ProvInfo");
 
     // do this, because ProvInfo is not yet run in offline DQM
     MonitorElement *me = dbe_->get("Info/ProvInfo/CMSSW");
@@ -120,14 +120,14 @@ void DQMFileSaver::saveForOffline(const std::string &workflow, int run, int lumi
     saveJobReport(filename);
   } else  // save EventInfo folders for luminosity sections
   {
-    std::vector<std::string> systems = (dbe_->IGetter::cd(), dbe_->getSubdirs());
+    std::vector<std::string> systems = (dbe_->cd(), dbe_->getSubdirs());
 
     edm::LogAbsolute msg("fileAction");
     msg << "DQMFileSaver: storing EventInfo folders for Run: " << run << ", Lumi Section: " << lumi << ", Subsystems: ";
 
     for (size_t i = 0, e = systems.size(); i != e; ++i) {
       if (systems[i] != "Reference") {
-        dbe_->IGetter::cd();
+        dbe_->cd();
         msg << systems[i] << "  ";
 
         dbe_->save(filename,
@@ -187,11 +187,11 @@ void DQMFileSaver::saveForOnlinePB(int run, const std::string &suffix) const {
 }
 
 void DQMFileSaver::saveForOnline(int run, const std::string &suffix, const std::string &rewrite) const {
-  std::vector<std::string> systems = (dbe_->IGetter::cd(), dbe_->getSubdirs());
+  std::vector<std::string> systems = (dbe_->cd(), dbe_->getSubdirs());
 
   for (size_t i = 0, e = systems.size(); i != e; ++i) {
     if (systems[i] != "Reference") {
-      dbe_->IGetter::cd();
+      dbe_->cd();
       if (MonitorElement *me = dbe_->get(systems[i] + "/EventInfo/processName")) {
         doSaveForOnline(&*dbe_,
                         run,
@@ -212,7 +212,7 @@ void DQMFileSaver::saveForOnline(int run, const std::string &suffix, const std::
   // look for EventInfo folder in an unorthodox location
   for (size_t i = 0, e = systems.size(); i != e; ++i)
     if (systems[i] != "Reference") {
-      dbe_->IGetter::cd();
+      dbe_->cd();
       std::vector<MonitorElement *> pNamesVector = dbe_->getMatchingContents(
           "^" + systems[i] + "/.*/EventInfo/processName" /* ,lat::Regexp::Perl */);  // TODO: redo.
       if (!pNamesVector.empty()) {
