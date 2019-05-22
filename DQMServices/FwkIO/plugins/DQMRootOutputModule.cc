@@ -46,6 +46,9 @@
 #include "format.h"
 
 namespace {
+  using dqm::harvesting::DQMStore;
+  using dqm::harvesting::MonitorElement;
+
   class TreeHelperBase {
   public:
     TreeHelperBase() : m_wasFilled(false), m_firstIndex(0), m_lastIndex(0) {}
@@ -82,7 +85,7 @@ namespace {
     }
     void doFill(MonitorElement* iElement) override {
       *m_fullNameBufferPtr = iElement->getFullname();
-      m_flagBuffer = iElement->getTag();
+      m_flagBuffer = 0;
       m_bufferPtr = dynamic_cast<T*>(iElement->getRootObject());
       assert(nullptr != m_bufferPtr);
       //std::cout <<"#entries: "<<m_bufferPtr->GetEntries()<<std::endl;
@@ -112,7 +115,7 @@ namespace {
 
     void doFill(MonitorElement* iElement) override {
       *m_fullNameBufferPtr = iElement->getFullname();
-      m_flagBuffer = iElement->getTag();
+      m_flagBuffer = 0;
       m_buffer = iElement->getIntValue();
       m_tree->Fill();
     }
@@ -137,7 +140,7 @@ namespace {
     }
     void doFill(MonitorElement* iElement) override {
       *m_fullNameBufferPtr = iElement->getFullname();
-      m_flagBuffer = iElement->getTag();
+      m_flagBuffer = 0;
       m_buffer = iElement->getFloatValue();
       m_tree->Fill();
     }
@@ -163,7 +166,7 @@ namespace {
     }
     void doFill(MonitorElement* iElement) override {
       *m_fullNameBufferPtr = iElement->getFullname();
-      m_flagBuffer = iElement->getTag();
+      m_flagBuffer = 0;
       m_buffer = iElement->getStringValue();
       m_tree->Fill();
     }
@@ -440,7 +443,7 @@ void DQMRootOutputModule::writeRun(edm::RunForOutput const& iRun) {
   if (!shouldWrite)
     return;
 
-  std::vector<MonitorElement*> items(dstore->getAllContents("", m_enableMultiThread ? m_run : 0));
+  std::vector<MonitorElement*> items(dstore->getAllContents(""));
   for (std::vector<MonitorElement*>::iterator it = items.begin(), itEnd = items.end(); it != itEnd; ++it) {
     if (not(*it)->getLumiFlag()) {
       std::map<unsigned int, unsigned int>::iterator itFound = m_dqmKindToTypeIndex.find((*it)->kind());
