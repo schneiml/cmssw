@@ -131,7 +131,7 @@ template<class ME, class STORE>
   }
 
 template<class ME>
-  DQMStore<ME>::DQMStore() : IGetter<ME, DQMStore<ME>>(this), IBooker<ME, DQMStore<ME>>(this) { assert(!"NIY"); }
+  DQMStore<ME>::DQMStore() : IGetter<ME, DQMStore<ME>>(this), IBooker<ME, DQMStore<ME>>(this) { }
 template<class ME>
   DQMStore<ME>::~DQMStore() {}
 
