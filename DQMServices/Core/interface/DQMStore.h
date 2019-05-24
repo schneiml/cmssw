@@ -141,7 +141,7 @@ namespace dqm {
   namespace legacy {
 
 /** The base class for all MonitorElements (ME) */
-class MonitorElement : private MonitorElementData
+class MonitorElement : protected MonitorElementData
 {
 public:
   // we need to make this visible here since it is private-inherited.
@@ -169,27 +169,16 @@ public:
 
 private:
   mutable tbb::spin_mutex lock_;
-  DQM_DEPRECATED TH1    *reference_; //< Current ROOT reference object
   std::vector<QReport>  qreports_;   //< QReports associated to this object.
 
 public:
   MonitorElement();
   MonitorElement(MonitorElement &&); // needed to construct object inside container?
+  MonitorElement(MonitorElementData const& data) :
+    MonitorElementData(data) {};
   MonitorElement &operator=(const MonitorElement &) = delete;
   MonitorElement &operator=(MonitorElement &&) = delete;
   virtual ~MonitorElement();
-
-  // TODO: maybe move to dataformat
-  auto key() const
-  { 
-    return std::make_tuple(dirname_, objname_, scope_, coveredrange_.startRun(), coveredrange_.startLumi(), coveredrange_.endRun(), coveredrange_.endLumi());
-  }
-
-  /// Compare monitor elements, for ordering in sets.
-  bool operator<(const MonitorElement &x) const 
-    {
-      return this->key() < x.key();
-    }
 
   /// Get the type of the monitor element.
   Kind kind() const 
@@ -382,6 +371,8 @@ public:
   virtual void enableSumw2();
   virtual void disableAlphanumeric();
   virtual void setOption(const char* option);
+
+  static bool checkCompatibility(MonitorElement const& a, MonitorElement const& b);
 };
 
   } // namespace legacy
@@ -391,6 +382,8 @@ class MonitorElement : public dqm::legacy::MonitorElement {
 public:
   MonitorElement() = default;
   MonitorElement(MonitorElement &&) = default;
+  MonitorElement(MonitorElementData const& data) :
+    dqm::legacy::MonitorElement(data) {};
   ~MonitorElement() = default;
 
   // now, we deprecate and assert things that are not allowed on reco MEs.
@@ -458,6 +451,8 @@ class MonitorElement : public dqm::reco::MonitorElement
 public:
   MonitorElement() = default;
   MonitorElement(MonitorElement &&) = default;
+  MonitorElement(MonitorElementData const& data) :
+    dqm::reco::MonitorElement(data) {};
   ~MonitorElement() = default;
 
   // In harvesting, we un-ban some of the operations banned before. Eventually,
@@ -675,6 +670,7 @@ public:
   virtual ~IBooker() {};
 protected:
   IBooker(STORE* store);
+  ME* bookME(TString const& name, MonitorElementData::Kind kind, TH1* object);
 
   STORE* store_;
 }; 
@@ -720,7 +716,6 @@ public:
 protected:
   IGetter(STORE* store);
 
-  std::string cwd_;
   STORE* store_;
 }; 
 
@@ -825,7 +820,14 @@ public:
   virtual void goUp() { this->IBooker<ME, DQMStore<ME>>::goUp(); this->IGetter<ME, DQMStore<ME>>::goUp(); }
   std::string const& pwd() { return this->IBooker<ME, DQMStore<ME>>::pwd(); }
 
+
+  // internal -- figure out better prottection.
+  ME* putME(MonitorElementData const& data);
+
+
 private:
+  std::map<MonitorElementData::Key, std::shared_ptr<ME>> localmes_;
+
 
 
 };
