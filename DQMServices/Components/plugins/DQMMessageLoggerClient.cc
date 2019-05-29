@@ -27,7 +27,7 @@ void DQMMessageLoggerClient::beginJob() {
   theDbe = std::make_unique<DQMStore>();
 
   if (theDbe != nullptr) {
-    theDbe->setCurrentFolder(directoryName);
+    theDbe->IBooker::setCurrentFolder(directoryName);
   }
 }
 
@@ -81,7 +81,7 @@ void DQMMessageLoggerClient::fillHistograms() {
 
         switch (mel) {
           case 1:
-            theDbe->setCurrentFolder(directoryName + "/Warnings");
+            theDbe->IBooker::setCurrentFolder(directoryName + "/Warnings");
             modulesWarningsFound = theDbe->get(directoryName + "/Warnings/modulesWarningsFound");
             if (modulesWarningsFound)
               theDbe->removeElement(modulesWarningsFound->getName());
@@ -104,7 +104,7 @@ void DQMMessageLoggerClient::fillHistograms() {
               modulesWarningsFound->getTH1()->GetXaxis()->LabelsOption("v");
             break;
           case 2:
-            theDbe->setCurrentFolder(directoryName + "/Errors");
+            theDbe->IBooker::setCurrentFolder(directoryName + "/Errors");
             modulesErrorsFound = theDbe->get(directoryName + "/Errors/modulesErrorsFound");
             if (modulesErrorsFound)
               theDbe->removeElement(modulesErrorsFound->getName());
@@ -126,7 +126,7 @@ void DQMMessageLoggerClient::fillHistograms() {
               modulesErrorsFound->getTH1()->GetXaxis()->LabelsOption("v");
             break;
           case 3:
-            theDbe->setCurrentFolder(directoryName + "/Warnings");
+            theDbe->IBooker::setCurrentFolder(directoryName + "/Warnings");
             categoriesWarningsFound = theDbe->get(directoryName + "/Warnings/categoriesWarningsFound");
             if (categoriesWarningsFound)
               theDbe->removeElement(categoriesWarningsFound->getName());
@@ -149,7 +149,7 @@ void DQMMessageLoggerClient::fillHistograms() {
               categoriesWarningsFound->getTH1()->GetXaxis()->LabelsOption("v");
             break;
           case 4:
-            theDbe->setCurrentFolder(directoryName + "/Errors");
+            theDbe->IBooker::setCurrentFolder(directoryName + "/Errors");
             categoriesErrorsFound = theDbe->get(directoryName + "/Errors/categoriesErrorsFound");
             if (categoriesErrorsFound)
               theDbe->removeElement(categoriesErrorsFound->getName());

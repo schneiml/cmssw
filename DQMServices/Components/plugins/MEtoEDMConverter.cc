@@ -87,7 +87,7 @@ MEtoEDMConverter::~MEtoEDMConverter() = default;
 void MEtoEDMConverter::beginJob() {
   // Determine if we are running multithreading asking to the DQMStore. Not to be moved in the ctor
   std::unique_ptr<DQMStore> dbe = std::make_unique<DQMStore>();
-  enableMultiThread_ = dbe->enableMultiThread_;
+  enableMultiThread_ = true;  // TODO: remove.
 }
 
 void MEtoEDMConverter::endJob() {}
@@ -101,10 +101,8 @@ void MEtoEDMConverter::globalEndRun(edm::Run const& iRun, const edm::EventSetup&
 
 void MEtoEDMConverter::endRunProduce(edm::Run& iRun, const edm::EventSetup& iSetup) {
   std::unique_ptr<DQMStore> store = std::make_unique<DQMStore>();
-  store->meBookerGetter([&](DQMStore::IBooker& b, DQMStore::IGetter& g) {
-    store->scaleElements();
-    putData(g, iRun, false, iRun.run(), 0);
-  });
+  store->scaleElements();
+  putData(*store, iRun, false, iRun.run(), 0);
 }
 
 std::shared_ptr<meedm::Void> MEtoEDMConverter::globalBeginLuminosityBlock(edm::LuminosityBlock const&,
@@ -114,9 +112,7 @@ std::shared_ptr<meedm::Void> MEtoEDMConverter::globalBeginLuminosityBlock(edm::L
 
 void MEtoEDMConverter::endLuminosityBlockProduce(edm::LuminosityBlock& iLumi, const edm::EventSetup& iSetup) {
   std::unique_ptr<DQMStore> store = std::make_unique<DQMStore>();
-  store->meBookerGetter([&](DQMStore::IBooker& b, DQMStore::IGetter& g) {
-    putData(g, iLumi, true, iLumi.run(), iLumi.id().luminosityBlock());
-  });
+  putData(*store, iLumi, true, iLumi.run(), iLumi.id().luminosityBlock());
 }
 
 template <class T>
@@ -234,54 +230,56 @@ void MEtoEDMConverter::putData(DQMStore::IGetter& iGetter, T& iPutTo, bool iLumi
     if (!iLumiOnly && me->getLumiFlag())
       continue;
 
+    std::vector<uint32_t> notags;
+
     // get monitor elements
     switch (me->kind()) {
       case MonitorElement::DQM_KIND_INT:
-        pOutInt->putMEtoEdmObject(me->getFullname(), me->getTags(), me->getIntValue());
+        pOutInt->putMEtoEdmObject(me->getFullname(), notags, me->getIntValue());
         break;
 
       case MonitorElement::DQM_KIND_REAL:
-        pOutDouble->putMEtoEdmObject(me->getFullname(), me->getTags(), me->getFloatValue());
+        pOutDouble->putMEtoEdmObject(me->getFullname(), notags, me->getFloatValue());
         break;
 
       case MonitorElement::DQM_KIND_STRING:
-        pOutString->putMEtoEdmObject(me->getFullname(), me->getTags(), me->getStringValue());
+        pOutString->putMEtoEdmObject(me->getFullname(), notags, me->getStringValue());
         break;
 
       case MonitorElement::DQM_KIND_TH1F:
-        pOut1->putMEtoEdmObject(me->getFullname(), me->getTags(), *me->getTH1F());
+        pOut1->putMEtoEdmObject(me->getFullname(), notags, *me->getTH1F());
         break;
 
       case MonitorElement::DQM_KIND_TH1S:
-        pOut1s->putMEtoEdmObject(me->getFullname(), me->getTags(), *me->getTH1S());
+        pOut1s->putMEtoEdmObject(me->getFullname(), notags, *me->getTH1S());
         break;
 
       case MonitorElement::DQM_KIND_TH1D:
-        pOut1d->putMEtoEdmObject(me->getFullname(), me->getTags(), *me->getTH1D());
+        pOut1d->putMEtoEdmObject(me->getFullname(), notags, *me->getTH1D());
         break;
 
       case MonitorElement::DQM_KIND_TH2F:
-        pOut2->putMEtoEdmObject(me->getFullname(), me->getTags(), *me->getTH2F());
+        pOut2->putMEtoEdmObject(me->getFullname(), notags, *me->getTH2F());
         break;
 
       case MonitorElement::DQM_KIND_TH2S:
-        pOut2s->putMEtoEdmObject(me->getFullname(), me->getTags(), *me->getTH2S());
+        pOut2s->putMEtoEdmObject(me->getFullname(), notags, *me->getTH2S());
         break;
 
       case MonitorElement::DQM_KIND_TH2D:
-        pOut2d->putMEtoEdmObject(me->getFullname(), me->getTags(), *me->getTH2D());
+        pOut2d->putMEtoEdmObject(me->getFullname(), notags, *me->getTH2D());
         break;
 
       case MonitorElement::DQM_KIND_TH3F:
-        pOut3->putMEtoEdmObject(me->getFullname(), me->getTags(), *me->getTH3F());
+        pOut3->putMEtoEdmObject(me->getFullname(), notags, *me->getTH3F());
         break;
 
       case MonitorElement::DQM_KIND_TPROFILE:
-        pOutProf->putMEtoEdmObject(me->getFullname(), me->getTags(), *me->getTProfile());
+        pOutProf->putMEtoEdmObject(me->getFullname(), notags, *me->getTProfile());
         break;
 
       case MonitorElement::DQM_KIND_TPROFILE2D:
-        pOutProf2->putMEtoEdmObject(me->getFullname(), me->getTags(), *me->getTProfile2D());
+        pOutProf2->putMEtoEdmObject(me->getFullname(), notags, *me->getTProfile2D());
         break;
 
       default:

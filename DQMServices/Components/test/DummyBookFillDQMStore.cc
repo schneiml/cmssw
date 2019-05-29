@@ -17,6 +17,8 @@
 // class declaration
 //
 namespace {
+  using dqm::legacy::DQMStore;
+  using dqm::legacy::MonitorElement;
   class FillerBase {
   public:
     virtual ~FillerBase() = default;
@@ -196,7 +198,7 @@ void DummyBookFillDQMStore::bookHistograms() {
 
   auto dstore = std::make_unique<DQMStore>();
 
-  (*dstore).setCurrentFolder(folder_);
+  (*dstore).IBooker::setCurrentFolder(folder_);
 
   if (m_fillRuns) {
     m_runFillers.reserve(elements_.size());
