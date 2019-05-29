@@ -4,8 +4,7 @@
 #include "CalibTracker/SiStripChannelGain/interface/APVGainStruct.h"
 #include "DataFormats/TrackerCommon/interface/TrackerTopology.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
-#include "DQMServices/Core/interface/ConcurrentMonitorElement.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 #include <string>
 #include <vector>
