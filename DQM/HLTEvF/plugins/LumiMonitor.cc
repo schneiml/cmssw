@@ -29,12 +29,12 @@ namespace {
   };
 
   struct Histograms {
-    ConcurrentMonitorElement numberOfPixelClustersVsLS;
-    ConcurrentMonitorElement numberOfPixelClustersVsLumi;
-    ConcurrentMonitorElement lumiVsLS;
-    ConcurrentMonitorElement puVsLS;
-    ConcurrentMonitorElement pixelLumiVsLS;
-    ConcurrentMonitorElement pixelLumiVsLumi;
+    MonitorElement* numberOfPixelClustersVsLS;
+    MonitorElement* numberOfPixelClustersVsLumi;
+    MonitorElement* lumiVsLS;
+    MonitorElement* puVsLS;
+    MonitorElement* pixelLumiVsLS;
+    MonitorElement* pixelLumiVsLumi;
   };
 }  // namespace
 
@@ -51,7 +51,7 @@ public:
   static void fillHistoLSPSetDescription(edm::ParameterSetDescription& pset);
 
 private:
-  void bookHistograms(DQMStore::ConcurrentBooker&, edm::Run const&, edm::EventSetup const&, Histograms&) const override;
+  void bookHistograms(DQMStore::IBooker&, edm::Run const&, edm::EventSetup const&, Histograms&) const override;
   void dqmAnalyze(edm::Event const&, edm::EventSetup const&, Histograms const&) const override;
 
   static MEbinning getHistoPSet(const edm::ParameterSet& pset);
@@ -122,7 +122,7 @@ MEbinning LumiMonitor::getHistoLSPSet(const edm::ParameterSet& pset) {
   return MEbinning{pset.getParameter<int32_t>("nbins"), -0.5, pset.getParameter<int32_t>("nbins") - 0.5};
 }
 
-void LumiMonitor::bookHistograms(DQMStore::ConcurrentBooker& booker,
+void LumiMonitor::bookHistograms(DQMStore::IBooker& booker,
                                  edm::Run const& run,
                                  edm::EventSetup const& setup,
                                  Histograms& histograms) const {
@@ -134,8 +134,8 @@ void LumiMonitor::bookHistograms(DQMStore::ConcurrentBooker& booker,
                                                          ls_binning_.nbins,
                                                          ls_binning_.xmin,
                                                          ls_binning_.xmax);
-    histograms.numberOfPixelClustersVsLS.setAxisTitle("LS", 1);
-    histograms.numberOfPixelClustersVsLS.setAxisTitle("number of pixel clusters", 2);
+    histograms.numberOfPixelClustersVsLS->setAxisTitle("LS", 1);
+    histograms.numberOfPixelClustersVsLS->setAxisTitle("number of pixel clusters", 2);
 
     histograms.numberOfPixelClustersVsLumi = booker.bookProfile("numberOfPixelClustersVsLumi",
                                                                 "number of pixel clusters vs scal lumi",
@@ -144,8 +144,8 @@ void LumiMonitor::bookHistograms(DQMStore::ConcurrentBooker& booker,
                                                                 lumi_binning_.xmax,
                                                                 pixelCluster_binning_.xmin,
                                                                 pixelCluster_binning_.xmax);
-    histograms.numberOfPixelClustersVsLumi.setAxisTitle("scal inst lumi E30 [Hz cm^{-2}]", 1);
-    histograms.numberOfPixelClustersVsLumi.setAxisTitle("number of pixel clusters", 2);
+    histograms.numberOfPixelClustersVsLumi->setAxisTitle("scal inst lumi E30 [Hz cm^{-2}]", 1);
+    histograms.numberOfPixelClustersVsLumi->setAxisTitle("number of pixel clusters", 2);
 
     histograms.pixelLumiVsLS = booker.bookProfile("pixelLumiVsLS",
                                                   "pixel-lumi vs LS",
@@ -154,8 +154,8 @@ void LumiMonitor::bookHistograms(DQMStore::ConcurrentBooker& booker,
                                                   ls_binning_.xmax,
                                                   pixellumi_binning_.xmin,
                                                   pixellumi_binning_.xmax);
-    histograms.pixelLumiVsLS.setAxisTitle("LS", 1);
-    histograms.pixelLumiVsLS.setAxisTitle("pixel-based inst lumi E30 [Hz cm^{-2}]", 2);
+    histograms.pixelLumiVsLS->setAxisTitle("LS", 1);
+    histograms.pixelLumiVsLS->setAxisTitle("pixel-based inst lumi E30 [Hz cm^{-2}]", 2);
 
     histograms.pixelLumiVsLumi = booker.bookProfile("pixelLumiVsLumi",
                                                     "pixel-lumi vs scal lumi",
@@ -164,8 +164,8 @@ void LumiMonitor::bookHistograms(DQMStore::ConcurrentBooker& booker,
                                                     lumi_binning_.xmax,
                                                     pixellumi_binning_.xmin,
                                                     lumi_binning_.xmax);
-    histograms.pixelLumiVsLumi.setAxisTitle("scal inst lumi E30 [Hz cm^{-2}]", 1);
-    histograms.pixelLumiVsLumi.setAxisTitle("pixel-based inst lumi E30 [Hz cm^{-2}]", 2);
+    histograms.pixelLumiVsLumi->setAxisTitle("scal inst lumi E30 [Hz cm^{-2}]", 1);
+    histograms.pixelLumiVsLumi->setAxisTitle("pixel-based inst lumi E30 [Hz cm^{-2}]", 2);
   }
 
   histograms.lumiVsLS = booker.bookProfile("lumiVsLS",
@@ -175,8 +175,8 @@ void LumiMonitor::bookHistograms(DQMStore::ConcurrentBooker& booker,
                                            ls_binning_.xmax,
                                            lumi_binning_.xmin,
                                            lumi_binning_.xmax);
-  histograms.lumiVsLS.setAxisTitle("LS", 1);
-  histograms.lumiVsLS.setAxisTitle("scal inst lumi E30 [Hz cm^{-2}]", 2);
+  histograms.lumiVsLS->setAxisTitle("LS", 1);
+  histograms.lumiVsLS->setAxisTitle("scal inst lumi E30 [Hz cm^{-2}]", 2);
 
   histograms.puVsLS = booker.bookProfile("puVsLS",
                                          "scal PU vs LS",
@@ -185,8 +185,8 @@ void LumiMonitor::bookHistograms(DQMStore::ConcurrentBooker& booker,
                                          ls_binning_.xmax,
                                          pu_binning_.xmin,
                                          pu_binning_.xmax);
-  histograms.puVsLS.setAxisTitle("LS", 1);
-  histograms.puVsLS.setAxisTitle("scal PU", 2);
+  histograms.puVsLS->setAxisTitle("LS", 1);
+  histograms.puVsLS->setAxisTitle("scal PU", 2);
 }
 
 void LumiMonitor::dqmAnalyze(edm::Event const& event,
@@ -206,8 +206,8 @@ void LumiMonitor::dqmAnalyze(edm::Event const& event,
     scal_lumi = -1.;
     scal_pu = -1.;
   }
-  histograms.lumiVsLS.fill(ls, scal_lumi);
-  histograms.puVsLS.fill(ls, scal_pu);
+  histograms.lumiVsLS->Fill(ls, scal_lumi);
+  histograms.puVsLS->Fill(ls, scal_pu);
 
   if (doPixelLumi_) {
     size_t pixel_clusters = 0;
@@ -241,10 +241,10 @@ void LumiMonitor::dqmAnalyze(edm::Event const& event,
       pixel_lumi = -1.;
     }
 
-    histograms.numberOfPixelClustersVsLS.fill(ls, pixel_clusters);
-    histograms.numberOfPixelClustersVsLumi.fill(scal_lumi, pixel_clusters);
-    histograms.pixelLumiVsLS.fill(ls, pixel_lumi);
-    histograms.pixelLumiVsLumi.fill(scal_lumi, pixel_lumi);
+    histograms.numberOfPixelClustersVsLS->Fill(ls, pixel_clusters);
+    histograms.numberOfPixelClustersVsLumi->Fill(scal_lumi, pixel_clusters);
+    histograms.pixelLumiVsLS->Fill(ls, pixel_lumi);
+    histograms.pixelLumiVsLumi->Fill(scal_lumi, pixel_lumi);
   }
 }
 

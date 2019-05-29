@@ -33,63 +33,63 @@ struct HGVHistoProducerAlgoHistograms {
   //-z: 0->51
   //+z: 52->103
   //We will pick the numbers below from RecHitTools just to avoid future problems
-  ConcurrentMonitorElement lastLayerEEzm;  // last layer of EE -z
-  ConcurrentMonitorElement lastLayerFHzm;  // last layer of FH -z
-  ConcurrentMonitorElement maxlayerzm;     // last layer of BH -z
-  ConcurrentMonitorElement lastLayerEEzp;  // last layer of EE +z
-  ConcurrentMonitorElement lastLayerFHzp;  // last layer of FH +z
-  ConcurrentMonitorElement maxlayerzp;     // last layer of BH +z
+  MonitorElement* lastLayerEEzm;  // last layer of EE -z
+  MonitorElement* lastLayerFHzm;  // last layer of FH -z
+  MonitorElement* maxlayerzm;     // last layer of BH -z
+  MonitorElement* lastLayerEEzp;  // last layer of EE +z
+  MonitorElement* lastLayerFHzp;  // last layer of FH +z
+  MonitorElement* maxlayerzp;     // last layer of BH +z
 
   //1D
-  std::vector<ConcurrentMonitorElement> h_cluster_eta;
-  std::vector<ConcurrentMonitorElement> h_mixedhitscluster_zminus;
-  std::vector<ConcurrentMonitorElement> h_mixedhitscluster_zplus;
-  std::vector<ConcurrentMonitorElement> h_energyclustered_zminus;
-  std::vector<ConcurrentMonitorElement> h_energyclustered_zplus;
-  std::vector<ConcurrentMonitorElement> h_longdepthbarycentre_zminus;
-  std::vector<ConcurrentMonitorElement> h_longdepthbarycentre_zplus;
+  std::vector<MonitorElement*> h_cluster_eta;
+  std::vector<MonitorElement*> h_mixedhitscluster_zminus;
+  std::vector<MonitorElement*> h_mixedhitscluster_zplus;
+  std::vector<MonitorElement*> h_energyclustered_zminus;
+  std::vector<MonitorElement*> h_energyclustered_zplus;
+  std::vector<MonitorElement*> h_longdepthbarycentre_zminus;
+  std::vector<MonitorElement*> h_longdepthbarycentre_zplus;
 
-  std::unordered_map<int, ConcurrentMonitorElement> h_clusternum_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_energyclustered_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_score_layercl2caloparticle_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_score_caloparticle2layercl_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_energy_vs_score_caloparticle2layercl_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_energy_vs_score_layercl2caloparticle_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_sharedenergy_caloparticle2layercl_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_sharedenergy_caloparticle2layercl_vs_eta_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_sharedenergy_caloparticle2layercl_vs_phi_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_sharedenergy_layercl2caloparticle_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_sharedenergy_layercl2caloparticle_vs_eta_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_sharedenergy_layercl2caloparticle_vs_phi_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_num_caloparticle_eta_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_numDup_caloparticle_eta_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_denom_caloparticle_eta_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_num_caloparticle_phi_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_numDup_caloparticle_phi_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_denom_caloparticle_phi_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_num_layercl_eta_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_numMerge_layercl_eta_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_denom_layercl_eta_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_num_layercl_phi_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_numMerge_layercl_phi_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_denom_layercl_phi_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_cellAssociation_perlayer;
-  std::unordered_map<int, ConcurrentMonitorElement> h_clusternum_perthick;
-  std::unordered_map<int, ConcurrentMonitorElement> h_cellsenedens_perthick;
+  std::unordered_map<int, MonitorElement*> h_clusternum_perlayer;
+  std::unordered_map<int, MonitorElement*> h_energyclustered_perlayer;
+  std::unordered_map<int, MonitorElement*> h_score_layercl2caloparticle_perlayer;
+  std::unordered_map<int, MonitorElement*> h_score_caloparticle2layercl_perlayer;
+  std::unordered_map<int, MonitorElement*> h_energy_vs_score_caloparticle2layercl_perlayer;
+  std::unordered_map<int, MonitorElement*> h_energy_vs_score_layercl2caloparticle_perlayer;
+  std::unordered_map<int, MonitorElement*> h_sharedenergy_caloparticle2layercl_perlayer;
+  std::unordered_map<int, MonitorElement*> h_sharedenergy_caloparticle2layercl_vs_eta_perlayer;
+  std::unordered_map<int, MonitorElement*> h_sharedenergy_caloparticle2layercl_vs_phi_perlayer;
+  std::unordered_map<int, MonitorElement*> h_sharedenergy_layercl2caloparticle_perlayer;
+  std::unordered_map<int, MonitorElement*> h_sharedenergy_layercl2caloparticle_vs_eta_perlayer;
+  std::unordered_map<int, MonitorElement*> h_sharedenergy_layercl2caloparticle_vs_phi_perlayer;
+  std::unordered_map<int, MonitorElement*> h_num_caloparticle_eta_perlayer;
+  std::unordered_map<int, MonitorElement*> h_numDup_caloparticle_eta_perlayer;
+  std::unordered_map<int, MonitorElement*> h_denom_caloparticle_eta_perlayer;
+  std::unordered_map<int, MonitorElement*> h_num_caloparticle_phi_perlayer;
+  std::unordered_map<int, MonitorElement*> h_numDup_caloparticle_phi_perlayer;
+  std::unordered_map<int, MonitorElement*> h_denom_caloparticle_phi_perlayer;
+  std::unordered_map<int, MonitorElement*> h_num_layercl_eta_perlayer;
+  std::unordered_map<int, MonitorElement*> h_numMerge_layercl_eta_perlayer;
+  std::unordered_map<int, MonitorElement*> h_denom_layercl_eta_perlayer;
+  std::unordered_map<int, MonitorElement*> h_num_layercl_phi_perlayer;
+  std::unordered_map<int, MonitorElement*> h_numMerge_layercl_phi_perlayer;
+  std::unordered_map<int, MonitorElement*> h_denom_layercl_phi_perlayer;
+  std::unordered_map<int, MonitorElement*> h_cellAssociation_perlayer;
+  std::unordered_map<int, MonitorElement*> h_clusternum_perthick;
+  std::unordered_map<int, MonitorElement*> h_cellsenedens_perthick;
 
-  std::unordered_map<std::string, ConcurrentMonitorElement> h_cellsnum_perthickperlayer;
-  std::unordered_map<std::string, ConcurrentMonitorElement> h_distancetoseedcell_perthickperlayer;
-  std::unordered_map<std::string, ConcurrentMonitorElement> h_distancetoseedcell_perthickperlayer_eneweighted;
-  std::unordered_map<std::string, ConcurrentMonitorElement> h_distancetomaxcell_perthickperlayer;
-  std::unordered_map<std::string, ConcurrentMonitorElement> h_distancetomaxcell_perthickperlayer_eneweighted;
-  std::unordered_map<std::string, ConcurrentMonitorElement> h_distancebetseedandmaxcell_perthickperlayer;
-  std::unordered_map<std::string, ConcurrentMonitorElement> h_distancebetseedandmaxcellvsclusterenergy_perthickperlayer;
+  std::unordered_map<std::string, MonitorElement*> h_cellsnum_perthickperlayer;
+  std::unordered_map<std::string, MonitorElement*> h_distancetoseedcell_perthickperlayer;
+  std::unordered_map<std::string, MonitorElement*> h_distancetoseedcell_perthickperlayer_eneweighted;
+  std::unordered_map<std::string, MonitorElement*> h_distancetomaxcell_perthickperlayer;
+  std::unordered_map<std::string, MonitorElement*> h_distancetomaxcell_perthickperlayer_eneweighted;
+  std::unordered_map<std::string, MonitorElement*> h_distancebetseedandmaxcell_perthickperlayer;
+  std::unordered_map<std::string, MonitorElement*> h_distancebetseedandmaxcellvsclusterenergy_perthickperlayer;
 
-  std::unordered_map<int, ConcurrentMonitorElement> h_caloparticle_eta;
-  std::unordered_map<int, ConcurrentMonitorElement> h_caloparticle_eta_Zorigin;
-  std::unordered_map<int, ConcurrentMonitorElement> h_caloparticle_energy;
-  std::unordered_map<int, ConcurrentMonitorElement> h_caloparticle_pt;
-  std::unordered_map<int, ConcurrentMonitorElement> h_caloparticle_phi;
+  std::unordered_map<int, MonitorElement*> h_caloparticle_eta;
+  std::unordered_map<int, MonitorElement*> h_caloparticle_eta_Zorigin;
+  std::unordered_map<int, MonitorElement*> h_caloparticle_energy;
+  std::unordered_map<int, MonitorElement*> h_caloparticle_pt;
+  std::unordered_map<int, MonitorElement*> h_caloparticle_phi;
 };
 
 using Density = hgcal_clustering::Density;
@@ -101,10 +101,10 @@ public:
 
   using Histograms = HGVHistoProducerAlgoHistograms;
 
-  void bookInfo(DQMStore::ConcurrentBooker& ibook, Histograms& histograms);
-  void bookCaloParticleHistos(DQMStore::ConcurrentBooker& ibook, Histograms& histograms, int pdgid);
+  void bookInfo(DQMStore::IBooker& ibook, Histograms& histograms);
+  void bookCaloParticleHistos(DQMStore::IBooker& ibook, Histograms& histograms, int pdgid);
 
-  void bookClusterHistos(DQMStore::ConcurrentBooker& ibook,
+  void bookClusterHistos(DQMStore::IBooker& ibook,
                          Histograms& histograms,
                          unsigned layers,
                          std::vector<int> thicknesses,

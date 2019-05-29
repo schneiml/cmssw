@@ -22,8 +22,8 @@
 namespace beamcond {
   struct RunCache {
     // MonitorElements
-    ConcurrentMonitorElement h_x0_lumi;
-    ConcurrentMonitorElement h_y0_lumi;
+    MonitorElement* h_x0_lumi;
+    MonitorElement* h_y0_lumi;
   };
 };  // namespace beamcond
 
@@ -34,7 +34,7 @@ public:
 
 protected:
   // Book Histograms
-  void bookHistograms(DQMStore::ConcurrentBooker& i,
+  void bookHistograms(DQMStore::IBooker& i,
                       const edm::Run& r,
                       const edm::EventSetup& c,
                       beamcond::RunCache&) const override;
