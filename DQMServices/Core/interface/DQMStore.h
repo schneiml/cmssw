@@ -24,12 +24,12 @@
 
 #include "DQMServices/Core/interface/DQMDefinitions.h"
 #include "DQMServices/Core/interface/ConcurrentMonitorElement.h"
-#include "DQMServices/Core/interface/DQMStore.h"
 
 namespace edm { class DQMHttpSource; class ParameterSet; class ActivityRegistry; class GlobalContext; }
 namespace lat { class Regexp; }
 namespace dqmstorepb {class ROOTFilePB; class ROOTFilePB_Histo;}
 
+class MonitorElement;
 class QCriterion;
 class TFile;
 class TBufferFile;
@@ -87,6 +87,7 @@ public:
 
   class IBooker {
   public:
+    friend class DQMStore;
 
     MonitorElement* bookInt(TString const& name);
     MonitorElement* bookFloat(TString const& name);
@@ -142,6 +143,7 @@ public:
 
   class ConcurrentBooker : public IBooker {
   public:
+    friend class DQMStore;
 
     ConcurrentMonitorElement bookInt(TString const& name);
     ConcurrentMonitorElement bookFloat(TString const& name);
@@ -188,6 +190,7 @@ public:
 
   class IGetter {
   public:
+    friend class DQMStore;
 
     // for the supported syntaxes, see the declarations of DQMStore::getContents
     template <typename... Args>

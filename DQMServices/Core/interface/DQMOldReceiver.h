@@ -7,6 +7,7 @@
 
 # include <string>
 
+class DQMStore;
 class DQMOldReceiver
 {
 
@@ -62,4 +63,3 @@ private:
 } DQM_DEPRECATED;
 
 #endif // DQMSERVICES_CORE_DQM_CONNECTOR_H
-#include "DQMServices/Core/interface/DQMStore.h"

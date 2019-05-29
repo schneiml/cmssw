@@ -125,7 +125,9 @@ private:
   static const float ERROR_PROB_THRESHOLD;
 
   /// for creating and deleting class instances
+  friend class DQMStore;
   /// for running the test
+  friend class MonitorElement;
 };
 
 //////////////////////////////////////////////////////////////////////
