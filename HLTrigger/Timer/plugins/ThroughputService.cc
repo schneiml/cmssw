@@ -65,7 +65,8 @@ void ThroughputService::preGlobalBeginRun(edm::GlobalContext const& gc) {
   };
 
   // book MonitorElement's for this run
-  m_dqmstore->bookConcurrentTransaction(bookTransactionCallback, gc.luminosityBlockID().run());
+  m_dqmstore->bookTransaction(
+      bookTransactionCallback, gc.luminosityBlockID().run(), /* moduleID */ 0, /* canSaveByLumi */ false);
 }
 
 void ThroughputService::preSourceEvent(edm::StreamID sid) {
