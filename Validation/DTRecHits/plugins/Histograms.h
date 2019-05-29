@@ -92,14 +92,14 @@ public:
       hResVsDistFE->Fill(distFESimHit, res);
     }
     hRes->Fill(res);
-    hResSt[station - 1].fill(res);
+    hResSt[station - 1]->Fill(res);
     hResVsEta->Fill(etaSimHit, res);
     hResVsPhi->Fill(phiSimHit, res);
     hResVsPos->Fill(distSimHit, res);
     if (errRecHit != 0) {
       float pull = res / errRecHit;
       hPull->Fill(pull);
-      hPullSt[station - 1].fill(pull);
+      hPullSt[station - 1]->Fill(pull);
       if (doall_) {
         hPullVsPos->Fill(distSimHit, pull);
         hPullVsAngle->Fill(thetaSimHit, pull);
@@ -243,15 +243,15 @@ public:
                                    150,
                                    -0.2,
                                    0.2);
-      hResPosVsResAngle = booker.book2D(pre + "_hResPosVsResAngle",
-                                        "Residual on 2D segment position vs Residual on 2D "
-                                        "segment angle;angle (rad);res (cm)",
-                                        100,
-                                        -0.3,
-                                        0.3,
-                                        150,
-                                        -0.2,
-                                        0.2);
+      hResPosVsResAngle =
+          booker.book2D(pre + "_hResPosVsResAngle",
+                        "Residual on 2D segment position vs Residual on 2D segment angle;angle (rad);res (cm)",
+                        100,
+                        -0.3,
+                        0.3,
+                        150,
+                        -0.2,
+                        0.2);
     }
     hResAngle = booker.book1D(
         pre + "_hResAngle", "Residual on 2D segment angle;angle_{rec}-angle_{sim} (rad)", 50, -0.01, 0.01);
@@ -261,12 +261,8 @@ public:
     booker.setCurrentFolder("DT/2DSegments/Pull/");
     hPullAngle = booker.book1D(
         pre + "_hPullAngle", "Pull on 2D segment angle;(angle_{rec}-angle_{sim})/#sigma (rad)", 150, -5, 5);
-    hPullPos = booker.book1D(pre + "_hPullPos",
-                             "Pull on 2D segment position (x at SL "
-                             "center);(x_{rec}-x_{sim} (cm))/#sigma",
-                             150,
-                             -5,
-                             5);
+    hPullPos = booker.book1D(
+        pre + "_hPullPos", "Pull on 2D segment position (x at SL center);(x_{rec}-x_{sim} (cm))/#sigma", 150, -5, 5);
   }
 
   void fill(float angleSimSegment,
@@ -433,46 +429,45 @@ public:
                                     -1.5,
                                     1.5);
 
-      hResAlphaVsEta = booker.book2D(pre + "_hResAlphaVsEta",
-                                     "4D RecHit residual on #alpha_x direction vs "
-                                     "eta;#eta;#alpha^{x}_{rec}-#alpha^{x}_{sim} (rad)",
-                                     100,
-                                     -2.5,
-                                     2.5,
-                                     100,
-                                     -0.025,
-                                     0.025);
-      hResAlphaVsPhi = booker.book2D(pre + "_hResAlphaVsPhi",
-                                     "4D RecHit residual on #alpha_x direction vs phi (rad);#phi "
-                                     "(rad);#alpha^{x}_{rec}-#alpha^{x}_{sim} (rad)",
-                                     100,
-                                     -3.2,
-                                     3.2,
-                                     100,
-                                     -0.025,
-                                     0.025);
-      hResBetaVsEta = booker.book2D(pre + "_hResBetaVsEta",
-                                    "4D RecHit residual on beta direction vs "
-                                    "eta;#eta;#alpha^{y}_{rec}-#alpha^{y}_{sim} (rad)",
-                                    100,
-                                    -2.5,
-                                    2.5,
-                                    200,
-                                    -0.2,
-                                    0.2);
-      hResBetaVsPhi = booker.book2D(pre + "_hResBetaVsPhi",
-                                    "4D RecHit residual on beta direction vs phi;#phi "
-                                    "(rad);#alpha^{y}_{rec}-#alpha^{y}_{sim} (rad)",
-                                    100,
-                                    -3.2,
-                                    3.2,
-                                    200,
-                                    -0.2,
-                                    0.2);
+      hResAlphaVsEta =
+          booker.book2D(pre + "_hResAlphaVsEta",
+                        "4D RecHit residual on #alpha_x direction vs eta;#eta;#alpha^{x}_{rec}-#alpha^{x}_{sim} (rad)",
+                        100,
+                        -2.5,
+                        2.5,
+                        100,
+                        -0.025,
+                        0.025);
+      hResAlphaVsPhi = booker.book2D(
+          pre + "_hResAlphaVsPhi",
+          "4D RecHit residual on #alpha_x direction vs phi (rad);#phi (rad);#alpha^{x}_{rec}-#alpha^{x}_{sim} (rad)",
+          100,
+          -3.2,
+          3.2,
+          100,
+          -0.025,
+          0.025);
+      hResBetaVsEta =
+          booker.book2D(pre + "_hResBetaVsEta",
+                        "4D RecHit residual on beta direction vs eta;#eta;#alpha^{y}_{rec}-#alpha^{y}_{sim} (rad)",
+                        100,
+                        -2.5,
+                        2.5,
+                        200,
+                        -0.2,
+                        0.2);
+      hResBetaVsPhi = booker.book2D(
+          pre + "_hResBetaVsPhi",
+          "4D RecHit residual on beta direction vs phi;#phi (rad);#alpha^{y}_{rec}-#alpha^{y}_{sim} (rad)",
+          100,
+          -3.2,
+          3.2,
+          200,
+          -0.2,
+          0.2);
 
       hResXVsEta = booker.book2D(pre + "_hResXVsEta",
-                                 "4D RecHit residual on position (x) in "
-                                 "chamber vs eta;#eta;x_{rec}-x_{sim} (cm)",
+                                 "4D RecHit residual on position (x) in chamber vs eta;#eta;x_{rec}-x_{sim} (cm)",
                                  100,
                                  -2.5,
                                  2.5,
@@ -480,8 +475,7 @@ public:
                                  -0.3,
                                  0.3);
       hResXVsPhi = booker.book2D(pre + "_hResXVsPhi",
-                                 "4D RecHit residual on position (x) in chamber vs "
-                                 "phi;#phi (rad);x_{rec}-x_{sim} (cm)",
+                                 "4D RecHit residual on position (x) in chamber vs phi;#phi (rad);x_{rec}-x_{sim} (cm)",
                                  100,
                                  -3.2,
                                  3.2,
@@ -490,8 +484,7 @@ public:
                                  0.3);
 
       hResYVsEta = booker.book2D(pre + "_hResYVsEta",
-                                 "4D RecHit residual on position (y) in "
-                                 "chamber vs eta;#eta;y_{rec}-y_{sim} (cm)",
+                                 "4D RecHit residual on position (y) in chamber vs eta;#eta;y_{rec}-y_{sim} (cm)",
                                  100,
                                  -2.5,
                                  2.5,
@@ -499,8 +492,7 @@ public:
                                  -0.6,
                                  0.6);
       hResYVsPhi = booker.book2D(pre + "_hResYVsPhi",
-                                 "4D RecHit residual on position (y) in chamber vs "
-                                 "phi;#phi (rad);y_{rec}-y_{sim} (cm)",
+                                 "4D RecHit residual on position (y) in chamber vs phi;#phi (rad);y_{rec}-y_{sim} (cm)",
                                  100,
                                  -3.2,
                                  3.2,
@@ -537,164 +529,160 @@ public:
                                       -1.5,
                                       1.5);
 
-      hResBetaVsEtaRZ = booker.book2D(pre + "_hResBetaVsEtaRZ",
-                                      "4D RecHit residual on beta direction vs eta;#eta in "
-                                      "RZ SL;#alpha^{y}_{rec}-#alpha^{y}_{sim} (rad)",
-                                      100,
-                                      -2.5,
-                                      2.5,
-                                      200,
-                                      -0.2,
-                                      0.2);
-      hResBetaVsPhiRZ = booker.book2D(pre + "_hResBetaVsPhiRZ",
-                                      "4D RecHit residual on beta direction vs phi in RZ "
-                                      "SL;#phi (rad);#alpha^{y}_{rec}-#alpha^{y}_{sim} (rad)",
-                                      100,
-                                      -3.2,
-                                      3.2,
-                                      200,
-                                      -0.2,
-                                      0.2);
-      hResYVsEtaRZ = booker.book2D(pre + "_hResYVsEtaRZ",
-                                   "4D RecHit residual on position (y) in chamber vs eta "
-                                   "in RZ SL;#eta;y_{rec}-y_{sim} (cm)",
-                                   100,
-                                   -2.5,
-                                   2.5,
-                                   150,
-                                   -0.6,
-                                   0.6);
-      hResYVsPhiRZ = booker.book2D(pre + "_hResYVsPhiRZ",
-                                   "4D RecHit residual on position (y) in chamber vs phi "
-                                   "in RZ SL;#phi (rad);y_{rec}-y_{sim} (cm)",
-                                   100,
-                                   -3.2,
-                                   3.2,
-                                   150,
-                                   -0.6,
-                                   0.6);
+      hResBetaVsEtaRZ = booker.book2D(
+          pre + "_hResBetaVsEtaRZ",
+          "4D RecHit residual on beta direction vs eta;#eta in RZ SL;#alpha^{y}_{rec}-#alpha^{y}_{sim} (rad)",
+          100,
+          -2.5,
+          2.5,
+          200,
+          -0.2,
+          0.2);
+      hResBetaVsPhiRZ = booker.book2D(
+          pre + "_hResBetaVsPhiRZ",
+          "4D RecHit residual on beta direction vs phi in RZ SL;#phi (rad);#alpha^{y}_{rec}-#alpha^{y}_{sim} (rad)",
+          100,
+          -3.2,
+          3.2,
+          200,
+          -0.2,
+          0.2);
+      hResYVsEtaRZ =
+          booker.book2D(pre + "_hResYVsEtaRZ",
+                        "4D RecHit residual on position (y) in chamber vs eta in RZ SL;#eta;y_{rec}-y_{sim} (cm)",
+                        100,
+                        -2.5,
+                        2.5,
+                        150,
+                        -0.6,
+                        0.6);
+      hResYVsPhiRZ =
+          booker.book2D(pre + "_hResYVsPhiRZ",
+                        "4D RecHit residual on position (y) in chamber vs phi in RZ SL;#phi (rad);y_{rec}-y_{sim} (cm)",
+                        100,
+                        -3.2,
+                        3.2,
+                        150,
+                        -0.6,
+                        0.6);
 
       booker.setCurrentFolder("DT/4DSegments/Pull/");
-      hPullAlphaVsEta = booker.book2D(pre + "_hPullAlphaVsEta",
-                                      "4D RecHit pull on #alpha_x direction vs "
-                                      "eta;#eta;(#alpha^{x}_{rec}-#alpha^{x}_{sim})/#sigma",
-                                      100,
-                                      -2.5,
-                                      2.5,
-                                      100,
-                                      -5,
-                                      5);
-      hPullAlphaVsPhi = booker.book2D(pre + "_hPullAlphaVsPhi",
-                                      "4D RecHit pull on #alpha_x direction vs phi (rad);#phi "
-                                      "(rad);(#alpha^{x}_{rec}-#alpha^{x}_{sim})/#sigma",
-                                      100,
-                                      -3.2,
-                                      3.2,
-                                      100,
-                                      -5,
-                                      5);
-      hPullBetaVsEta = booker.book2D(pre + "_hPullBetaVsEta",
-                                     "4D RecHit pull on beta direction vs "
-                                     "eta;#eta;(#alpha^{y}_{rec}-#alpha^{y}_{sim})/#sigma",
-                                     100,
-                                     -2.5,
-                                     2.5,
-                                     200,
-                                     -5,
-                                     5);
-      hPullBetaVsPhi = booker.book2D(pre + "_hPullBetaVsPhi",
-                                     "4D RecHit pull on beta direction vs phi;#phi "
-                                     "(rad);(#alpha^{y}_{rec}-#alpha^{y}_{sim})/#sigma",
-                                     100,
-                                     -3.2,
-                                     3.2,
-                                     200,
-                                     -5,
-                                     5);
+      hPullAlphaVsEta =
+          booker.book2D(pre + "_hPullAlphaVsEta",
+                        "4D RecHit pull on #alpha_x direction vs eta;#eta;(#alpha^{x}_{rec}-#alpha^{x}_{sim})/#sigma",
+                        100,
+                        -2.5,
+                        2.5,
+                        100,
+                        -5,
+                        5);
+      hPullAlphaVsPhi = booker.book2D(
+          pre + "_hPullAlphaVsPhi",
+          "4D RecHit pull on #alpha_x direction vs phi (rad);#phi (rad);(#alpha^{x}_{rec}-#alpha^{x}_{sim})/#sigma",
+          100,
+          -3.2,
+          3.2,
+          100,
+          -5,
+          5);
+      hPullBetaVsEta =
+          booker.book2D(pre + "_hPullBetaVsEta",
+                        "4D RecHit pull on beta direction vs eta;#eta;(#alpha^{y}_{rec}-#alpha^{y}_{sim})/#sigma",
+                        100,
+                        -2.5,
+                        2.5,
+                        200,
+                        -5,
+                        5);
+      hPullBetaVsPhi =
+          booker.book2D(pre + "_hPullBetaVsPhi",
+                        "4D RecHit pull on beta direction vs phi;#phi (rad);(#alpha^{y}_{rec}-#alpha^{y}_{sim})/#sigma",
+                        100,
+                        -3.2,
+                        3.2,
+                        200,
+                        -5,
+                        5);
       hPullXVsEta = booker.book2D(pre + "_hPullXVsEta",
-                                  "4D RecHit pull on position (x) in chamber "
-                                  "vs eta;#eta;(x_{rec}-x_{sim})#sigma",
+                                  "4D RecHit pull on position (x) in chamber vs eta;#eta;(x_{rec}-x_{sim})#sigma",
                                   100,
                                   -2.5,
                                   2.5,
                                   150,
                                   -5,
                                   5);
-      hPullXVsPhi = booker.book2D(pre + "_hPullXVsPhi",
-                                  "4D RecHit pull on position (x) in chamber "
-                                  "vs phi;#phi (rad);(x_{rec}-x_{sim})/#sigma",
-                                  100,
-                                  -3.2,
-                                  3.2,
-                                  150,
-                                  -5,
-                                  5);
+      hPullXVsPhi =
+          booker.book2D(pre + "_hPullXVsPhi",
+                        "4D RecHit pull on position (x) in chamber vs phi;#phi (rad);(x_{rec}-x_{sim})/#sigma",
+                        100,
+                        -3.2,
+                        3.2,
+                        150,
+                        -5,
+                        5);
       hPullYVsEta = booker.book2D(pre + "_hPullYVsEta",
-                                  "4D RecHit pull on position (y) in chamber "
-                                  "vs eta;#eta;(y_{rec}-y_{sim})/#sigma",
+                                  "4D RecHit pull on position (y) in chamber vs eta;#eta;(y_{rec}-y_{sim})/#sigma",
                                   100,
                                   -2.5,
                                   2.5,
                                   150,
                                   -5,
                                   5);
-      hPullYVsPhi = booker.book2D(pre + "_hPullYVsPhi",
-                                  "4D RecHit pull on position (y) in chamber "
-                                  "vs phi;#phi (rad);(y_{rec}-y_{sim})/#sigma",
-                                  100,
-                                  -3.2,
-                                  3.2,
-                                  150,
-                                  -5,
-                                  5);
-      hPullBetaVsEtaRZ = booker.book2D(pre + "_hPullBetaVsEtaRZ",
-                                       "4D RecHit pull on beta direction vs eta;#eta in RZ "
-                                       "SL;(#alpha^{y}_{rec}-#alpha^{y}_{sim})/#sigma",
-                                       100,
-                                       -2.5,
-                                       2.5,
-                                       200,
-                                       -5,
-                                       5);
-      hPullBetaVsPhiRZ = booker.book2D(pre + "_hPullBetaVsPhiRZ",
-                                       "4D RecHit pull on beta direction vs phi in RZ SL;#phi "
-                                       "(rad);(#alpha^{y}_{rec}-#alpha^{y}_{sim})/#sigma",
-                                       100,
-                                       -3.2,
-                                       3.2,
-                                       200,
-                                       -5,
-                                       5);
-      hPullYVsEtaRZ = booker.book2D(pre + "_hPullYVsEtaRZ",
-                                    "4D RecHit pull on position (y) in chamber vs eta in "
-                                    "RZ SL;#eta;(y_{rec}-y_{sim})/#sigma",
-                                    100,
-                                    -2.5,
-                                    2.5,
-                                    150,
-                                    -5,
-                                    5);
-      hPullYVsPhiRZ = booker.book2D(pre + "_hPullYVsPhiRZ",
-                                    "4D RecHit pull on position (y) in chamber vs phi in "
-                                    "RZ SL;#phi (rad);(y_{rec}-y_{sim})/#sigma",
-                                    100,
-                                    -3.2,
-                                    3.2,
-                                    150,
-                                    -5,
-                                    5);
+      hPullYVsPhi =
+          booker.book2D(pre + "_hPullYVsPhi",
+                        "4D RecHit pull on position (y) in chamber vs phi;#phi (rad);(y_{rec}-y_{sim})/#sigma",
+                        100,
+                        -3.2,
+                        3.2,
+                        150,
+                        -5,
+                        5);
+      hPullBetaVsEtaRZ = booker.book2D(
+          pre + "_hPullBetaVsEtaRZ",
+          "4D RecHit pull on beta direction vs eta;#eta in RZ SL;(#alpha^{y}_{rec}-#alpha^{y}_{sim})/#sigma",
+          100,
+          -2.5,
+          2.5,
+          200,
+          -5,
+          5);
+      hPullBetaVsPhiRZ = booker.book2D(
+          pre + "_hPullBetaVsPhiRZ",
+          "4D RecHit pull on beta direction vs phi in RZ SL;#phi (rad);(#alpha^{y}_{rec}-#alpha^{y}_{sim})/#sigma",
+          100,
+          -3.2,
+          3.2,
+          200,
+          -5,
+          5);
+      hPullYVsEtaRZ =
+          booker.book2D(pre + "_hPullYVsEtaRZ",
+                        "4D RecHit pull on position (y) in chamber vs eta in RZ SL;#eta;(y_{rec}-y_{sim})/#sigma",
+                        100,
+                        -2.5,
+                        2.5,
+                        150,
+                        -5,
+                        5);
+      hPullYVsPhiRZ =
+          booker.book2D(pre + "_hPullYVsPhiRZ",
+                        "4D RecHit pull on position (y) in chamber vs phi in RZ SL;#phi (rad);(y_{rec}-y_{sim})/#sigma",
+                        100,
+                        -3.2,
+                        3.2,
+                        150,
+                        -5,
+                        5);
     }
     booker.setCurrentFolder("DT/4DSegments/Res/");
     hResAlpha = booker.book1D(pre + "_hResAlpha",
-                              "4D RecHit residual on #alpha_x "
-                              "direction;#alpha^{x}_{rec}-#alpha^{x}_{sim} (rad)",
+                              "4D RecHit residual on #alpha_x direction;#alpha^{x}_{rec}-#alpha^{x}_{sim} (rad)",
                               200,
                               -0.015,
                               0.015);
 
     hResBeta = booker.book1D(pre + "_hResBeta",
-                             "4D RecHit residual on beta "
-                             "direction;#alpha^{y}_{rec}-#alpha^{y}_{sim} (rad)",
+                             "4D RecHit residual on beta direction;#alpha^{y}_{rec}-#alpha^{y}_{sim} (rad)",
                              200,
                              -0.1,
                              0.1);
@@ -705,15 +693,13 @@ public:
 
     // histo in rz SL reference frame.
     hResBetaRZ = booker.book1D(pre + "_hResBetaRZ",
-                               "4D RecHit residual on beta direction in RZ "
-                               "SL;#alpha^{y}_{rec}-#alpha^{y}_{sim} (rad)",
+                               "4D RecHit residual on beta direction in RZ SL;#alpha^{y}_{rec}-#alpha^{y}_{sim} (rad)",
                                200,
                                -0.1,
                                0.1);
 
     hResYRZ = booker.book1D(pre + "_hResYRZ",
-                            "4D RecHit residual on position (y) in chamber in "
-                            "RZ SL;y_{rec}-y_{sim} (cm)",
+                            "4D RecHit residual on position (y) in chamber in RZ SL;y_{rec}-y_{sim} (cm)",
                             150,
                             -0.15,
                             0.15);
@@ -722,17 +708,12 @@ public:
     booker.setCurrentFolder("DT/4DSegments/Pull/");
 
     hPullAlpha = booker.book1D(pre + "_hPullAlpha",
-                               "4D RecHit pull on #alpha_x "
-                               "direction;(#alpha^{x}_{rec}-#alpha^{x}_{sim})/#sigma",
+                               "4D RecHit pull on #alpha_x direction;(#alpha^{x}_{rec}-#alpha^{x}_{sim})/#sigma",
                                200,
                                -5,
                                5);
-    hPullBeta = booker.book1D(pre + "_hPullBeta",
-                              "4D RecHit pull on beta "
-                              "direction;(#alpha^{y}_{rec}-#alpha^{y}_{sim})/#sigma",
-                              200,
-                              -5,
-                              5);
+    hPullBeta = booker.book1D(
+        pre + "_hPullBeta", "4D RecHit pull on beta direction;(#alpha^{y}_{rec}-#alpha^{y}_{sim})/#sigma", 200, -5, 5);
 
     hPullX =
         booker.book1D(pre + "_hPullX", "4D RecHit pull on position (x) in chamber;(x_{rec}-x_{sim})#sigma", 150, -5, 5);
@@ -741,18 +722,13 @@ public:
         pre + "_hPullY", "4D RecHit pull on position (y) in chamber;(y_{rec}-y_{sim})/#sigma", 150, -5, 5);
 
     hPullBetaRZ = booker.book1D(pre + "_hPullBetaRZ",
-                                "4D RecHit pull on beta direction in RZ "
-                                "SL;(#alpha^{y}_{rec}-#alpha^{y}_{sim})/#sigma",
+                                "4D RecHit pull on beta direction in RZ SL;(#alpha^{y}_{rec}-#alpha^{y}_{sim})/#sigma",
                                 200,
                                 -5,
                                 5);
 
-    hPullYRZ = booker.book1D(pre + "_hPullYRZ",
-                             "4D RecHit pull on position (y) in chamber in RZ "
-                             "SL;(y_{rec}-y_{sim})/#sigma",
-                             150,
-                             -5,
-                             5);
+    hPullYRZ = booker.book1D(
+        pre + "_hPullYRZ", "4D RecHit pull on position (y) in chamber in RZ SL;(y_{rec}-y_{sim})/#sigma", 150, -5, 5);
 
     // NHits, t0
     if (local_) {
