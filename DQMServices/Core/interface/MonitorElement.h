@@ -36,7 +36,6 @@ struct MonitorElementNoCloneTag {};
 /** The base class for all MonitorElements (ME) */
 class MonitorElement
 {
-  friend class DQMStore;
   friend class DQMService;
 public:
   struct Scalar
@@ -390,3 +389,4 @@ public:
 };
 
 #endif // DQMSERVICES_CORE_MONITOR_ELEMENT_H
+#include "DQMServices/Core/interface/DQMStore.h"
