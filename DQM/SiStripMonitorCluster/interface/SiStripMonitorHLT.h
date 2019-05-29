@@ -18,8 +18,7 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Utilities/interface/EDGetToken.h"
-
-class DQMStore;
+#include "DQMServices/Core/interface/DQMStore.h"
 
 class SiStripMonitorHLT : public DQMEDAnalyzer {
 public:

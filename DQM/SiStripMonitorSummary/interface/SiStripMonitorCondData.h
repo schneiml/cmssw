@@ -23,11 +23,10 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "boost/cstdint.hpp"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include <iostream>
 #include <string>
 #include <vector>
-
-class MonitorElement;
 
 class SiStripPedestalsDQM;
 class SiStripNoisesDQM;

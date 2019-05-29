@@ -20,9 +20,7 @@
 #include "MonitorXMLParser.h"
 
 #include "RelationalAccess/ISessionProxy.h"
-
-class MonitorElement;
-class DQMStore;
+#include "DQMServices/Core/interface/DQMStore.h"
 
 class MonitorElementsDb {
   friend class EcalBarrelMonitorDbModule;

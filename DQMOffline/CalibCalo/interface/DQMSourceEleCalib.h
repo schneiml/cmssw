@@ -21,9 +21,6 @@
 #include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
 
-class DQMStore;
-class MonitorElement;
-
 class DQMSourceEleCalib : public DQMEDAnalyzer {
 public:
   DQMSourceEleCalib(const edm::ParameterSet &);

@@ -11,8 +11,6 @@
 
 #include <map>
 
-class DQMStore;
-
 namespace ecaldqm {
 
   class DBWriterWorker {

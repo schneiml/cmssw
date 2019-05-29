@@ -17,8 +17,7 @@
 #include "DQMServices/Core/interface/MonitorElement.h"
 #include "DataFormats/FEDRawData/interface/FEDRawDataCollection.h"
 #include "DataFormats/HcalRecHit/interface/HcalRecHitCollections.h"
-
-class MonitorElement;
+#include "DQMServices/Core/interface/DQMStore.h"
 
 class DQMHcalPhiSymAlCaReco : public DQMEDAnalyzer {
 public:

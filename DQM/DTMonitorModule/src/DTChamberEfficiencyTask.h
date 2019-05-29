@@ -33,9 +33,6 @@
 #include <map>
 #include <vector>
 
-class DQMStore;
-class MonitorElement;
-
 class DTChamberEfficiencyTask : public one::DQMEDAnalyzer<edm::one::WatchLuminosityBlocks> {
 public:
   /// Constructor
