@@ -40,7 +40,6 @@
 
 #include "DQM/SiStripCommon/interface/SiStripFolderOrganizer.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "DataFormats/TrackerRecHit2D/interface/SiStripRecHit2D.h"
 
@@ -123,8 +122,8 @@ private:
                     const SiStripGain* stripGain,
                     const SiStripQuality* stripQuality,
                     const edm::DetSetVector<SiStripDigi>& digilist,
-		    float clustZ,
-		    float clustPhi);
+                    float clustZ,
+                    float clustPhi);
   template <class T>
   void RecHitInfo(const T* tkrecHit,
                   LocalVector LV,
