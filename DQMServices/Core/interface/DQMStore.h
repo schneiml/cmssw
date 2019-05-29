@@ -138,7 +138,7 @@ public:
     // Embedded classes do not natively own a pointer to the embedding
     // class. We therefore need to store a pointer to the main
     // DQMStore instance (owner_).
-    DQMStore* owner_;
+    std::unique_ptr<DQMStore> owner_;
   };  // IBooker
 
   class ConcurrentBooker : public IBooker {
@@ -234,7 +234,7 @@ public:
     // Embedded classes do not natively own a pointer to the embedding
     // class. We therefore need to store a pointer to the main
     // DQMStore instance (owner_).
-    DQMStore* owner_;
+    std::unique_ptr<DQMStore> owner_;
   }; //IGetter
 
   // Template function to be used inside each DQM Modules' lambda

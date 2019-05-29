@@ -64,7 +64,7 @@ private:
   const TrackerGeometry* tracker_;
   const TrackerTopology* tTopo;
 
-  DQMStore* dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
 
   TFile* file0;
   std::string filename, dirpath;

@@ -51,7 +51,7 @@ private:
   bool _produceDQM;
   double _xsection;
 
-  DQMStore *dbe;
+  std::unique_ptr<DQMStore> dbe;
   std::vector<MonitorElement *> _mes;
 };
 

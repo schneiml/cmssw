@@ -43,7 +43,7 @@ protected:
 private:
   void bookHisto(const DTChamberId &);
 
-  DQMStore *dbe_;
+  std::unique_ptr<DQMStore> dbe_;
   // The DB label
   std::string labelDBRef_;
   std::string labelDB_;

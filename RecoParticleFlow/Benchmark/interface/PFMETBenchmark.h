@@ -178,7 +178,7 @@ class PFMETBenchmark {
   PFBenchmarkAlgo *algo_;
   bool debug_;
   bool plotAgainstReco_;
-  DQMStore *dbe_;
+  std::unique_ptr<DQMStore> dbe_;
 };
 
 #endif // RecoParticleFlow_Benchmark_PFMETBenchmark_h

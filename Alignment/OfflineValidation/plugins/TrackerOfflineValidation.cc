@@ -228,7 +228,7 @@ private:
     std::unique_ptr<TFileDirectory> tfd;
     std::string directoryString;
     const bool dqmMode;
-    DQMStore* theDbe;
+    std::unique_ptr<DQMStore> theDbe;
   };
 
   //

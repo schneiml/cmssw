@@ -45,7 +45,7 @@ private:
   void initialize();
   edm::ParameterSet parameters_;
 
-  DQMStore* dbe_;
+  std::unique_ptr<DQMStore> dbe_;
   bool verbose_;
   int counterLS_;    ///counter
   int counterEvt_;   ///counter

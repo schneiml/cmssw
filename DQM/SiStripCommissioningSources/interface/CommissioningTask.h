@@ -157,7 +157,7 @@ private:
 
   // ---------- Private member data ----------
 
-  DQMStore* dqm_;
+  std::unique_ptr<DQMStore> dqm_;
 
   uint32_t updateFreq_;
 

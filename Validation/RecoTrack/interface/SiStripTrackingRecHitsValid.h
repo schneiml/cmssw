@@ -258,7 +258,7 @@ class SiStripTrackingRecHitsValid : public DQMEDAnalyzer
 
  private:
   
-  DQMStore* dbe_;
+  std::unique_ptr<DQMStore> dbe_;
   bool runStandalone;
   bool outputMEsInRootFile;
   std::string outputFileName;

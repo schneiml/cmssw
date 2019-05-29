@@ -43,7 +43,7 @@ void DQMTestMultiThread::bookHistograms(DQMStore::IBooker &b,
   myHisto = b.book1D("MyHisto",
                      "MyHisto",
                      100, -0.5, 99.5);
-  DQMStore * store = edm::Service<DQMStore>().operator->();
+  std::unique_ptr<DQMStore> store = std::make_unique<DQMStore>();
   if (debug_) {
     std::cout << std::endl;
     for (auto me : store->getAllContents("")) {

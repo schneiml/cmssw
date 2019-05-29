@@ -124,7 +124,7 @@ SiStripBadModuleFedErrESSource::produce(const SiStripBadModuleFedErrRcd& iRecord
 
   auto quality = std::make_unique<SiStripQuality>();
 
-  DQMStore* dqmStore = edm::Service<DQMStore>().operator->();
+  std::unique_ptr<DQMStore> dqmStore = std::make_unique<DQMStore>();
   if ( m_readFlag ) { // open requested file
     edm::LogInfo("SiStripBadModuleFedErrService") <<  "[SiStripBadModuleFedErrService::openRequestedFile] Accessing root File" << m_fileName;
     if ( ! dqmStore->load(m_fileName, DQMStore::OpenRunDirs::StripRunDirs, true) ) {

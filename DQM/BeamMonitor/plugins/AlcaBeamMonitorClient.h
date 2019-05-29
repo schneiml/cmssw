@@ -45,7 +45,7 @@ private:
 
   //Service variables
   int numberOfValuesToSave_;
-  DQMStore* dbe_;
+  std::unique_ptr<DQMStore> dbe_;
 
   //Containers
   HistosContainer histosMap_;

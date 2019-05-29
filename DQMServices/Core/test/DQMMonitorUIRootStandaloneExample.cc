@@ -68,7 +68,7 @@ private:
   // event counter
   int counter;
   // back-end interface
-  DQMStore * dbe;
+  std::unique_ptr<DQMStore> dbe;
   // quality tests
   Comp2RefChi2 * chi2_test; // chi2 test
   Comp2RefKolmogorov * ks_test; // Kolmogorov test
@@ -213,7 +213,7 @@ void DQMStandaloneExample::tuneCuts()
 DQMStandaloneExample::DQMStandaloneExample(const edm::ParameterSet& iConfig ) : counter(0)
 {
   // get hold of back-end interface
-  dbe = edm::Service<DQMStore>().operator->();
+  dbe = std::make_unique<DQMStore>();
 
   createMonitorElements();
   

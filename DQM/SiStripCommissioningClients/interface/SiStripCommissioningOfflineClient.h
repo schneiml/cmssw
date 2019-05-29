@@ -42,7 +42,7 @@ protected:
 
 protected:
   /** DQMStore object. */
-  DQMStore* bei_;
+  std::unique_ptr<DQMStore> bei_;
 
   /** Action "executor" */
   CommissioningHistograms* histos_;

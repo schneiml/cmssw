@@ -36,7 +36,7 @@
 
 class HLTInclusiveVBFClient : public edm::EDAnalyzer {
 private:
-  DQMStore* dbe_;  //dbe seems to be the standard name for this, I dont know why. We of course dont own it
+  std::unique_ptr<DQMStore> dbe_;  //dbe seems to be the standard name for this, I dont know why. We of course dont own it
 
   edm::ParameterSet conf_;
 
