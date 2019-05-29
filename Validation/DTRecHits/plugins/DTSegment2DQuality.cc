@@ -44,7 +44,7 @@ namespace dtsegment2d {
 using namespace dtsegment2d;
 
 // Constructor
-DTSegment2DQuality::DTSegment2DQuality(const ParameterSet &pset) {
+DTSegment2DQuality::DTSegment2DQuality(const ParameterSet& pset) {
   // get the debug parameter for verbose output
   debug_ = pset.getUntrackedParameter<bool>("debug");
   DTHitQualityUtils::debug = debug_;
@@ -65,10 +65,10 @@ DTSegment2DQuality::DTSegment2DQuality(const ParameterSet &pset) {
   }
 }
 
-void DTSegment2DQuality::bookHistograms(DQMStore::ConcurrentBooker &booker,
-                                        edm::Run const &run,
-                                        edm::EventSetup const &setup,
-                                        Histograms &histograms) const {
+void DTSegment2DQuality::bookHistograms(DQMStore::IBooker& booker,
+                                        edm::Run const& run,
+                                        edm::EventSetup const& setup,
+                                        Histograms& histograms) const {
   histograms.h2DHitRPhi = std::make_unique<HRes2DHit>("RPhi", booker, true, true);
   histograms.h2DHitRZ = std::make_unique<HRes2DHit>("RZ", booker, true, true);
   histograms.h2DHitRZ_W0 = std::make_unique<HRes2DHit>("RZ_W0", booker, true, true);
@@ -86,9 +86,9 @@ void DTSegment2DQuality::bookHistograms(DQMStore::ConcurrentBooker &booker,
 }
 
 // The real analysis
-void DTSegment2DQuality::dqmAnalyze(edm::Event const &event,
-                                    edm::EventSetup const &setup,
-                                    Histograms const &histograms) const {
+void DTSegment2DQuality::dqmAnalyze(edm::Event const& event,
+                                    edm::EventSetup const& setup,
+                                    Histograms const& histograms) const {
   // Get the DT Geometry
   ESHandle<DTGeometry> dtGeom;
   setup.get<MuonGeometryRecord>().get(dtGeom);
@@ -99,7 +99,7 @@ void DTSegment2DQuality::dqmAnalyze(edm::Event const &event,
 
   // Map simHits by sl
   map<DTSuperLayerId, PSimHitContainer> simHitsPerSl;
-  for (const auto &simHit : *simHits) {
+  for (const auto& simHit : *simHits) {
     // Create the id of the sl (the simHits in the DT known their wireId)
     DTSuperLayerId slId = ((DTWireId(simHit.detUnitId())).layerId()).superlayerId();
     // Fill the map
@@ -127,7 +127,7 @@ void DTSegment2DQuality::dqmAnalyze(edm::Event const &event,
 
     // Map simhits per wire
     map<DTWireId, PSimHitContainer> simHitsPerWire = DTHitQualityUtils::mapSimHitsPerWire(simHits);
-    map<DTWireId, const PSimHit *> muSimHitPerWire = DTHitQualityUtils::mapMuSimHitsPerWire(simHitsPerWire);
+    map<DTWireId, const PSimHit*> muSimHitPerWire = DTHitQualityUtils::mapMuSimHitsPerWire(simHitsPerWire);
     int nMuSimHit = muSimHitPerWire.size();
     if (nMuSimHit == 0 or nMuSimHit == 1) {
       if (debug_ and nMuSimHit == 1) {
@@ -140,12 +140,10 @@ void DTSegment2DQuality::dqmAnalyze(edm::Event const &event,
     }
 
     // Find outer and inner mu SimHit to build a segment
-    pair<const PSimHit *, const PSimHit *> inAndOutSimHit = DTHitQualityUtils::findMuSimSegment(muSimHitPerWire);
+    pair<const PSimHit*, const PSimHit*> inAndOutSimHit = DTHitQualityUtils::findMuSimSegment(muSimHitPerWire);
     // Check that outermost and innermost SimHit are not the same
     if (inAndOutSimHit.first == inAndOutSimHit.second) {
-      cout << "[DTHitQualityUtils]***Warning: outermost and innermost SimHit "
-              "are the same !"
-           << endl;
+      cout << "[DTHitQualityUtils]***Warning: outermost and innermost SimHit are the same !" << endl;
       continue;
     }
 
@@ -159,7 +157,7 @@ void DTSegment2DQuality::dqmAnalyze(edm::Event const &event,
       cout << "  Simulated segment:  local direction " << simSegmLocalDir << endl
            << "                      local position  " << simSegmLocalPos << endl;
     }
-    const DTSuperLayer *superLayer = dtGeom->superLayer(*slId);
+    const DTSuperLayer* superLayer = dtGeom->superLayer(*slId);
     GlobalPoint simSegmGlobalPos = superLayer->toGlobal(simSegmLocalPos);
 
     // Atan(x/z) angle and x position in SL RF
@@ -184,7 +182,7 @@ void DTSegment2DQuality::dqmAnalyze(edm::Event const &event,
       // RecHits must have delta alpha and delta position within 5 sigma of
       // the residual distribution (we are looking for residuals of segments
       // usefull to the track fit) for efficency purpose
-      const DTRecSegment2D *bestRecHit = nullptr;
+      const DTRecSegment2D* bestRecHit = nullptr;
       bool bestRecHitFound = false;
       double deltaAlpha = 99999;
 
@@ -231,7 +229,7 @@ void DTSegment2DQuality::dqmAnalyze(edm::Event const &event,
         }
 
         // Fill Residual histos
-        HRes2DHit *hRes = nullptr;
+        HRes2DHit* hRes = nullptr;
         if ((*slId).superlayer() == 1 or (*slId).superlayer() == 3) {  // RPhi SL
           hRes = histograms.h2DHitRPhi.get();
         } else if ((*slId).superlayer() == 2) {  // RZ SL
@@ -263,7 +261,7 @@ void DTSegment2DQuality::dqmAnalyze(edm::Event const &event,
     }  // end of if (nsegm != 0)
 
     // Fill Efficiency plot
-    HEff2DHit *hEff = nullptr;
+    HEff2DHit* hEff = nullptr;
     if ((*slId).superlayer() == 1 or (*slId).superlayer() == 3) {  // RPhi SL
       hEff = histograms.h2DHitEff_RPhi.get();
     } else if ((*slId).superlayer() == 2) {  // RZ SL

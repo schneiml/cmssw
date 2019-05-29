@@ -29,7 +29,11 @@
 
 struct MTVHistoProducerAlgoForTrackerHistograms {
   //sim
-  MonitorElement *h_ptSIM, h_etaSIM, h_tracksSIM, h_vertposSIM, h_bunchxSIM;
+  MonitorElement* h_ptSIM;
+  MonitorElement* h_etaSIM;
+  MonitorElement* h_tracksSIM;
+  MonitorElement* h_vertposSIM;
+  MonitorElement* h_bunchxSIM;
 
   //1D
   std::vector<MonitorElement*> h_tracks, h_fakes, h_hits, h_charge, h_algo, h_seedsFitFailed, h_seedsFitFailedFraction;

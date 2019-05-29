@@ -299,9 +299,9 @@ edm::ParameterSetDescription TrigObjTnPHistColl::HistFiller::makePSetDescription
 
 void TrigObjTnPHistColl::HistFiller::operator()(const trigger::TriggerObject& probe,
                                                 float mass,
-                                                const MonitorElement*& hist) const {
+                                                const MonitorElement* hist) const {
   if (localCuts_(probe))
-    hist.fill(var_(probe), mass);
+    hist->Fill(var_(probe), mass);
 }
 
 TrigObjTnPHistColl::HistDefs::HistDefs(const edm::ParameterSet& config)
@@ -322,7 +322,7 @@ edm::ParameterSetDescription TrigObjTnPHistColl::HistDefs::makePSetDescription()
   return desc;
 }
 
-std::vector<std::pair<TrigObjTnPHistColl::HistFiller, ConcurrentMonitorElement>> TrigObjTnPHistColl::HistDefs::bookHists(
+std::vector<std::pair<TrigObjTnPHistColl::HistFiller, MonitorElement*>> TrigObjTnPHistColl::HistDefs::bookHists(
     DQMStore::IBooker& iBooker, const std::string& name, const std::string& title) const {
   std::vector<std::pair<HistFiller, MonitorElement*>> hists;
   for (const auto& data : histData_) {
@@ -346,10 +346,10 @@ edm::ParameterSetDescription TrigObjTnPHistColl::HistDefs::Data::makePSetDescrip
   return desc;
 }
 
-ConcurrentMonitorElement TrigObjTnPHistColl::HistDefs::Data::book(DQMStore::IBooker& iBooker,
-                                                                  const std::string& name,
-                                                                  const std::string& title,
-                                                                  const std::vector<float>& massBins) const {
+MonitorElement* TrigObjTnPHistColl::HistDefs::Data::book(DQMStore::IBooker& iBooker,
+                                                         const std::string& name,
+                                                         const std::string& title,
+                                                         const std::vector<float>& massBins) const {
   return iBooker.book2D((name + nameSuffex_).c_str(),
                         (title + titleSuffex_).c_str(),
                         bins_.size() - 1,
