@@ -71,7 +71,7 @@ string OutputFileName;
 bool pfmBenchmarkDebug;
 bool xplotAgainstReco;
 string xbenchmarkLabel_;
-DQMStore *xdbe_;
+std::unique_ptr<DQMStore> xdbe_;
 //
 // constants, enums and typedefs
 //
@@ -95,7 +95,7 @@ PFMETBenchmarkAnalyzer::PFMETBenchmarkAnalyzer(const edm::ParameterSet &iConfig)
   pfmBenchmarkDebug = iConfig.getParameter<bool>("pfjBenchmarkDebug");
   xplotAgainstReco = iConfig.getParameter<bool>("PlotAgainstRecoQuantities");
   xbenchmarkLabel_ = iConfig.getParameter<string>("BenchmarkLabel");
-  xdbe_ = edm::Service<DQMStore>().operator->();
+  xdbe_ = std::make_unique<DQMStore>();
 
   PFMETBenchmark_.setup(OutputFileName, pfmBenchmarkDebug, xplotAgainstReco, xbenchmarkLabel_, xdbe_);
 }

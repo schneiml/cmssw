@@ -54,7 +54,7 @@ private:
   std::vector<DB_ME> MEinfo_;
   std::vector<MonitorElement *> MEs_;
   int ievt_;
-  DQMStore *dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
 };
 
 #endif  // MonitorElementsDb_H

@@ -48,7 +48,7 @@ private:
   edm::InputTag trackingTruth_;
   edm::InputTag svTagInfoProducer_;
 
-  DQMStore *dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
   std::string dqmLabel;
 
   Int_t n_event;
@@ -105,7 +105,7 @@ recoBSVTagInfoValidationAnalyzer::recoBSVTagInfoValidationAnalyzer(const edm::Pa
   total_nmiss = 0;
 
   //  get the store
-  dqmStore_ = edm::Service<DQMStore>().operator->();
+  dqmStore_ = std::make_unique<DQMStore>();
   dqmLabel = "SVValidation/";
   dqmStore_->setCurrentFolder(dqmLabel);
 

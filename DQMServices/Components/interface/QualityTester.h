@@ -61,7 +61,7 @@ private:
   std::string reportThreshold;
   bool verboseQT;
 
-  DQMStore* bei;
+  std::unique_ptr<DQMStore> bei;
 
   QTestHandle* qtHandler;
 };

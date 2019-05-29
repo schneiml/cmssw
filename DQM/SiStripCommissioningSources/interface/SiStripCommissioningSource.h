@@ -86,7 +86,7 @@ private:  // ---------- Private methods ----------
   // ---------- DQM fwk and cabling ----------
 
   /** Interface to Data Quality Monitoring framework. */
-  DQMStore* dqm_;
+  std::unique_ptr<DQMStore> dqm_;
 
   /** */
   SiStripFedCabling* fedCabling_;

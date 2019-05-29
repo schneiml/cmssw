@@ -61,7 +61,7 @@ private:
 
   // ----------member data ---------------------------
   int nev_;
-  DQMStore* dbe_;
+  std::unique_ptr<DQMStore> dbe_;
 
   bool plotAll_;
 

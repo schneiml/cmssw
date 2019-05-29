@@ -47,7 +47,7 @@ private:
   int verbosity;
   int frequency;
   std::string label;
-  DQMStore *dbe;
+  std::unique_ptr<DQMStore> dbe;
 
   MonitorElement *meTestString;
   MonitorElement *meTestInt;

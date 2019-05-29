@@ -17,7 +17,7 @@ ConverterTester::ConverterTester(const edm::ParameterSet &iPSet) {
   }
 
   dbe = nullptr;
-  dbe = edm::Service<DQMStore>().operator->();
+  dbe = std::make_unique<DQMStore>();
 
   count = 0;
 }
