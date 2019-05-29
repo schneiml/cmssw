@@ -127,10 +127,10 @@ struct MonitorElementData
   // multiple per-lumi histograms in one collection. For a logical comparison,
   // one should look only at the name.
   // The tuple in there should be inlined and rarely actually created.
-  typedef decltype(std::make_tuple(dirname_, objname_, scope_, coveredrange_.startRun(), coveredrange_.startLumi(), coveredrange_.endRun(), coveredrange_.endLumi())) Key;
-  Key key() const {
+  auto key() const {
     return std::make_tuple(dirname_, objname_, scope_, coveredrange_.startRun(), coveredrange_.startLumi(), coveredrange_.endRun(), coveredrange_.endLumi());
   }
+  typedef decltype(&MonitorElementData::key) Key;
 };
 
 
