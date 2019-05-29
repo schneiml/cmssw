@@ -1,0 +1,48 @@
+# Mark unused functions (according to DXR) with a comment.
+# Does not get it always right (like DXR), e.g. virtuals might appear unused even though they are used.
+# Constructors/destructors and framework-called methods are also often wrong.
+
+DB="sqlite3 dxr.sqlite"
+
+$DB <<SQL
+CREATE INDEX IF NOT EXISTS func_override_qualname ON func_override(qualname);
+DROP TABLE unused;
+DROP INDEX unused_loc;
+SQL
+
+$DB <<SQL
+CREATE TABLE unused AS SELECT DISTINCT function.loc as loc, decldef.loc as declloc
+  FROM function NATURAL JOIN code 
+  LEFT OUTER JOIN decldef ON decldef.defloc = function.loc
+WHERE 
+  (SELECT count(*) FROM ref 
+    WHERE ref.qualname = function.qualname
+    AND ref.loc not like "%Example%"
+    AND ref.loc not like "%/test/%"
+    AND ref.loc not like "%DQMStore.cc%"
+  ) = 0
+  AND line NOT LIKE "% = %"                  -- ignore '= default', '= delete' etc.
+  AND function.name NOT LIKE "~%"            -- ignore descturctors, rarely explicitly called...
+  AND NOT function.name = function.scopename -- ignore constructors, DXR does not properly track them (?)
+                                             -- ignore virtual overrrides, might be called via the parent.
+  AND (SELECT count(*) FROM func_override WHERE func_override.qualname = function.qualname) = 0
+                                             -- and a blacklist, since the override check seems to not really work (DXR's fault)
+  AND function.name NOT IN ("analyze", "beginRun", "endRun", "endLuminosityBlock", "beginLuminosityBlock", "fillDescriptions", "endJob", "beginJob", "produce", "globalBeginRun", "globalEndRun", "endRunProduce", "endLuminosityBlockProduce", "globalBeginLuminosityBlock", "globalEndLuminosityBlock")
+;
+
+CREATE INDEX unused_loc ON unused(loc);
+SQL
+
+# restrict to DQMServices for now
+for f in $(echo 'SELECT DISTINCT rtrim(loc,     "1234567890:") FROM unused WHERE loc LIKE "DQMServices/%" 
+           UNION SELECT DISTINCT rtrim(declloc, "1234567890:") FROM unused WHERE loc LIKE "DQMServices/%";' | $DB); do
+  echo processing $f
+  $DB <<SQL > $f
+  SELECT CASE
+    WHEN loc IN (SELECT loc FROM unused UNION SELECT declloc FROM unused) THEN
+      "/* almost unused */ " || line
+    ELSE line END
+  FROM code 
+  WHERE rtrim(loc, "0123456789:") = "$f" 
+SQL
+done

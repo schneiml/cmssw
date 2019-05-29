@@ -1,0 +1,29 @@
+DB="sqlite3"
+
+ag -l --cpp 'class\s+DQMStore\s*;' > files
+ag -l --cpp 'class\s+MonitorElement\s*;' >> files
+
+for f in $(cat files); do
+  $DB <<SQL > temp
+  CREATE TABLE code(line);
+
+.separator "\v"
+.import $f code
+
+  SELECT 
+    CASE WHEN 0 = (SELECT count(*) FROM code WHERE line LIKE "%DQMServices/Core/interface/DQMStore.h%") THEN
+      CASE WHEN rowid = coalesce(
+        (SELECT max(rowid) FROM code WHERE line LIKE '%#include%"%'),
+        (SELECT min(rowid)-1 FROM code WHERE line LIKE '%#include%'),
+        (SELECT max(rowid) FROM code WHERE line LIKE '%#%') )
+      THEN
+        line || '
+#include "DQMServices/Core/interface/DQMStore.h"' 
+      ELSE line END
+    ELSE line END
+  FROM code
+  WHERE line not like "%class DQMStore;%" and line not like "%class MonitorElement;%";
+SQL
+  mv temp $f
+done
+

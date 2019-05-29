@@ -1,0 +1,54 @@
+#!/bin/bash
+# Do a cherry pick, but apply code formatting before and after to be robust
+# against formatting changes.
+# The affected files will be auto-formatted in the end.
+# I won't even try to make this work for filenames with spaces.
+
+set -e # stop if anything fails due to local changes etc.
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+SUBJECT=$1
+
+# the idea is to take the state before the commit, format it, the state after
+# the commit, format it as well, then diff the two and apply that to the
+# current branch after formatting it as well. 
+
+# command that expands to existing & touched files
+FILES="ls -d $(git diff --name-only $SUBJECT^..$SUBJECT)"
+
+# start with the state before the commit to pick.
+git checkout $SUBJECT^
+# format only affected files.
+clang-format -i $($FILES)
+git commit -a -m "Format before subject"
+BEFORE=$(git rev-parse HEAD)
+
+# then, after.
+git checkout $SUBJECT
+clang-format -i $($FILES)
+git commit -a -m "Format after subject"
+AFTER=$(git rev-parse HEAD)
+
+# Now, the two formatted commits are unrelated. We force the AFTER state onto 
+# the BEFORE state to make a diff as a nice commit.
+git checkout $BEFORE
+# git checkout $AFTER . # this would do it, but checkout does not work well with deleted files
+git diff HEAD..$AFTER -- $($FILES) | patch -p1
+# use metadata from SUBJECT, files should be staged already.
+git commit -a -C $SUBJECT
+NORMALIZED=$(git rev-parse HEAD)
+
+# now that we have the clean diff, we leave the detached mess and go back to
+# our branch.
+git checkout $BRANCH
+# format files before applying patch, that should make it apply cleanly
+clang-format -i $($FILES)
+# Merge the formatting changes into the commit by first making a commit with
+# the formatting changes, then amending the change into it.
+git commit -a -m "TEMP: formatting for cherry-pick"
+git cherry-pick -n $NORMALIZED
+git commit --amend -C $SUBJECT
+
+
+
+
+

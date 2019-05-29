@@ -1,0 +1,40 @@
+DB="sqlite3 dxr.sqlite"
+
+$DB <<SQL
+CREATE TABLE relevantrefs AS
+SELECT DISTINCT varref.loc, variable.name, varref.defloc, varrefcode.line
+FROM ref NATURAL JOIN code 
+  INNER JOIN variable ON variable.qualname = ref.qualname 
+  INNER JOIN ref AS varref ON varref.qualname = variable.qualname INNER JOIN code AS varrefcode ON varrefcode.loc = varref.loc 
+WHERE code.line LIKE "%unique_ptr%release%" AND variable.type LIKE "%DQMStore%";
+SQL
+
+
+for f in $(echo '
+  SELECT DISTINCT rtrim(loc, "1234567890:") 
+  FROM relevantrefs  
+  UNION SELECT DISTINCT rtrim(defloc, "1234567890:") 
+  FROM relevantrefs;
+' | $DB); do
+  echo "Processing $f ..."
+  $DB <<SQL > $f
+.load /build/schneiml/newdqmstore/CMSSW_10_6_CLANG_X_2019-04-16-2300/src/DQMServices/Components/scripts/glib_replace.so
+  SELECT CASE
+    WHEN loc in (
+      SELECT DISTINCT loc FROM relevantrefs
+    )
+    THEN regex_replace(
+      (SELECT name FROM relevantrefs WHERE relevantrefs.loc = code.loc),
+      line, "dqmstore_"
+    )
+    ELSE line END
+  FROM code 
+  WHERE rtrim(loc, "0123456789:") = "$f"
+  AND NOT loc IN (
+    SELECT DISTINCT defloc FROM relevantrefs
+  )
+  AND NOT loc IN (
+    SELECT DISTINCT loc FROM relevantrefs WHERE line LIKE "%release%" OR line LIKE "%nullptr%"
+  );
+SQL
+done
