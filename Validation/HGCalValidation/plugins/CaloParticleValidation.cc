@@ -31,23 +31,23 @@
 //
 
 struct Histogram_CaloParticleSingle {
-  ConcurrentMonitorElement eta_;
-  ConcurrentMonitorElement pt_;
-  ConcurrentMonitorElement energy_;
-  ConcurrentMonitorElement nSimClusters_;
-  ConcurrentMonitorElement nHitInSimClusters_;
-  ConcurrentMonitorElement selfEnergy_; // this is the sum of the energy associated to all recHits linked to all SimClusters
-  ConcurrentMonitorElement energyDifference_; // This contains (energy-selfEnergy)/energy
-  ConcurrentMonitorElement eta_Zorigin_map_;
-  ConcurrentMonitorElement simPFSuperClusterSize_;
-  ConcurrentMonitorElement simPFSuperClusterEnergy_;
-  ConcurrentMonitorElement pfcandidateType_;
-  ConcurrentMonitorElement pfcandidateEnergy_;
-  ConcurrentMonitorElement pfcandidatePt_;
-  ConcurrentMonitorElement pfcandidateEta_;
-  ConcurrentMonitorElement pfcandidatePhi_;
-  ConcurrentMonitorElement pfcandidateElementsInBlocks_;
-  ConcurrentMonitorElement pfcandidate_vect_sum_pt_; // This is indeed a cumulative istogram
+  MonitorElement* eta_;
+  MonitorElement* pt_;
+  MonitorElement* energy_;
+  MonitorElement* nSimClusters_;
+  MonitorElement* nHitInSimClusters_;
+  MonitorElement* selfEnergy_; // this is the sum of the energy associated to all recHits linked to all SimClusters
+  MonitorElement* energyDifference_; // This contains (energy-selfEnergy)/energy
+  MonitorElement* eta_Zorigin_map_;
+  MonitorElement* simPFSuperClusterSize_;
+  MonitorElement* simPFSuperClusterEnergy_;
+  MonitorElement* pfcandidateType_;
+  MonitorElement* pfcandidateEnergy_;
+  MonitorElement* pfcandidatePt_;
+  MonitorElement* pfcandidateEta_;
+  MonitorElement* pfcandidatePhi_;
+  MonitorElement* pfcandidateElementsInBlocks_;
+  MonitorElement* pfcandidate_vect_sum_pt_; // This is indeed a cumulative istogram
 };
 
 
@@ -62,7 +62,7 @@ class CaloParticleValidation : public DQMGlobalEDAnalyzer<Histograms_CaloParticl
 
 
    private:
-      void bookHistograms(DQMStore::ConcurrentBooker &,
+      void bookHistograms(DQMStore::IBooker &,
                                   edm::Run const&,
                                   edm::EventSetup const&,
                                   Histograms_CaloParticleValidation&) const override;
@@ -177,12 +177,12 @@ CaloParticleValidation::dqmAnalyze(edm::Event const& iEvent, edm::EventSetup con
     int id = caloParticle.pdgId();
     if (histos.count(id)) {
       auto & histo = histos.at(id);
-      histo.eta_.fill(caloParticle.eta());
-      histo.pt_.fill(caloParticle.pt());
-      histo.energy_.fill(caloParticle.energy());
-      histo.nSimClusters_.fill(caloParticle.simClusters().size());
+      histo.eta_->Fill(caloParticle.eta());
+      histo.pt_->Fill(caloParticle.pt());
+      histo.energy_->Fill(caloParticle.energy());
+      histo.nSimClusters_->Fill(caloParticle.simClusters().size());
       // Find the corresponding vertex.
-      histo.eta_Zorigin_map_.fill(
+      histo.eta_Zorigin_map_->Fill(
           simVertices.at(caloParticle.g4Tracks()[0].vertIndex()).position().z(), caloParticle.eta());
       int simHits = 0;
       float energy = 0.;
@@ -193,16 +193,16 @@ CaloParticleValidation::dqmAnalyze(edm::Event const& iEvent, edm::EventSetup con
             energy += hitmap[h_and_f.first]->energy() * h_and_f.second;
         }
       }
-      histo.nHitInSimClusters_.fill((float)simHits);
-      histo.selfEnergy_.fill(energy);
-      histo.energyDifference_.fill(1.- energy/caloParticle.energy());
+      histo.nHitInSimClusters_->Fill((float)simHits);
+      histo.selfEnergy_->Fill(energy);
+      histo.energyDifference_->Fill(1.- energy/caloParticle.energy());
     }
   }
 
   // simPFSuperClusters
   for (auto const sc : simPFClusters) {
-    histos.at(0).simPFSuperClusterSize_.fill((float)sc.clustersSize());
-    histos.at(0).simPFSuperClusterEnergy_.fill(sc.rawEnergy());
+    histos.at(0).simPFSuperClusterSize_->Fill((float)sc.clustersSize());
+    histos.at(0).simPFSuperClusterEnergy_->Fill(sc.rawEnergy());
   }
 
   // simPFCandidates
@@ -213,21 +213,21 @@ CaloParticleValidation::dqmAnalyze(edm::Event const& iEvent, edm::EventSetup con
     size_t type = offset + pfc.particleId();
     ptx_tot += pfc.px();
     pty_tot += pfc.py();
-    histos.at(offset).pfcandidateType_.fill(type - offset);
+    histos.at(offset).pfcandidateType_->Fill(type - offset);
     auto & histo = histos.at(type);
-    histo.pfcandidateEnergy_.fill(pfc.energy());
-    histo.pfcandidatePt_.fill(pfc.pt());
-    histo.pfcandidateEta_.fill(pfc.eta());
-    histo.pfcandidatePhi_.fill(pfc.phi());
-    histo.pfcandidateElementsInBlocks_.fill(pfc.elementsInBlocks().size());
+    histo.pfcandidateEnergy_->Fill(pfc.energy());
+    histo.pfcandidatePt_->Fill(pfc.pt());
+    histo.pfcandidateEta_->Fill(pfc.eta());
+    histo.pfcandidatePhi_->Fill(pfc.phi());
+    histo.pfcandidateElementsInBlocks_->Fill(pfc.elementsInBlocks().size());
   }
   auto & histo = histos.at(offset);
-  histo.pfcandidate_vect_sum_pt_.fill(std::sqrt(ptx_tot*ptx_tot+pty_tot*pty_tot));
+  histo.pfcandidate_vect_sum_pt_->Fill(std::sqrt(ptx_tot*ptx_tot+pty_tot*pty_tot));
 }
 
 
 void
-CaloParticleValidation::bookHistograms(DQMStore::ConcurrentBooker & ibook,
+CaloParticleValidation::bookHistograms(DQMStore::IBooker & ibook,
                           edm::Run const & run,
                           edm::EventSetup const & iSetup,
                           Histograms_CaloParticleValidation & histos) const

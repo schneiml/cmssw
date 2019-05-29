@@ -32,7 +32,7 @@ namespace {
   }
 
   template <typename... Args>
-  ConcurrentMonitorElement make1DIfLogX(DQMStore::ConcurrentBooker& ibook, bool logx, Args&& ...args) {
+  ConcurrentMonitorElement make1DIfLogX(DQMStore::IBooker& ibook, bool logx, Args&& ...args) {
     auto h = std::make_unique<TH1F>(std::forward<Args>(args)...);
     if(logx) BinLogX(h.get());
     const auto& name = h->GetName();
@@ -40,7 +40,7 @@ namespace {
   }
 
   template <typename... Args>
-  ConcurrentMonitorElement makeProfileIfLogX(DQMStore::ConcurrentBooker& ibook, bool logx, Args&& ...args) {
+  ConcurrentMonitorElement makeProfileIfLogX(DQMStore::IBooker& ibook, bool logx, Args&& ...args) {
     auto h = std::make_unique<TProfile>(std::forward<Args>(args)...);
     if(logx) BinLogX(h.get());
     const auto& name = h->GetName();
@@ -48,31 +48,31 @@ namespace {
   }
 
   template <typename... Args>
-  ConcurrentMonitorElement make2DIfLogX(DQMStore::ConcurrentBooker& ibook, bool logx, Args&& ...args) {
+  ConcurrentMonitorElement make2DIfLogX(DQMStore::IBooker& ibook, bool logx, Args&& ...args) {
     auto h = std::make_unique<TH2F>(std::forward<Args>(args)...);
     if(logx) BinLogX(h.get());
     const auto& name = h->GetName();
     return ibook.book2D(name, h.release());
   }
 
-  void setBinLabels(ConcurrentMonitorElement& h, const std::vector<std::string>& labels) {
+  void setBinLabels(MonitorElement*& h, const std::vector<std::string>& labels) {
     for(size_t i=0; i<labels.size(); ++i) {
       h.setBinLabel(i+1, labels[i]);
     }
     h.disableAlphanumeric();
   }
 
-  void setBinLabelsAlgo(ConcurrentMonitorElement& h, int axis=1) {
+  void setBinLabelsAlgo(MonitorElement*& h, int axis=1) {
     for(size_t i=0; i<reco::TrackBase::algoSize; ++i) {
       h.setBinLabel(i+1, reco::TrackBase::algoName(static_cast<reco::TrackBase::TrackAlgorithm>(i)), axis);
     }
     h.disableAlphanumeric();
   }
 
-  void fillMVAHistos(const std::vector<ConcurrentMonitorElement>& h_mva,
-                     const std::vector<ConcurrentMonitorElement>& h_mvacut,
-                     const std::vector<ConcurrentMonitorElement>& h_mva_hp,
-                     const std::vector<ConcurrentMonitorElement>& h_mvacut_hp,
+  void fillMVAHistos(const std::vector<MonitorElement*>& h_mva,
+                     const std::vector<MonitorElement*>& h_mvacut,
+                     const std::vector<MonitorElement*>& h_mva_hp,
+                     const std::vector<MonitorElement*>& h_mvacut_hp,
                      const std::vector<float>& mvas,
                      unsigned int selectsLoose, unsigned int selectsHP) {
     // Fill MVA1 histos with all tracks, MVA2 histos only with tracks
@@ -90,8 +90,8 @@ namespace {
   }
 
   void fillMVAHistos(double xval,
-                     const std::vector<ConcurrentMonitorElement>& h_mva,
-                     const std::vector<ConcurrentMonitorElement>& h_mva_hp,
+                     const std::vector<MonitorElement*>& h_mva,
+                     const std::vector<MonitorElement*>& h_mva_hp,
                      const std::vector<float>& mvas,
                      unsigned int selectsLoose, unsigned int selectsHP) {
     // Fill MVA1 histos with all tracks, MVA2 histos only with tracks
@@ -358,7 +358,7 @@ std::unique_ptr<RecoTrackSelectorBase> MTVHistoProducerAlgoForTracker::makeRecoT
   return std::make_unique<RecoTrackSelectorBase>(psetTrack);
 }
 
-void MTVHistoProducerAlgoForTracker::bookSimHistos(DQMStore::ConcurrentBooker& ibook, Histograms& histograms){
+void MTVHistoProducerAlgoForTracker::bookSimHistos(DQMStore::IBooker& ibook, Histograms& histograms){
   histograms.h_ptSIM = make1DIfLogX(ibook, useLogPt, "ptSIM", "generated p_{t}", nintPt, minPt, maxPt);
   histograms.h_etaSIM = ibook.book1D("etaSIM", "generated pseudorapidity", nintEta, minEta, maxEta);
   histograms.h_tracksSIM = ibook.book1D("tracksSIM","number of simulated tracks", nintTracks, minTracks, maxTracks*10);
@@ -366,7 +366,7 @@ void MTVHistoProducerAlgoForTracker::bookSimHistos(DQMStore::ConcurrentBooker& i
   histograms.h_bunchxSIM = ibook.book1D("bunchxSIM", "bunch crossing", 21, -15.5, 5.5 );
 }
 
-void MTVHistoProducerAlgoForTracker::bookSimTrackHistos(DQMStore::ConcurrentBooker& ibook, Histograms& histograms, bool doResolutionPlots) {
+void MTVHistoProducerAlgoForTracker::bookSimTrackHistos(DQMStore::IBooker& ibook, Histograms& histograms, bool doResolutionPlots) {
   histograms.h_assoceta.push_back( ibook.book1D("num_assoc(simToReco)_eta","N of associated tracks (simToReco) vs eta",nintEta,minEta,maxEta) );
   histograms.h_simuleta.push_back( ibook.book1D("num_simul_eta","N of simulated tracks vs eta",nintEta,minEta,maxEta) );
 
@@ -429,7 +429,7 @@ void MTVHistoProducerAlgoForTracker::bookSimTrackHistos(DQMStore::ConcurrentBook
   setBinLabelsAlgo(histograms.h_duplicates_oriAlgo_vs_oriAlgo.back(), 2);
 }
 
-void MTVHistoProducerAlgoForTracker::bookSimTrackPVAssociationHistos(DQMStore::ConcurrentBooker& ibook, Histograms& histograms){
+void MTVHistoProducerAlgoForTracker::bookSimTrackPVAssociationHistos(DQMStore::IBooker& ibook, Histograms& histograms){
   histograms.h_assocdxypv.push_back( ibook.book1D("num_assoc(simToReco)_dxypv","N of associated tracks (simToReco) vs dxy(PV)",nintDxy,minDxy,maxDxy) );
   histograms.h_simuldxypv.push_back( ibook.book1D("num_simul_dxypv","N of simulated tracks vs dxy(PV)",nintDxy,minDxy,maxDxy) );
 
@@ -465,7 +465,7 @@ void MTVHistoProducerAlgoForTracker::bookSimTrackPVAssociationHistos(DQMStore::C
   histograms.h_simul2_dzpvsigcut_pt.back().enableSumw2();
 }
 
-void MTVHistoProducerAlgoForTracker::bookRecoHistos(DQMStore::ConcurrentBooker& ibook, Histograms& histograms, bool doResolutionPlots) {
+void MTVHistoProducerAlgoForTracker::bookRecoHistos(DQMStore::IBooker& ibook, Histograms& histograms, bool doResolutionPlots) {
   histograms.h_tracks.push_back( ibook.book1D("tracks","number of reconstructed tracks", nintTracks, minTracks, maxTracks) );
   histograms.h_fakes.push_back( ibook.book1D("fakes","number of fake reco tracks", nintTracks, minTracks, maxTracks) );
   histograms.h_charge.push_back( ibook.book1D("charge","charge",3,-1.5,1.5) );
@@ -594,13 +594,13 @@ void MTVHistoProducerAlgoForTracker::bookRecoHistos(DQMStore::ConcurrentBooker& 
 
   /////////////////////////////////
 
-  auto bookResolutionPlots1D = [&](std::vector<ConcurrentMonitorElement>& vec, auto&&... params) {
+  auto bookResolutionPlots1D = [&](std::vector<MonitorElement*>& vec, auto&&... params) {
     vec.push_back( doResolutionPlots ? ibook.book1D(std::forward<decltype(params)>(params)...) : ConcurrentMonitorElement{} );
   };
-  auto bookResolutionPlots2D = [&](std::vector<ConcurrentMonitorElement>& vec, bool logx, auto&&... params) {
+  auto bookResolutionPlots2D = [&](std::vector<MonitorElement*>& vec, bool logx, auto&&... params) {
     vec.push_back( doResolutionPlots ? make2DIfLogX(ibook, logx, std::forward<decltype(params)>(params)...) : ConcurrentMonitorElement{} );
   };
-  auto bookResolutionPlotsProfile2D = [&](std::vector<ConcurrentMonitorElement>& vec, auto&&... params) {
+  auto bookResolutionPlotsProfile2D = [&](std::vector<MonitorElement*>& vec, auto&&... params) {
     vec.push_back( doResolutionPlots ? ibook.bookProfile2D(std::forward<decltype(params)>(params)...) : ConcurrentMonitorElement{} );
   };
 
@@ -724,7 +724,7 @@ void MTVHistoProducerAlgoForTracker::bookRecoHistos(DQMStore::ConcurrentBooker& 
   bookResolutionPlots2D(histograms.nrecHit_vs_nsimHit_rec2sim, false, "nrecHit_vs_nsimHit_rec2sim","nrecHit vs nsimHit (Rec2simAssoc)", nintHit,minHit,maxHit, nintHit,minHit,maxHit);
 }
 
-void MTVHistoProducerAlgoForTracker::bookRecoPVAssociationHistos(DQMStore::ConcurrentBooker& ibook, Histograms& histograms){
+void MTVHistoProducerAlgoForTracker::bookRecoPVAssociationHistos(DQMStore::IBooker& ibook, Histograms& histograms){
   histograms.h_recodxypv.push_back( ibook.book1D("num_reco_dxypv","N of reco track vs dxy(PV)",nintDxy,minDxy,maxDxy) );
   histograms.h_assoc2dxypv.push_back( ibook.book1D("num_assoc(recoToSim)_dxypv","N of associated (recoToSim) tracks vs dxy(PV)",nintDxy,minDxy,maxDxy) );
   histograms.h_looperdxypv.push_back( ibook.book1D("num_duplicate_dxypv","N of associated (recoToSim) looper tracks vs dxy(PV)",nintDxy,minDxy,maxDxy) );
@@ -773,7 +773,7 @@ void MTVHistoProducerAlgoForTracker::bookRecoPVAssociationHistos(DQMStore::Concu
 
 }
 
-void MTVHistoProducerAlgoForTracker::bookRecodEdxHistos(DQMStore::ConcurrentBooker& ibook, Histograms& histograms) {
+void MTVHistoProducerAlgoForTracker::bookRecodEdxHistos(DQMStore::IBooker& ibook, Histograms& histograms) {
   // dE/dx stuff
   histograms.h_dedx_estim.emplace_back();
   histograms.h_dedx_estim.back().push_back(ibook.book1D("h_dedx_estim1","dE/dx estimator 1",nintDeDx,minDeDx,maxDeDx));
@@ -788,12 +788,12 @@ void MTVHistoProducerAlgoForTracker::bookRecodEdxHistos(DQMStore::ConcurrentBook
   histograms.h_dedx_sat.back().push_back(ibook.book1D("h_dedx_sat2","dE/dx number of measurements with saturation",nintHit,minHit,maxHit));
 }
 
-void MTVHistoProducerAlgoForTracker::bookSeedHistos(DQMStore::ConcurrentBooker& ibook, Histograms& histograms) {
+void MTVHistoProducerAlgoForTracker::bookSeedHistos(DQMStore::IBooker& ibook, Histograms& histograms) {
   histograms.h_seedsFitFailed.push_back(ibook.book1D("seeds_fitFailed", "Number of seeds for which the fit failed", nintTracks, minTracks, maxTracks));
   histograms.h_seedsFitFailedFraction.push_back(ibook.book1D("seeds_fitFailedFraction", "Fraction of seeds for which the fit failed", 100, 0, 1));
 }
 
-void MTVHistoProducerAlgoForTracker::bookMVAHistos(DQMStore::ConcurrentBooker& ibook, Histograms& histograms, size_t nMVAs) {
+void MTVHistoProducerAlgoForTracker::bookMVAHistos(DQMStore::IBooker& ibook, Histograms& histograms, size_t nMVAs) {
   histograms.h_reco_mva.emplace_back();
   histograms.h_assoc2_mva.emplace_back();
 
@@ -875,11 +875,11 @@ void MTVHistoProducerAlgoForTracker::fill_generic_simTrack_histos(const Histogra
 								  const TrackingParticle::Point& vertexTP,
                                                                   int bx) const {
   if(bx == 0) {
-    histograms.h_ptSIM.fill(sqrt(momentumTP.perp2()));
-    histograms.h_etaSIM.fill(momentumTP.eta());
-    histograms.h_vertposSIM.fill(sqrt(vertexTP.perp2()));
+    histograms.h_ptSIM->Fill(sqrt(momentumTP.perp2()));
+    histograms.h_etaSIM->Fill(momentumTP.eta());
+    histograms.h_vertposSIM->Fill(sqrt(vertexTP.perp2()));
   }
-  histograms.h_bunchxSIM.fill(bx);
+  histograms.h_bunchxSIM->Fill(bx);
 }
 
 
@@ -1035,7 +1035,7 @@ void MTVHistoProducerAlgoForTracker::fill_duplicate_histos(const Histograms& his
 }
 
 void MTVHistoProducerAlgoForTracker::fill_simTrackBased_histos(const Histograms& histograms, int numSimTracks) const {
-  histograms.h_tracksSIM.fill(numSimTracks);
+  histograms.h_tracksSIM->Fill(numSimTracks);
 }
 
 // dE/dx

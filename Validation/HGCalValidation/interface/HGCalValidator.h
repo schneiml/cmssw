@@ -30,7 +30,7 @@ class PileupSummaryInfo;
 
 struct HGCalValidatorHistograms {
   HGVHistoProducerAlgoHistograms histoProducerAlgo;
-  std::vector<ConcurrentMonitorElement> h_layerclusters_coll;
+  std::vector<MonitorElement*> h_layerclusters_coll;
 };
 
 class HGCalValidator : public DQMGlobalEDAnalyzer<HGCalValidatorHistograms> {
@@ -47,7 +47,7 @@ class HGCalValidator : public DQMGlobalEDAnalyzer<HGCalValidatorHistograms> {
   /// Method called once per event
   void dqmAnalyze(const edm::Event&, const edm::EventSetup&, const Histograms& ) const override;
   /// Method called to book the DQM histograms
-  void bookHistograms(DQMStore::ConcurrentBooker&, edm::Run const&, edm::EventSetup const&, Histograms&) const override;
+  void bookHistograms(DQMStore::IBooker&, edm::Run const&, edm::EventSetup const&, Histograms&) const override;
 
   void cpParametersAndSelection(const Histograms& histograms, std::vector<CaloParticle> const & cPeff, std::vector<SimVertex> const & simVertices, std::vector<size_t>& selected_cPeff) const;
 

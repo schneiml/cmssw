@@ -548,7 +548,7 @@ void SiStripGainsPCLWorker::fillDescriptions(edm::ConfigurationDescriptions& des
 }
 
 //********************************************************************************//
-void SiStripGainsPCLWorker::bookHistograms(DQMStore::ConcurrentBooker& ibooker,
+void SiStripGainsPCLWorker::bookHistograms(DQMStore::IBooker& ibooker,
                                            edm::Run const& run,
                                            edm::EventSetup const& setup,
                                            APVGain::APVGainHistograms& histograms) const {

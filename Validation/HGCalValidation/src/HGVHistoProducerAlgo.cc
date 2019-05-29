@@ -132,7 +132,7 @@ HGVHistoProducerAlgo::HGVHistoProducerAlgo(const edm::ParameterSet& pset) :
 
 HGVHistoProducerAlgo::~HGVHistoProducerAlgo() {}
 
-void HGVHistoProducerAlgo::bookInfo(DQMStore::ConcurrentBooker& ibook, Histograms& histograms) {
+void HGVHistoProducerAlgo::bookInfo(DQMStore::IBooker& ibook, Histograms& histograms) {
 
   histograms.lastLayerEEzm = ibook.bookInt("lastLayerEEzm");
   histograms.lastLayerFHzm = ibook.bookInt("lastLayerFHzm");
@@ -143,7 +143,7 @@ void HGVHistoProducerAlgo::bookInfo(DQMStore::ConcurrentBooker& ibook, Histogram
 
 }
 
-void HGVHistoProducerAlgo::bookCaloParticleHistos(DQMStore::ConcurrentBooker& ibook, Histograms& histograms,int pdgid) {
+void HGVHistoProducerAlgo::bookCaloParticleHistos(DQMStore::IBooker& ibook, Histograms& histograms,int pdgid) {
 
   histograms.h_caloparticle_eta[pdgid] = ibook.book1D("num_caloparticle_eta","N of caloparticle vs eta",nintEta_,minEta_,maxEta_);
   histograms.h_caloparticle_eta_Zorigin[pdgid] = ibook.book2D("Eta vs Zorigin", "Eta vs Zorigin", nintEta_, minEta_, maxEta_, nintZpos_, minZpos_, maxZpos_);
@@ -156,7 +156,7 @@ void HGVHistoProducerAlgo::bookCaloParticleHistos(DQMStore::ConcurrentBooker& ib
 }
 
 
-void HGVHistoProducerAlgo::bookClusterHistos(DQMStore::ConcurrentBooker& ibook, Histograms& histograms, unsigned layers, std::vector<int> thicknesses, std::string pathtomatbudfile) {
+void HGVHistoProducerAlgo::bookClusterHistos(DQMStore::IBooker& ibook, Histograms& histograms, unsigned layers, std::vector<int> thicknesses, std::string pathtomatbudfile) {
 
   //---------------------------------------------------------------------------------------------------------------------------
   histograms.h_cluster_eta.push_back( ibook.book1D("num_reco_cluster_eta","N of reco clusters vs eta",nintEta_,minEta_,maxEta_) );
@@ -276,12 +276,12 @@ void HGVHistoProducerAlgo::fill_info_histos(const Histograms& histograms, unsign
   //----------- TODO ----------------------------------------------------------
   //For now values returned for 'lastLayerFHzp': '104', 'lastLayerFHzm': '52' are not the one expected. 
   //Will come back to this when there will be info in CMSSW to put in DQM file.  
-  histograms.lastLayerEEzm.fill( recHitTools_->lastLayerEE() );    
-  histograms.lastLayerFHzm.fill( recHitTools_->lastLayerFH() );
-  histograms.maxlayerzm.fill( layers );
-  histograms.lastLayerEEzp.fill( recHitTools_->lastLayerEE() + layers );
-  histograms.lastLayerFHzp.fill( recHitTools_->lastLayerFH() + layers);
-  histograms.maxlayerzp.fill( layers + layers);
+  histograms.lastLayerEEzm->Fill( recHitTools_->lastLayerEE() );    
+  histograms.lastLayerFHzm->Fill( recHitTools_->lastLayerFH() );
+  histograms.maxlayerzm->Fill( layers );
+  histograms.lastLayerEEzp->Fill( recHitTools_->lastLayerEE() + layers );
+  histograms.lastLayerFHzp->Fill( recHitTools_->lastLayerFH() + layers);
+  histograms.maxlayerzp->Fill( layers + layers);
 
 }
 

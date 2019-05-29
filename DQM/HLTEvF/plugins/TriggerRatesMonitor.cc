@@ -63,28 +63,28 @@ namespace {
 
     // per-path HLT plots
     struct HLTRatesPlots {
-      ConcurrentMonitorElement pass_l1_seed;
-      ConcurrentMonitorElement pass_prescale;
-      ConcurrentMonitorElement accept;
-      ConcurrentMonitorElement reject;
-      ConcurrentMonitorElement error;
+      MonitorElement* pass_l1_seed;
+      MonitorElement* pass_prescale;
+      MonitorElement* accept;
+      MonitorElement* reject;
+      MonitorElement* error;
     };
 
     // overall event count and event types
-    ConcurrentMonitorElement              events_processed;
-    std::vector<ConcurrentMonitorElement> tcds_counts;
+    MonitorElement*              events_processed;
+    std::vector<MonitorElement*> tcds_counts;
 
     // L1T triggers
-    std::vector<ConcurrentMonitorElement> l1t_counts;
+    std::vector<MonitorElement*> l1t_counts;
 
     // HLT triggers
     std::vector<std::vector<HLTRatesPlots>> hlt_by_dataset_counts;
 
     // datasets
-    std::vector<ConcurrentMonitorElement> dataset_counts;
+    std::vector<MonitorElement*> dataset_counts;
 
     // streams
-    std::vector<ConcurrentMonitorElement> stream_counts;
+    std::vector<MonitorElement*> stream_counts;
 
     RunBasedHistograms() :
       // L1T and HLT configuration
@@ -118,7 +118,7 @@ public:
 
 private:
   void dqmBeginRun(edm::Run const &, edm::EventSetup const &, RunBasedHistograms &) const override;
-  void bookHistograms(DQMStore::ConcurrentBooker &, edm::Run const&, edm::EventSetup const&, RunBasedHistograms &) const override;
+  void bookHistograms(DQMStore::IBooker &, edm::Run const&, edm::EventSetup const&, RunBasedHistograms &) const override;
   void dqmAnalyze(edm::Event const &, edm::EventSetup const &, RunBasedHistograms const&) const override;
 
   // TCDS trigger types
@@ -176,7 +176,7 @@ TriggerRatesMonitor::TriggerRatesMonitor(edm::ParameterSet const & config) :
 
 void TriggerRatesMonitor::dqmBeginRun(edm::Run const& run, edm::EventSetup const& setup, RunBasedHistograms& histograms) const
 {
-  histograms.events_processed.reset();
+  histograms.events_processed->reset();
   histograms.tcds_counts.clear();
   histograms.tcds_counts.resize(sizeof(s_tcds_trigger_types)/sizeof(const char *));
 
@@ -229,7 +229,7 @@ void TriggerRatesMonitor::dqmBeginRun(edm::Run const& run, edm::EventSetup const
   }
 }
 
-void TriggerRatesMonitor::bookHistograms(DQMStore::ConcurrentBooker & booker, edm::Run const& run, edm::EventSetup const& setup, RunBasedHistograms & histograms) const
+void TriggerRatesMonitor::bookHistograms(DQMStore::IBooker & booker, edm::Run const& run, edm::EventSetup const& setup, RunBasedHistograms & histograms) const
 {
   // book the overall event count and event types histograms
   booker.setCurrentFolder( m_dqm_path );
@@ -311,7 +311,7 @@ void TriggerRatesMonitor::dqmAnalyze(edm::Event const & event, edm::EventSetup c
   unsigned int lumisection = event.luminosityBlock();
 
   // monitor the overall event count and event types rates
-  histograms.events_processed.fill(lumisection);
+  histograms.events_processed->Fill(lumisection);
   if (histograms.tcds_counts[event.experimentType()])
     histograms.tcds_counts[event.experimentType()].fill(lumisection);
 
@@ -345,15 +345,15 @@ void TriggerRatesMonitor::dqmAnalyze(edm::Event const & event, edm::EventSetup c
 	edm::HLTPathStatus const & path = hltResults.at(index);
 
         if (path.index() > histograms.hltIndices[index].index_l1_seed)
-          histograms.hlt_by_dataset_counts[d][i].pass_l1_seed.fill(lumisection);
+          histograms.hlt_by_dataset_counts[d][i].pass_l1_seed->Fill(lumisection);
         if (path.index() > histograms.hltIndices[index].index_prescale)
-          histograms.hlt_by_dataset_counts[d][i].pass_prescale.fill(lumisection);
+          histograms.hlt_by_dataset_counts[d][i].pass_prescale->Fill(lumisection);
         if (path.accept())
-          histograms.hlt_by_dataset_counts[d][i].accept.fill(lumisection);
+          histograms.hlt_by_dataset_counts[d][i].accept->Fill(lumisection);
         else if (path.error())
-          histograms.hlt_by_dataset_counts[d][i].error .fill(lumisection);
+          histograms.hlt_by_dataset_counts[d][i].error .Fill(lumisection);
         else
-          histograms.hlt_by_dataset_counts[d][i].reject.fill(lumisection);
+          histograms.hlt_by_dataset_counts[d][i].reject->Fill(lumisection);
       }
     }
 
