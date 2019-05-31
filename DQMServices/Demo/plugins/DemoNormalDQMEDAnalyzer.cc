@@ -65,6 +65,7 @@ DemoNormalDQMEDAnalyzer::~DemoNormalDQMEDAnalyzer() {
 void DemoNormalDQMEDAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
   using namespace edm;
 
+  // TODO: this is not edm::stream safe...
   eventCount_++;
 
   example_->Fill(5);
