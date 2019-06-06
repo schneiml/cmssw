@@ -59,7 +59,7 @@ public:
 private:
   //      virtual void beginJob() ;
   void analyze(const edm::Event&, const edm::EventSetup&) override;
-  void endJob() override;
+  void endJob() /* never called */;
 
   //      virtual void beginRun(edm::Run const&, edm::EventSetup const&);
   void endRun(edm::Run const&, edm::EventSetup const&) override;
