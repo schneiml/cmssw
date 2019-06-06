@@ -22,7 +22,7 @@ protected:
   void analyze(const edm::Event& e, const edm::EventSetup& c) override;
 
   /// EndJob
-  void endJob(void) override;
+  void endJob(void) /* never called! */;
 
   /// Setup
   void bookHistograms(DQMStore::IBooker&, edm::Run const&, edm::EventSetup const&) override;
