@@ -22,7 +22,7 @@ protected:
   /// Analyze
   void analyze(const edm::Event& e, const edm::EventSetup& c) override;
 
-  void endJob() override;
+  void endJob() /* never called! */;
 
 private:
   int ievt_;
