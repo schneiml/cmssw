@@ -28,7 +28,7 @@ protected:
   void analyze(const edm::Event& e, const edm::EventSetup& c) override;
 
   // EndJob
-  void endJob(void) override;
+  void endJob(void) /* never called! */;
 
   // BeginRun
   void dqmBeginRun(const edm::Run& r, const edm::EventSetup& c) override;
