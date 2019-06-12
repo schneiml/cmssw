@@ -34,12 +34,11 @@
 #include <DQMServices/Core/interface/DQMEDAnalyzer.h>
 
 #include "boost/cstdint.hpp"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include <iostream>
 #include <string>
 #include <vector>
 
-class MonitorElement;
-class DQMStore;
 class SiStripDetCabling;
 class SiStripQuality;
 class TrackerTopology;
@@ -52,12 +51,11 @@ public:
   void bookHistograms(DQMStore::IBooker &, edm::Run const &, edm::EventSetup const &) override;
   void analyze(const edm::Event &, const edm::EventSetup &) override;
   void endRun(edm::Run const &run, edm::EventSetup const &eSetup) override;
-  void endJob() override;
+  void endJob() /* never called */;
 
 private:
   MonitorElement *getQualityME(uint32_t idet, const TrackerTopology *tTopo);
 
-  DQMStore *dqmStore_;
   edm::ParameterSet conf_;
   edm::ESHandle<SiStripDetCabling> detCabling_;
   edm::ESHandle<SiStripQuality> stripQuality_;

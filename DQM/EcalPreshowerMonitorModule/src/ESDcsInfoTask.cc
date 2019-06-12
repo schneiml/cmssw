@@ -8,7 +8,6 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DQMServices/Core/interface/DQMStore.h"
 
 #include "DQM/EcalPreshowerMonitorModule/interface/ESDcsInfoTask.h"
@@ -18,7 +17,7 @@ using namespace edm;
 using namespace std;
 
 ESDcsInfoTask::ESDcsInfoTask(const ParameterSet& ps) {
-  dqmStore_ = Service<DQMStore>().operator->();
+  dqmStore_ = std::make_unique<DQMStore>();
 
   prefixME_ = ps.getUntrackedParameter<string>("prefixME", "");
 

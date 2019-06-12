@@ -29,7 +29,6 @@
 #include "FWCore/Catalog/interface/InputFileCatalog.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/MessageLogger/interface/JobReport.h"
 //#include "FWCore/Utilities/interface/GlobalIdentifier.h"
@@ -66,6 +65,9 @@
 #include "format.h"
 
 namespace {
+  using dqm::harvesting::DQMStore;
+  using dqm::harvesting::MonitorElement;
+
   //adapter functions
   MonitorElement* createElement(DQMStore& iStore, const char* iName, TH1F* iHist) {
     //std::cout <<"create: hist size "<<iName <<" "<<iHist->GetEffectiveEntries()<<std::endl;
@@ -88,10 +90,7 @@ namespace {
           iOriginal->GetYaxis()->GetXmax() == iToAdd->GetYaxis()->GetXmax() &&
           iOriginal->GetNbinsZ() == iToAdd->GetNbinsZ() &&
           iOriginal->GetZaxis()->GetXmin() == iToAdd->GetZaxis()->GetXmin() &&
-          iOriginal->GetZaxis()->GetXmax() == iToAdd->GetZaxis()->GetXmax() &&
-          MonitorElement::CheckBinLabels(iOriginal->GetXaxis(), iToAdd->GetXaxis()) &&
-          MonitorElement::CheckBinLabels(iOriginal->GetYaxis(), iToAdd->GetYaxis()) &&
-          MonitorElement::CheckBinLabels(iOriginal->GetZaxis(), iToAdd->GetZaxis())) {
+          iOriginal->GetZaxis()->GetXmax() == iToAdd->GetZaxis()->GetXmax()) {
         iOriginal->Add(iToAdd);
       } else {
         edm::LogError("MergeFailure") << "Found histograms with different axis limits or different labels'"
@@ -366,6 +365,7 @@ private:
   const DQMRootSource& operator=(const DQMRootSource&) = delete;  // stop default
 
   // ---------- member data --------------------------------
+  std::unique_ptr<DQMStore> m_store;
   edm::InputFileCatalog m_catalog;
   edm::RunAuxiliary m_runAux;
   edm::LuminosityBlockAuxiliary m_lumiAux;
@@ -427,6 +427,7 @@ void DQMRootSource::fillDescriptions(edm::ConfigurationDescriptions& description
 //
 DQMRootSource::DQMRootSource(edm::ParameterSet const& iPSet, const edm::InputSourceDescription& iDesc)
     : edm::InputSource(iPSet, iDesc),
+      m_store(std::make_unique<DQMStore>()),
       m_catalog(iPSet.getUntrackedParameter<std::vector<std::string> >("fileNames"),
                 iPSet.getUntrackedParameter<std::string>("overrideCatalog")),
       m_nextItemType(edm::InputSource::IsFile),
@@ -559,12 +560,7 @@ void DQMRootSource::readRun_(edm::RunPrincipal& rpCache) {
   //NOTE: need to reset all run elements at this point
   if (m_lastSeenRun != runID || m_lastSeenReducedPHID != m_reducedHistoryIDs.at(runLumiRange.m_historyIDIndex)) {
     if (m_shouldReadMEs) {
-      edm::Service<DQMStore> store;
-      std::vector<MonitorElement*> allMEs = (*store).getAllContents("");
-      for (auto const& ME : allMEs) {
-        if (!(*store).isCollate())
-          ME->Reset();
-      }
+      std::vector<MonitorElement*> allMEs = (*m_store).getAllContents("");
     }
     m_lastSeenReducedPHID = m_reducedHistoryIDs.at(runLumiRange.m_historyIDIndex);
     m_lastSeenRun = runID;
@@ -593,8 +589,7 @@ void DQMRootSource::readLuminosityBlock_(edm::LuminosityBlockPrincipal& lbCache)
   if ((m_lastSeenLumi2 != runLumiRange.m_lumi || m_lastSeenRun2 != runLumiRange.m_run ||
        m_lastSeenReducedPHID2 != m_reducedHistoryIDs.at(runLumiRange.m_historyIDIndex)) &&
       m_shouldReadMEs) {
-    edm::Service<DQMStore> store;
-    std::vector<MonitorElement*> allMEs = (*store).getAllContents("");
+    std::vector<MonitorElement*> allMEs = (*m_store).getAllContents("");
     //for(auto const& ME : allMEs) {
     //  // We do not want to reset Run Products here!
     //  if (ME->getLumiFlag()) {
@@ -653,7 +648,6 @@ void DQMRootSource::closeFile_() {
 }
 
 void DQMRootSource::readElements() {
-  edm::Service<DQMStore> store;
   RunLumiToRange runLumiRange = m_runlumiToRange[*m_presentIndexItr];
   bool shouldContinue = false;
   do {
@@ -670,7 +664,7 @@ void DQMRootSource::readElements() {
       for (; index != endIndex; ++index) {
         bool isLumi = runLumiRange.m_lumi != 0;
         if (m_shouldReadMEs)
-          reader->read(index, *store, isLumi);
+          reader->read(index, *m_store, isLumi);
 
         //std::cout << runLumiRange.m_run << " " << runLumiRange.m_lumi <<" "<<index<< " " << runLumiRange.m_type << std::endl;
       }

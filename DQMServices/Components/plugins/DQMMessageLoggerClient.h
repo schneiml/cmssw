@@ -5,13 +5,14 @@
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include <vector>
 #include <string>
 #include <map>
 
 class DQMMessageLoggerClient : public edm::EDAnalyzer {
 public:
+  typedef dqm::legacy::DQMStore DQMStore;
+  typedef dqm::legacy::MonitorElement MonitorElement;
   // Constructor
   DQMMessageLoggerClient(const edm::ParameterSet &);
   // Destructor
@@ -35,7 +36,7 @@ private:
 
   // ----------member data ---------------------------
 
-  DQMStore *theDbe;
+  std::unique_ptr<DQMStore> theDbe;
   edm::ParameterSet parameters;
   std::string directoryName;
 

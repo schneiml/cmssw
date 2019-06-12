@@ -6,7 +6,6 @@
  */
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "Validation/GlobalHits/interface/GlobalHitsProdHistStripper.h"
 
 GlobalHitsProdHistStripper::GlobalHitsProdHistStripper(const edm::ParameterSet &iPSet)
@@ -37,7 +36,7 @@ GlobalHitsProdHistStripper::GlobalHitsProdHistStripper(const edm::ParameterSet &
 
   // get dqm info
   dbe = nullptr;
-  dbe = edm::Service<DQMStore>().operator->();
+  dbe = std::make_unique<DQMStore>();
   if (dbe) {
     if (verbosity > 0) {
       dbe->setVerbose(1);

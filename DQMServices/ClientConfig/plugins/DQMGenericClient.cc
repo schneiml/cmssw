@@ -9,7 +9,7 @@
 #include "DQMServices/ClientConfig/interface/DQMGenericClient.h"
 
 #include "DQMServices/ClientConfig/interface/FitSlicesYTool.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
@@ -26,7 +26,7 @@
 using namespace std;
 using namespace edm;
 
-typedef MonitorElement ME;
+typedef DQMGenericClient::MonitorElement ME;
 
 TPRegexp metacharacters("[\\^\\$\\.\\*\\+\\?\\|\\(\\)\\{\\}\\[\\]]");
 TPRegexp nonPerlWildcard("\\w\\*|^\\*");
@@ -376,15 +376,13 @@ void DQMGenericClient::dqmEndJob(DQMStore::IBooker& ibooker, DQMStore::IGetter& 
   // this endRun function
 
   // needed to access the DQMStore::save method
-  theDQM = nullptr;
-  theDQM = Service<DQMStore>().operator->();
 
   if (runOnEndJob_) {
     makeAllPlots(ibooker, igetter);
   }
 
   if (!outputFileName_.empty())
-    theDQM->save(outputFileName_);
+    dqmstore_->save(outputFileName_);
 }
 
 void DQMGenericClient::makeAllPlots(DQMStore::IBooker& ibooker, DQMStore::IGetter& igetter) {

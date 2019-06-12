@@ -20,7 +20,6 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "CalibFormats/SiStripObjects/interface/SiStripDetCabling.h"
 #include "CalibFormats/SiStripObjects/interface/SiStripQuality.h"
@@ -42,8 +41,7 @@
 #include <numeric>
 
 SiStripMonitorQuality::SiStripMonitorQuality(edm::ParameterSet const &iConfig)
-    : dqmStore_(edm::Service<DQMStore>().operator->()),
-      conf_(iConfig),
+    : conf_(iConfig),
       m_cacheID_(0)
 
 {
@@ -186,7 +184,7 @@ void SiStripMonitorQuality::endRun(edm::Run const &run, edm::EventSetup const &e
   std::string outputFileName = conf_.getParameter<std::string>("OutputFileName");
   if (outputMEsInRootFile) {
     // dqmStore_->showDirStructure();
-    dqmStore_->save(outputFileName);
+    dqmstore_->save(outputFileName);
   }
 }
 //
@@ -199,7 +197,8 @@ void SiStripMonitorQuality::endJob(void) {
 //
 // -- End Job
 //
-MonitorElement *SiStripMonitorQuality::getQualityME(uint32_t idet, const TrackerTopology *tTopo) {
+SiStripMonitorQuality::MonitorElement *SiStripMonitorQuality::getQualityME(uint32_t idet,
+                                                                           const TrackerTopology *tTopo) {
   std::map<uint32_t, MonitorElement *>::iterator pos = QualityMEs.find(idet);
   MonitorElement *det_me = nullptr;
   if (pos != QualityMEs.end()) {

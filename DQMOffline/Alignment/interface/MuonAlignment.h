@@ -48,7 +48,6 @@
 #include "DataFormats/GeometrySurface/interface/Plane.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 namespace edm {
   class ParameterSet;
@@ -81,7 +80,7 @@ public:
 private:
   // ----------member data ---------------------------
 
-  DQMStore *dbe;
+  std::unique_ptr<DQMStore> dbe;
 
   MonitorElement *hLocalPositionDT;
   MonitorElement *hLocalPositionRmsDT;

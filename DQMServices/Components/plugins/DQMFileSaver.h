@@ -2,7 +2,7 @@
 #define DQMSERVICES_COMPONENTS_DQMFILESAVER_H
 
 #include "FWCore/Framework/interface/global/EDAnalyzer.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 #include <boost/property_tree/ptree.hpp>
 #include <sys/time.h>
@@ -15,10 +15,11 @@ namespace saverDetails {
   struct NoCache {};
 }  // namespace saverDetails
 
-class DQMStore;
 class DQMFileSaver : public edm::global::EDAnalyzer<edm::RunCache<saverDetails::NoCache>,
                                                     edm::LuminosityBlockCache<saverDetails::NoCache> > {
 public:
+  typedef dqm::legacy::DQMStore DQMStore;
+  typedef dqm::legacy::MonitorElement MonitorElement;
   DQMFileSaver(const edm::ParameterSet &ps);
 
   static boost::property_tree::ptree fillJson(int run,
@@ -80,7 +81,7 @@ private:
   std::string fileBaseName_;
   mutable std::atomic<int> fileUpdate_;
 
-  DQMStore *dbe_;
+  std::unique_ptr<DQMStore> dbe_;
   mutable std::atomic<int> nrun_;
   mutable std::atomic<int> nlumi_;
 

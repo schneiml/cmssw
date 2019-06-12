@@ -20,7 +20,6 @@
 #include "DQM/SiStripCommon/interface/SiStripHistoId.h"
 #include "DQM/SiStripMonitorDigi/interface/SiStripMonitorDigi.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DPGAnalysis/SiStripTools/interface/APVCyclePhaseCollection.h"
 #include "DPGAnalysis/SiStripTools/interface/EventWithHistory.h"
 #include "CalibTracker/SiStripCommon/interface/SiStripDCSStatus.h"
@@ -966,9 +965,9 @@ void SiStripMonitorDigi::ResetModuleMEs(uint32_t idet) {
     mod_me.StripOccupancy->Reset();
 }
 //------------------------------------------------------------------------------------------
-MonitorElement* SiStripMonitorDigi::bookMETrend(DQMStore::IBooker& ibooker,
-                                                const char* ParameterSetLabel,
-                                                const char* HistoName) {
+SiStripMonitorDigi::MonitorElement* SiStripMonitorDigi::bookMETrend(DQMStore::IBooker& ibooker,
+                                                                    const char* ParameterSetLabel,
+                                                                    const char* HistoName) {
   edm::ParameterSet ParametersTrend = conf_.getParameter<edm::ParameterSet>("Trending");
   MonitorElement* me =
       ibooker.bookProfile(HistoName,
@@ -992,9 +991,9 @@ MonitorElement* SiStripMonitorDigi::bookMETrend(DQMStore::IBooker& ibooker,
 }
 
 //------------------------------------------------------------------------------------------
-MonitorElement* SiStripMonitorDigi::bookME1D(DQMStore::IBooker& ibooker,
-                                             const char* ParameterSetLabel,
-                                             const char* HistoName) {
+SiStripMonitorDigi::MonitorElement* SiStripMonitorDigi::bookME1D(DQMStore::IBooker& ibooker,
+                                                                 const char* ParameterSetLabel,
+                                                                 const char* HistoName) {
   edm::ParameterSet Parameters = conf_.getParameter<edm::ParameterSet>(ParameterSetLabel);
   return ibooker.book1D(HistoName,
                         HistoName,

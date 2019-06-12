@@ -32,7 +32,6 @@
 #include "DataFormats/HLTReco/interface/TriggerEvent.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -46,6 +45,9 @@
 
 class FourVectorHLT : public edm::EDAnalyzer {
 public:
+  typedef dqm::legacy::MonitorElement MonitorElement;
+  typedef dqm::legacy::DQMStore DQMStore;
+
   explicit FourVectorHLT(const edm::ParameterSet&);
   ~FourVectorHLT() override;
 
@@ -62,7 +64,7 @@ private:
 
   // ----------member data ---------------------------
   int nev_;
-  DQMStore* dbe_;
+  std::unique_ptr<DQMStore> dbe_;
 
   bool plotAll_;
 

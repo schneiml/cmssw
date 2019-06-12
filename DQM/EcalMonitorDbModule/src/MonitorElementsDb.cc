@@ -10,8 +10,6 @@
 #include <fstream>
 #include <iostream>
 
-#include "DQMServices/Core/interface/MonitorElement.h"
-
 #include "DQMServices/Core/interface/DQMStore.h"
 
 #include "RelationalAccess/ICursor.h"
@@ -34,7 +32,7 @@
 MonitorElementsDb::MonitorElementsDb(const edm::ParameterSet &ps, std::string &xmlFile) {
   xmlFile_ = xmlFile;
 
-  dqmStore_ = edm::Service<DQMStore>().operator->();
+  dqmStore_ = std::make_unique<DQMStore>();
 
   prefixME_ = ps.getUntrackedParameter<std::string>("prefixME", "");
 

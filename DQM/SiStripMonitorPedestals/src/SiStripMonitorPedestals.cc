@@ -21,7 +21,6 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "DQM/SiStripCommon/interface/SiStripFolderOrganizer.h"
 #include "DQM/SiStripCommon/interface/SiStripHistoId.h"
@@ -52,8 +51,7 @@ const std::string SiStripMonitorPedestals::RunMode2 = "CalculatedPlotsOnly";
 const std::string SiStripMonitorPedestals::RunMode3 = "AllPlots";
 
 SiStripMonitorPedestals::SiStripMonitorPedestals(edm::ParameterSet const &iConfig)
-    : dqmStore_(edm::Service<DQMStore>().operator->()),
-      conf_(iConfig),
+    : conf_(iConfig),
       pedsPSet_(iConfig.getParameter<edm::ParameterSet>("PedestalsPSet")),
       analyzed(false),
       firstEvent(true),
@@ -468,7 +466,7 @@ void SiStripMonitorPedestals::endRun(edm::Run const &run, edm::EventSetup const 
   if (outputMEsInRootFile) {
     std::string outPutFileName = conf_.getParameter<std::string>("OutPutFileName");
     //    dqmStore_->showDirStructure();
-    dqmStore_->save(outPutFileName);
+    dqmstore_->save(outPutFileName);
   }
 }
 //

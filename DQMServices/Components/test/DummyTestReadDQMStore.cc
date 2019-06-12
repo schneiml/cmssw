@@ -14,13 +14,14 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 
 //
 // class declaration
 //
 namespace {
+  using dqm::legacy::DQMStore;
+  using dqm::legacy::MonitorElement;
   class ReaderBase {
   public:
     virtual ~ReaderBase() = default;
@@ -83,7 +84,7 @@ namespace {
   private:
     std::string folder_;
     std::string m_name;
-    DQMStore* m_store;
+    std::unique_ptr<DQMStore> m_store;
     MonitorElement* m_element;
     std::vector<double> m_means;
     std::vector<double> m_entries;
@@ -145,7 +146,7 @@ namespace {
   private:
     std::string folder_;
     std::string m_name;
-    DQMStore* m_store;
+    std::unique_ptr<DQMStore> m_store;
     MonitorElement* m_element;
     std::vector<double> m_means;
     std::vector<double> m_entries;
@@ -179,7 +180,7 @@ private:
   using PSets = std::vector<edm::ParameterSet>;
   PSets runElements;
   PSets lumiElements;
-  edm::Service<DQMStore> dstore;
+  std::unique_ptr<DQMStore> dstore = std::make_unique<DQMStore>();
 };
 
 //

@@ -9,8 +9,7 @@
 #include "DataFormats/FEDRawData/interface/FEDRawDataCollection.h"
 
 #include "DQMServices/Core/interface/DQMEDAnalyzer.h"
-
-class MonitorElement;
+#include "DQMServices/Core/interface/DQMStore.h"
 
 class ESRawDataTask : public DQMEDAnalyzer {
 public:
@@ -22,7 +21,7 @@ protected:
   void analyze(const edm::Event& e, const edm::EventSetup& c) override;
 
   /// EndJob
-  void endJob(void) override;
+  void endJob(void) /* never called! */;
 
   /// Setup
   void bookHistograms(DQMStore::IBooker&, edm::Run const&, edm::EventSetup const&) override;

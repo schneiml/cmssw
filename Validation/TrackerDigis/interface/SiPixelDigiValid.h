@@ -7,6 +7,7 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "RecoTracker/Record/interface/TrackerRecoGeometryRecord.h"
 #include "RecoTracker/TkDetLayers/interface/GeometricSearchTracker.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 #include <string>
 
@@ -15,8 +16,6 @@ namespace edm {
   class DetSetVector;
 }
 class PixelDigi;
-class DQMStore;
-class MonitorElement;
 
 class SiPixelDigiValid : public DQMEDAnalyzer {
 public:
@@ -259,7 +258,6 @@ private:
   MonitorElement *meNdigiZmDisk2PerPanel1_;
   MonitorElement *meNdigiZmDisk2PerPanel2_;
 
-  DQMStore *dbe_;
   edm::EDGetTokenT<edm::DetSetVector<PixelDigi>> edmDetSetVector_PixelDigi_Token_;
   edm::ESHandle<GeometricSearchTracker> tracker;
 };

@@ -10,7 +10,6 @@
 
 #include "DQMServices/ClientConfig/interface/FitSlicesYTool.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
@@ -142,7 +141,7 @@ void DQMRivetClient::endRun(const edm::Run& r, const edm::EventSetup& c) {
   // this endRun function
 
   theDQM = nullptr;
-  theDQM = Service<DQMStore>().operator->();
+  theDQM = std::make_unique<DQMStore>();
 
   if (!theDQM) {
     LogInfo("DQMRivetClient") << "Cannot create DQMStore instance\n";

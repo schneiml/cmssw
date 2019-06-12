@@ -1,5 +1,5 @@
 #include "DQM/SiStripMonitorSummary/interface/SiStripQualityDQM.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include "Geometry/Records/interface/TrackerTopologyRcd.h"
 #include "TCanvas.h"
 
@@ -205,7 +205,7 @@ void SiStripQualityDQM::fillGrandSummaryMEs(const edm::EventSetup &eSetup) {
 
   MonitorElement *ME[4];
 
-  DQMStore *dqmStore_ = edm::Service<DQMStore>().operator->();
+  std::unique_ptr<DQMStore> dqmStore_ = std::make_unique<DQMStore>();
 
   std::string FolderName = fPSet_.getParameter<std::string>("FolderName_For_QualityAndCabling_SummaryHistos");
 

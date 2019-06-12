@@ -28,7 +28,6 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/Candidate/interface/CandidateFwd.h"
 #include "DataFormats/JetReco/interface/BasicJetCollection.h"
@@ -72,7 +71,7 @@ double deltaRMax = 0.1;
 string benchmarkLabel_;
 double recPt;
 double maxEta;
-DQMStore *dbe_;
+std::unique_ptr<DQMStore> dbe_;
 //
 // constants, enums and typedefs
 //
@@ -99,10 +98,17 @@ PFJetBenchmarkAnalyzer::PFJetBenchmarkAnalyzer(const edm::ParameterSet &iConfig)
   recPt = iConfig.getParameter<double>("recPt");
   maxEta = iConfig.getParameter<double>("maxEta");
 
-  dbe_ = edm::Service<DQMStore>().operator->();
+  dbe_ = std::make_unique<DQMStore>();
 
-  PFJetBenchmark_.setup(
-      outjetfilename, pfjBenchmarkDebug, plotAgainstReco, onlyTwoJets, deltaRMax, benchmarkLabel_, recPt, maxEta, dbe_);
+  PFJetBenchmark_.setup(outjetfilename,
+                        pfjBenchmarkDebug,
+                        plotAgainstReco,
+                        onlyTwoJets,
+                        deltaRMax,
+                        benchmarkLabel_,
+                        recPt,
+                        maxEta,
+                        &*dbe_);
 }
 
 PFJetBenchmarkAnalyzer::~PFJetBenchmarkAnalyzer() {

@@ -6,12 +6,13 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "DataFormats/Scalers/interface/DcsStatus.h"
-
-class MonitorElement;
-class DQMStore;
+#include "DQMServices/Core/interface/DQMStore.h"
 
 class ESDcsInfoTask : public edm::EDAnalyzer {
 public:
+  typedef dqm::legacy::MonitorElement MonitorElement;
+  typedef dqm::legacy::DQMStore DQMStore;
+
   /// Constructor
   ESDcsInfoTask(const edm::ParameterSet& ps);
 
@@ -38,7 +39,7 @@ protected:
   void cleanup(void);
 
 private:
-  DQMStore* dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
 
   std::string prefixME_;
 

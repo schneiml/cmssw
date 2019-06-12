@@ -21,7 +21,6 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "CalibFormats/SiStripObjects/interface/SiStripDetCabling.h"
 #include "CalibTracker/Records/interface/SiStripDetCablingRcd.h"
@@ -42,7 +41,6 @@
 
 SiStripMonitorRawData::SiStripMonitorRawData(edm::ParameterSet const &iConfig)
     : BadFedNumber(nullptr),
-      dqmStore_(edm::Service<DQMStore>().operator->()),
       conf_(iConfig),
       m_cacheID_(0)
 
@@ -123,7 +121,7 @@ void SiStripMonitorRawData::endRun(edm::Run const &run, edm::EventSetup const &e
   std::string outputFileName = conf_.getParameter<std::string>("OutputFileName");
   if (outputMEsInRootFile) {
     // dqmStore_->showDirStructure();
-    dqmStore_->save(outputFileName);
+    dqmstore_->save(outputFileName);
   }
 }
 //

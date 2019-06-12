@@ -6,7 +6,6 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DataFormats/ParticleFlowReco/interface/PreIdFwd.h"
 #include "DataFormats/ParticleFlowReco/interface/PreId.h"
 #include "DataFormats/Common/interface/ValueMap.h"
@@ -23,7 +22,7 @@ private:
   edm::InputTag PreIdMapLabel_;
   edm::InputTag TrackLabel_;
 
-  DQMStore* dbe;
+  std::unique_ptr<DQMStore> dbe;
   MonitorElement* TracksPt;
   MonitorElement* TracksEta;
   MonitorElement* TracksPtEcalMatch;
@@ -57,7 +56,7 @@ PreIdAnalyzer::~PreIdAnalyzer() {
 }
 
 void PreIdAnalyzer::beginRun(edm::Run const& run, edm::EventSetup const& es) {
-  dbe = edm::Service<DQMStore>().operator->();
+  dbe = std::make_unique<DQMStore>();
   //}
 
   //void  PreIdAnalyzer::beginJobAnalyze(const edm::EventSetup & c){

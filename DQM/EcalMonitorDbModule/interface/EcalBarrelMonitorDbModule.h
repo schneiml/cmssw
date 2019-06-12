@@ -17,13 +17,15 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 #include "RelationalAccess/ISessionProxy.h"
-
-class DQMStore;
+#include "DQMServices/Core/interface/DQMStore.h"
 
 class MonitorElementsDb;
 
 class EcalBarrelMonitorDbModule : public edm::EDAnalyzer {
 public:
+  typedef dqm::legacy::MonitorElement MonitorElement;
+  typedef dqm::legacy::DQMStore DQMStore;
+
   /// Constructor
   EcalBarrelMonitorDbModule(const edm::ParameterSet &ps);
 
@@ -43,7 +45,7 @@ protected:
 private:
   int icycle_;
 
-  DQMStore *dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
 
   std::string prefixME_;
 

@@ -7,7 +7,7 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 
-#include "DQMServices/Core/interface/MonitorElement.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 #include "DataFormats/DetId/interface/DetId.h"
 #include "DataFormats/EcalDetId/interface/ESDetId.h"
@@ -64,13 +64,12 @@ ESIntegrityTask::ESIntegrityTask(const ParameterSet& ps) {
 
 void ESIntegrityTask::endRun(const Run& r, const EventSetup& c) {
   // In case of Lumi based analysis Disable SoftReset from Integrity histogram to get full statistics
-  DQMStore* dqmStore(edm::Service<DQMStore>().operator->());
 
   if (doLumiAnalysis_) {
     for (int i = 0; i < 2; ++i) {
       for (int j = 0; j < 2; ++j) {
         if (meDIErrors_[i][j]) {
-          dqmStore->disableSoftReset(meDIErrors_[i][j]);
+          dqmstore_->disableSoftReset(meDIErrors_[i][j]);
         }
       }
     }
@@ -78,15 +77,13 @@ void ESIntegrityTask::endRun(const Run& r, const EventSetup& c) {
 }
 
 void ESIntegrityTask::beginLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup& c) {
-  DQMStore* dqmStore(edm::Service<DQMStore>().operator->());
-
   LogInfo("ESIntegrityTask") << "analyzed " << ievt_ << " events";
   // In case of Lumi based analysis SoftReset the Integrity histogram
   if (doLumiAnalysis_) {
     for (int i = 0; i < 2; ++i) {
       for (int j = 0; j < 2; ++j) {
         if (meDIErrors_[i][j]) {
-          dqmStore->softReset(meDIErrors_[i][j]);
+          dqmstore_->softReset(meDIErrors_[i][j]);
         }
       }
     }

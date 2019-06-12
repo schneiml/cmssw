@@ -9,7 +9,6 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 using edm::LogInfo;
 using edm::LogWarning;
@@ -35,7 +34,7 @@ L1ScalersClient::L1ScalersClient(const edm::ParameterSet &ps)
       first_tt(true) {
   LogDebug("Status") << "constructor";
   // get back-end interface
-  dbe_ = edm::Service<DQMStore>().operator->();
+  dbe_ = std::make_unique<DQMStore>();
   assert(dbe_ != nullptr);  // blammo!
   dbe_->setCurrentFolder(folderName_);
 

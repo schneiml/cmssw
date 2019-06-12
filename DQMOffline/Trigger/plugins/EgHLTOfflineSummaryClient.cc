@@ -8,7 +8,6 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "DQMOffline/Trigger/interface/EgHLTTrigTools.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
@@ -18,7 +17,7 @@ EgHLTOfflineSummaryClient::EgHLTOfflineSummaryClient(const edm::ParameterSet& iC
     : egHLTSumHistName_("egHLTTrigSum"), isSetup_(false) {
   dirName_ = iConfig.getParameter<std::string>(
       "DQMDirName");  //only one chance to get this, if we every have another shot, remember to check isSetup is okay
-  dbe_ = edm::Service<DQMStore>().operator->();
+  dbe_ = std::make_unique<DQMStore>();
   if (!dbe_) {
     edm::LogError("EgHLTOfflineSummaryClient")
         << "unable to get DQMStore service, no summary histograms will be produced";

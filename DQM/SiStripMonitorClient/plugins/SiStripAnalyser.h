@@ -30,6 +30,9 @@ class FEDRawDataCollection;
 
 class SiStripAnalyser : public edm::EDAnalyzer {
 public:
+  typedef dqm::harvesting::MonitorElement MonitorElement;
+  typedef dqm::harvesting::DQMStore DQMStore;
+
   SiStripAnalyser(const edm::ParameterSet& ps);
   ~SiStripAnalyser() override;
 
@@ -67,6 +70,8 @@ private:
   bool trackerFEDsFound_{false};
   bool printFaultyModuleList_;
   bool endLumiAnalysisOn_{false};
+
+  std::unique_ptr<DQMStore> dqm_store;
 };
 
 #endif

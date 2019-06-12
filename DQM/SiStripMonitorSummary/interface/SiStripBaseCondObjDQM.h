@@ -17,7 +17,6 @@
 #include "DQM/SiStripCommon/interface/SiStripHistoId.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "CalibTracker/SiStripCommon/interface/SiStripDetInfoFileReader.h"
 
@@ -37,6 +36,9 @@
 class TrackerTopology;
 class SiStripBaseCondObjDQM {
 public:
+  typedef dqm::legacy::DQMStore DQMStore;
+  typedef dqm::legacy::MonitorElement MonitorElement;
+
   SiStripBaseCondObjDQM(const edm::EventSetup &eSetup,
                         edm::RunNumber_t iRun,
                         edm::ParameterSet const &hPSet,
@@ -154,7 +156,7 @@ private:
 
   SiStripHistoId hidmanager;
   SiStripFolderOrganizer folder_organizer;
-  DQMStore *dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
   edm::RunNumber_t runNumber_;
 };
 

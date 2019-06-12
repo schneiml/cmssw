@@ -4,13 +4,11 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "DQMServices/ClientConfig/interface/DQMGenericClient.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include <set>
 #include <string>
 #include <vector>
 #include <TH1.h>
-
-class DQMStore;
-class MonitorElement;
 
 class DQMRivetClient : public edm::EDAnalyzer {
 public:
@@ -44,7 +42,7 @@ public:
 private:
   unsigned int verbose_;
 
-  DQMStore* theDQM;
+  std::unique_ptr<DQMStore> theDQM;
   std::vector<std::string> subDirs_;
   std::string outputFileName_;
 

@@ -5,7 +5,6 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 //#include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "TrackingTools/TransientTrackingRecHit/interface/TransientTrackingRecHit.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrack.h"
@@ -675,7 +674,6 @@ RecoMuonValidator::RecoMuonValidator(const edm::ParameterSet& pset)
   theMuonService = new MuonServiceProxy(serviceParameters);
 
   // retrieve the instance of DQMService
-  dbe_ = Service<DQMStore>().operator->();
   subsystemname_ = pset.getUntrackedParameter<std::string>("subSystemFolder", "YourSubsystem");
 
   subDir_ = pset.getUntrackedParameter<string>("subDir");
@@ -811,8 +809,8 @@ void RecoMuonValidator::dqmBeginRun(const edm::Run&, const EventSetup& eventSetu
 //End run
 //
 void RecoMuonValidator::endRun(edm::Run const&, edm::EventSetup const&) {
-  if (dbe_ && !outputFileName_.empty())
-    dbe_->save(outputFileName_);
+  if (dqmstore_ && !outputFileName_.empty())
+    dqmstore_->save(outputFileName_);
 }
 
 //

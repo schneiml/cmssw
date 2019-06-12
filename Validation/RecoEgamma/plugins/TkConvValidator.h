@@ -24,7 +24,6 @@
 //DQM services
 #include "DQMServices/Core/interface/DQMStore.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DQMServices/Core/interface/DQMEDAnalyzer.h"
 
 //
@@ -70,7 +69,6 @@ private:
                                                     const reco::Vertex& vtx);
 
   std::string fName_;
-  DQMStore* dbe_;
   edm::ESHandle<MagneticField> theMF_;
 
   int verbosity_;

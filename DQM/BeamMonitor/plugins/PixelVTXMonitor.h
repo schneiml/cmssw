@@ -17,7 +17,6 @@
 #include <FWCore/Framework/interface/EDAnalyzer.h>
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "DataFormats/SiPixelCluster/interface/SiPixelCluster.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
@@ -30,6 +29,8 @@
 
 class PixelVTXMonitor : public edm::EDAnalyzer {
 public:
+  typedef dqm::legacy::MonitorElement MonitorElement;
+  typedef dqm::legacy::DQMStore DQMStore;
   PixelVTXMonitor(const edm::ParameterSet&);
   ~PixelVTXMonitor() override;
 
@@ -55,7 +56,7 @@ private:
   edm::InputTag hltInputTag_;
   float minVtxDoF_;
 
-  DQMStore* dbe_;
+  std::unique_ptr<DQMStore> dbe_;
   HLTConfigProvider hltConfig_;
 
   struct PixelMEs {

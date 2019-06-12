@@ -107,7 +107,7 @@ SiStripCommissioningSource::~SiStripCommissioningSource() {
 
 // -----------------------------------------------------------------------------
 //
-DQMStore* const SiStripCommissioningSource::dqm(std::string method) const {
+SiStripCommissioningSource::DQMStore* const SiStripCommissioningSource::dqm(std::string method) const {
   if (!dqm_) {
     std::stringstream ss;
     if (!method.empty()) {
@@ -119,7 +119,7 @@ DQMStore* const SiStripCommissioningSource::dqm(std::string method) const {
     edm::LogWarning(mlDqmSource_) << ss.str();
     return nullptr;
   } else {
-    return dqm_;
+    return &*dqm_;
   }
 }
 
@@ -133,9 +133,7 @@ void SiStripCommissioningSource::beginRun(edm::Run const& run, const edm::EventS
 
   // ---------- DQM back-end interface ----------
 
-  dqm_ = edm::Service<DQMStore>().operator->();
-  edm::LogInfo(mlDqmSource_) << "[SiStripCommissioningSource::" << __func__ << "]"
-                             << " DQMStore service: " << dqm_;
+  dqm_ = std::make_unique<DQMStore>();
   dqm(__func__);
   dqm()->setVerbose(0);
 

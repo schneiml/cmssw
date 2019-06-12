@@ -15,7 +15,6 @@
 
 // DQM
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include <iostream>
 
@@ -60,7 +59,7 @@ private:
   std::string theDQMFileName;
 
   // DQM Backend Interface
-  DQMStore *theDaqMonitorBEI;
+  std::unique_ptr<DQMStore> theDaqMonitorBEI;
 
   // DQM Monitor Elements
 

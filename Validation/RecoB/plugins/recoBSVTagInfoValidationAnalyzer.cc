@@ -11,7 +11,6 @@
 #include <string>
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -49,7 +48,7 @@ private:
   edm::InputTag trackingTruth_;
   edm::InputTag svTagInfoProducer_;
 
-  DQMStore *dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
   std::string dqmLabel;
 
   Int_t n_event;
@@ -106,7 +105,7 @@ recoBSVTagInfoValidationAnalyzer::recoBSVTagInfoValidationAnalyzer(const edm::Pa
   total_nmiss = 0;
 
   //  get the store
-  dqmStore_ = edm::Service<DQMStore>().operator->();
+  dqmStore_ = std::make_unique<DQMStore>();
   dqmLabel = "SVValidation/";
   dqmStore_->setCurrentFolder(dqmLabel);
 

@@ -32,7 +32,6 @@
 #include "FWCore/Framework/interface/RunForOutput.h"
 #include "FWCore/Framework/interface/LuminosityBlockForOutput.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/MessageLogger/interface/JobReport.h"
@@ -47,6 +46,9 @@
 #include "format.h"
 
 namespace {
+  using dqm::harvesting::DQMStore;
+  using dqm::harvesting::MonitorElement;
+
   class TreeHelperBase {
   public:
     TreeHelperBase() : m_wasFilled(false), m_firstIndex(0), m_lastIndex(0) {}
@@ -83,7 +85,7 @@ namespace {
     }
     void doFill(MonitorElement* iElement) override {
       *m_fullNameBufferPtr = iElement->getFullname();
-      m_flagBuffer = iElement->getTag();
+      m_flagBuffer = 0;
       m_bufferPtr = dynamic_cast<T*>(iElement->getRootObject());
       assert(nullptr != m_bufferPtr);
       //std::cout <<"#entries: "<<m_bufferPtr->GetEntries()<<std::endl;
@@ -113,7 +115,7 @@ namespace {
 
     void doFill(MonitorElement* iElement) override {
       *m_fullNameBufferPtr = iElement->getFullname();
-      m_flagBuffer = iElement->getTag();
+      m_flagBuffer = 0;
       m_buffer = iElement->getIntValue();
       m_tree->Fill();
     }
@@ -138,7 +140,7 @@ namespace {
     }
     void doFill(MonitorElement* iElement) override {
       *m_fullNameBufferPtr = iElement->getFullname();
-      m_flagBuffer = iElement->getTag();
+      m_flagBuffer = 0;
       m_buffer = iElement->getFloatValue();
       m_tree->Fill();
     }
@@ -164,7 +166,7 @@ namespace {
     }
     void doFill(MonitorElement* iElement) override {
       *m_fullNameBufferPtr = iElement->getFullname();
-      m_flagBuffer = iElement->getTag();
+      m_flagBuffer = 0;
       m_buffer = iElement->getStringValue();
       m_tree->Fill();
     }
@@ -292,11 +294,7 @@ DQMRootOutputModule::DQMRootOutputModule(edm::ParameterSet const& pset)
 //    // do actual copying here;
 // }
 
-void DQMRootOutputModule::beginJob() {
-  // Determine if we are running multithreading asking to the DQMStore. Not to be moved in the ctor
-  edm::Service<DQMStore> dstore;
-  m_enableMultiThread = dstore->enableMultiThread_;
-}
+void DQMRootOutputModule::beginJob() {}
 
 DQMRootOutputModule::~DQMRootOutputModule() {}
 
@@ -377,7 +375,7 @@ void DQMRootOutputModule::write(edm::EventForOutput const&) {}
 
 void DQMRootOutputModule::writeLuminosityBlock(edm::LuminosityBlockForOutput const& iLumi) {
   //std::cout << "DQMRootOutputModule::writeLuminosityBlock"<< std::endl;
-  edm::Service<DQMStore> dstore;
+  auto dstore = std::make_unique<DQMStore>();
   m_run = iLumi.id().run();
   m_lumi = iLumi.id().value();
   m_beginTime = iLumi.beginTime().value();
@@ -435,7 +433,7 @@ void DQMRootOutputModule::writeLuminosityBlock(edm::LuminosityBlockForOutput con
 
 void DQMRootOutputModule::writeRun(edm::RunForOutput const& iRun) {
   //std::cout << "DQMRootOutputModule::writeRun"<< std::endl;
-  edm::Service<DQMStore> dstore;
+  auto dstore = std::make_unique<DQMStore>();
   m_run = iRun.id().run();
   m_lumi = 0;
   m_beginTime = iRun.beginTime().value();
@@ -445,7 +443,7 @@ void DQMRootOutputModule::writeRun(edm::RunForOutput const& iRun) {
   if (!shouldWrite)
     return;
 
-  std::vector<MonitorElement*> items(dstore->getAllContents("", m_enableMultiThread ? m_run : 0));
+  std::vector<MonitorElement*> items(dstore->getAllContents(""));
   for (std::vector<MonitorElement*>::iterator it = items.begin(), itEnd = items.end(); it != itEnd; ++it) {
     if (not(*it)->getLumiFlag()) {
       std::map<unsigned int, unsigned int>::iterator itFound = m_dqmKindToTypeIndex.find((*it)->kind());

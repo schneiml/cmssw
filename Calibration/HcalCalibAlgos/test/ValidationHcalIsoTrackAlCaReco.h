@@ -49,7 +49,6 @@
 #include "CondFormats/DataRecord/interface/L1GtPrescaleFactorsTechTrigRcd.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
@@ -73,7 +72,7 @@ public:
   ~ValidationHcalIsoTrackAlCaReco();
 
 private:
-  DQMStore* dbe_;
+  std::unique_ptr<DQMStore> dbe_;
 
   virtual void beginJob();
   virtual void analyze(const edm::Event&, const edm::EventSetup&);

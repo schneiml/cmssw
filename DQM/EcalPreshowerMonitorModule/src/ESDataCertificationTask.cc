@@ -14,7 +14,6 @@
 #include "CondFormats/RunInfo/interface/RunSummary.h"
 #include "CondFormats/RunInfo/interface/RunInfo.h"
 
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DQMServices/Core/interface/DQMStore.h"
 
 #include "DQM/EcalPreshowerMonitorModule/interface/ESDataCertificationTask.h"
@@ -24,7 +23,7 @@ using namespace edm;
 using namespace std;
 
 ESDataCertificationTask::ESDataCertificationTask(const ParameterSet& ps) {
-  dqmStore_ = Service<DQMStore>().operator->();
+  dqmStore_ = std::make_unique<DQMStore>();
 
   prefixME_ = ps.getUntrackedParameter<string>("prefixME", "");
 

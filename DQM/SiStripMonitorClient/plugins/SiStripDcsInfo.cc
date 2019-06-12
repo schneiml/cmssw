@@ -3,7 +3,6 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "DQM/SiStripCommon/interface/SiStripFolderOrganizer.h"
 #include "SiStripDcsInfo.h"
@@ -70,9 +69,9 @@ void SiStripDcsInfo::beginRun(edm::Run const& run, edm::EventSetup const& eSetup
     }
   }
 
-  auto& dqm_store = *edm::Service<DQMStore>{};
-  bookStatus(dqm_store);
-  fillDummyStatus(dqm_store);
+  dqm_store = std::make_unique<DQMStore>();
+  bookStatus(*dqm_store);
+  fillDummyStatus(*dqm_store);
   if (nFEDConnected_ > 0)
     readCabling(eSetup);
 }
@@ -98,9 +97,8 @@ void SiStripDcsInfo::endLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm
 
   if (nFEDConnected_ == 0)
     return;
-  auto& dqm_store = *edm::Service<DQMStore>{};
   readStatus(eSetup);
-  fillStatus(dqm_store);
+  fillStatus(*dqm_store);
 }
 
 void SiStripDcsInfo::endRun(edm::Run const& run, edm::EventSetup const& eSetup) {
@@ -113,8 +111,7 @@ void SiStripDcsInfo::endRun(edm::Run const& run, edm::EventSetup const& eSetup) 
     subDetME.second.FaultyDetectors.clear();
   }
   readStatus(eSetup);
-  auto& dqm_store = *edm::Service<DQMStore>{};
-  addBadModules(dqm_store);
+  addBadModules(*dqm_store);
 }
 //
 // -- Book MEs for SiStrip Dcs Fraction

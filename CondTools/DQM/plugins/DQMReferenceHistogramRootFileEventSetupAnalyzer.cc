@@ -16,7 +16,6 @@
 #include "CondFormats/Common/interface/FileBlob.h"
 #include "CondFormats/DataRecord/interface/DQMReferenceHistogramRootFileRcd.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 namespace edmtest {
   class DQMReferenceHistogramRootFileEventSetupAnalyzer : public edm::EDAnalyzer {
@@ -76,7 +75,7 @@ namespace edmtest {
       output.write((const char*)&(*tb)[0], tb->size());
       output.close();
 
-      DQMStore* dqm = &*edm::Service<DQMStore>();
+      std::unique_ptr<DQMStore> dqm = std::make_unique<DQMStore>();
       dqm->open(outfile, false, "", "Reference");
       remove(outfile.c_str());
 

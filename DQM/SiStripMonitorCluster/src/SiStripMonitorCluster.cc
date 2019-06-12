@@ -26,7 +26,6 @@
 #include "DQM/SiStripCommon/interface/SiStripHistoId.h"
 #include "DQM/SiStripMonitorCluster/interface/SiStripMonitorCluster.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DataFormats/SiPixelCluster/interface/SiPixelCluster.h"
 #include "DataFormats/SiStripCluster/interface/SiStripCluster.h"
 #include "DataFormats/SiStripCluster/interface/SiStripClusterCollection.h"
@@ -1618,7 +1617,8 @@ void SiStripMonitorCluster::fillLayerMEs(LayerMEs& layerMEs, ClusterProperties& 
   }
 }
 //------------------------------------------------------------------------------------------
-MonitorElement* SiStripMonitorCluster::bookMETrend(const char* HistoName, DQMStore::IBooker& ibooker) {
+SiStripMonitorCluster::MonitorElement* SiStripMonitorCluster::bookMETrend(const char* HistoName,
+                                                                          DQMStore::IBooker& ibooker) {
   edm::ParameterSet ParametersTrend = trendVs10Ls_ ? conf_.getParameter<edm::ParameterSet>("TrendingLS")
                                                    : conf_.getParameter<edm::ParameterSet>("Trending");
   MonitorElement* me = ibooker.bookProfile(HistoName,
@@ -1638,9 +1638,9 @@ MonitorElement* SiStripMonitorCluster::bookMETrend(const char* HistoName, DQMSto
 }
 
 //------------------------------------------------------------------------------------------
-MonitorElement* SiStripMonitorCluster::bookME1D(const char* ParameterSetLabel,
-                                                const char* HistoName,
-                                                DQMStore::IBooker& ibooker) {
+SiStripMonitorCluster::MonitorElement* SiStripMonitorCluster::bookME1D(const char* ParameterSetLabel,
+                                                                       const char* HistoName,
+                                                                       DQMStore::IBooker& ibooker) {
   Parameters = conf_.getParameter<edm::ParameterSet>(ParameterSetLabel);
   return ibooker.book1D(HistoName,
                         HistoName,
@@ -1650,9 +1650,9 @@ MonitorElement* SiStripMonitorCluster::bookME1D(const char* ParameterSetLabel,
 }
 
 //------------------------------------------------------------------------------------------
-MonitorElement* SiStripMonitorCluster::bookME2D(const char* ParameterSetLabel,
-                                                const char* HistoName,
-                                                DQMStore::IBooker& ibooker) {
+SiStripMonitorCluster::MonitorElement* SiStripMonitorCluster::bookME2D(const char* ParameterSetLabel,
+                                                                       const char* HistoName,
+                                                                       DQMStore::IBooker& ibooker) {
   Parameters = conf_.getParameter<edm::ParameterSet>(ParameterSetLabel);
   return ibooker.book2D(HistoName,
                         HistoName,

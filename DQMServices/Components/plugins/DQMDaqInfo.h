@@ -41,10 +41,11 @@
 //DQM
 #include "DQMServices/Core/interface/DQMStore.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 class DQMDaqInfo : public edm::EDAnalyzer {
 public:
+  typedef dqm::legacy::DQMStore DQMStore;
+  typedef dqm::legacy::MonitorElement MonitorElement;
   explicit DQMDaqInfo(const edm::ParameterSet&);
   ~DQMDaqInfo() override;
 
@@ -54,7 +55,7 @@ private:
   void analyze(const edm::Event&, const edm::EventSetup&) override;
   void endJob() override;
 
-  DQMStore* dbe_;
+  std::unique_ptr<DQMStore> dbe_;
 
   enum subDetList { Pixel, SiStrip, EcalBarrel, EcalEndcap, Hcal, DT, CSC, RPC, L1T };
 

@@ -32,7 +32,6 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 //
 // class declaration
@@ -50,7 +49,7 @@ private:
 
   // ----------member data ---------------------------
 
-  DQMStore* dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
 
   std::string filename, dirpath;
   int TotNumberOfEvents;
@@ -74,7 +73,7 @@ StatisticsFilter::StatisticsFilter(const edm::ParameterSet& iConfig)
       MinNumberOfEvents(iConfig.getUntrackedParameter<int>("minNumberOfEvents")) {
   //now do what ever initialization is needed
 
-  dqmStore_ = edm::Service<DQMStore>().operator->();
+  dqmStore_ = std::make_unique<DQMStore>();
   dqmStore_->open(filename, false);
 }
 

@@ -20,7 +20,6 @@
 #include "DQM/SiStripCommon/interface/SiStripFolderOrganizer.h"
 #include "DQM/SiStripCommon/interface/SiStripHistoId.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "DQM/SiStripMonitorSummary/interface/SiStripMonitorCondData.h"
 
@@ -216,7 +215,7 @@ void SiStripMonitorCondData::endRun(edm::Run const &run, edm::EventSetup const &
   bool outputMEsInRootFile = conf_.getParameter<bool>("OutputMEsInRootFile");
   std::string outputFileName = conf_.getParameter<std::string>("OutputFileName");
 
-  DQMStore *dqmStore_ = edm::Service<DQMStore>().operator->();
+  std::unique_ptr<DQMStore> dqmStore_ = std::make_unique<DQMStore>();
 
   if (outputMEsInRootFile) {
     dqmStore_->showDirStructure();

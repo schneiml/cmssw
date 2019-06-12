@@ -1,7 +1,6 @@
 #include "DQMFileSaver.h"
 #include "DQMServices/Components/interface/fillJson.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/Run.h"
 #include "FWCore/Framework/interface/LuminosityBlock.h"
@@ -89,7 +88,6 @@ void DQMFileSaver::saveForOffline(const std::string &workflow, int run, int lumi
   if (lumi == 0)  // save for run
   {
     // set run end flag
-    dbe_->cd();
     dbe_->setCurrentFolder("Info/ProvInfo");
 
     // do this, because ProvInfo is not yet run in offline DQM
@@ -150,14 +148,14 @@ void DQMFileSaver::saveForOffline(const std::string &workflow, int run, int lumi
   }
 }
 
-static void doSaveForOnline(DQMStore *store,
+static void doSaveForOnline(DQMFileSaver::DQMStore *store,
                             int run,
                             bool enableMultiThread,
                             const std::string &filename,
                             const std::string &directory,
                             const std::string &rxpat,
                             const std::string &rewrite,
-                            DQMStore::SaveReferenceTag saveref,
+                            DQMFileSaver::DQMStore::SaveReferenceTag saveref,
                             int saveRefQMin,
                             const std::string &filterName,
                             DQMFileSaver::FileFormat fileFormat) {
@@ -175,7 +173,7 @@ void DQMFileSaver::saveForOnlinePB(int run, const std::string &suffix) const {
   // and the @a suffix, defined in the run/lumi transitions.
   // TODO(diguida): add the possibility to change the dir structure with rewrite.
   std::string filename = onlineOfflineFileName(fileBaseName_, suffix, workflow_, child_, PB);
-  doSaveForOnline(dbe_,
+  doSaveForOnline(&*dbe_,
                   run,
                   enableMultiThread_,
                   filename,
@@ -195,7 +193,7 @@ void DQMFileSaver::saveForOnline(int run, const std::string &suffix, const std::
     if (systems[i] != "Reference") {
       dbe_->cd();
       if (MonitorElement *me = dbe_->get(systems[i] + "/EventInfo/processName")) {
-        doSaveForOnline(dbe_,
+        doSaveForOnline(&*dbe_,
                         run,
                         enableMultiThread_,
                         fileBaseName_ + me->getStringValue() + suffix + child_ + ".root",
@@ -215,10 +213,10 @@ void DQMFileSaver::saveForOnline(int run, const std::string &suffix, const std::
   for (size_t i = 0, e = systems.size(); i != e; ++i)
     if (systems[i] != "Reference") {
       dbe_->cd();
-      std::vector<MonitorElement *> pNamesVector =
-          dbe_->getMatchingContents("^" + systems[i] + "/.*/EventInfo/processName", lat::Regexp::Perl);
+      std::vector<MonitorElement *> pNamesVector = dbe_->getMatchingContents(
+          "^" + systems[i] + "/.*/EventInfo/processName" /* ,lat::Regexp::Perl */);  // TODO: redo.
       if (!pNamesVector.empty()) {
-        doSaveForOnline(dbe_,
+        doSaveForOnline(&*dbe_,
                         run,
                         enableMultiThread_,
                         fileBaseName_ + systems[i] + suffix + child_ + ".root",
@@ -237,7 +235,7 @@ void DQMFileSaver::saveForOnline(int run, const std::string &suffix, const std::
   // if no EventInfo Folder is found, then store subsystem wise
   for (size_t i = 0, e = systems.size(); i != e; ++i)
     if (systems[i] != "Reference")
-      doSaveForOnline(dbe_,
+      doSaveForOnline(&*dbe_,
                       run,
                       enableMultiThread_,
                       fileBaseName_ + systems[i] + suffix + child_ + ".root",
@@ -361,7 +359,7 @@ DQMFileSaver::DQMFileSaver(const edm::ParameterSet &ps)
       forceRunNumber_(-1),
       fileBaseName_(""),
       fileUpdate_(0),
-      dbe_(&*edm::Service<DQMStore>()),
+      dbe_(std::make_unique<DQMStore>()),
       nrun_(0),
       nlumi_(0),
       irun_(0),
@@ -512,7 +510,7 @@ void DQMFileSaver::beginJob() {
   nrun_ = nlumi_ = irun_ = 0;
 
   // Determine if we are running multithreading asking to the DQMStore. Not to be moved in the ctor
-  enableMultiThread_ = dbe_->enableMultiThread_;
+  enableMultiThread_ = true;  // TODO: remove.
 
   if ((convention_ == FilterUnit) && (!fakeFilterUnitMode_)) {
     transferDestination_ = edm::Service<evf::EvFDaqDirector>()->getStreamDestinations(stream_label_);
@@ -594,9 +592,6 @@ void DQMFileSaver::globalEndLuminosityBlock(const edm::LuminosityBlock &iLS, con
         throw cms::Exception("DQMFileSaver") << "Internal error, can save files"
                                              << " only in ROOT format.";
     }
-
-    // after saving per LS, delete the old LS global histograms.
-    dbe_->deleteUnusedLumiHistograms(enableMultiThread_ ? irun : 0, ilumi);
   }
 }
 

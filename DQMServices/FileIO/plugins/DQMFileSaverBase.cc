@@ -1,4 +1,4 @@
-#include "DQMServices/Core/interface/MonitorElement.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/Run.h"
 #include "FWCore/Framework/interface/LuminosityBlock.h"
@@ -85,9 +85,6 @@ void DQMFileSaverBase::globalEndLuminosityBlock(const edm::LuminosityBlock &iLS,
   fp.run_ = irun;
 
   this->saveLumi(fp);
-
-  edm::Service<DQMStore> store;
-  store->deleteUnusedLumiHistograms(store->mtEnabled() ? irun : 0, ilumi);
 }
 
 void DQMFileSaverBase::globalEndRun(const edm::Run &iRun, const edm::EventSetup &) const {

@@ -36,7 +36,6 @@
 #include <string>
 #include <vector>
 
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "TString.h"
 
 class GlobalHitsProdHistStripper : public edm::EDAnalyzer {
@@ -60,7 +59,7 @@ private:
   bool getAllProvenances;
   bool printProvenanceInfo;
 
-  DQMStore *dbe;
+  std::unique_ptr<DQMStore> dbe;
   std::string outputfile;
   bool doOutput;
 

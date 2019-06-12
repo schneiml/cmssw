@@ -46,6 +46,9 @@
 //
 
 class MEtoMEComparitor : public edm::EDAnalyzer {
+  typedef dqm::legacy::DQMStore DQMStore;
+  typedef dqm::legacy::MonitorElement MonitorElement;
+
 public:
   explicit MEtoMEComparitor(const edm::ParameterSet&);
   ~MEtoMEComparitor() override;
@@ -65,7 +68,7 @@ private:
   template <class T>
   void keepBadHistograms(const std::string& directory, const T* h_new, const T* h_ref);
 
-  DQMStore* _dbe;
+  std::unique_ptr<DQMStore> _dbe;
   std::string _moduleLabel;
 
   std::string _lumiInstance;

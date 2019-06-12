@@ -25,6 +25,9 @@ Usage:
 
 class SiPixelFolderOrganizer {
 public:
+  typedef dqm::legacy::DQMStore DQMStore;
+  typedef dqm::legacy::MonitorElement MonitorElement;
+
   /// Constructor - getStore should be called false from multi-thread DQM
   /// applications
   SiPixelFolderOrganizer(bool getStore = true);
@@ -45,6 +48,6 @@ public:
 
 private:
   std::string topFolderName;
-  DQMStore *dbe_;
+  std::unique_ptr<DQMStore> dbe_;
 };
 #endif

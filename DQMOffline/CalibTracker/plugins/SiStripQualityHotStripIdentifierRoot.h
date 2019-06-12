@@ -13,7 +13,6 @@
 
 #include "CalibTracker/SiStripQuality/interface/SiStripQualityHistos.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
 #include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
@@ -65,7 +64,7 @@ private:
   const TrackerGeometry* tracker_;
   const TrackerTopology* tTopo;
 
-  DQMStore* dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
 
   TFile* file0;
   std::string filename, dirpath;

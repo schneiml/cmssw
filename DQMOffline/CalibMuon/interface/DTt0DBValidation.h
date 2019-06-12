@@ -8,7 +8,6 @@
  */
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -47,7 +46,7 @@ private:
   void bookHistos(DTLayerId lId, int firstWire, int lastWire);
   void bookHistos(int wheel);
 
-  DQMStore *dbe_;
+  std::unique_ptr<DQMStore> dbe_;
   // Switch for verbosity
   std::string metname_;
   // The DB label

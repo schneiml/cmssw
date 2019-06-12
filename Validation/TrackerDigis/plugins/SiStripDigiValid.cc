@@ -1,5 +1,4 @@
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DataFormats/Common/interface/DetSetVector.h"
 #include "DataFormats/GeometryVector/interface/GlobalPoint.h"
 #include "DataFormats/GeometryVector/interface/LocalPoint.h"
@@ -22,8 +21,7 @@
 #include "Validation/TrackerDigis/interface/SiStripDigiValid.h"
 
 SiStripDigiValid::SiStripDigiValid(const edm::ParameterSet &ps)
-    : dbe_(nullptr),
-      runStandalone(ps.getParameter<bool>("runStandalone")),
+    : runStandalone(ps.getParameter<bool>("runStandalone")),
       outputFile_(ps.getUntrackedParameter<std::string>("outputFile", "stripdigihisto.root")),
       edmDetSetVector_SiStripDigi_Token_(
           consumes<edm::DetSetVector<SiStripDigi>>(ps.getParameter<edm::InputTag>("src"))) {}
@@ -31,9 +29,7 @@ SiStripDigiValid::SiStripDigiValid(const edm::ParameterSet &ps)
 SiStripDigiValid::~SiStripDigiValid() {}
 
 void SiStripDigiValid::bookHistograms(DQMStore::IBooker &ibooker, const edm::Run &run, const edm::EventSetup &es) {
-  dbe_ = edm::Service<DQMStore>().operator->();
-
-  if (dbe_) {
+  if (dqmstore_) {
     ibooker.setCurrentFolder("TrackerDigisV/TrackerDigis/Strip");
 
     for (int i = 0; i < 3; i++) {
@@ -325,8 +321,8 @@ void SiStripDigiValid::bookHistograms(DQMStore::IBooker &ibooker, const edm::Run
 }
 
 void SiStripDigiValid::endJob() {
-  if (runStandalone && !outputFile_.empty() && dbe_) {
-    dbe_->save(outputFile_);
+  if (runStandalone && !outputFile_.empty() && dqmstore_) {
+    dqmstore_->save(outputFile_);
   }
 }
 

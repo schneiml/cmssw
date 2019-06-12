@@ -9,10 +9,14 @@
 #include "FWCore/Sources/interface/ProducerSourceBase.h"
 #include "FWCore/Sources/interface/PuttableSourceBase.h"
 
+#include "DQMServices/Core/interface/DQMStore.h"
+
 #include "DQMFileIterator.h"
 #include "DQMMonitoringService.h"
 
 namespace dqmservices {
+  using dqm::harvesting::DQMStore;
+  using dqm::harvesting::MonitorElement;
 
   class DQMProtobufReader : public edm::PuttableSourceBase {
   public:

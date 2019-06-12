@@ -49,7 +49,6 @@
 #include "TF1.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DQM/SiPixelCommon/interface/SiPixelHistogramId.h"
 #include "DQM/SiPixelCommon/interface/SiPixelFolderOrganizer.h"
 #include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
@@ -120,7 +119,7 @@ protected:
 
 private:
   SiPixelFolderOrganizer* folderMaker_;
-  DQMStore* daqBE_;
+  std::unique_ptr<DQMStore> daqBE_;
   SiPixelHistogramId* theHistogramIdWorker_;
   std::string outputFileName_;
   bool createOutputFile_;

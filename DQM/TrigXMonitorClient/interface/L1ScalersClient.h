@@ -11,7 +11,6 @@
 
 #include "DQMServices/Core/interface/DQMStore.h"
 
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
 // HARD CODE THE NUMBER OF HISTOGRAMS TO 200, LENGTH OF MONITOR to 2000
@@ -22,6 +21,9 @@
 
 class L1ScalersClient : public edm::EDAnalyzer {
 public:
+  typedef dqm::legacy::MonitorElement MonitorElement;
+  typedef dqm::legacy::DQMStore DQMStore;
+
   /// Constructors
   L1ScalersClient(const edm::ParameterSet &ps);
 
@@ -48,7 +50,7 @@ public:
   void analyze(const edm::Event &e, const edm::EventSetup &c) override;
 
 private:
-  DQMStore *dbe_;
+  std::unique_ptr<DQMStore> dbe_;
 
   int nev_;    // Number of events processed
   int nLumi_;  // number of lumi blocks

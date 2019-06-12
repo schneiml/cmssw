@@ -20,14 +20,15 @@
 #include "MonitorXMLParser.h"
 
 #include "RelationalAccess/ISessionProxy.h"
-
-class MonitorElement;
-class DQMStore;
+#include "DQMServices/Core/interface/DQMStore.h"
 
 class MonitorElementsDb {
   friend class EcalBarrelMonitorDbModule;
 
 public:
+  typedef dqm::legacy::MonitorElement MonitorElement;
+  typedef dqm::legacy::DQMStore DQMStore;
+
   /// Constructors
   MonitorElementsDb(const edm::ParameterSet &ps, std::string &xmlFile);
 
@@ -56,7 +57,7 @@ private:
   std::vector<DB_ME> MEinfo_;
   std::vector<MonitorElement *> MEs_;
   int ievt_;
-  DQMStore *dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
 };
 
 #endif  // MonitorElementsDb_H

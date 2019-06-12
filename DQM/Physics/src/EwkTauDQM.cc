@@ -11,7 +11,8 @@ std::string dqmDirectoryName(const std::string& dqmRootDirectory, const std::str
   //--- concatenate names of dqmRootDirectory and dqmSubDirectory;
   //    add "/" separator inbetween if necessary
   std::string dirName = dqmRootDirectory;
-  if (!dirName.empty() && dirName.find_last_of(dqmSeparator) != (dirName.length() - 1))
+  if (!dirName.empty() &&
+      dirName.find_last_of(dqmSeparator) != (dirName.length() - 1))
     dirName.append(dqmSeparator);
   dirName.append(dqmSubDirectory);
   return dirName;
@@ -64,7 +65,6 @@ void EwkTauDQM::endRun(const edm::Run&, const edm::EventSetup&) {
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 #include "FWCore/ServiceRegistry/interface/Service.h"
-#include "DQMServices/Core/interface/DQMStore.h"
 
 #include "DataFormats/Common/interface/Handle.h"
 #include "DataFormats/Common/interface/View.h"
@@ -527,7 +527,6 @@ void EwkElecTauHistManager::finalizeHistograms() {
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 #include "FWCore/ServiceRegistry/interface/Service.h"
-#include "DQMServices/Core/interface/DQMStore.h"
 
 #include "DataFormats/Common/interface/Handle.h"
 #include "DataFormats/Common/interface/View.h"

@@ -14,7 +14,6 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 // Geometry
@@ -40,7 +39,7 @@ DTt0DBValidation::DTt0DBValidation(const ParameterSet &pset) {
   LogVerbatim(metname_) << "[DTt0DBValidation] Constructor called!";
 
   // Get the DQM needed services
-  dbe_ = edm::Service<DQMStore>().operator->();
+  dbe_ = std::make_unique<DQMStore>();
   dbe_->setCurrentFolder("DT/DtCalib/InterChannelSynchDBValidation");
 
   // Get dataBase label

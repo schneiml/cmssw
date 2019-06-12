@@ -18,7 +18,6 @@
 #include "DataFormats/Common/interface/DetSetVectorNew.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "TH1F.h"
 #include "TFile.h"
@@ -50,7 +49,7 @@ private:
 
   std::ostringstream oss;
 
-  DQMStore* dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
 
   MonitorElement* tmp;
   TProfile* tmp_prof;
@@ -174,7 +173,7 @@ void StripValidationPlots::beginJob() {
   oss.str("");
   oss << 1;  //runNumber
 
-  dqmStore_ = edm::Service<DQMStore>().operator->();
+  dqmStore_ = std::make_unique<DQMStore>();
   dqmStore_->setCurrentFolder("ChannelStatusPlots");
 
   for (int i = 0; i < 768; i++) {

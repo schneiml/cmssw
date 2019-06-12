@@ -7,7 +7,6 @@
 // date: 11/7/2007
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
@@ -27,7 +26,7 @@ public:
 
 private:
   // DAQ Tools
-  DQMStore *dbe_;
+  std::unique_ptr<DQMStore> dbe_;
   std::map<std::string, MonitorElement *> me;
 
   // Inputs from Configuration File

@@ -1,5 +1,4 @@
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/LuminosityBlock.h"
 #include "FWCore/Framework/interface/Run.h"
@@ -68,7 +67,7 @@ void DQMFileSaverOnline::makeSnapshot(const FileParameters& fp, bool final) cons
   std::string tmp_meta_fp = meta_fp + ".tmp";
 
   // run_ and lumi_ are ignored if dqmstore is not in multithread mode
-  edm::Service<DQMStore> store;
+  auto store = std::make_unique<DQMStore>();
 
   logFileAction("Writing DQM Root file: ", root_fp);
   // logFileAction("Writing DQM Origin file: ", meta_fp);

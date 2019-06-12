@@ -6,7 +6,6 @@
 #include "SimG4Core/Watcher/interface/SimWatcher.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 
 #include "G4NavigationHistory.hh"
@@ -46,7 +45,7 @@ private:
   std::vector<int> steps;
   G4NavigationHistory fHistory;
 
-  DQMStore *dbe_;
+  std::unique_ptr<DQMStore> dbe_;
   std::vector<MonitorElement *> meStep, meCall, meStepCH, meStepNH, meStepC;
   std::vector<MonitorElement *> meStepE, meStepG, meStepMu, meStepNu, meStepN;
 };

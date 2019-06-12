@@ -19,7 +19,6 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 
 #include "DataFormats/EcalDigi/interface/EBDataFrame.h"
@@ -59,7 +58,7 @@ private:
 
   bool verbose_;
 
-  DQMStore* dbe_;
+  std::unique_ptr<DQMStore> dbe_;
 
   std::string outputFile_;
 

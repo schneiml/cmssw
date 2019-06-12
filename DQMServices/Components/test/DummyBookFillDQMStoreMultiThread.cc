@@ -11,14 +11,15 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
-#include "DQMServices/Core/interface/DQMEDAnalyzer.h"
+#include "DQMServices/Core/interface/oneDQMEDAnalyzer.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 
 //
 // class declaration
 //
 namespace {
+  using dqm::reco::DQMStore;
+  using dqm::reco::MonitorElement;
   class FillerBase {
   public:
     virtual ~FillerBase() = default;
@@ -189,7 +190,7 @@ void DummyBookFillDQMStoreMultiThread::bookHistograms(DQMStore::IBooker& iBooker
 
   std::cout << "Booking" << std::endl;
 
-  edm::Service<DQMStore> dstore;
+  auto dstore = std::unique_ptr<DQMStore>(dqmstore_.release());
 
   iBooker.setCurrentFolder(folder_);
 

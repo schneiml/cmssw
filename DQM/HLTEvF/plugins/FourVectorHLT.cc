@@ -5,7 +5,7 @@
 #include "DataFormats/Common/interface/Handle.h"
 #include "DataFormats/HLTReco/interface/TriggerObject.h"
 #include "DataFormats/HLTReco/interface/TriggerEvent.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 // see header file for information.
 #include "FourVectorHLT.h"
@@ -15,10 +15,7 @@ using namespace edm;
 FourVectorHLT::FourVectorHLT(const edm::ParameterSet& iConfig) {
   LogDebug("FourVectorHLT") << "constructor....";
 
-  dbe_ = Service<DQMStore>().operator->();
-  if (!dbe_) {
-    LogWarning("Status") << "unable to get DQMStore service?";
-  }
+  dbe_ = std::make_unique<DQMStore>();
   if (iConfig.getUntrackedParameter<bool>("DQMStore", false)) {
     dbe_->setVerbose(0);
   }
@@ -161,8 +158,7 @@ void FourVectorHLT::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 // -- method called once each job just before starting event loop  --------
 void FourVectorHLT::beginJob() {
   nev_ = 0;
-  DQMStore* dbe = nullptr;
-  dbe = Service<DQMStore>().operator->();
+  std::unique_ptr<DQMStore> dbe = nullptr;
 
   if (dbe) {
     dbe->setCurrentFolder(dirname_);

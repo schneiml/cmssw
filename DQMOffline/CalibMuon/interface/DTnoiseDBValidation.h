@@ -8,7 +8,6 @@
  */
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -44,7 +43,7 @@ protected:
 private:
   void bookHisto(const DTChamberId &);
 
-  DQMStore *dbe_;
+  std::unique_ptr<DQMStore> dbe_;
   // The DB label
   std::string labelDBRef_;
   std::string labelDB_;

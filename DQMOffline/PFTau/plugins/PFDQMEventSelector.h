@@ -3,8 +3,8 @@
 
 #include "FWCore/Framework/interface/EDFilter.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
-class DQMStore;
 class PFDQMEventSelector : public edm::EDFilter {
 public:
   PFDQMEventSelector(const edm::ParameterSet &);
@@ -24,7 +24,7 @@ private:
   std::string inputFileName_;
   bool fileOpened_;
 
-  DQMStore *dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
 };
 
 #endif

@@ -29,15 +29,14 @@
 
 #include "TrackingTools/TrajectoryState/interface/TrajectoryStateOnSurface.h"
 #include "DQMServices/Core/interface/DQMEDAnalyzer.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 namespace reco {
   class Track;
 }
 
 class InputTag;
-class MonitorElement;
 class TrackAssociatorBase;
-class DQMStore;
 
 //
 // class decleration
@@ -58,7 +57,6 @@ private:
   void computeEfficiencyPt(MonitorElement *, MonitorElement *recoTH2, MonitorElement *simTH2);
   // ----------member data ---------------------------
   std::string out;
-  DQMStore *dbe_;
   edm::ParameterSet iConfig;
   std::string subsystemname_;
   MonitorElement *h_shouldMatch, *h_goodMatchSim, *h_tkOnlySim, *h_staOnlySim;

@@ -3,7 +3,6 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "SiStripDaqInfo.h"
 #include "DQM/SiStripMonitorClient/interface/SiStripUtility.h"
@@ -103,12 +102,12 @@ void SiStripDaqInfo::beginRun(edm::Run const& run, edm::EventSetup const& eSetup
 
     readFedIds(fedCabling_, eSetup);
   }
-  auto& dqm_store = *edm::Service<DQMStore>{};
+  auto dqm_store = std::make_shared<DQMStore>();
   if (!bookedStatus_) {
-    bookStatus(dqm_store);
+    bookStatus(*dqm_store);
   }
   if (nFedTotal_ == 0) {
-    fillDummyStatus(dqm_store);
+    fillDummyStatus(*dqm_store);
     edm::LogInfo("SiStripDaqInfo") << " SiStripDaqInfo::No FEDs Connected!!!";
     return;
   }
@@ -137,7 +136,7 @@ void SiStripDaqInfo::beginRun(edm::Run const& run, edm::EventSetup const& eSetup
   if (nFEDConnected > 0) {
     daqFraction_->Reset();
     daqFraction_->Fill(nFEDConnected / nFedTotal_);
-    readSubdetFedFractions(dqm_store, fedsInIds, eSetup);
+    readSubdetFedFractions(*dqm_store, fedsInIds, eSetup);
   }
 }
 

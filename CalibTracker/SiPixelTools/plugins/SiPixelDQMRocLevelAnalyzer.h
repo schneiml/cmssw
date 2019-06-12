@@ -31,7 +31,6 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include <string>
@@ -65,7 +64,7 @@ private:
 
   // ----------member data ---------------------------
   edm::ParameterSet conf_;
-  DQMStore *dbe;
+  std::unique_ptr<DQMStore> dbe;
   edm::Service<TFileService> fs_;
 
   std::vector<MonitorElement *> mes;

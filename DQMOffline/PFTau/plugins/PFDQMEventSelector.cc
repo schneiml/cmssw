@@ -5,7 +5,6 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 
 #include <iostream>
@@ -31,7 +30,7 @@ PFDQMEventSelector::~PFDQMEventSelector() {}
 // -- BeginJob
 //
 void PFDQMEventSelector::beginJob() {
-  dqmStore_ = edm::Service<DQMStore>().operator->();
+  dqmStore_ = std::make_unique<DQMStore>();
   fileOpened_ = openInputFile();
 }
 //

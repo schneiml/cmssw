@@ -18,7 +18,6 @@
 #include "DataFormats/Common/interface/DetSetVectorNew.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "TH1F.h"
 #include "TFile.h"
@@ -50,7 +49,7 @@ private:
 
   std::ostringstream oss;
 
-  DQMStore* dqmStore;
+  std::unique_ptr<DQMStore> dqmStore;
 
   MonitorElement* tmp;
 
@@ -131,7 +130,7 @@ void APVValidationPlots::beginJob() {
   oss.str("");
   oss << 1;  //runNumber
 
-  dqmStore = edm::Service<DQMStore>().operator->();
+  dqmStore = std::make_unique<DQMStore>();
   dqmStore->setCurrentFolder("ChannelStatusPlots");
 
   // Initialize histograms

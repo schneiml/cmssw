@@ -19,7 +19,6 @@
 #include <TFile.h>
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
 
@@ -27,8 +26,6 @@ class PFTauElecRejectionBenchmark;
 
 class TH1F;
 class TH2F;
-
-//class DQMStore; // CMSSW_2_X_X not needed here?
 
 class PFTauElecRejectionBenchmark {
 public:

@@ -6,12 +6,13 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "Geometry/EcalMapping/interface/ESElectronicsMapper.h"  // definition in line 75
-
-class DQMStore;
-class MonitorElement;
+#include "DQMServices/Core/interface/DQMStore.h"
 
 class ESDaqInfoTask : public edm::EDAnalyzer {
 public:
+  typedef dqm::legacy::MonitorElement MonitorElement;
+  typedef dqm::legacy::DQMStore DQMStore;
+
   /// Constructor
   ESDaqInfoTask(const edm::ParameterSet& ps);
 
@@ -38,7 +39,7 @@ protected:
   void cleanup(void);
 
 private:
-  DQMStore* dqmStore_;
+  std::unique_ptr<DQMStore> dqmStore_;
 
   std::string prefixME_;
 

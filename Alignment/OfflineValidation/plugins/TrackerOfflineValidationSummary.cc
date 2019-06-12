@@ -49,7 +49,6 @@
 #include "TMath.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 
 //
@@ -125,7 +124,7 @@ private:
   const std::string moduleDirectory_;
   const bool useFit_;
 
-  DQMStore* dbe_;
+  std::unique_ptr<DQMStore> dbe_;
 
   bool moduleMapsInitialized;
 
@@ -160,7 +159,7 @@ TrackerOfflineValidationSummary::TrackerOfflineValidationSummary(const edm::Para
       moduleMapsInitialized(false),
       lastSetup_(nullptr) {
   //now do what ever initialization is needed
-  dbe_ = edm::Service<DQMStore>().operator->();
+  dbe_ = std::make_unique<DQMStore>();
 }
 
 TrackerOfflineValidationSummary::~TrackerOfflineValidationSummary() {

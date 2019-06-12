@@ -22,12 +22,10 @@
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 #include <vector>
 #include <string>
-
-class DQMStore;
-class MonitorElement;
 
 class EgHLTOfflineSummaryClient : public edm::EDAnalyzer {
 public:
@@ -37,7 +35,7 @@ public:
   };
 
 private:
-  DQMStore* dbe_;  //dbe seems to be the standard name for this, I dont know why. We of course dont own it
+  std::unique_ptr<DQMStore> dbe_;  //dbe seems to be the standard name for this, I dont know why. We of course dont own it
   std::string dirName_;
   std::string egHLTSumHistName_;
 

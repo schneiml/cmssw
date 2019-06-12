@@ -62,7 +62,6 @@
 #include "Geometry/CommonDetUnit/interface/GeomDet.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "Alignment/CommonAlignment/interface/Alignable.h"
 #include "Alignment/CommonAlignment/interface/Utilities.h"
@@ -178,7 +177,7 @@ private:
         else
           tfd.reset(new TFileDirectory(upDir.tfd->mkdir(newDir)));
       } else {
-        theDbe = edm::Service<DQMStore>().operator->();
+        theDbe = std::make_unique<DQMStore>();
       }
     }
 
@@ -200,7 +199,7 @@ private:
             directoryString = newDir;
         } else
           directoryString = basedir;
-        theDbe = edm::Service<DQMStore>().operator->();
+        theDbe = std::make_unique<DQMStore>();
       }
     }
     // Generalization of Histogram Booking; allows switch between TFileService and DQMStore
@@ -229,7 +228,7 @@ private:
     std::unique_ptr<TFileDirectory> tfd;
     std::string directoryString;
     const bool dqmMode;
-    DQMStore* theDbe;
+    std::unique_ptr<DQMStore> theDbe;
   };
 
   //

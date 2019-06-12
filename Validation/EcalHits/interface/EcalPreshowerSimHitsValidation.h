@@ -27,7 +27,6 @@
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
 #include "SimDataFormats/ValidationFormats/interface/PValidationFormats.h"
 
-#include "DQMServices/Core/interface/MonitorElement.h"
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -65,7 +64,7 @@ private:
 
   bool verbose_;
 
-  DQMStore *dbe_;
+  std::unique_ptr<DQMStore> dbe_;
 
   std::string outputFile_;
 

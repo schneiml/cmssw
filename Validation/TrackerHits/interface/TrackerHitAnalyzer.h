@@ -15,11 +15,9 @@
 
 #include "SimDataFormats/Track/interface/SimTrackContainer.h"
 #include "SimDataFormats/TrackingHit/interface/PSimHitContainer.h"
+#include "DQMServices/Core/interface/DQMStore.h"
 
 #include <string>
-
-class DQMStore;
-class MonitorElement;
 
 class TrackerHitAnalyzer : public DQMEDAnalyzer {
 public:
@@ -51,7 +49,6 @@ private:
   edm::EDGetTokenT<edm::PSimHitContainer> edmPSimHitContainer_siTECLow_Token_, edmPSimHitContainer_siTECHigh_Token_;
   edm::EDGetTokenT<edm::SimTrackContainer> edmSimTrackContainerToken_;
 
-  DQMStore *fDBE;
   edm::ParameterSet conf_;
 
   MonitorElement *htofeta;

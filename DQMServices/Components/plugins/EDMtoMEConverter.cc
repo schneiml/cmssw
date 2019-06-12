@@ -13,6 +13,8 @@
 #include "DataFormats/Histograms/interface/DQMToken.h"
 
 using namespace lat;
+using dqm::legacy::DQMStore;
+using dqm::legacy::MonitorElement;
 
 template <typename T>
 void EDMtoMEConverter::Tokens<T>::set(const edm::InputTag &runInputTag,
@@ -292,8 +294,8 @@ EDMtoMEConverter::~EDMtoMEConverter() = default;
 
 void EDMtoMEConverter::endRunProduce(edm::Run &iRun, edm::EventSetup const &iSetup) {
   if (convertOnEndRun) {
-    DQMStore *store = edm::Service<DQMStore>().operator->();
-    store->meBookerGetter([&](DQMStore::IBooker &b, DQMStore::IGetter &g) { getData(b, g, iRun); });
+    std::unique_ptr<DQMStore> store = std::make_unique<DQMStore>();
+    getData(*store, *store, iRun);
   }
 
   iRun.put(dqmRunToken_, std::make_unique<DQMToken>());
@@ -301,8 +303,8 @@ void EDMtoMEConverter::endRunProduce(edm::Run &iRun, edm::EventSetup const &iSet
 
 void EDMtoMEConverter::endLuminosityBlockProduce(edm::LuminosityBlock &iLumi, edm::EventSetup const &iSetup) {
   if (convertOnEndLumi) {
-    DQMStore *store = edm::Service<DQMStore>().operator->();
-    store->meBookerGetter([&](DQMStore::IBooker &b, DQMStore::IGetter &g) { getData(b, g, iLumi); });
+    std::unique_ptr<DQMStore> store = std::make_unique<DQMStore>();
+    getData(*store, *store, iLumi);
   }
 
   iLumi.put(dqmLumiToken_, std::make_unique<DQMToken>());

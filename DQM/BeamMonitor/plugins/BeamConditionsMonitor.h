@@ -14,16 +14,16 @@
 #include "DQMServices/Core/interface/DQMGlobalEDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "DQMServices/Core/interface/ConcurrentMonitorElement.h"
 
 //
 // class declaration
 //
 namespace beamcond {
   struct RunCache {
+    typedef dqm::reco::MonitorElement MonitorElement;
     // MonitorElements
-    ConcurrentMonitorElement h_x0_lumi;
-    ConcurrentMonitorElement h_y0_lumi;
+    MonitorElement* h_x0_lumi;
+    MonitorElement* h_y0_lumi;
   };
 };  // namespace beamcond
 
@@ -33,8 +33,11 @@ public:
   ~BeamConditionsMonitor() override = default;
 
 protected:
+  typedef dqm::reco::DQMStore DQMStore;
+  typedef dqm::reco::MonitorElement MonitorElement;
+
   // Book Histograms
-  void bookHistograms(DQMStore::ConcurrentBooker& i,
+  void bookHistograms(DQMStore::IBooker& i,
                       const edm::Run& r,
                       const edm::EventSetup& c,
                       beamcond::RunCache&) const override;

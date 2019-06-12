@@ -9,8 +9,7 @@
 #include "DataFormats/EcalRawData/interface/EcalRawDataCollections.h"
 
 #include "DQMServices/Core/interface/DQMEDAnalyzer.h"
-
-class MonitorElement;
+#include "DQMServices/Core/interface/DQMStore.h"
 
 class ESFEDIntegrityTask : public DQMEDAnalyzer {
 public:
@@ -23,7 +22,7 @@ protected:
   /// Analyze
   void analyze(const edm::Event& e, const edm::EventSetup& c) override;
 
-  void endJob() override;
+  void endJob() /* never called! */;
 
 private:
   int ievt_;

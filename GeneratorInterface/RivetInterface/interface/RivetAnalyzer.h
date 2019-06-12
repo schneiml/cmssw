@@ -6,7 +6,6 @@
 
 //DQM services
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/MonitorElement.h"
 
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
@@ -52,7 +51,7 @@ private:
   bool _produceDQM;
   double _xsection;
 
-  DQMStore *dbe;
+  std::unique_ptr<DQMStore> dbe;
   std::vector<MonitorElement *> _mes;
 };
 
