@@ -357,18 +357,18 @@ void DQMRootOutputModule::openFile(edm::FileBlock const&) {
     tree->SetDirectory(m_file.get());  //TFile takes ownership
   }
 
-  m_dqmKindToTypeIndex[MonitorElement::Kind::INT] = kIntIndex;
-  m_dqmKindToTypeIndex[MonitorElement::Kind::REAL] = kFloatIndex;
-  m_dqmKindToTypeIndex[MonitorElement::Kind::STRING] = kStringIndex;
-  m_dqmKindToTypeIndex[MonitorElement::Kind::TH1F] = kTH1FIndex;
-  m_dqmKindToTypeIndex[MonitorElement::Kind::TH1S] = kTH1SIndex;
-  m_dqmKindToTypeIndex[MonitorElement::Kind::TH1D] = kTH1DIndex;
-  m_dqmKindToTypeIndex[MonitorElement::Kind::TH2F] = kTH2FIndex;
-  m_dqmKindToTypeIndex[MonitorElement::Kind::TH2S] = kTH2SIndex;
-  m_dqmKindToTypeIndex[MonitorElement::Kind::TH2D] = kTH2DIndex;
-  m_dqmKindToTypeIndex[MonitorElement::Kind::TH3F] = kTH3FIndex;
-  m_dqmKindToTypeIndex[MonitorElement::Kind::TPROFILE] = kTProfileIndex;
-  m_dqmKindToTypeIndex[MonitorElement::Kind::TPROFILE2D] = kTProfile2DIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::INT)] = kIntIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::REAL)] = kFloatIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::STRING)] = kStringIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::TH1F)] = kTH1FIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::TH1S)] = kTH1SIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::TH1D)] = kTH1DIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::TH2F)] = kTH2FIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::TH2S)] = kTH2SIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::TH2D)] = kTH2DIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::TH3F)] = kTH3FIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::TPROFILE)] = kTProfileIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::TPROFILE2D)] = kTProfile2DIndex;
 }
 
 void DQMRootOutputModule::write(edm::EventForOutput const&) {}
@@ -388,7 +388,7 @@ void DQMRootOutputModule::writeLuminosityBlock(edm::LuminosityBlockForOutput con
       dstore->getAllContents("", m_enableMultiThread ? m_run : 0, m_enableMultiThread ? m_lumi : 0));
   for (std::vector<MonitorElement*>::iterator it = items.begin(), itEnd = items.end(); it != itEnd; ++it) {
     if ((*it)->getLumiFlag()) {
-      std::map<unsigned int, unsigned int>::iterator itFound = m_dqmKindToTypeIndex.find((*it)->kind());
+      std::map<unsigned int, unsigned int>::iterator itFound = m_dqmKindToTypeIndex.find(static_cast<int>((*it)->kind()));
       assert(itFound != m_dqmKindToTypeIndex.end());
       m_treeHelpers[itFound->second]->fill(*it);
     }
@@ -446,7 +446,7 @@ void DQMRootOutputModule::writeRun(edm::RunForOutput const& iRun) {
   std::vector<MonitorElement*> items(dstore->getAllContents(""));
   for (std::vector<MonitorElement*>::iterator it = items.begin(), itEnd = items.end(); it != itEnd; ++it) {
     if (not(*it)->getLumiFlag()) {
-      std::map<unsigned int, unsigned int>::iterator itFound = m_dqmKindToTypeIndex.find((*it)->kind());
+      std::map<unsigned int, unsigned int>::iterator itFound = m_dqmKindToTypeIndex.find(static_cast<int>((*it)->kind()));
       assert(itFound != m_dqmKindToTypeIndex.end());
       m_treeHelpers[itFound->second]->fill(*it);
     }
