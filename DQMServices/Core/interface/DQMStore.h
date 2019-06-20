@@ -407,7 +407,6 @@ namespace dqm {
 #define BAN(thing) \
   DQM_DEPRECATED thing { assert(!"Operation not permitted."); }
       BAN(virtual void setEfficiencyFlag())
-      BAN(virtual void Reset())
 
     public:
       BAN(virtual double getMean(int axis = 1) const)
