@@ -514,14 +514,9 @@ namespace dqm {
           // TODO: Once product inherits from a vector of unique_ptrs, 
           // the following line should be used to insert product:
           // product.push_back(std::unique_ptr<const MonitorElementData>(meData));
-          auto [ref, ok] = product.emplace(meData->key_);
-          assert(ok || !"ME already exists in product!");
-          MonitorElementData::Value::Access value1(meData->value_);
-          MonitorElementData::Value::Access value2(ref->value_);
-          value2.object.swap(value1.object);
-          value2.scalar = value1.scalar;
+          auto& ref = product.emplace_back();
+          ref.swap(meData);
           meData = nullptr;
-          TRACE(&*ref);
           TRACE(ref->key_.path_.getDirname() << " " << ref->key_.path_.getObjectname() << " " << (void*) ref->key_.path_.getObjectname().c_str());
           //std::raise(SIGINT);
         }
@@ -616,14 +611,15 @@ namespace dqm {
         TRACE(collection->size());
         TRACE(&*collection);
         for (auto const& meData : *collection) {
-          TRACE(&meData);
-          TRACE(meData.key_.path_.getDirname() << " " << meData.key_.path_.getObjectname() << " " << (void*) meData.key_.path_.getObjectname().c_str());
+          TRACE(&*meData);
+          TRACE(meData->key_.path_.getDirname() << " " << meData->key_.path_.getObjectname() << " " << (void*) meData->key_.path_.getObjectname().c_str());
         }
         for(auto& meData : MonitorElementCollectionHelper::nameRange(*collection, path)) {
           // Return first element
           // Make a copy of ME sharing the underlying MonitorElementData and root TH1 object
-          store_->localmes_[meData.key_] = std::make_unique<dqm::harvesting::MonitorElement>(dqm::harvesting::MonitorElement(&meData, true));
-          return store_->localmes_[meData.key_].get();
+          // TODO: this will silently fail once the product goes invalid. Maybe we should use shared_ptr everywhere.
+          store_->localmes_[meData->key_] = std::make_unique<dqm::harvesting::MonitorElement>(dqm::harvesting::MonitorElement(meData.get(), true));
+          return store_->localmes_[meData->key_].get();
         }
       }
       std::cout << "get(): returning nullptr" << std::endl;
