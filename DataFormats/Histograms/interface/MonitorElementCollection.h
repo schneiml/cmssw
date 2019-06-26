@@ -245,7 +245,7 @@ struct MonitorElementData {
 // no known way to disable persistance.
 // TODO: it's impolite to derive from containers. Make this a `using` or have
 // the container as a member. 
-using  MonitorElementCollection = std::set<MonitorElementData>;
+using  MonitorElementCollection = std::vector<std::unique_ptr<const MonitorElementData>>;
 
 class MonitorElementCollectionHelper {
 public:
@@ -297,11 +297,11 @@ public:
     // invaldidRun/Lumi sorting below any valid lumi/run, which it does.
     proto.key_ = MonitorElementData::Key{dir};
     Range r;
-    r.begin_ = std::lower_bound(mec.begin(), mec.end(), proto);
-    r.end_ = r.begin_;
-    while (r.end_ != mec.end() && r.end_->key_.path_.getDirname().rfind(dir.getDirname(), 0) != std::string::npos) {
-      r.end_++;
-    }
+    //r.begin_ = std::lower_bound(mec.begin(), mec.end(), proto);
+    //r.end_ = r.begin_;
+    //while (r.end_ != mec.end() && r.end_->key_.path_.getDirname().rfind(dir.getDirname(), 0) != std::string::npos) {
+      //r.end_++;
+    //}
     return r;
   }
 
@@ -313,11 +313,11 @@ public:
     // invaldidRun/Lumi sorting below any valid lumi/run, which it does.
     proto.key_ = MonitorElementData::Key{fullpath};
     Range r;
-    r.begin_ = std::lower_bound(mec.begin(), mec.end(), proto);
-    r.end_ = r.begin_;
-    while (r.end_ != mec.end() && r.end_->key_.path_.getDirname() == fullpath.getDirname() && r.end_->key_.path_.getObjectname() == fullpath.getObjectname()) {
-      r.end_++;
-    }
+    //r.begin_ = std::lower_bound(mec.begin(), mec.end(), proto);
+    //r.end_ = r.begin_;
+    //while (r.end_ != mec.end() && r.end_->key_.path_.getDirname() == fullpath.getDirname() && r.end_->key_.path_.getObjectname() == fullpath.getObjectname()) {
+      //r.end_++;
+    //}
     return r;
   }
 
