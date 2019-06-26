@@ -40,6 +40,7 @@
 //
 //
 #include "DataFormats/Provenance/interface/LuminosityBlockRange.h"
+#include "DataFormats/Common/interface/OwnVector.h"
 
 #include <cstdint>
 #include <cassert>
@@ -219,14 +220,13 @@ struct MonitorElementData {
   Key key_;
   Value value_;
 
-  // Due to the value_, which allows neither copy nor move, we basically only
-  // have the default empty constructor. 
-  MonitorElementData() {};
-  // This is to allow emplace'ing into a set, where the key has to be known
-  // from the beginning (value_ can be set later) 
-  explicit MonitorElementData(Key const& key) : key_(key), value_() {};
-  MonitorElementData(MonitorElementData const&) {
-    assert("This is to make ROOT happy.");
+};
+
+// TODO: We should not use edm::OwnVector once we can, then this can go away
+struct FakeMEDataClone {
+  static MonitorElementData* clone(MonitorElementData const&) {
+    assert(!"This is to make EDM happy.");
+    return nullptr;
   };
 
 };
@@ -234,19 +234,11 @@ struct MonitorElementData {
 // For now, no additional (meta-)data is needed apart from the MEs themselves.
 // The framework will take care of tracking the plugin and LS/run that the MEs
 // belong to.
-// TODO: we could use a set or map keyed by the (dirname, objname), but that
-// seems to be not really required here. We use a more advanced structure in
-// the DQMStore, while this type is only exported/imported there.
-// TODO: This really, really, should be unique_ptr. But ROOT wants to copy it
-// for serialization.
-// This suppose to inherit from std::vector<unique_ptr<MonitorElementData>>
-// but due to an issue: https://github.com/cms-sw/cmssw/issues/27277
-// dictionary for pointer type products is not being generated and there is 
-// no known way to disable persistance.
-// TODO: it's impolite to derive from containers. Make this a `using` or have
-// the container as a member. 
-using  MonitorElementCollection = std::vector<std::unique_ptr<const MonitorElementData>>;
+// TODO: move away from OwnVector once we can. 
+// TODO: what about mergeProduct? Maybe we need a class here, after all.
+using  MonitorElementCollection = edm::OwnVector<const MonitorElementData, FakeMEDataClone>;
 
+// Only to hold the mergeProduct placeholder for now.
 class MonitorElementCollectionHelper {
 public:
   bool mergeProduct(MonitorElementCollection const& product) {
@@ -276,50 +268,6 @@ public:
     // are in) but the DQMIO output should be able to handle that.
   }
 
-  // Pair with getters to allow range-based for syntax
-  struct Range {
-    MonitorElementCollection::const_iterator begin_;
-    MonitorElementCollection::const_iterator end_;
-    MonitorElementCollection::const_iterator begin() const {
-      return begin_;
-    }
-    MonitorElementCollection::const_iterator end() const {
-      return end_;
-    }
-  };
-
-  // return Range of all objects in the given directory (name is ignored)
-  // Taking Path to enforce normalization of the path.
-  static Range dirRange(MonitorElementCollection const& mec, MonitorElementData::Path const& dir) {
-    assert(dir.getObjectname() == "");
-    MonitorElementData proto;
-    // all other key fields are default-initialied -- this relies on 
-    // invaldidRun/Lumi sorting below any valid lumi/run, which it does.
-    proto.key_ = MonitorElementData::Key{dir};
-    Range r;
-    //r.begin_ = std::lower_bound(mec.begin(), mec.end(), proto);
-    //r.end_ = r.begin_;
-    //while (r.end_ != mec.end() && r.end_->key_.path_.getDirname().rfind(dir.getDirname(), 0) != std::string::npos) {
-      //r.end_++;
-    //}
-    return r;
-  }
-
-  // return Range of all objects at the given path. Might be more than one, if
-  // there are instances for different Lumis/Runs etc.
-  static Range nameRange(MonitorElementCollection const& mec, MonitorElementData::Path const& fullpath) {
-    MonitorElementData proto;
-    // all other key fields are default-initialised -- this relies on 
-    // invaldidRun/Lumi sorting below any valid lumi/run, which it does.
-    proto.key_ = MonitorElementData::Key{fullpath};
-    Range r;
-    //r.begin_ = std::lower_bound(mec.begin(), mec.end(), proto);
-    //r.end_ = r.begin_;
-    //while (r.end_ != mec.end() && r.end_->key_.path_.getDirname() == fullpath.getDirname() && r.end_->key_.path_.getObjectname() == fullpath.getObjectname()) {
-      //r.end_++;
-    //}
-    return r;
-  }
 
 };
 
