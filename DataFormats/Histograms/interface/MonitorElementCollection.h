@@ -225,6 +225,9 @@ struct MonitorElementData {
   // This is to allow emplace'ing into a set, where the key has to be known
   // from the beginning (value_ can be set later) 
   explicit MonitorElementData(Key const& key) : key_(key), value_() {};
+  MonitorElementData(MonitorElementData const&) {
+    assert("This is to make ROOT happy.");
+  };
 
 };
 
@@ -242,7 +245,9 @@ struct MonitorElementData {
 // no known way to disable persistance.
 // TODO: it's impolite to derive from containers. Make this a `using` or have
 // the container as a member. 
-class MonitorElementCollection : public std::set<MonitorElementData> {
+using  MonitorElementCollection = std::set<MonitorElementData>;
+
+class MonitorElementCollectionHelper {
 public:
   bool mergeProduct(MonitorElementCollection const& product) {
     assert(!"Not implemented yet.");
@@ -285,16 +290,16 @@ public:
 
   // return Range of all objects in the given directory (name is ignored)
   // Taking Path to enforce normalization of the path.
-  Range dirRange(MonitorElementData::Path const& dir) const {
+  static Range dirRange(MonitorElementCollection const& mec, MonitorElementData::Path const& dir) {
     assert(dir.getObjectname() == "");
     MonitorElementData proto;
     // all other key fields are default-initialied -- this relies on 
     // invaldidRun/Lumi sorting below any valid lumi/run, which it does.
     proto.key_ = MonitorElementData::Key{dir};
     Range r;
-    r.begin_ = this->lower_bound(proto);
+    r.begin_ = std::lower_bound(mec.begin(), mec.end(), proto);
     r.end_ = r.begin_;
-    while (r.end_ != this->end() && r.end_->key_.path_.getDirname().rfind(dir.getDirname(), 0) != std::string::npos) {
+    while (r.end_ != mec.end() && r.end_->key_.path_.getDirname().rfind(dir.getDirname(), 0) != std::string::npos) {
       r.end_++;
     }
     return r;
@@ -302,15 +307,15 @@ public:
 
   // return Range of all objects at the given path. Might be more than one, if
   // there are instances for different Lumis/Runs etc.
-  Range nameRange(MonitorElementData::Path const& fullpath) const {
+  static Range nameRange(MonitorElementCollection const& mec, MonitorElementData::Path const& fullpath) {
     MonitorElementData proto;
     // all other key fields are default-initialised -- this relies on 
     // invaldidRun/Lumi sorting below any valid lumi/run, which it does.
     proto.key_ = MonitorElementData::Key{fullpath};
     Range r;
-    r.begin_ = this->lower_bound(proto);
+    r.begin_ = std::lower_bound(mec.begin(), mec.end(), proto);
     r.end_ = r.begin_;
-    while (r.end_ != this->end() && r.end_->key_.path_.getDirname() == fullpath.getDirname() && r.end_->key_.path_.getObjectname() == fullpath.getObjectname()) {
+    while (r.end_ != mec.end() && r.end_->key_.path_.getDirname() == fullpath.getDirname() && r.end_->key_.path_.getObjectname() == fullpath.getObjectname()) {
       r.end_++;
     }
     return r;
