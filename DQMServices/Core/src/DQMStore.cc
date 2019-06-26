@@ -443,13 +443,13 @@ namespace dqm {
     MonitorElementCollection DQMStore<ME>::toProduct(edm::Transition t,
                                                      edm::RunNumber_t run,
                                                      edm::LuminosityBlockNumber_t lumi) {
-      // the correct thing would be to forward here, but nobody should need 
+      // the correct thing would be to forward here, but nobody should need
       // that for now.
       assert(master_ == nullptr);
 
       MonitorElementCollection product;  // A product to return
       auto it = localmes_.begin();
-      while(it != localmes_.end()) {
+      while (it != localmes_.end()) {
         // Sanity checks
         if (t == edm::Transition::EndRun) {
           if (it->first.coveredrange_.startRun() != it->first.coveredrange_.endRun()) {
@@ -511,16 +511,14 @@ namespace dqm {
             localMe = nullptr;
           }
 
-          // TODO: Once product inherits from a vector of unique_ptrs, 
+          // TODO: Once product inherits from a vector of unique_ptrs,
           // the following line should be used to insert product:
           // product.push_back(std::unique_ptr<const MonitorElementData>(meData));
-          auto& ref = product.emplace_back();
-          ref.swap(meData);
-          meData = nullptr;
-          TRACE(ref->key_.path_.getDirname() << " " << ref->key_.path_.getObjectname() << " " << (void*) ref->key_.path_.getObjectname().c_str());
+          TRACE(meData->key_.path_.getDirname() << " " << meData->key_.path_.getObjectname() << " "
+                                                << (void*)meData->key_.path_.getObjectname().c_str());
+          product.push_back(std::move(meData));
           //std::raise(SIGINT);
-        }
-        else {
+        } else {
           it = std::next(it);
         }
       }
@@ -538,7 +536,7 @@ namespace dqm {
           if (h.product() == mes.product()) {
             // we already know this product.
             return;
-          } 
+          }
         } else {
           // product not valid, we might drop it. (TODO)
           // Can this happen if e.g. Lumi products go out of scope?
@@ -546,6 +544,52 @@ namespace dqm {
       }
 
       inputs_.push_back(mes);
+    }
+
+    //
+    // Some helpers for the IGetter code.
+    //
+
+    // Pair with getters to allow range-based for syntax
+    struct Range {
+      MonitorElementCollection::const_iterator begin_;
+      MonitorElementCollection::const_iterator end_;
+      MonitorElementCollection::const_iterator begin() const { return begin_; }
+      MonitorElementCollection::const_iterator end() const { return end_; }
+    };
+
+    // return Range of all objects in the given directory (name is ignored)
+    // Taking Path to enforce normalization of the path.
+    Range dirRange(MonitorElementCollection const& mec, MonitorElementData::Path const& dir) {
+      assert(dir.getObjectname() == "");
+      MonitorElementData proto;
+      // all other key fields are default-initialied -- this relies on
+      // invaldidRun/Lumi sorting below any valid lumi/run, which it does.
+      proto.key_ = MonitorElementData::Key{dir};
+      Range r;
+      r.begin_ = std::lower_bound(mec.begin(), mec.end(), proto);
+      r.end_ = r.begin_;
+      while (r.end_ != mec.end() && r.end_->key_.path_.getDirname().rfind(dir.getDirname(), 0) != std::string::npos) {
+        r.end_++;
+      }
+      return r;
+    }
+
+    // return Range of all objects at the given path. Might be more than one, if
+    // there are instances for different Lumis/Runs etc.
+    Range nameRange(MonitorElementCollection const& mec, MonitorElementData::Path const& fullpath) {
+      MonitorElementData proto;
+      // all other key fields are default-initialised -- this relies on
+      // invaldidRun/Lumi sorting below any valid lumi/run, which it does.
+      proto.key_ = MonitorElementData::Key{fullpath};
+      Range r;
+      r.begin_ = std::lower_bound(mec.begin(), mec.end(), proto);
+      r.end_ = r.begin_;
+      while (r.end_ != mec.end() && r.end_->key_.path_.getDirname() == fullpath.getDirname() &&
+             r.end_->key_.path_.getObjectname() == fullpath.getObjectname()) {
+        r.end_++;
+      }
+      return r;
     }
 
     template <class ME, class STORE>
@@ -599,27 +643,30 @@ namespace dqm {
       MonitorElementData::Path path;
       path.set(fullpath, MonitorElementData::Path::Type::DIR_AND_NAME);
 
-      for(auto& [key, me] : store_->localmes_) {
-        (void) key; // unused
+      for (auto& [key, me] : store_->localmes_) {
+        (void)key;  // unused
         TRACE(me->getFullname());
-        if(me->internal()->key_.path_.getDirname() == path.getDirname() && me->internal()->key_.path_.getObjectname() == path.getObjectname()) {
+        if (me->internal()->key_.path_.getDirname() == path.getDirname() &&
+            me->internal()->key_.path_.getObjectname() == path.getObjectname()) {
           return me.get();
         }
       }
 
-      for(auto& collection : store_->inputs_) {
+      for (auto& collection : store_->inputs_) {
         TRACE(collection->size());
         TRACE(&*collection);
         for (auto const& meData : *collection) {
-          TRACE(&*meData);
-          TRACE(meData->key_.path_.getDirname() << " " << meData->key_.path_.getObjectname() << " " << (void*) meData->key_.path_.getObjectname().c_str());
+          TRACE(&meData);
+          TRACE(meData.key_.path_.getDirname()
+                << " " << meData.key_.path_.getObjectname() << " " << (void*)meData.key_.path_.getObjectname().c_str());
         }
-        for(auto& meData : MonitorElementCollectionHelper::nameRange(*collection, path)) {
+        for (auto& meData : nameRange(*collection, path)) {
           // Return first element
           // Make a copy of ME sharing the underlying MonitorElementData and root TH1 object
           // TODO: this will silently fail once the product goes invalid. Maybe we should use shared_ptr everywhere.
-          store_->localmes_[meData->key_] = std::make_unique<dqm::harvesting::MonitorElement>(dqm::harvesting::MonitorElement(meData.get(), true));
-          return store_->localmes_[meData->key_].get();
+          store_->localmes_[meData.key_] =
+              std::make_unique<dqm::harvesting::MonitorElement>(dqm::harvesting::MonitorElement(&meData, true));
+          return store_->localmes_[meData.key_].get();
         }
       }
       std::cout << "get(): returning nullptr" << std::endl;
