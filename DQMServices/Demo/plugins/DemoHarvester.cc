@@ -30,7 +30,7 @@ void DemoHarvester::beginRun(const edm::Run& run, const edm::EventSetup& iSetup)
 
 void DemoHarvester::dqmEndJob(DQMStore::IBooker &ib, DQMStore::IGetter &ig) {
   ig.setCurrentFolder(target_); 
-  MonitorElement* me = ig.get("EXAMPLE");
+  MonitorElement* me = ig.get(ig.pwd() + "EXAMPLE");
   me->getTH1()->Fill(3);
 
   ib.setCurrentFolder(target_ + "_runsummary");
@@ -40,7 +40,7 @@ void DemoHarvester::dqmEndJob(DQMStore::IBooker &ib, DQMStore::IGetter &ig) {
 
 void DemoHarvester::dqmEndLuminosityBlock(DQMStore::IBooker &ib, DQMStore::IGetter &ig, edm::LuminosityBlock const &lumi, edm::EventSetup const&) {
   ig.setCurrentFolder(target_); 
-  MonitorElement* me = ig.get("EXAMPLE");
+  MonitorElement* me = ig.get(ig.pwd() + "EXAMPLE");
   me->getTH1()->Fill(4);
 
   ctr_++;
