@@ -75,8 +75,6 @@
  <class name="edm::Wrapper<DQMToken>" persistent="false"/>
  <class name="MonitorElementCollection" persistent="false"/>
  <class name="edm::Wrapper<MonitorElementCollection>" persistent="false"/>
- <class name="edm::Wrapper<std::vector<std::unique_ptr<const MonitorElementData> > >" persistent="false"/>
- <class name="std::vector<std::unique_ptr<const MonitorElementData> >" persistent="false"/>
  <class name="MonitorElementData" persistent="false"/>
  <class name="edm::Wrapper<MonitorElementData>" persistent="false"/>
 
