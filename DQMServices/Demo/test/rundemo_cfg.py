@@ -37,11 +37,15 @@ process.harv1 = DQMEDHarvester("DemoHarvester",
 )
 
 process.harv2 = DQMEDHarvester("DemoHarvester",
-  target = cms.string("DemoSubsystem3"),
+  target = cms.string("DemoSubsystem2"),
 )
 
 process.harv3 = DQMEDHarvester("DemoHarvester",
   target = cms.string("DemoSubsystem1_lumisummary"),
+  inputMEs = cms.untracked.VInputTag(
+    cms.InputTag("harv1", "DQMGenerationHarvestingRun"),
+    cms.InputTag("harv1", "DQMGenerationHarvestingLumi"),
+  )
 )
 
 process.demo_reco_dqm = cms.Task(process.ana1, process.ana2)
