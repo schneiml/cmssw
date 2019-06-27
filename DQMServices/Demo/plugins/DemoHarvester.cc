@@ -2,7 +2,6 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "DQMServices/Core/interface/DQMEDHarvester.h"
-#include "DQMServices/Core/interface/DQMStore.h"
 
 
 class DemoHarvester : public DQMEDHarvester {
@@ -20,6 +19,7 @@ public:
 };
 
 DemoHarvester::DemoHarvester(const edm::ParameterSet& iConfig) :
+  DQMEDHarvester(iConfig),
   target_(iConfig.getParameter<std::string>("target"))
   {
   }
