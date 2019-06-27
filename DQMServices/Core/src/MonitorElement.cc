@@ -2,18 +2,6 @@
 namespace dqm {
   namespace legacy {
 
-    MonitorElement::MonitorElement(MonitorElementData const *data) {
-      internal_ = data;
-      this->is_owned_ = true;
-      this->is_readonly_ = false;
-    }
-
-    MonitorElement::MonitorElement(MonitorElement const &me) {
-      this->internal_ = me.internal_;
-      this->is_owned_ = false;
-      this->is_readonly_ = false;
-    }
-
     MonitorElementData const *MonitorElement::release() {
       auto ptr = internal_;
       internal_ = nullptr;
