@@ -45,7 +45,7 @@ namespace dqm {
       value.object = std::unique_ptr<TH1>(object);
       data->key_ = key;
 
-      std::unique_ptr<ME> me = std::make_unique<ME>(data);
+      std::unique_ptr<ME> me = std::make_unique<ME>(data, /* is_owned */ true, /* is_readonly */ false);
       ME* me_ptr = store_->putME(std::move(me));
       return me_ptr;
     }
@@ -58,7 +58,7 @@ namespace dqm {
         ME* me_ptr = master_->master_.putME(std::move(me));
 
         // Make a copy of ME sharing the underlying MonitorElementData and root TH1 object
-        localmes_[me_ptr->internal()->key_] = std::make_unique<ME>(*me_ptr);
+        localmes_[me_ptr->internal()->key_] = std::make_unique<ME>(me_ptr->internal(), /* is_owned */ false, /* is_readonly */ false);
 
         return localmes_[me_ptr->internal()->key_].get();
       }
@@ -409,7 +409,7 @@ namespace dqm {
           // put back the old ME, we still need it
           newmes[key].swap(me);
           // ... and use the clone.
-          auto cloneme = std::make_unique<ME>(clone);
+          auto cloneme = std::make_unique<ME>(clone, /* is_owned */ true, /* is_readonly */ false);
           cloneme->Reset();
           me.swap(cloneme);
         }
@@ -636,8 +636,6 @@ namespace dqm {
 
     template <class ME, class STORE>
     ME* IGetter<ME, STORE>::get(std::string const& fullpath) const {
-      // TODO: implement
-      // assert(!"NIY");
       TRACE(fullpath);
 
       MonitorElementData::Path path;
@@ -664,9 +662,10 @@ namespace dqm {
           // Return first element
           // Make a copy of ME sharing the underlying MonitorElementData and root TH1 object
           // TODO: this will silently fail once the product goes invalid. Maybe we should use shared_ptr everywhere.
-          store_->localmes_[meData.key_] =
-              std::make_unique<dqm::harvesting::MonitorElement>(dqm::harvesting::MonitorElement(&meData, true));
-          return store_->localmes_[meData.key_].get();
+          auto& slot = store_->localmes_[meData.key_];
+          slot = std::make_unique<dqm::harvesting::MonitorElement>(&meData, /* is_owned */ false, /* is_readonly */ true);
+          TRACE(*slot);
+          return slot.get();
         }
       }
       std::cout << "get(): returning nullptr" << std::endl;
