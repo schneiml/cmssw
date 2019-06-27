@@ -28,6 +28,15 @@ namespace dqm {
       is_readonly_ = is_readonly;
     }
 
+    void MonitorElement::makeMutable() const {
+      assert(internal_ || !"attempting to modify an invalid ME");
+      if (!is_readonly_) return; // nothing to do
+      assert(!is_owned_); // if we own it we should be able to modify it
+      internal_ = DQMStore::cloneMonitorElementData(internal_);
+      is_owned_ = true;
+      is_readonly_ = false;
+    }
+
     MonitorElement::~MonitorElement() {
       if (is_owned_) {
         // This should raraly be hit for normal MEs (the MEData should be
@@ -45,6 +54,7 @@ namespace dqm {
     }
 
     void MonitorElement::Fill(double x) const {
+      makeMutable();
       MonitorElementData::Value::Access access(internal_->value_);
       assert(
           internal_->key_.kind_ == MonitorElement::Kind::INT || internal_->key_.kind_ == MonitorElement::Kind::REAL ||
@@ -61,6 +71,7 @@ namespace dqm {
     }
 
     void MonitorElement::doFill(int64_t x) const {
+      makeMutable();
       MonitorElementData::Value::Access access(internal_->value_);
       assert(
           internal_->key_.kind_ == MonitorElement::Kind::INT || internal_->key_.kind_ == MonitorElement::Kind::REAL ||
@@ -77,12 +88,14 @@ namespace dqm {
     }
 
     void MonitorElement::Fill(std::string &value) const {
+      makeMutable();
       MonitorElementData::Value::Access access(internal_->value_);
       assert(internal_->key_.kind_ == MonitorElement::Kind::STRING);
       access.scalar.str = value;
     }
 
     void MonitorElement::Fill(double x, double yw) const {
+      makeMutable();
       MonitorElementData::Value::Access access(internal_->value_);
       assert(
           // 1D histograms, this will be a x, weight fill
@@ -99,6 +112,7 @@ namespace dqm {
     }
 
     void MonitorElement::Fill(double x, double y, double zw) const {
+      makeMutable();
       MonitorElementData::Value::Access access(internal_->value_);
       if (internal_->key_.kind_ == MonitorElement::Kind::TH2F || internal_->key_.kind_ == MonitorElement::Kind::TH2D ||
           internal_->key_.kind_ == MonitorElement::Kind::TH2S) {
@@ -127,6 +141,7 @@ namespace dqm {
     }
 
     void MonitorElement::Fill(double x, double y, double z, double w) const {
+      makeMutable();
       MonitorElementData::Value::Access access(internal_->value_);
       if (internal_->key_.kind_ == MonitorElement::Kind::TH3F) {
         // 3D histogram, this will be a x, y, z, weight fill
@@ -146,6 +161,7 @@ namespace dqm {
     void MonitorElement::ShiftFillLast(double y, double ye, int32_t xscale) const { assert(!"NIY"); }
 
     void MonitorElement::Reset() {
+      makeMutable();
       MonitorElementData::Value::Access access(internal_->value_);
       access.scalar.num = 0;
       access.scalar.real = 0;
@@ -207,29 +223,91 @@ namespace dqm {
 
     void MonitorElement::softReset() { assert(!"NIY"); }
 
-    TObject *MonitorElement::getRootObject() const { assert(!"NIY"); }
-    TH1 *MonitorElement::getTH1() const { assert(!"NIY"); }
-    TH1F *MonitorElement::getTH1F() const { assert(!"NIY"); }
-    TH1S *MonitorElement::getTH1S() const { assert(!"NIY"); }
-    TH1D *MonitorElement::getTH1D() const { assert(!"NIY"); }
-    TH2F *MonitorElement::getTH2F() const { assert(!"NIY"); }
-    TH2S *MonitorElement::getTH2S() const { assert(!"NIY"); }
-    TH2D *MonitorElement::getTH2D() const { assert(!"NIY"); }
-    TH3F *MonitorElement::getTH3F() const { assert(!"NIY"); }
-    TProfile *MonitorElement::getTProfile() const { assert(!"NIY"); }
-    TProfile2D *MonitorElement::getTProfile2D() const { assert(!"NIY"); }
+    TObject *MonitorElement::getRootObject() const {
+      // users could to anything o the object, including modifications
+      makeMutable();
+      MonitorElementData::Value::Access access(internal_->value_);
+      // leaking the pointer without the lock. Would be better to hold the lock
+      // while the object is in use, but for harvesting there should only be
+      // a single thread and we can make an exception.
+      return access.object.get();
+    }
+
+    TH1 *MonitorElement::getTH1() const {
+      return dynamic_cast<TH1*>(getRootObject());
+    }
+    TH1F *MonitorElement::getTH1F() const {
+      return dynamic_cast<TH1F*>(getRootObject());
+    }
+    TH1S *MonitorElement::getTH1S() const {
+      return dynamic_cast<TH1S*>(getRootObject());
+    }
+    TH1D *MonitorElement::getTH1D() const {
+      return dynamic_cast<TH1D*>(getRootObject());
+    }
+    TH2F *MonitorElement::getTH2F() const {
+      return dynamic_cast<TH2F*>(getRootObject());
+    }
+    TH2S *MonitorElement::getTH2S() const {
+      return dynamic_cast<TH2S*>(getRootObject());
+    }
+    TH2D *MonitorElement::getTH2D() const {
+      return dynamic_cast<TH2D*>(getRootObject());
+    }
+    TH3F *MonitorElement::getTH3F() const {
+      return dynamic_cast<TH3F*>(getRootObject());
+    }
+    TProfile *MonitorElement::getTProfile() const {
+      return dynamic_cast<TProfile*>(getRootObject());
+    }
+    TProfile2D *MonitorElement::getTProfile2D() const {
+      return dynamic_cast<TProfile2D*>(getRootObject());
+    }
 
     TObject *MonitorElement::getRefRootObject() const { assert(!"NIY"); }
 
-    int64_t MonitorElement::getIntValue() const { assert(!"NIY"); }
-    double MonitorElement::getFloatValue() const { assert(!"NIY"); }
-    const std::string &MonitorElement::getStringValue() const { assert(!"NIY"); }
+    int64_t MonitorElement::getIntValue() const {
+      assert(internal_ && internal_->key_.kind_ == Kind::INT);
+      MonitorElementData::Value::Access access(internal_->value_);
+      return access.scalar.num;
+    }
+    double MonitorElement::getFloatValue() const {
+      assert(internal_ && internal_->key_.kind_ == Kind::REAL);
+      MonitorElementData::Value::Access access(internal_->value_);
+      return access.scalar.real;
+    }
+    const std::string &MonitorElement::getStringValue() const {
+      assert(internal_ && internal_->key_.kind_ == Kind::STRING);
+      MonitorElementData::Value::Access access(internal_->value_);
+      return access.scalar.str;
+    }
 
     void MonitorElement::setXTitle(std::string const &title) { assert(!"NIY"); }
     void MonitorElement::setYTitle(std::string const &title) { assert(!"NIY"); }
     void MonitorElement::enableSumw2() { assert(!"NIY"); }
     void MonitorElement::disableAlphanumeric() { assert(!"NIY"); }
     void MonitorElement::setOption(const char *option) { assert(!"NIY"); }
+
+    void MonitorElement::dump(std::ostream& os) const {
+      os << "MonitorElement@" << (void*) this << "{\n  .internal_ = " << (void*) this->internal_ << ",\n";
+      os << "  .is_owned_ = " << this->is_owned_ << ", .is_readonly_ = " << this->is_readonly_ << ",\n";
+      if (this->internal_) {
+        os << "\n  .kind_ = " << static_cast<int>(this->internal_->key_.kind_) << ",\n";
+        os << "\n  .scope_ = " << static_cast<int>(this->internal_->key_.scope_) << ",\n";
+        os << "  .path_ = " << this->getFullname() << ",\n";
+        os << "  .coveredrange_ = [" << this->internal_->key_.coveredrange_.startRun() << ":" << this->internal_->key_.coveredrange_.startLumi() 
+           << " - " << this->internal_->key_.coveredrange_.endRun() << ":" << this->internal_->key_.coveredrange_.endLumi() << "],\n";
+        MonitorElementData::Value::Access access(this->internal_->value_);
+        os << "  .scalar_ = {" << access.scalar.num << ", " <<  access.scalar.real << ", \"" << access.scalar.str << "\"},\n";
+        os << "  .object_ = " << (void*) access.object.get() << "\n";
+      }
+      os << "}";
+    }
+
+    std::ostream& operator<<(std::ostream& os, MonitorElement const& me) {
+      me.dump(os);
+      return os;
+    }
 
   }  // namespace legacy
 }  // namespace dqm
