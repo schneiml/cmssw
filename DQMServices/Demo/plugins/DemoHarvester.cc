@@ -41,6 +41,7 @@ void DemoHarvester::dqmEndJob(DQMStore::IBooker &ib, DQMStore::IGetter &ig) {
 void DemoHarvester::dqmEndLuminosityBlock(DQMStore::IBooker &ib, DQMStore::IGetter &ig, edm::LuminosityBlock const &lumi, edm::EventSetup const&) {
   ig.setCurrentFolder(target_); 
   MonitorElement* me = ig.get(ig.pwd() + "EXAMPLE");
+  std::cout << *me << "\n";
   me->getTH1()->Fill(4);
 
   ctr_++;
