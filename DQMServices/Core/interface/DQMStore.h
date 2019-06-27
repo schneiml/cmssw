@@ -138,8 +138,11 @@ namespace dqm {
       typedef MonitorElementData::Scope Scope;
 
     public:
-      MonitorElement(MonitorElementData const* data);
-      MonitorElement(MonitorElement const& me);
+      MonitorElement(MonitorElementData const* data, bool is_owned, bool is_readonly) : internal_(data) {
+        this->is_owned_ = is_owned;
+        this->is_readonly_ = is_readonly;
+      };
+      MonitorElement(MonitorElement const& me) = delete;
       MonitorElement& operator=(MonitorElement const&) = delete;
       MonitorElement& operator=(MonitorElement&&) = delete;
       virtual ~MonitorElement();
@@ -412,8 +415,8 @@ namespace dqm {
     class MonitorElement : public dqm::legacy::MonitorElement {
     public:
       MonitorElement() = default;
-      MonitorElement(MonitorElement const& me) : dqm::legacy::MonitorElement(me){};
-      MonitorElement(MonitorElementData const* data) : dqm::legacy::MonitorElement(data){};
+      MonitorElement(MonitorElementData const* data, bool is_owned, bool is_readonly)
+          : dqm::legacy::MonitorElement(data, is_owned, is_readonly){};
       ~MonitorElement() = default;
 
       // now, we deprecate and assert things that are not allowed on reco MEs.
@@ -476,11 +479,8 @@ namespace dqm {
     class MonitorElement : public dqm::reco::MonitorElement {
     public:
       MonitorElement() = default;
-      MonitorElement(MonitorElement const& me) : dqm::reco::MonitorElement(me){};
-      MonitorElement(MonitorElementData const* data, bool readonly = false) : dqm::reco::MonitorElement(data) {
-        this->is_readonly_ = readonly;
-        this->is_owned_ = readonly;
-      };
+      MonitorElement(MonitorElementData const* data, bool is_owned, bool is_readonly)
+          : dqm::reco::MonitorElement(data, is_owned, is_readonly) {};
       ~MonitorElement() = default;
 
       // In harvesting, we un-ban some of the operations banned before. Eventually,
@@ -561,7 +561,7 @@ namespace dqm {
       virtual int64_t getIntValue() const { return this->dqm::legacy::MonitorElement::getIntValue(); }
       virtual double getFloatValue() const { return this->dqm::legacy::MonitorElement::getFloatValue(); }
       virtual const std::string& getStringValue() const { return this->dqm::legacy::MonitorElement::getStringValue(); }
-    };
+    };  // namespace harvesting
   }     // namespace harvesting
 
   namespace legacy {
