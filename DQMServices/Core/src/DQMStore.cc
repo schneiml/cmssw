@@ -488,9 +488,6 @@ namespace dqm {
           // Erase null pointer from the map. `it` now points to the next element
           it = localmes_.erase(it);
 
-          // This only makes sense if there are no other references to localMe->internal()
-          auto meData = std::unique_ptr<const MonitorElementData>(localMe->internal());
-
           // We have to create a prototype MonitorElementData for potential
           // upcoming lumisection only if there is no other (currently being filled)
           // ME. If there is, it will be turned into a prototype once it's done.
@@ -500,20 +497,23 @@ namespace dqm {
           // check that as well as `it - 1`.
           bool existsAbove = it != localmes_.end() && it->second->getFullname() == localMe->getFullname();
           bool existsBelow = it != localmes_.begin() && std::prev(it)->second->getFullname() == localMe->getFullname();
+
+          // This only makes sense if there are no other references to localMe->internal()
+          auto meData = std::unique_ptr<const MonitorElementData>(localMe->release());
+
           if (existsAbove || existsBelow) {
+            localMe = nullptr;
+          } else {
             // Clone and reset for potential reuse in the next lumi
             MonitorElementData* clone = cloneMonitorElementData(meData.get());
             clone->key_.coveredrange_ = edm::LuminosityBlockRange();
 
-            localMe->setInternal(clone);
-            localmes_[meData->key_].swap(localMe);
-          } else {
-            localMe = nullptr;
+            // localMe is reused, so ME* fields in subsystem code remain valid
+            localMe->setInternal(clone, /* is_owned */ true, /* is_readonly */ false);
+            localmes_[clone->key_].swap(localMe);
+            assert(localMe == nullptr);
           }
 
-          // TODO: Once product inherits from a vector of unique_ptrs,
-          // the following line should be used to insert product:
-          // product.push_back(std::unique_ptr<const MonitorElementData>(meData));
           TRACE(meData->key_.path_.getDirname() << " " << meData->key_.path_.getObjectname() << " "
                                                 << (void*)meData->key_.path_.getObjectname().c_str());
           product.push_back(std::move(meData));

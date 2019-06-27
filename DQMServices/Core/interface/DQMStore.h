@@ -370,9 +370,21 @@ namespace dqm {
       // Be careful with the root pointers. The const is also serious; changing
       // parts of the key could corrupt the sorted datastructures.
       MonitorElementData const* internal() { return internal_; }
-      void setInternal(MonitorElementData const* data) {
+      // give up ownership of the data: the ME is left in an invalid state
+      // until setInternal is called again.
+      MonitorElementData const* release() { 
+        auto ptr = internal_; 
+        internal_ = nullptr;
+        is_readonly_ = is_owned_ = false;
+        return ptr;
+      }
+      // replace the data inside the ME. Ownership needs to be set via the 
+      // additional arguments.
+      void setInternal(MonitorElementData const* data, bool is_owned = false, bool is_readonly = false) {
         assert(!is_owned_);  // could be handled but not needed for now
         internal_ = data;
+        is_owned_ = is_owned_;
+        is_readonly_ = is_readonly;
       }
 
     protected:
