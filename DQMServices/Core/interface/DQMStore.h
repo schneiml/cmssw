@@ -50,7 +50,8 @@
 #endif
 
 // TODO: Remove at some point:
-#define TRACE(msg) std::cout << "TRACE: " << __FILE__ << ":" << __LINE__ << "(" << __FUNCTION__ << ") " << msg << std::endl;
+#define TRACE(msg) \
+  std::cout << "TRACE: " << __FILE__ << ":" << __LINE__ << "(" << __FUNCTION__ << ") " << msg << std::endl;
 #define TRACE_ TRACE("");
 
 class TFile;
@@ -153,7 +154,9 @@ namespace dqm {
       const std::string& getPathname() const { return internal_->key_.path_.getDirname(); }
 
       /// get full name of ME including Pathname
-      const std::string getFullname() const { return internal_->key_.path_.getDirname() + internal_->key_.path_.getObjectname(); }
+      const std::string getFullname() const {
+        return internal_->key_.path_.getDirname() + internal_->key_.path_.getObjectname();
+      }
 
       /// specify whether ME should be reset at end of monitoring cycle (default:false);
       /// (typically called by Sources that control the original ME)
@@ -372,20 +375,10 @@ namespace dqm {
       MonitorElementData const* internal() { return internal_; }
       // give up ownership of the data: the ME is left in an invalid state
       // until setInternal is called again.
-      MonitorElementData const* release() { 
-        auto ptr = internal_; 
-        internal_ = nullptr;
-        is_readonly_ = is_owned_ = false;
-        return ptr;
-      }
-      // replace the data inside the ME. Ownership needs to be set via the 
+      MonitorElementData const* release();
+      // replace the data inside the ME. Ownership needs to be set via the
       // additional arguments.
-      void setInternal(MonitorElementData const* data, bool is_owned = false, bool is_readonly = false) {
-        assert(!is_owned_);  // could be handled but not needed for now
-        internal_ = data;
-        is_owned_ = is_owned_;
-        is_readonly_ = is_readonly;
-      }
+      void setInternal(MonitorElementData const* data, bool is_owned = false, bool is_readonly = false);
 
     protected:
       // The actual object holding ME state, including a potential ROOT object.
@@ -480,8 +473,7 @@ namespace dqm {
     public:
       MonitorElement() = default;
       MonitorElement(MonitorElement const& me) : dqm::reco::MonitorElement(me){};
-      MonitorElement(MonitorElementData const* data, bool readonly = false) 
-        : dqm::reco::MonitorElement(data) {
+      MonitorElement(MonitorElementData const* data, bool readonly = false) : dqm::reco::MonitorElement(data) {
         this->is_readonly_ = readonly;
         this->is_owned_ = readonly;
       };
@@ -489,50 +481,84 @@ namespace dqm {
 
       // In harvesting, we un-ban some of the operations banned before. Eventually,
       // we should get rid of the legacy base and move the implementations here.
-#define UNBAN(name) using dqm::legacy::MonitorElement::name;
-      UNBAN(setEfficiencyFlag)
-      UNBAN(Reset)
+      // manual forwards here since `using` seems to call the overloaded version
+      // from dqm::reco and std::foraward tends to mess up the compiler errors.
+      virtual void setEfficiencyFlag() { this->dqm::legacy::MonitorElement::setEfficiencyFlag(); }
+      virtual double getMean(int axis = 1) const { return this->dqm::legacy::MonitorElement::getMean(axis); }
+      virtual double getMeanError(int axis = 1) const { return this->dqm::legacy::MonitorElement::getMeanError(axis); }
+      virtual double getRMS(int axis = 1) const { return this->dqm::legacy::MonitorElement::getRMS(axis); }
+      virtual double getRMSError(int axis = 1) const { return this->dqm::legacy::MonitorElement::getRMSError(axis); }
+      virtual double getBinContent(int binx) const { return this->dqm::legacy::MonitorElement::getBinContent(binx); }
+      virtual double getBinContent(int binx, int biny) const {
+        return this->dqm::legacy::MonitorElement::getBinContent(binx, biny);
+      }
+      virtual double getBinContent(int binx, int biny, int binz) const {
+        return this->dqm::legacy::MonitorElement::getBinContent(binx, biny, binz);
+      }
+      virtual double getBinError(int binx) const { return this->dqm::legacy::MonitorElement::getBinError(binx); }
+      virtual double getBinError(int binx, int biny) const {
+        return this->dqm::legacy::MonitorElement::getBinError(binx, biny);
+      }
+      virtual double getBinError(int binx, int biny, int binz) const {
+        return this->dqm::legacy::MonitorElement::getBinError(binx, biny, binx);
+      }
+      virtual double getEntries() const { return this->dqm::legacy::MonitorElement::getEntries(); }
+      virtual double getBinEntries(int bin) const { return this->dqm::legacy::MonitorElement::getBinEntries(bin); }
 
-    public:
-      UNBAN(getMean)
-      UNBAN(getMeanError)
-      UNBAN(getRMS)
-      UNBAN(getRMSError)
-      UNBAN(getBinContent)
-      UNBAN(getBinError)
-      UNBAN(getEntries)
-      UNBAN(getBinEntries)
+      virtual void setBinContent(int binx, double content) {
+        this->dqm::legacy::MonitorElement::setBinContent(binx, content);
+      }
+      virtual void setBinContent(int binx, int biny, double content) {
+        this->dqm::legacy::MonitorElement::setBinContent(binx, biny, content);
+      }
+      virtual void setBinContent(int binx, int biny, int binz, double content) {
+        this->dqm::legacy::MonitorElement::setBinContent(binx, biny, binz, content);
+      }
+      virtual void setBinError(int binx, double error) { this->dqm::legacy::MonitorElement::setBinError(binx, error); }
+      virtual void setBinError(int binx, int biny, double error) {
+        this->dqm::legacy::MonitorElement::setBinError(binx, biny, error);
+      }
+      virtual void setBinError(int binx, int biny, int binz, double error) {
+        this->dqm::legacy::MonitorElement::setBinError(binx, biny, binz, error);
+      }
+      virtual void setBinEntries(int bin, double nentries) {
+        this->dqm::legacy::MonitorElement::setBinEntries(bin, nentries);
+      }
+      virtual void setEntries(double nentries) { this->dqm::legacy::MonitorElement::setEntries(nentries); }
+      virtual void setBinLabel(int bin, const std::string& label, int axis = 1) {
+        this->dqm::legacy::MonitorElement::setBinLabel(bin, label, axis);
+      }
+      virtual void setAxisRange(double xmin, double xmax, int axis = 1) {
+        this->dqm::legacy::MonitorElement::setAxisRange(xmin, xmax, axis);
+      }
+      virtual void setAxisTitle(const std::string& title, int axis = 1) {
+        this->dqm::legacy::MonitorElement::setAxisTitle(title, axis);
+      }
+      virtual void setAxisTimeDisplay(int value, int axis = 1) {
+        this->dqm::legacy::MonitorElement::setAxisTimeDisplay(value, axis);
+      }
+      virtual void setAxisTimeFormat(const char* format = "", int axis = 1) {
+        this->dqm::legacy::MonitorElement::setAxisTimeFormat(format, axis);
+      }
+      virtual void setTitle(const std::string& title) { this->dqm::legacy::MonitorElement::setTitle(title); }
 
-      UNBAN(setBinContent)
-      UNBAN(setBinError)
-      UNBAN(setBinEntries)
-      UNBAN(setEntries)
-      UNBAN(setBinLabel)
-      UNBAN(setAxisRange)
-      UNBAN(setAxisTitle)
-      UNBAN(setAxisTimeDisplay)
-      UNBAN(setAxisTimeFormat)
-      UNBAN(setTitle)
+      virtual TObject* getRootObject() const { return this->dqm::legacy::MonitorElement::getRootObject(); }
+      virtual TH1* getTH1() const { return this->dqm::legacy::MonitorElement::getTH1(); }
+      virtual TH1F* getTH1F() const { return this->dqm::legacy::MonitorElement::getTH1F(); }
+      virtual TH1S* getTH1S() const { return this->dqm::legacy::MonitorElement::getTH1S(); }
+      virtual TH1D* getTH1D() const { return this->dqm::legacy::MonitorElement::getTH1D(); }
+      virtual TH2F* getTH2F() const { return this->dqm::legacy::MonitorElement::getTH2F(); }
+      virtual TH2S* getTH2S() const { return this->dqm::legacy::MonitorElement::getTH2S(); }
+      virtual TH2D* getTH2D() const { return this->dqm::legacy::MonitorElement::getTH2D(); }
+      virtual TH3F* getTH3F() const { return this->dqm::legacy::MonitorElement::getTH3F(); }
+      virtual TProfile* getTProfile() const { return this->dqm::legacy::MonitorElement::getTProfile(); }
+      virtual TProfile2D* getTProfile2D() const { return this->dqm::legacy::MonitorElement::getTProfile2D(); }
 
-      UNBAN(getRootObject)
-      UNBAN(getTH1)
-      UNBAN(getTH1F)
-      UNBAN(getTH1S)
-      UNBAN(getTH1D)
-      UNBAN(getTH2F)
-      UNBAN(getTH2S)
-      UNBAN(getTH2D)
-      UNBAN(getTH3F)
-      UNBAN(getTProfile)
-      UNBAN(getTProfile2D)
-
-      UNBAN(getIntValue)
-      UNBAN(getFloatValue)
-      UNBAN(getStringValue)
-#undef UNBAN
+      virtual int64_t getIntValue() const { return this->dqm::legacy::MonitorElement::getIntValue(); }
+      virtual double getFloatValue() const { return this->dqm::legacy::MonitorElement::getFloatValue(); }
+      virtual const std::string& getStringValue() const { return this->dqm::legacy::MonitorElement::getStringValue(); }
     };
-
-  }  // namespace harvesting
+  }     // namespace harvesting
 
   namespace legacy {
 
@@ -1072,15 +1098,13 @@ namespace dqm {
         mutable DQMStore<ME> master_;
         mutable std::mutex lock_;
       };
-      void setMaster(std::shared_ptr<DQMStoreMaster> master) {
-        master_ = master;
-      }
+      void setMaster(std::shared_ptr<DQMStoreMaster> master) { master_ = master; }
 
     private:
       // Clone data including the underlying ROOT object (calls ->Clone()).
       static MonitorElementData* cloneMonitorElementData(MonitorElementData const* input);
 
-    // TODO: Make this section provate. localmes_ and inputs_ should be friends with IGetter. 
+      // TODO: Make this section provate. localmes_ and inputs_ should be friends with IGetter.
     public:
       // MEs owned by us. All book/get interactions will hand out pointers into
       // this stucture. They may or may not own a ROOT object: in
@@ -1105,21 +1129,29 @@ namespace dqm {
     };
   }  // namespace implementation
   namespace reco {
-    class DQMStore : public dqm::implementation::DQMStore<MonitorElement> {
+    class DQMStore : public dqm::implementation::DQMStore<dqm::reco::MonitorElement> {
     public:
-      typedef dqm::implementation::IBooker<MonitorElement, dqm::implementation::DQMStore<MonitorElement>> IBooker;
-      typedef dqm::implementation::IGetter<MonitorElement, dqm::implementation::DQMStore<MonitorElement>> IGetter;
+      typedef dqm::implementation::IBooker<dqm::reco::MonitorElement,
+                                           dqm::implementation::DQMStore<dqm::reco::MonitorElement>>
+          IBooker;
+      typedef dqm::implementation::IGetter<dqm::reco::MonitorElement,
+                                           dqm::implementation::DQMStore<dqm::reco::MonitorElement>>
+          IGetter;
     };
   }  // namespace reco
   namespace harvesting {
-    class DQMStore : public dqm::implementation::DQMStore<MonitorElement> {
+    class DQMStore : public dqm::implementation::DQMStore<dqm::harvesting::MonitorElement> {
     public:
-      typedef dqm::implementation::IBooker<MonitorElement, dqm::implementation::DQMStore<MonitorElement>> IBooker;
-      typedef dqm::implementation::IGetter<MonitorElement, dqm::implementation::DQMStore<MonitorElement>> IGetter;
+      typedef dqm::implementation::IBooker<dqm::harvesting::MonitorElement,
+                                           dqm::implementation::DQMStore<dqm::harvesting::MonitorElement>>
+          IBooker;
+      typedef dqm::implementation::IGetter<dqm::harvesting::MonitorElement,
+                                           dqm::implementation::DQMStore<dqm::harvesting::MonitorElement>>
+          IGetter;
     };
   }  // namespace harvesting
   namespace legacy {
-    class DQMStore : public dqm::implementation::DQMStore<MonitorElement> {
+    class DQMStore : public dqm::implementation::DQMStore<dqm::legacy::MonitorElement> {
     public:
       typedef dqm::legacy::IBooker IBooker;
       typedef dqm::legacy::IGetter IGetter;

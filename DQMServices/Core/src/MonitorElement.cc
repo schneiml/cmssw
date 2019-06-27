@@ -14,9 +14,18 @@ namespace dqm {
       this->is_readonly_ = false;
     }
 
-    bool MonitorElement::checkCompatibility(MonitorElement *a, MonitorElement *b) {
-      // TODO
-      return true;
+    MonitorElementData const *MonitorElement::release() {
+      auto ptr = internal_;
+      internal_ = nullptr;
+      is_readonly_ = is_owned_ = false;
+      return ptr;
+    }
+
+    void MonitorElement::setInternal(MonitorElementData const *data, bool is_owned, bool is_readonly) {
+      assert(!is_owned_);  // could be handled but not needed for now
+      internal_ = data;
+      is_owned_ = is_owned_;
+      is_readonly_ = is_readonly;
     }
 
     MonitorElement::~MonitorElement() {
@@ -28,6 +37,11 @@ namespace dqm {
           delete internal_;
         }
       }
+    }
+
+    bool MonitorElement::checkCompatibility(MonitorElement *a, MonitorElement *b) {
+      // TODO
+      return true;
     }
 
     void MonitorElement::Fill(double x) const {
@@ -140,7 +154,6 @@ namespace dqm {
         access.object->Reset();
       }
     }
-
     std::string MonitorElement::valueString() const { assert(!"NIY"); }
     /* almost unused */ std::string MonitorElement::tagString() const { assert(!"NIY"); }
     /* almost unused */ std::string MonitorElement::tagLabelString() const { assert(!"NIY"); }
