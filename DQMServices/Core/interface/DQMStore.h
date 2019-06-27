@@ -379,6 +379,8 @@ namespace dqm {
       // replace the data inside the ME. Ownership needs to be set via the
       // additional arguments.
       void setInternal(MonitorElementData const* data, bool is_owned = false, bool is_readonly = false);
+      // Display as string. Could be made "official".
+      void dump(std::ostream& os) const;
 
     protected:
       // The actual object holding ME state, including a potential ROOT object.
@@ -390,7 +392,7 @@ namespace dqm {
       // The idea is to make this a shared_ptr with no op deleter.
       // Then we have to check if ref count is indeed 1 inside toProduct()
       // If not assert.
-      MonitorElementData const* internal_;
+      mutable MonitorElementData const* internal_;
       // set if it is our duty to destroy/move the internal_ data. This can be
       // either if this is the "master" instance or we did a copy-on-write.
       mutable bool is_owned_;
@@ -401,6 +403,8 @@ namespace dqm {
 
       std::vector<QReport> qreports_;  //< QReports associated to this object.
     };
+
+    std::ostream& operator<<(std::ostream& os, MonitorElement const& me);
 
   }  // namespace legacy
   namespace reco {
@@ -1099,8 +1103,6 @@ namespace dqm {
         mutable std::mutex lock_;
       };
       void setMaster(std::shared_ptr<DQMStoreMaster> master) { master_ = master; }
-
-    private:
       // Clone data including the underlying ROOT object (calls ->Clone()).
       static MonitorElementData* cloneMonitorElementData(MonitorElementData const* input);
 
