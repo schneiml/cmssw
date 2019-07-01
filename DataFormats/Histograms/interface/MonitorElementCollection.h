@@ -179,6 +179,10 @@ struct MonitorElementData {
         }
       }
     }
+
+    bool operator==(Path const& other) const {
+      return this->dirname_ == other.dirname_ && this->objname_ == other.objname_;
+    }
   };
 
   // Metadata about the ME. The range is included here in case we have e.g.
