@@ -372,6 +372,9 @@ namespace dqm {
       // methods). This is only required for dqm::harvesting and causes some
       // overhead in dqm::reco, so maybe move it down in the hierarchy.
       void makeMutable() const;
+      // Whether this ME has seen local changes. Any ME can be modified; the
+      // is_readonly flag only shows that it was not modified so far.
+      bool isReadonly() const { return is_readonly_; }
       // Provide access to the internal fields.
       // Be careful with the root pointers. The const is also serious; changing
       // parts of the key could corrupt the sorted datastructures.
@@ -1082,6 +1085,9 @@ namespace dqm {
       // Prepare MEs for the next lumisection. This will create per-lumi copies
       // if ther previous lumi has not yet finished and recycle reusable MEs if
       // booking/toProduct() left any.
+      // enterLumi is idempotent; it can be called at any time to update lumi
+      // ranges in the MEs. This is needed in harvesting, where MEs can be 
+      // booked at any time.
       void enterLumi(edm::RunNumber_t run, edm::LuminosityBlockNumber_t lumi);
       // Turn the MEs associated with t, run, lumi into a read-only product and
       // remove it from the DQMStore. If no copy of a ME would remain in the
@@ -1094,11 +1100,17 @@ namespace dqm {
       // lazy, since we will usually register lots of products but read only
       // few MEs from them.
       void registerProduct(edm::Handle<MonitorElementCollection> mes);
-      // Find MEs matching this key in the inputs_ and create MEs for them in
-      // localmes_. Needs to handle priority (we could have e.g. harvesting and
-      // reco versions of the same ME available). Also need to handle updating
-      // MEs read from lumi products.
-      void importFromProduct(MonitorElementData::Key const& key);
+      // Create or update the ME with the given path in the localmes_.
+      // TODO: need to handle priority if there are multiple MEs of same name
+      // in the input products.
+      ME* importFromProduct(MonitorElementData::Path const& path);
+      // Re-import/update MEs that already exist in localmes_ from the products.
+      // Local ME objects must stay valid, the new data should be cloned.
+      void loadFromProduct();
+      // Remove MEs that only borrowed their data from a product (imported by
+      // importFromProduct but never modified), to prevent them from going into
+      // the output product. 
+      void cleanupFromProduct();
 
       // to be used only by DQMEDAnalyzer.
       struct DQMStoreMaster {
@@ -1109,7 +1121,7 @@ namespace dqm {
       // Clone data including the underlying ROOT object (calls ->Clone()).
       static MonitorElementData* cloneMonitorElementData(MonitorElementData const* input);
 
-      // TODO: Make this section provate. localmes_ and inputs_ should be friends with IGetter.
+      // TODO: Make this section private. localmes_ and inputs_ should be friends with IGetter.
     public:
       // MEs owned by us. All book/get interactions will hand out pointers into
       // this stucture. They may or may not own a ROOT object: in
@@ -1117,8 +1129,30 @@ namespace dqm {
       // MonitorElementDatas in this map can potentially be shared across
       // multiple DQMStores.
       // Expect 10-10000 entries.
+      // Invariants that should be preserved (and can be relied on):
+      // - localmes_[key]->getInternal()->key_ == key for any key in the map.
+      // - "concurrent lumisections" == enterLumi() called again with
+      //   different parameters before toProduct() is called with previous
+      //   parameters.
+      // - MEs with equal getFullname() only exist when there are concurrent 
+      //   lumisections. Else, there is at most one ME for each name.
+      // - During reco, there is at least one ME for each name.
+      //   - This can be a "prototype" (run=0) if there is no active lumi.
+      //   - if there are no concurrent lumis, this object will always stay the
+      //     same (holding pointers to it is safe).
+      //   - DQMStores with master_ set don't have concurrent lumis.
+      // - MEs should have
+      //   - is_owned = true and is_readonly = false 
+      //   - or is_owned = false is_readonly = false if master_ is set
+      //   - or is_owned = false is_readonly = true in harvesting
+      //     - these must not outlive the edm transition that they came from
+      // - "prototype" MEs *can* be filled (in harvesting and legacy code)
+      //   - because booking sometimes can't know the run/lumi, and MEs can be
+      //     used immediatly.
+      // - ME objects with is_owned = true and is_readonly = false live
+      //   until the end of the harvesting job (holding pointers is safe).
       std::map<MonitorElementData::Key, std::unique_ptr<ME>> localmes_;
-      // in case of reco and edm::stream, we keep areference to the master
+      // in case of reco and edm::stream, we keep a reference to the master
       // DQMStore here. All booking calls should be forwarded there, and no
       // other operations should be required in reco.
       // All accesses have to take the lock, there will be multiple threads
