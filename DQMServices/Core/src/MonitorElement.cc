@@ -172,6 +172,17 @@ namespace dqm {
 
     /* almost unused */ void MonitorElement::runQTests() { assert(!"NIY"); }
 
+    TAxis* MonitorElement::accessAxis(TH1& object, int axis) {
+      if (axis == 1) {
+        return object.GetXaxis();
+      } else if (axis == 2) {
+        return object.GetYaxis();
+      } else if (axis == 3) {
+        return object.GetZaxis();
+      }
+      assert(!"Aixs number must be 1, 2, or 3.");
+    }
+
     // const and data-independent -- safe
     int MonitorElement::getNbinsX() const { assert(!"NIY"); }
     int MonitorElement::getNbinsY() const { assert(!"NIY"); }
@@ -194,25 +205,92 @@ namespace dqm {
     double MonitorElement::getBinEntries(int bin) const { assert(!"NIY"); }
 
     // non-const -- thread safety and semantical issues
-    void MonitorElement::setBinContent(int binx, double content) { assert(!"NIY"); }
-    void MonitorElement::setBinContent(int binx, int biny, double content) { assert(!"NIY"); }
-    void MonitorElement::setBinContent(int binx, int biny, int binz, double content) { assert(!"NIY"); }
-    void MonitorElement::setBinError(int binx, double error) { assert(!"NIY"); }
-    void MonitorElement::setBinError(int binx, int biny, double error) { assert(!"NIY"); }
-    void MonitorElement::setBinError(int binx, int biny, int binz, double error) { assert(!"NIY"); }
-    void MonitorElement::setBinEntries(int bin, double nentries) { assert(!"NIY"); }
-    void MonitorElement::setEntries(double nentries) { assert(!"NIY"); }
-    void MonitorElement::setBinLabel(int bin, const std::string &label, int axis) { assert(!"NIY"); }
-    void MonitorElement::setAxisRange(double xmin, double xmax, int axis) { assert(!"NIY"); }
-    void MonitorElement::setAxisTitle(const std::string &title, int axis) { assert(!"NIY"); }
-    void MonitorElement::setAxisTimeDisplay(int value, int axis) { assert(!"NIY"); }
-    void MonitorElement::setAxisTimeFormat(const char *format, int axis) { assert(!"NIY"); }
-    void MonitorElement::setTitle(const std::string &title) { assert(!"NIY"); }
+    void MonitorElement::setBinContent(int binx, double content) {
+      makeMutable();
+      MonitorElementData::Value::Access access(internal_->value_);
+      access.object->SetBinContent(binx, content);
+    }
+    void MonitorElement::setBinContent(int binx, int biny, double content) {
+      makeMutable();
+      MonitorElementData::Value::Access access(internal_->value_);
+      access.object->SetBinContent(binx, biny, content);
+    }
+    void MonitorElement::setBinContent(int binx, int biny, int binz, double content) {
+      makeMutable();
+      MonitorElementData::Value::Access access(internal_->value_);
+      access.object->SetBinContent(binx, biny, binz, content);
+    }
+    void MonitorElement::setBinError(int binx, double error) {
+      makeMutable();
+      MonitorElementData::Value::Access access(internal_->value_);
+      access.object->SetBinError(binx, error);
+    }
+    void MonitorElement::setBinError(int binx, int biny, double error) {
+      makeMutable();
+      MonitorElementData::Value::Access access(internal_->value_);
+      access.object->SetBinError(binx, biny, error);
+    }
+    void MonitorElement::setBinError(int binx, int biny, int binz, double error) {
+      makeMutable();
+      MonitorElementData::Value::Access access(internal_->value_);
+      access.object->SetBinError(binx, biny, binz, error);
+    }
+    void MonitorElement::setBinEntries(int bin, double nentries) {
+      makeMutable();
+      MonitorElementData::Value::Access access(internal_->value_);
+      // TODO: consider looking at Kind and doing a static_cast here.
+      auto tprofile = dynamic_cast<TProfile*>(access.object.get());
+      if (tprofile) {
+        tprofile->SetBinEntries(bin, nentries);
+        return;
+      }
+      auto tprofile2d = dynamic_cast<TProfile2D*>(access.object.get());
+      if (tprofile2d) {
+        tprofile2d->SetBinEntries(bin, nentries);
+        return;
+      }
+      assert(!"setBinEntries is only supported on TProfile and TProfile2D.");
+    }
+    void MonitorElement::setEntries(double nentries) {
+      makeMutable();
+      MonitorElementData::Value::Access access(internal_->value_);
+      access.object->SetEntries(nentries);
+    }
+    void MonitorElement::setBinLabel(int bin, const std::string &label, int axis) {
+      makeMutable();
+      MonitorElementData::Value::Access access(internal_->value_);
+      accessAxis(*access.object, axis)->SetBinLabel(bin, label.c_str());
+    }
+    void MonitorElement::setAxisRange(double xmin, double xmax, int axis) {
+      makeMutable();
+      MonitorElementData::Value::Access access(internal_->value_);
+      accessAxis(*access.object, axis)->SetRangeUser(xmin, xmax);
+    }
+    void MonitorElement::setAxisTitle(const std::string &title, int axis) {
+      makeMutable();
+      MonitorElementData::Value::Access access(internal_->value_);
+      accessAxis(*access.object, axis)->SetTitle(title.c_str());
+    }
+    void MonitorElement::setAxisTimeDisplay(int value, int axis) {
+      makeMutable();
+      MonitorElementData::Value::Access access(internal_->value_);
+      accessAxis(*access.object, axis)->SetTimeDisplay(value);
+    }
+    void MonitorElement::setAxisTimeFormat(const char *format, int axis) {
+      makeMutable();
+      MonitorElementData::Value::Access access(internal_->value_);
+      accessAxis(*access.object, axis)->SetTimeFormat(format);
+    }
+    void MonitorElement::setTitle(const std::string &title) {
+      makeMutable();
+      MonitorElementData::Value::Access access(internal_->value_);
+      access.object->SetTitle(title.c_str());
+    }
 
     void MonitorElement::softReset() { assert(!"NIY"); }
 
     TObject *MonitorElement::getRootObject() const {
-      // users could to anything o the object, including modifications
+      // users could to anything to the object, including modifications
       makeMutable();
       MonitorElementData::Value::Access access(internal_->value_);
       // leaking the pointer without the lock. Would be better to hold the lock
@@ -280,8 +358,8 @@ namespace dqm {
       os << "MonitorElement@" << (void*) this << "{\n  .internal_ = " << (void*) this->internal_ << ",\n";
       os << "  .is_owned_ = " << this->is_owned_ << ", .is_readonly_ = " << this->is_readonly_ << ",\n";
       if (this->internal_) {
-        os << "\n  .kind_ = " << static_cast<int>(this->internal_->key_.kind_) << ",\n";
-        os << "\n  .scope_ = " << static_cast<int>(this->internal_->key_.scope_) << ",\n";
+        os << "  .kind_ = " << static_cast<int>(this->internal_->key_.kind_) << ",\n";
+        os << "  .scope_ = " << static_cast<int>(this->internal_->key_.scope_) << ",\n";
         os << "  .path_ = " << this->getFullname() << ",\n";
         os << "  .coveredrange_ = [" << this->internal_->key_.coveredrange_.startRun() << ":" << this->internal_->key_.coveredrange_.startLumi() 
            << " - " << this->internal_->key_.coveredrange_.endRun() << ":" << this->internal_->key_.coveredrange_.endLumi() << "],\n";

@@ -376,14 +376,17 @@ namespace dqm {
       // Be careful with the root pointers. The const is also serious; changing
       // parts of the key could corrupt the sorted datastructures.
       MonitorElementData const* internal() { return internal_; }
-      // give up ownership of the data: the ME is left in an invalid state
+      // Give up ownership of the data: the ME is left in an invalid state
       // until setInternal is called again.
       MonitorElementData const* release();
-      // replace the data inside the ME. Ownership needs to be set via the
+      // Replace the data inside the ME. Ownership needs to be set via the
       // additional arguments.
       void setInternal(MonitorElementData const* data, bool is_owned = false, bool is_readonly = false);
       // Display as string. Could be made "official".
       void dump(std::ostream& os) const;
+      // Get axis from TH1 by number, as our APIs require. Needs the TH1 passed
+      // since this function can't take the lock.
+      static TAxis* accessAxis(TH1& object, int axis);
 
     protected:
       // The actual object holding ME state, including a potential ROOT object.
