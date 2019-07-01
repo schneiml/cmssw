@@ -35,15 +35,15 @@ namespace dqm {
     ME* IBooker<ME, STORE>::bookME(TString const& name, MonitorElementData::Kind kind, TH1* object) {
       MonitorElementData* data = new MonitorElementData();
       MonitorElementData::Key key;
-      MonitorElementData::Value::Access value(data->value_);
       key.kind_ = kind;
-      MonitorElementData::Path path;
       std::string fullpath = pwd() + std::string(name.View());
-      path.set(fullpath, MonitorElementData::Path::Type::DIR_AND_NAME);
-      key.path_ = path;
+      key.path_.set(fullpath, MonitorElementData::Path::Type::DIR_AND_NAME);
       key.scope_ = MonitorElementData::Scope::DEFAULT;
-      value.object = std::unique_ptr<TH1>(object);
       data->key_ = key;
+      {
+        MonitorElementData::Value::Access value(data->value_);
+        value.object = std::unique_ptr<TH1>(object);
+      }
 
       std::unique_ptr<ME> me = std::make_unique<ME>(data, /* is_owned */ true, /* is_readonly */ false);
       ME* me_ptr = store_->putME(std::move(me));
@@ -70,12 +70,15 @@ namespace dqm {
         ME::checkCompatibility(me.get(), existing.get());
 
         // Delete previously created ME because we have to use the existing one
+        TRACE("replacing " << *me);
         me = nullptr;
 
+        TRACE("with " << *existing.get());
         return existing.get();
       } else {
         auto result = me.get();
         localmes_[me->internal()->key_] = std::move(me);
+        TRACE("booked " << *result);
         return result;
       }
     }
@@ -320,11 +323,13 @@ namespace dqm {
         auto& range = key.coveredrange_;
         auto beginrun = range.startRun();
         auto endrun = range.endRun();
+        // the default lumi value is LuminosityBlockID::maxLuminosityBlockNumber(),
+        // not edm::invalidLuminosityBlockNumber (== 0). LuminosityBlockRange does
+        // not even allow lumi values of 0, and replaces them with max.
         auto beginlumi = range.startLumi();
         auto endlumi = range.endLumi();
 
-        if (beginrun == edm::invalidRunNumber && endrun == edm::invalidRunNumber &&
-            beginlumi == edm::invalidLuminosityBlockNumber && endlumi == edm::invalidLuminosityBlockNumber) {
+        if (beginrun == edm::invalidRunNumber && endrun == edm::invalidRunNumber) {
           // this is a prototype, we can simply use it.
           key.coveredrange_ = edm::LuminosityBlockRange(run, lumi, run, lumi);
           is_full = false;
@@ -332,6 +337,11 @@ namespace dqm {
         }
         if (key.scope_ == MonitorElementData::Scope::RUN) {
           if (beginrun == run && endrun == run) {
+            if (endlumi == edm::LuminosityBlockID::maxLuminosityBlockNumber()) {
+              // LuminosityBlockRange won't  store a 0 lumi ID, so we need to
+              // reconstruct it here.
+              endlumi = 0;
+            }
             key.coveredrange_ = edm::LuminosityBlockRange(run, std::min(lumi, beginlumi), run, std::max(lumi, endlumi));
             is_full = false;
             return;
@@ -378,7 +388,8 @@ namespace dqm {
           assert(masterme || !"Master does not have the ME we need.");
 
           // update ME and store it
-          me->setInternal(masterme->internal());
+          me->setInternal(masterme->internal(), /* is_owned */ false, /* is_readonly */ false);
+          assert(!masterme->isReadonly()); // else above would need to handle it
           assert(!(key < me->internal()->key_) && !(me->internal()->key_ < key));
           newmes[key].swap(me);
         }
@@ -390,7 +401,7 @@ namespace dqm {
       // Update and clone MEs that we own.
       // The rules are:
       // - There is at least one ME for each path/name
-      // - If no ME for a given path/name is in use, there is one with run/lumi=0
+      // - If no ME for a given path/name is in use, there is one with run=0
       // - All MEs with run/lumi set are currently being filled.
       std::map<MonitorElementData::Key, std::unique_ptr<ME>> newmes;
       for (auto& it : localmes_) {
@@ -400,25 +411,41 @@ namespace dqm {
 
         // create updated key
         MonitorElementData::Key key = it.first;
-        bool is_full;
+        bool is_full = false;
         updaterange(key, is_full);
 
         // clone if needed
+        // This should only ever be happen when there are concurrent lumis.
+        // In that case, special care must be taken since ME* in subsystem code
+        // can point to the wrong per-lumi objects (master logic above handles
+        // that for edm::stream based moudules).
         if (is_full) {
-          MonitorElementData* clone = cloneMonitorElementData(me->internal());
-          // put back the old ME, we still need it
-          newmes[key].swap(me);
-          // ... and use the clone.
-          auto cloneme = std::make_unique<ME>(clone, /* is_owned */ true, /* is_readonly */ false);
-          cloneme->Reset();
-          me.swap(cloneme);
-        }
+          // first, check that the expected ME does not already exist somewhere
+          if (localmes_.count(key) == 0 && newmes.count(key) == 0) {
+            MonitorElementData* clone = cloneMonitorElementData(me->internal());
+            clone->key_ = key;
+            auto cloneme = std::make_unique<ME>(clone, /* is_owned */ true, /* is_readonly */ false);
+            cloneme->Reset();
+            TRACE("clone " << *me << " into " << *cloneme);
+            newmes[key].swap(cloneme);
+            assert(cloneme == nullptr);
+          } 
+          // else there is nothing to do, we have the needed per lumi instance
+          // already somewhere else.
 
-        // update the key. This is not save in general, so const_cast is almost
-        // appropriate.
-        const_cast<MonitorElementData*>(me->internal())->key_ = key;
-        // ... and save into the new map.
-        newmes[key].swap(me);
+          // put back the old ME, we still need it
+          TRACE("saved " << *me);
+          newmes[me->internal()->key_].swap(me);
+          assert(me == nullptr);
+        } else {
+          // update the key. This is not save in general, so const_cast is almost
+          // appropriate.
+          const_cast<MonitorElementData*>(me->internal())->key_ = key;
+          // ... and save into the new map.
+          newmes[key].swap(me);
+          assert(me == nullptr);
+          TRACE("updated " << *newmes[key]);
+        }
       }
 
       localmes_.swap(newmes);
@@ -528,21 +555,6 @@ namespace dqm {
 
     template <class ME>
     void DQMStore<ME>::registerProduct(edm::Handle<MonitorElementCollection> mes) {
-      if (!mes.isValid())
-        return;
-
-      for (auto h : inputs_) {
-        if (h.isValid()) {
-          if (h.product() == mes.product()) {
-            // we already know this product.
-            return;
-          }
-        } else {
-          // product not valid, we might drop it. (TODO)
-          // Can this happen if e.g. Lumi products go out of scope?
-        }
-      }
-
       inputs_.push_back(mes);
     }
 
@@ -563,8 +575,8 @@ namespace dqm {
     Range dirRange(MonitorElementCollection const& mec, MonitorElementData::Path const& dir) {
       assert(dir.getObjectname() == "");
       MonitorElementData proto;
-      // all other key fields are default-initialied -- this relies on
-      // invaldidRun/Lumi sorting below any valid lumi/run, which it does.
+      // all other key fields are default-initialised -- this relies on
+      // invalidRun sorting below any valid lumi/run, which it does.
       proto.key_ = MonitorElementData::Key{dir};
       Range r;
       r.begin_ = std::lower_bound(mec.begin(), mec.end(), proto);
@@ -580,16 +592,96 @@ namespace dqm {
     Range nameRange(MonitorElementCollection const& mec, MonitorElementData::Path const& fullpath) {
       MonitorElementData proto;
       // all other key fields are default-initialised -- this relies on
-      // invaldidRun/Lumi sorting below any valid lumi/run, which it does.
+      // invalidRun sorting below any valid lumi/run, which it does.
       proto.key_ = MonitorElementData::Key{fullpath};
       Range r;
       r.begin_ = std::lower_bound(mec.begin(), mec.end(), proto);
       r.end_ = r.begin_;
-      while (r.end_ != mec.end() && r.end_->key_.path_.getDirname() == fullpath.getDirname() &&
-             r.end_->key_.path_.getObjectname() == fullpath.getObjectname()) {
+      while (r.end_ != mec.end() && r.end_->key_.path_ == fullpath) {
         r.end_++;
       }
       return r;
+    }
+
+    template <class ME>
+    ME* DQMStore<ME>::importFromProduct(MonitorElementData::Path const& path) {
+      // TODO: make this first part a DQMStore::find() or sth.?
+      auto searchkey = MonitorElementData::Key{path};
+      auto candidate = localmes_.lower_bound(searchkey);
+      std::unique_ptr<ME> me = nullptr;
+      if (candidate != localmes_.end() && candidate->first.path_ == path) {
+        // this is the object we want, take it out
+        me.swap(candidate->second);
+        auto next = localmes_.erase(candidate);
+        // make sure we did not have two MEs with same path; not sure how we
+        // would handle that in harvesting.
+        assert(next == localmes_.end() || !(next->first.path_ == path));
+      }
+      for (auto& collection : inputs_) {
+        assert(collection.isValid());
+        for (auto& meData : nameRange(*collection, path)) {
+          // Return first element
+          if (me == nullptr) {
+            // Make a copy of ME sharing the underlying MonitorElementData and root TH1 object
+            me = std::make_unique<dqm::harvesting::MonitorElement>(&meData, /* is_owned */ false, /* is_readonly */ true);
+          } else {
+            me->setInternal(&meData, /* is_owned */ false, /* is_readonly */ true);
+          }
+          // put ME (back) into localmes_.
+          ME* retval = me.get();
+          localmes_[meData.key_].swap(me);
+          return retval;
+        }
+      }
+      // not in the products, just put back what we had.
+      ME* retval = me.get();
+      localmes_[me->internal()->key_].swap(me);
+      // might be nullptr!
+      return retval;
+    }
+
+    template <class ME>
+    void DQMStore<ME>::loadFromProduct() {
+      // Do a "cleanup" pass over the inputs first. Maybe this should go
+      // somewhere else, but normally this should be called at the right time.
+      // This removes invalid products.
+      std::vector<edm::Handle<MonitorElementCollection>> newinputs;
+      for (auto const& c : inputs_) {
+        if (c.isValid()) {
+          newinputs.push_back(c);
+        }
+      }
+      inputs_.swap(newinputs);
+
+      // collect all names first, since the import will modify the localmes_ map.
+      std::set<std::string> names;
+      for (auto const& [key, me] : localmes_) {
+        (void) key;
+        names.insert(me->getFullname());
+      }
+      for (auto const& name : names) {
+        MonitorElementData::Path path;
+        path.set(name, MonitorElementData::Path::Type::DIR_AND_NAME);
+        ME* meptr = importFromProduct(path);
+        if (meptr) {
+          // we had an update, touch the thing since we only update what we want
+          // to own here.
+          meptr->getTH1();
+        }
+      }
+    }
+
+    template <class ME>
+    void DQMStore<ME>::cleanupFromProduct() {
+      auto it = localmes_.begin();
+      while (it != localmes_.end()) {
+        if (it->second->isReadonly()) {
+          // we don't care about these at all; just destroy it.
+          it = localmes_.erase(it);
+        } else {
+          it++;
+        }
+      }
     }
 
     template <class ME, class STORE>
@@ -641,34 +733,19 @@ namespace dqm {
       MonitorElementData::Path path;
       path.set(fullpath, MonitorElementData::Path::Type::DIR_AND_NAME);
 
-      for (auto& [key, me] : store_->localmes_) {
-        (void)key;  // unused
-        TRACE(me->getFullname());
-        if (me->internal()->key_.path_.getDirname() == path.getDirname() &&
-            me->internal()->key_.path_.getObjectname() == path.getObjectname()) {
-          return me.get();
-        }
+      auto searchkey = MonitorElementData::Key{path};
+      auto candidate = store_->localmes_.lower_bound(searchkey);
+      if (candidate != store_->localmes_.end() && candidate->first.path_ == path) {
+        return candidate->second.get();
       }
+      // else, no local ME found: try to import
+      ME* meptr = store_->importFromProduct(path);
 
-      for (auto& collection : store_->inputs_) {
-        TRACE(collection->size());
-        TRACE(&*collection);
-        for (auto const& meData : *collection) {
-          TRACE(&meData);
-          TRACE(meData.key_.path_.getDirname()
-                << " " << meData.key_.path_.getObjectname() << " " << (void*)meData.key_.path_.getObjectname().c_str());
-        }
-        for (auto& meData : nameRange(*collection, path)) {
-          // Return first element
-          // Make a copy of ME sharing the underlying MonitorElementData and root TH1 object
-          // TODO: this will silently fail once the product goes invalid. Maybe we should use shared_ptr everywhere.
-          auto& slot = store_->localmes_[meData.key_];
-          slot = std::make_unique<dqm::harvesting::MonitorElement>(&meData, /* is_owned */ false, /* is_readonly */ true);
-          TRACE(*slot);
-          return slot.get();
-        }
+      if (meptr) {
+        return meptr;
       }
-      std::cout << "get(): returning nullptr" << std::endl;
+      // else ...
+      TRACE("get(): returning nullptr");
       return nullptr;
     }
 

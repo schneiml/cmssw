@@ -98,10 +98,27 @@ public:
       dqmstore_->registerProduct(h);
     }
 
+    // update MEs that we have in the DQMStore, but that might have a new
+    // version in the products.
+    dqmstore_->loadFromProduct();
+
     dqmEndLuminosityBlock(*dqmstore_, *dqmstore_, lumi, es);
 
-    lumi.emplace(lumiToken_, dqmstore_->toProduct(edm::Transition::EndLuminosityBlock, lumi.run(), lumi.luminosityBlock()));
+    // subsystem code might have triggered more imports from the products (by
+    // calling get() et. al.). We remove the proxy MEs now if they where not
+    // modified, no need to save them for later.
+    // This is important also since the MEData's from the products might be
+    // deallocated at the end of this method.
+    dqmstore_->cleanupFromProduct();
 
+    // call enterLumi in the end since MEs might have been booked in user code.
+    // This will add the required metadata to them.
+    dqmstore_->enterLumi(lumi.run(), lumi.luminosityBlock());
+
+    // finally call toProduct(). We will end up with prototypes for the MEs
+    // that where modified by the subsystem code, which will be replaced/reused
+    // in the next transition.
+    lumi.emplace(lumiToken_, dqmstore_->toProduct(edm::Transition::EndLuminosityBlock, lumi.run(), lumi.luminosityBlock()));
   }
 
   void endLuminosityBlock(edm::LuminosityBlock const &, edm::EventSetup const &) final {};
@@ -117,10 +134,28 @@ public:
       dqmstore_->registerProduct(h);
     }
 
+    // update MEs that we have in the DQMStore, but that might have a new
+    // version in the products.
+    dqmstore_->loadFromProduct();
+
     // TODO: we should, and probably can, rename this.
     dqmEndJob(*dqmstore_, *dqmstore_);
 
-    run.emplace(runToken_, dqmstore_->toProduct(edm::Transition::EndRun, run.run(), 0));
+    // subsystem code might have triggered more imports from the products (by
+    // calling get() et. al.). We remove the proxy MEs now if they where not
+    // modified, no need to save them for later.
+    // This is important also since the MEData's from the products might be
+    // deallocated at the end of this method.
+    dqmstore_->cleanupFromProduct();
+
+    // call enterLumi in the end since MEs might have been booked in user code.
+    // This will add the required metadata to them.
+    dqmstore_->enterLumi(run.run(), edm::invalidLuminosityBlockNumber);
+
+    // finally call toProduct(). We will end up with prototypes for the MEs
+    // that where modified by the subsystem code, which will be replaced/reused
+    // in the next transition.
+    run.emplace(runToken_, dqmstore_->toProduct(edm::Transition::EndRun, run.run(), edm::invalidLuminosityBlockNumber));
   }
 
   void endRun(edm::Run const &, edm::EventSetup const &) override {};

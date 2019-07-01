@@ -97,7 +97,7 @@ public:
   }
 
   void beginLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& setup) {
-    dqmstore_->enterLumi(lumi.luminosityBlock(), lumi.run());
+    dqmstore_->enterLumi(lumi.run(), lumi.luminosityBlock());
     dqmBeginLuminosityBlock(lumi, setup);
   }
 
