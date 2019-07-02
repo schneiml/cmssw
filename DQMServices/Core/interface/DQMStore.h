@@ -1096,6 +1096,8 @@ namespace dqm {
       // TODO: Add a leaveLumi method to null out MonitorElementData pointers for logical sense.
       // void leaveLumi(edm::RunNumber_t run, edm::LuminosityBlockNumber_t lumi);
       MonitorElementCollection toProduct(edm::Transition t, edm::RunNumber_t run, edm::LuminosityBlockNumber_t lumi);
+      // Remove (all) products.
+      void clearProducts();
       // Register a set of MEs to inputs_. Everything we do here needs to be
       // lazy, since we will usually register lots of products but read only
       // few MEs from them.

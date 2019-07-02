@@ -10,9 +10,14 @@ namespace dqm {
     }
 
     void MonitorElement::setInternal(MonitorElementData const *data, bool is_owned, bool is_readonly) {
-      assert(!is_owned_);  // could be handled but not needed for now
+      if (is_owned_) {
+        // this should only beed needed to remove prototypes in harvesting,
+        // so we check for that to not loose data by accident.
+        assert(internal_->key_.coveredrange_.startRun() == 0);
+        delete internal_;
+      }
       internal_ = data;
-      is_owned_ = is_owned_;
+      is_owned_ = is_owned;
       is_readonly_ = is_readonly;
     }
 

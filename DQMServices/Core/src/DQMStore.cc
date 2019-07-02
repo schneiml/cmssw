@@ -553,6 +553,12 @@ namespace dqm {
       return product;
     }
 
+
+    template <class ME>
+    void DQMStore<ME>::clearProducts() {
+      inputs_.clear();
+    }
+
     template <class ME>
     void DQMStore<ME>::registerProduct(edm::Handle<MonitorElementCollection> mes) {
       inputs_.push_back(mes);
@@ -642,17 +648,6 @@ namespace dqm {
 
     template <class ME>
     void DQMStore<ME>::loadFromProduct() {
-      // Do a "cleanup" pass over the inputs first. Maybe this should go
-      // somewhere else, but normally this should be called at the right time.
-      // This removes invalid products.
-      std::vector<edm::Handle<MonitorElementCollection>> newinputs;
-      for (auto const& c : inputs_) {
-        if (c.isValid()) {
-          newinputs.push_back(c);
-        }
-      }
-      inputs_.swap(newinputs);
-
       // collect all names first, since the import will modify the localmes_ map.
       std::set<std::string> names;
       for (auto const& [key, me] : localmes_) {

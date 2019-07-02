@@ -54,8 +54,8 @@
 struct MonitorElementData {
   // This is technically a union, but the struct is safer.
   struct Scalar {
-    int64_t num;
-    double real;
+    int64_t num = 0;
+    double real = 0;
     std::string str;
   };
 
