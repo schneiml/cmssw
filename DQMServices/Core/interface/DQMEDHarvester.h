@@ -119,6 +119,10 @@ public:
     // that where modified by the subsystem code, which will be replaced/reused
     // in the next transition.
     lumi.emplace(lumiToken_, dqmstore_->toProduct(edm::Transition::EndLuminosityBlock, lumi.run(), lumi.luminosityBlock()));
+
+    // The run/lumi products *will* silently go bad at some point, so we better
+    // don't leak any handles out of this method.
+    dqmstore_->clearProducts();
   }
 
   void endLuminosityBlock(edm::LuminosityBlock const &, edm::EventSetup const &) final {};
@@ -156,6 +160,10 @@ public:
     // that where modified by the subsystem code, which will be replaced/reused
     // in the next transition.
     run.emplace(runToken_, dqmstore_->toProduct(edm::Transition::EndRun, run.run(), edm::invalidLuminosityBlockNumber));
+
+    // The run/lumi products *will* silently go bad at some point, so we better
+    // don't leak any handles out of this method.
+    dqmstore_->clearProducts();
   }
 
   void endRun(edm::Run const &, edm::EventSetup const &) override {};
