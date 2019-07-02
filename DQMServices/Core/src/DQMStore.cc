@@ -611,7 +611,6 @@ namespace dqm {
 
     template <class ME>
     ME* DQMStore<ME>::importFromProduct(MonitorElementData::Path const& path) {
-      // TODO: make this first part a DQMStore::find() or sth.?
       auto searchkey = MonitorElementData::Key{path};
       auto candidate = localmes_.lower_bound(searchkey);
       std::unique_ptr<ME> me = nullptr;
@@ -639,10 +638,12 @@ namespace dqm {
           return retval;
         }
       }
-      // not in the products, just put back what we had.
-      ME* retval = me.get();
-      localmes_[me->internal()->key_].swap(me);
       // might be nullptr!
+      ME* retval = me.get();
+      // not in the products, just put back what we had.
+      if (me) {
+        localmes_[me->internal()->key_].swap(me);
+      }
       return retval;
     }
 
@@ -659,8 +660,8 @@ namespace dqm {
         path.set(name, MonitorElementData::Path::Type::DIR_AND_NAME);
         ME* meptr = importFromProduct(path);
         if (meptr) {
-          // we had an update, touch the thing since we only update what we want
-          // to own here.
+          // we had an update, touch the thing since we only update here what
+          // we want to own in the future.
           meptr->getTH1();
         }
       }
