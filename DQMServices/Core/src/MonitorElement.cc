@@ -185,29 +185,86 @@ namespace dqm {
       } else if (axis == 3) {
         return object.GetZaxis();
       }
-      assert(!"Aixs number must be 1, 2, or 3.");
+      assert(!"Axis number must be 1, 2, or 3.");
     }
 
     // const and data-independent -- safe
-    int MonitorElement::getNbinsX() const { assert(!"NIY"); }
-    int MonitorElement::getNbinsY() const { assert(!"NIY"); }
-    int MonitorElement::getNbinsZ() const { assert(!"NIY"); }
-    std::string MonitorElement::getAxisTitle(int axis) const { assert(!"NIY"); }
-    std::string MonitorElement::getTitle() const { assert(!"NIY"); }
+    int MonitorElement::getNbinsX() const {
+      MonitorElementData::Value::Access access (internal_->value_);
+      return access.object->GetNbinsX();
+    }
+    int MonitorElement::getNbinsY() const {
+      MonitorElementData::Value::Access access (internal_->value_);
+      return access.object->GetNbinsY();
+    }
+    int MonitorElement::getNbinsZ() const {
+      MonitorElementData::Value::Access access (internal_->value_);
+      return access.object->GetNbinsZ();
+    }
+    std::string MonitorElement::getAxisTitle(int axis) const {
+      MonitorElementData::Value::Access access (internal_->value_);
+      return accessAxis(*access.object, axis)->GetTitle();
+    }
+    std::string MonitorElement::getTitle() const {
+      MonitorElementData::Value::Access access (internal_->value_);
+      return access.object->GetTitle();
+    }
 
     // const but data-dependent -- semantically unsafe in RECO
-    double MonitorElement::getMean(int axis) const { assert(!"NIY"); }
-    double MonitorElement::getMeanError(int axis) const { assert(!"NIY"); }
-    double MonitorElement::getRMS(int axis) const { assert(!"NIY"); }
-    double MonitorElement::getRMSError(int axis) const { assert(!"NIY"); }
-    double MonitorElement::getBinContent(int binx) const { assert(!"NIY"); }
-    double MonitorElement::getBinContent(int binx, int biny) const { assert(!"NIY"); }
-    double MonitorElement::getBinContent(int binx, int biny, int binz) const { assert(!"NIY"); }
-    double MonitorElement::getBinError(int binx) const { assert(!"NIY"); }
-    double MonitorElement::getBinError(int binx, int biny) const { assert(!"NIY"); }
-    double MonitorElement::getBinError(int binx, int biny, int binz) const { assert(!"NIY"); }
-    double MonitorElement::getEntries() const { assert(!"NIY"); }
-    double MonitorElement::getBinEntries(int bin) const { assert(!"NIY"); }
+    double MonitorElement::getMean(int axis) const {
+      MonitorElementData::Value::Access access (internal_->value_);
+      return access.object->GetMean(axis);
+    }
+    double MonitorElement::getMeanError(int axis) const {
+      MonitorElementData::Value::Access access (internal_->value_);
+      return access.object->GetMeanError(axis);
+    }
+    double MonitorElement::getRMS(int axis) const {
+      MonitorElementData::Value::Access access (internal_->value_);
+      return access.object->GetRMS(axis);
+    }
+    double MonitorElement::getRMSError(int axis) const {
+      MonitorElementData::Value::Access access (internal_->value_);
+      return access.object->GetRMSError(axis);
+    }
+    double MonitorElement::getBinContent(int binx) const {
+      MonitorElementData::Value::Access access (internal_->value_);
+      return access.object->GetBinContent(binx);
+    }
+    double MonitorElement::getBinContent(int binx, int biny) const {
+      MonitorElementData::Value::Access access (internal_->value_);
+      return access.object->GetBinContent(binx, biny);
+    }
+    double MonitorElement::getBinContent(int binx, int biny, int binz) const {
+      MonitorElementData::Value::Access access (internal_->value_);
+      return access.object->GetBinContent(binx, biny, binz);
+    }
+    double MonitorElement::getBinError(int binx) const {
+      MonitorElementData::Value::Access access (internal_->value_);
+      return access.object->GetBinError(binx);
+    }
+    double MonitorElement::getBinError(int binx, int biny) const {
+      MonitorElementData::Value::Access access (internal_->value_);
+      return access.object->GetBinError(binx, biny);
+    }
+    double MonitorElement::getBinError(int binx, int biny, int binz) const {
+      MonitorElementData::Value::Access access (internal_->value_);
+      return access.object->GetBinError(binx, biny, binz);
+    }
+    double MonitorElement::getEntries() const {
+      MonitorElementData::Value::Access access (internal_->value_);
+      return access.object->GetEntries();
+    }
+    double MonitorElement::getBinEntries(int bin) const {
+      MonitorElementData::Value::Access access (internal_->value_);
+      if (internal_->key_.kind_ == Kind::TPROFILE) {
+        return static_cast<TProfile*>(access.object.get())->GetBinEntries(bin);
+      } else if (internal_->key_.kind_ == Kind::TPROFILE2D) {
+        return static_cast<TProfile2D*>(access.object.get())->GetBinEntries(bin);
+      } else {
+        assert(!"getBinEntries only exists on TProfile and TProfile2D!");
+      }
+    }
 
     // non-const -- thread safety and semantical issues
     void MonitorElement::setBinContent(int binx, double content) {
@@ -243,18 +300,13 @@ namespace dqm {
     void MonitorElement::setBinEntries(int bin, double nentries) {
       makeMutable();
       MonitorElementData::Value::Access access(internal_->value_);
-      // TODO: consider looking at Kind and doing a static_cast here.
-      auto tprofile = dynamic_cast<TProfile*>(access.object.get());
-      if (tprofile) {
-        tprofile->SetBinEntries(bin, nentries);
-        return;
+      if (internal_->key_.kind_ == Kind::TPROFILE) {
+        return static_cast<TProfile*>(access.object.get())->SetBinEntries(bin, nentries);
+      } else if (internal_->key_.kind_ == Kind::TPROFILE2D) {
+        return static_cast<TProfile2D*>(access.object.get())->SetBinEntries(bin, nentries);
+      } else {
+        assert(!"setBinEntries only exists on TProfile and TProfile2D!");
       }
-      auto tprofile2d = dynamic_cast<TProfile2D*>(access.object.get());
-      if (tprofile2d) {
-        tprofile2d->SetBinEntries(bin, nentries);
-        return;
-      }
-      assert(!"setBinEntries is only supported on TProfile and TProfile2D.");
     }
     void MonitorElement::setEntries(double nentries) {
       makeMutable();
@@ -353,11 +405,35 @@ namespace dqm {
       return access.scalar.str;
     }
 
-    void MonitorElement::setXTitle(std::string const &title) { assert(!"NIY"); }
-    void MonitorElement::setYTitle(std::string const &title) { assert(!"NIY"); }
-    void MonitorElement::enableSumw2() { assert(!"NIY"); }
-    void MonitorElement::disableAlphanumeric() { assert(!"NIY"); }
-    void MonitorElement::setOption(const char *option) { assert(!"NIY"); }
+    void MonitorElement::setXTitle(std::string const &title) {
+      makeMutable();
+      MonitorElementData::Value::Access access(internal_->value_);
+      access.object->SetXTitle(title.c_str());
+    }
+    void MonitorElement::setYTitle(std::string const &title) {
+      makeMutable();
+      MonitorElementData::Value::Access access(internal_->value_);
+      access.object->SetYTitle(title.c_str());
+    }
+
+    void MonitorElement::enableSumw2() {
+      makeMutable();
+      MonitorElementData::Value::Access access(internal_->value_);
+      access.object->Sumw2();
+    }
+
+    void MonitorElement::disableAlphanumeric() {
+      makeMutable();
+      MonitorElementData::Value::Access access(internal_->value_);
+      access.object->GetXaxis()->SetNoAlphanumeric(false);
+      access.object->GetYaxis()->SetNoAlphanumeric(false);
+    }
+
+    void MonitorElement::setOption(const char *option) {
+      makeMutable();
+      MonitorElementData::Value::Access access(internal_->value_);
+      access.object->SetOption(option);
+    }
 
     void MonitorElement::dump(std::ostream& os) const {
       os << "MonitorElement@" << (void*) this << "{\n  .internal_ = " << (void*) this->internal_ << ",\n";
