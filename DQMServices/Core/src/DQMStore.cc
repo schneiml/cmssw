@@ -70,15 +70,12 @@ namespace dqm {
         ME::checkCompatibility(me.get(), existing.get());
 
         // Delete previously created ME because we have to use the existing one
-        TRACE("replacing " << *me);
         me = nullptr;
 
-        TRACE("with " << *existing.get());
         return existing.get();
       } else {
         auto result = me.get();
         localmes_[me->internal()->key_] = std::move(me);
-        TRACE("booked " << *result);
         return result;
       }
     }
@@ -426,7 +423,6 @@ namespace dqm {
             clone->key_ = key;
             auto cloneme = std::make_unique<ME>(clone, /* is_owned */ true, /* is_readonly */ false);
             cloneme->Reset();
-            TRACE("clone " << *me << " into " << *cloneme);
             newmes[key].swap(cloneme);
             assert(cloneme == nullptr);
           } 
@@ -434,7 +430,6 @@ namespace dqm {
           // already somewhere else.
 
           // put back the old ME, we still need it
-          TRACE("saved " << *me);
           newmes[me->internal()->key_].swap(me);
           assert(me == nullptr);
         } else {
@@ -444,7 +439,6 @@ namespace dqm {
           // ... and save into the new map.
           newmes[key].swap(me);
           assert(me == nullptr);
-          TRACE("updated " << *newmes[key]);
         }
       }
 
