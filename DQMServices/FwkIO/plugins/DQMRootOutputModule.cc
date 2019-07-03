@@ -24,36 +24,44 @@
 #include "TString.h"
 #include "TH1.h"
 #include "TH2.h"
+#include "TH3.h"
 #include "TProfile.h"
+#include "TProfile2D.h"
 
 // user include files
 #include "FWCore/Framework/interface/OutputModule.h"
 #include "FWCore/Framework/interface/one/OutputModule.h"
 #include "FWCore/Framework/interface/RunForOutput.h"
 #include "FWCore/Framework/interface/LuminosityBlockForOutput.h"
-#include "DQMServices/Core/interface/DQMStore.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/MessageLogger/interface/JobReport.h"
 #include "FWCore/Utilities/interface/Digest.h"
 #include "FWCore/Utilities/interface/GlobalIdentifier.h"
+#include "FWCore/Framework/interface/GetterOfProducts.h"
 
 #include "DataFormats/Provenance/interface/ProcessHistory.h"
 #include "DataFormats/Provenance/interface/ProcessHistoryID.h"
 #include "DataFormats/Provenance/interface/ProcessHistoryRegistry.h"
 #include "FWCore/ParameterSet/interface/Registry.h"
 
+#include "DataFormats/Histograms/interface/MonitorElementCollection.h"
+
 #include "format.h"
 
 namespace {
-  using dqm::harvesting::DQMStore;
-  using dqm::harvesting::MonitorElement;
+  class YesPlease {
+  public:
+    bool operator()(edm::BranchDescription const& branchDescription) {
+      return true;
+    }
+  };
 
   class TreeHelperBase {
   public:
     TreeHelperBase() : m_wasFilled(false), m_firstIndex(0), m_lastIndex(0) {}
     virtual ~TreeHelperBase() {}
-    void fill(MonitorElement* iElement) {
+    void fill(MonitorElementData const* iElement) {
       doFill(iElement);
       if (m_wasFilled) {
         ++m_lastIndex;
@@ -70,7 +78,7 @@ namespace {
     }
 
   private:
-    virtual void doFill(MonitorElement*) = 0;
+    virtual void doFill(MonitorElementData const*) = 0;
     bool m_wasFilled;
     ULong64_t m_firstIndex;
     ULong64_t m_lastIndex;
@@ -83,10 +91,11 @@ namespace {
         : m_tree(iTree), m_flagBuffer(0), m_fullNameBufferPtr(iFullNameBufferPtr) {
       setup();
     }
-    void doFill(MonitorElement* iElement) override {
-      *m_fullNameBufferPtr = iElement->getFullname();
+    void doFill(MonitorElementData const* iElement) override {
+      MonitorElementData::Value::Access access(iElement->value_);
+      *m_fullNameBufferPtr = iElement->key_.path_.getDirname() + iElement->key_.path_.getObjectname();
       m_flagBuffer = 0;
-      m_bufferPtr = dynamic_cast<T*>(iElement->getRootObject());
+      m_bufferPtr = dynamic_cast<T*>(access.object.get());
       assert(nullptr != m_bufferPtr);
       //std::cout <<"#entries: "<<m_bufferPtr->GetEntries()<<std::endl;
       m_tree->Fill();
@@ -113,10 +122,11 @@ namespace {
       setup();
     }
 
-    void doFill(MonitorElement* iElement) override {
-      *m_fullNameBufferPtr = iElement->getFullname();
+    void doFill(MonitorElementData const* iElement) override {
+      MonitorElementData::Value::Access access(iElement->value_);
+      *m_fullNameBufferPtr = iElement->key_.path_.getDirname() + iElement->key_.path_.getObjectname();
       m_flagBuffer = 0;
-      m_buffer = iElement->getIntValue();
+      m_buffer = access.scalar.num;
       m_tree->Fill();
     }
 
@@ -138,10 +148,11 @@ namespace {
         : m_tree(iTree), m_flagBuffer(0), m_fullNameBufferPtr(iFullNameBufferPtr) {
       setup();
     }
-    void doFill(MonitorElement* iElement) override {
-      *m_fullNameBufferPtr = iElement->getFullname();
+    void doFill(MonitorElementData const* iElement) override {
+      MonitorElementData::Value::Access access(iElement->value_);
+      *m_fullNameBufferPtr = iElement->key_.path_.getDirname() + iElement->key_.path_.getObjectname();
       m_flagBuffer = 0;
-      m_buffer = iElement->getFloatValue();
+      m_buffer = access.scalar.real;
       m_tree->Fill();
     }
 
@@ -164,10 +175,11 @@ namespace {
         : m_tree(iTree), m_flagBuffer(0), m_fullNameBufferPtr(iFullNameBufferPtr), m_bufferPtr(&m_buffer) {
       setup();
     }
-    void doFill(MonitorElement* iElement) override {
-      *m_fullNameBufferPtr = iElement->getFullname();
+    void doFill(MonitorElementData const* iElement) override {
+      MonitorElementData::Value::Access access(iElement->value_);
+      *m_fullNameBufferPtr = iElement->key_.path_.getDirname() + iElement->key_.path_.getObjectname();
       m_flagBuffer = 0;
-      m_buffer = iElement->getStringValue();
+      m_buffer = access.scalar.str;
       m_tree->Fill();
     }
 
@@ -232,6 +244,9 @@ private:
   std::vector<edm::ProcessHistoryID> m_seenHistories;
   edm::ProcessHistoryRegistry m_processHistoryRegistry;
   edm::JobReport::Token m_jrToken;
+
+  edm::GetterOfProducts<MonitorElementCollection> runmegetter_;
+  edm::GetterOfProducts<MonitorElementCollection> lumimegetter_;
 };
 
 //
@@ -287,7 +302,17 @@ DQMRootOutputModule::DQMRootOutputModule(edm::ParameterSet const& pset)
       m_filterOnRun(pset.getUntrackedParameter<unsigned int>("filterOnRun")),
       m_enableMultiThread(false),
       m_fullNameBufferPtr(&m_fullNameBuffer),
-      m_indicesTree(nullptr) {}
+      m_indicesTree(nullptr) {
+
+  runmegetter_ = edm::GetterOfProducts<MonitorElementCollection>(YesPlease(), this, edm::InRun);
+  lumimegetter_ = edm::GetterOfProducts<MonitorElementCollection>(YesPlease(), this, edm::InLumi);
+
+  // TODO: this does not exist?
+  callWhenNewProductsRegistered( [this](edm::BranchDescription const& bd ) {
+    runmegetter_(bd);
+    lumimegetter_(bd);
+  });
+}
 
 // DQMRootOutputModule::DQMRootOutputModule(const DQMRootOutputModule& rhs)
 // {
@@ -357,25 +382,24 @@ void DQMRootOutputModule::openFile(edm::FileBlock const&) {
     tree->SetDirectory(m_file.get());  //TFile takes ownership
   }
 
-  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::INT)] = kIntIndex;
-  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::REAL)] = kFloatIndex;
-  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::STRING)] = kStringIndex;
-  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::TH1F)] = kTH1FIndex;
-  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::TH1S)] = kTH1SIndex;
-  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::TH1D)] = kTH1DIndex;
-  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::TH2F)] = kTH2FIndex;
-  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::TH2S)] = kTH2SIndex;
-  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::TH2D)] = kTH2DIndex;
-  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::TH3F)] = kTH3FIndex;
-  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::TPROFILE)] = kTProfileIndex;
-  m_dqmKindToTypeIndex[static_cast<int>(MonitorElement::Kind::TPROFILE2D)] = kTProfile2DIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElementData::Kind::INT)] = kIntIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElementData::Kind::REAL)] = kFloatIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElementData::Kind::STRING)] = kStringIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElementData::Kind::TH1F)] = kTH1FIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElementData::Kind::TH1S)] = kTH1SIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElementData::Kind::TH1D)] = kTH1DIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElementData::Kind::TH2F)] = kTH2FIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElementData::Kind::TH2S)] = kTH2SIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElementData::Kind::TH2D)] = kTH2DIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElementData::Kind::TH3F)] = kTH3FIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElementData::Kind::TPROFILE)] = kTProfileIndex;
+  m_dqmKindToTypeIndex[static_cast<int>(MonitorElementData::Kind::TPROFILE2D)] = kTProfile2DIndex;
 }
 
 void DQMRootOutputModule::write(edm::EventForOutput const&) {}
 
 void DQMRootOutputModule::writeLuminosityBlock(edm::LuminosityBlockForOutput const& iLumi) {
   //std::cout << "DQMRootOutputModule::writeLuminosityBlock"<< std::endl;
-  auto dstore = std::make_unique<DQMStore>();
   m_run = iLumi.id().run();
   m_lumi = iLumi.id().value();
   m_beginTime = iLumi.beginTime().value();
@@ -384,13 +408,26 @@ void DQMRootOutputModule::writeLuminosityBlock(edm::LuminosityBlockForOutput con
 
   if (!shouldWrite)
     return;
-  std::vector<MonitorElement*> items(
-      dstore->getAllContents("", m_enableMultiThread ? m_run : 0, m_enableMultiThread ? m_lumi : 0));
-  for (std::vector<MonitorElement*>::iterator it = items.begin(), itEnd = items.end(); it != itEnd; ++it) {
-    if ((*it)->getLumiFlag()) {
-      std::map<unsigned int, unsigned int>::iterator itFound = m_dqmKindToTypeIndex.find(static_cast<int>((*it)->kind()));
+
+  std::vector<edm::Handle<MonitorElementCollection>> mecs;
+
+  // TODO: GetterOfProducts does not take LuminosityBlockForOutput
+  lumimegetter_.fillHandles(iLumi, mecs);
+
+  // TODO: getManyByType also does not exist
+  iLumi.getManyByType(mecs);
+
+  for (auto handle : mecs) {
+    assert(handle.isValid());
+    for (MonitorElementData const& me : *handle) {
+      assert(me.key_.scope_ == MonitorElementData::Scope::LUMI);
+      assert(me.key_.coveredrange_.startRun() == m_run);
+      assert(me.key_.coveredrange_.endRun() == m_run);
+      assert(me.key_.coveredrange_.startLumi() == m_lumi);
+      assert(me.key_.coveredrange_.endLumi() == m_lumi);
+      std::map<unsigned int, unsigned int>::iterator itFound = m_dqmKindToTypeIndex.find(static_cast<int>(me.key_.kind_));
       assert(itFound != m_dqmKindToTypeIndex.end());
-      m_treeHelpers[itFound->second]->fill(*it);
+      m_treeHelpers[itFound->second]->fill(&me);
     }
   }
 
@@ -433,7 +470,6 @@ void DQMRootOutputModule::writeLuminosityBlock(edm::LuminosityBlockForOutput con
 
 void DQMRootOutputModule::writeRun(edm::RunForOutput const& iRun) {
   //std::cout << "DQMRootOutputModule::writeRun"<< std::endl;
-  auto dstore = std::make_unique<DQMStore>();
   m_run = iRun.id().run();
   m_lumi = 0;
   m_beginTime = iRun.beginTime().value();
@@ -443,12 +479,23 @@ void DQMRootOutputModule::writeRun(edm::RunForOutput const& iRun) {
   if (!shouldWrite)
     return;
 
-  std::vector<MonitorElement*> items(dstore->getAllContents(""));
-  for (std::vector<MonitorElement*>::iterator it = items.begin(), itEnd = items.end(); it != itEnd; ++it) {
-    if (not(*it)->getLumiFlag()) {
-      std::map<unsigned int, unsigned int>::iterator itFound = m_dqmKindToTypeIndex.find(static_cast<int>((*it)->kind()));
+  std::vector<edm::Handle<MonitorElementCollection>> mecs;
+
+  // TODO: GetterOfProducts does not take RunForOutput
+  runmegetter_.fillHandles(iRun, mecs);
+
+  // TODO: getManyByType also does not exist
+  iRun.getManyByType(mecs);
+
+  for (auto handle : mecs) {
+    assert(handle.isValid());
+    for (MonitorElementData const& me : *handle) {
+      assert(me.key_.scope_ == MonitorElementData::Scope::RUN);
+      assert(me.key_.coveredrange_.startRun() == m_run);
+      assert(me.key_.coveredrange_.endRun() == m_run);
+      std::map<unsigned int, unsigned int>::iterator itFound = m_dqmKindToTypeIndex.find(static_cast<int>(me.key_.kind_));
       assert(itFound != m_dqmKindToTypeIndex.end());
-      m_treeHelpers[itFound->second]->fill(*it);
+      m_treeHelpers[itFound->second]->fill(&me);
     }
   }
 
