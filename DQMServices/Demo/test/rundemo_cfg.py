@@ -24,11 +24,11 @@ process.ana2 = DQMEDAnalyzer("DemoNormalDQMEDAnalyzer",
   folder = cms.string("DemoSubsystem2"),
 )
 
-process.ana3 = cms.EDAnalyzer("DemoGlobalDQMEDAnalyzer",
+process.ana3 = DQMEDAnalyzer("DemoGlobalDQMEDAnalyzer",
   folder = cms.string("DemoSubsystem3"),
 )
 
-process.ana4 = cms.EDAnalyzer("DemoGlobalDQMEDAnalyzer",
+process.ana4 = DQMEDAnalyzer("DemoGlobalDQMEDAnalyzer",
   folder = cms.string("DemoSubsystem4"),
 )
 
@@ -48,7 +48,7 @@ process.harv3 = DQMEDHarvester("DemoHarvester",
   )
 )
 
-process.demo_reco_dqm = cms.Task(process.ana1, process.ana2)
+process.demo_reco_dqm = cms.Task(process.ana1, process.ana2, process.ana3, process.ana4)
 process.demo_harvesting = cms.Task(process.harv1, process.harv2)
 
 process.p = cms.Path(process.demo_reco_dqm, process.demo_harvesting)
