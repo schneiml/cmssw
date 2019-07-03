@@ -12,9 +12,7 @@ namespace dqm {
 namespace edm::stream::impl {
   template <typename T>
   T* makeStreamModule(edm::ParameterSet const& iPSet, dqm::reco::DQMEDAnalyzerGlobalCache const* global) {
-    auto t = new T(iPSet);
-    t->initTokens(global);
-    return t;
+    return new T(iPSet);
   }
 }  // namespace edm::stream::impl
 
@@ -45,6 +43,8 @@ class DQMEDAnalyzer : public edm::stream::EDProducer<
                           edm::Accumulator> {
 protected:
   std::shared_ptr<dqm::reco::DQMStore> dqmstore_;
+  edm::EDPutTokenT<MonitorElementCollection> lumiToken_;
+  edm::EDPutTokenT<MonitorElementCollection> runToken_;
 
 public:
   typedef dqm::reco::DQMStore DQMStore;
@@ -58,17 +58,20 @@ public:
   }
 
   DQMEDAnalyzer() {
+    lumiToken_ = produces<MonitorElementCollection, edm::Transition::EndLuminosityBlock>("DQMGenerationRecoLumi");
+    runToken_ = produces<MonitorElementCollection, edm::Transition::EndRun>("DQMGenerationRecoRun");
   }
 
-  void initTokens(dqm::reco::DQMEDAnalyzerGlobalCache const* global) {
-    auto lock = std::scoped_lock(global->master_->lock_);
-    global->lumiToken_ = produces<MonitorElementCollection, edm::Transition::EndLuminosityBlock>("DQMGenerationRecoLumi");
-    global->runToken_ = produces<MonitorElementCollection, edm::Transition::EndRun>("DQMGenerationRecoRun");
-  }
 
   void beginStream(edm::StreamID id) {
     dqmstore_ = std::make_unique<DQMStore>();
     dqmstore_->setMaster(globalCache()->master_);
+
+    auto lock = std::scoped_lock(globalCache()->master_->lock_);
+    if (globalCache()->runToken_.isUninitialized()) {
+      globalCache()->lumiToken_ = lumiToken_;
+      globalCache()->runToken_ = runToken_;
+    }
   }
 
   void beginRun(edm::Run const& run, edm::EventSetup const& setup) {
