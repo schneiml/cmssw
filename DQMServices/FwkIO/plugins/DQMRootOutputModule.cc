@@ -38,7 +38,6 @@
 #include "FWCore/MessageLogger/interface/JobReport.h"
 #include "FWCore/Utilities/interface/Digest.h"
 #include "FWCore/Utilities/interface/GlobalIdentifier.h"
-#include "FWCore/Framework/interface/GetterOfProducts.h"
 
 #include "DataFormats/Provenance/interface/ProcessHistory.h"
 #include "DataFormats/Provenance/interface/ProcessHistoryID.h"
@@ -50,13 +49,6 @@
 #include "format.h"
 
 namespace {
-  class YesPlease {
-  public:
-    bool operator()(edm::BranchDescription const& branchDescription) {
-      return true;
-    }
-  };
-
   class TreeHelperBase {
   public:
     TreeHelperBase() : m_wasFilled(false), m_firstIndex(0), m_lastIndex(0) {}
@@ -244,9 +236,6 @@ private:
   std::vector<edm::ProcessHistoryID> m_seenHistories;
   edm::ProcessHistoryRegistry m_processHistoryRegistry;
   edm::JobReport::Token m_jrToken;
-
-  edm::GetterOfProducts<MonitorElementCollection> runmegetter_;
-  edm::GetterOfProducts<MonitorElementCollection> lumimegetter_;
 };
 
 //
@@ -303,15 +292,6 @@ DQMRootOutputModule::DQMRootOutputModule(edm::ParameterSet const& pset)
       m_enableMultiThread(false),
       m_fullNameBufferPtr(&m_fullNameBuffer),
       m_indicesTree(nullptr) {
-
-  runmegetter_ = edm::GetterOfProducts<MonitorElementCollection>(YesPlease(), this, edm::InRun);
-  lumimegetter_ = edm::GetterOfProducts<MonitorElementCollection>(YesPlease(), this, edm::InLumi);
-
-  // TODO: this does not exist?
-  callWhenNewProductsRegistered( [this](edm::BranchDescription const& bd ) {
-    runmegetter_(bd);
-    lumimegetter_(bd);
-  });
 }
 
 // DQMRootOutputModule::DQMRootOutputModule(const DQMRootOutputModule& rhs)
@@ -411,13 +391,12 @@ void DQMRootOutputModule::writeLuminosityBlock(edm::LuminosityBlockForOutput con
 
   std::vector<edm::Handle<MonitorElementCollection>> mecs;
 
-  // TODO: GetterOfProducts does not take LuminosityBlockForOutput
-  lumimegetter_.fillHandles(iLumi, mecs);
+  std::vector<std::pair<edm::BranchDescription const *, edm::EDGetToken>> products = keptProducts()[edm::BranchType::InLumi];
 
-  // TODO: getManyByType also does not exist
-  iLumi.getManyByType(mecs);
-
-  for (auto handle : mecs) {
+  for (auto [desc, token] : products) {
+    (void) desc;
+    edm::Handle<MonitorElementCollection> handle;
+    iLumi.getByToken(token, handle);
     assert(handle.isValid());
     for (MonitorElementData const& me : *handle) {
       assert(me.key_.scope_ == MonitorElementData::Scope::LUMI);
@@ -479,15 +458,12 @@ void DQMRootOutputModule::writeRun(edm::RunForOutput const& iRun) {
   if (!shouldWrite)
     return;
 
-  std::vector<edm::Handle<MonitorElementCollection>> mecs;
+  std::vector<std::pair<edm::BranchDescription const *, edm::EDGetToken>> products = keptProducts()[edm::BranchType::InRun];
 
-  // TODO: GetterOfProducts does not take RunForOutput
-  runmegetter_.fillHandles(iRun, mecs);
-
-  // TODO: getManyByType also does not exist
-  iRun.getManyByType(mecs);
-
-  for (auto handle : mecs) {
+  for (auto [desc, token] : products) {
+    (void) desc;
+    edm::Handle<MonitorElementCollection> handle;
+    iRun.getByToken(token, handle);
     assert(handle.isValid());
     for (MonitorElementData const& me : *handle) {
       assert(me.key_.scope_ == MonitorElementData::Scope::RUN);
@@ -608,7 +584,7 @@ void DQMRootOutputModule::fillDescriptions(edm::ConfigurationDescriptions& descr
       ->setComment("Only write the run with this run number. 0 means write all runs.");
   desc.addOptionalUntracked<int>("splitLevel", 99)
       ->setComment("UNUSED Only here to allow older configurations written for PoolOutputModule to work.");
-  const std::vector<std::string> keep = {"drop *", "keep DQMToken_*_*_*"};
+  const std::vector<std::string> keep = {"drop *", "keep MonitorElementCollection_*_*_*"};
   edm::OutputModule::fillDescription(desc, keep);
 
   edm::ParameterSetDescription dataSet;
