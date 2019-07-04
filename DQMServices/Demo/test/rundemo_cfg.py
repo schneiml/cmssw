@@ -55,7 +55,10 @@ process.p = cms.Path(process.demo_reco_dqm, process.demo_harvesting)
 
 process.out = cms.OutputModule(
   "DQMRootOutputModule",
-  fileName = cms.untracked.string("dqm_file1.root")
+  fileName = cms.untracked.string("dqm_file1.root"),
+  outputCommands = cms.untracked.vstring(
+    'keep *'
+  )
 )
 
 process.dqmSaver = cms.EDAnalyzer("DQMFileSaver",
