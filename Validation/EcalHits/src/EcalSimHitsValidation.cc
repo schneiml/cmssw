@@ -94,10 +94,6 @@ EcalSimHitsValidation::~EcalSimHitsValidation() {
     dbe_->save(outputFile_);
 }
 
-void EcalSimHitsValidation::beginJob() {}
-
-void EcalSimHitsValidation::endJob() {}
-
 void EcalSimHitsValidation::analyze(const edm::Event &e, const edm::EventSetup &c) {
   edm::LogInfo("EventInfo") << " Run = " << e.id().run() << " Event = " << e.id().event();
 

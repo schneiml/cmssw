@@ -124,10 +124,6 @@ EcalPreshowerSimHitsValidation::EcalPreshowerSimHitsValidation(const edm::Parame
 
 EcalPreshowerSimHitsValidation::~EcalPreshowerSimHitsValidation() {}
 
-void EcalPreshowerSimHitsValidation::beginJob() {}
-
-void EcalPreshowerSimHitsValidation::endJob() {}
-
 void EcalPreshowerSimHitsValidation::analyze(const edm::Event &e, const edm::EventSetup &c) {
   edm::LogInfo("EventInfo") << " Run = " << e.id().run() << " Event = " << e.id().event();
 

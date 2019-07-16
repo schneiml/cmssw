@@ -47,12 +47,6 @@ protected:
   /// Analyze
   void analyze(const edm::Event &e, const edm::EventSetup &c) override;
 
-  // BeginJob
-  void beginJob() override;
-
-  // EndJob
-  void endJob(void) override;
-
 private:
   uint32_t getUnitWithMaxEnergy(MapType &themap);
 
