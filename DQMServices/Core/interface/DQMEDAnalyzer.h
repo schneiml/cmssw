@@ -63,7 +63,7 @@ public:
   }
 
   // TODO: this is overridden in subsystem code, make sure that is safe.
-  void beginJob() {};
+  virtual void beginJob() {};
 
   void beginStream(edm::StreamID id) {
     dqmstore_ = std::make_unique<DQMStore>();
