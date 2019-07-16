@@ -34,7 +34,7 @@ protected:
   void analyze(const edm::Event &e, const edm::EventSetup &c) override;
 
   // EndJob
-  void endJob() override;
+  void endJob(); // TODO: endJob not allowed in DQMEDAnalyzer
 
   // void BookTestHistos(Char_t sname, int nbin, float *xmin, float *xmax);
 

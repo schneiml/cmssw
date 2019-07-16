@@ -162,15 +162,6 @@ EcalEndcapSimHitsValidation::EcalEndcapSimHitsValidation(const edm::ParameterSet
 
 EcalEndcapSimHitsValidation::~EcalEndcapSimHitsValidation() {}
 
-void EcalEndcapSimHitsValidation::beginJob() {}
-
-void EcalEndcapSimHitsValidation::endJob() {
-  // for ( int myStep = 0; myStep<26; myStep++){
-  //  if (meEELongitudinalShower_) meEELongitudinalShower_->Fill(float(myStep),
-  //  eRLength[myStep]/myEntries);
-  //}
-}
-
 void EcalEndcapSimHitsValidation::analyze(const edm::Event &e, const edm::EventSetup &c) {
   edm::LogInfo("EventInfo") << " Run = " << e.id().run() << " Event = " << e.id().event();
 
