@@ -192,8 +192,6 @@ void ESIntegrityTask::bookHistograms(DQMStore::IBooker& iBooker, edm::Run const&
   }
 }
 
-void ESIntegrityTask::endJob(void) { LogInfo("ESIntegrityTask") << "analyzed " << ievt_ << " events"; }
-
 void ESIntegrityTask::analyze(const Event& e, const EventSetup& c) {
   ievt_++;
 
