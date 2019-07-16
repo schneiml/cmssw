@@ -62,6 +62,8 @@ public:
     runToken_ = produces<MonitorElementCollection, edm::Transition::EndRun>("DQMGenerationRecoRun");
   }
 
+  // TODO: this is overridden in subsystem code, make sure that is safe.
+  void beginJob() {};
 
   void beginStream(edm::StreamID id) {
     dqmstore_ = std::make_unique<DQMStore>();
@@ -116,6 +118,7 @@ public:
   virtual void dqmBeginRun(edm::Run const& run, edm::EventSetup const& setup){};
   virtual void dqmBeginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&){};
   virtual void analyze(edm::Event const&, edm::EventSetup const&){};
+  // void endJob() final; // TODO: implemented in a few palces, not sure if ever called.
 };
 
 #endif  // DQMServices_Core_DQMEDAnalyzer_h
