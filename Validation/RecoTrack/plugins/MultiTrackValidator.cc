@@ -217,7 +217,7 @@ MultiTrackValidator::MultiTrackValidator(const edm::ParameterSet& pset)
 
 MultiTrackValidator::~MultiTrackValidator() {}
 
-void MultiTrackValidator::bookHistograms(DQMStore::ConcurrentBooker& ibook,
+void MultiTrackValidator::bookHistograms(DQMStore::IBooker& ibook,
                                          edm::Run const&,
                                          edm::EventSetup const& setup,
                                          Histograms& histograms) const {
@@ -230,11 +230,11 @@ void MultiTrackValidator::bookHistograms(DQMStore::ConcurrentBooker& ibook,
   const auto maxColl = label.size() - 0.5;
   const auto nintColl = label.size();
 
-  auto binLabels = [&](ConcurrentMonitorElement me) {
+  auto binLabels = [&](dqm::reco::MonitorElement const* me) {
     for (size_t i = 0; i < label.size(); ++i) {
-      me.setBinLabel(i + 1, label[i].label());
+      me->setBinLabel(i + 1, label[i].label());
     }
-    me.disableAlphanumeric();
+    me->disableAlphanumeric();
     return me;
   };
 
