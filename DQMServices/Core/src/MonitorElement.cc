@@ -313,7 +313,7 @@ namespace dqm {
       MonitorElementData::Value::Access access(internal_->value_);
       access.object->SetEntries(nentries);
     }
-    void MonitorElement::setBinLabel(int bin, const std::string &label, int axis) {
+    void MonitorElement::setBinLabel(int bin, const std::string &label, int axis) const {
       makeMutable();
       MonitorElementData::Value::Access access(internal_->value_);
       accessAxis(*access.object, axis)->SetBinLabel(bin, label.c_str());
@@ -405,31 +405,31 @@ namespace dqm {
       return access.scalar.str;
     }
 
-    void MonitorElement::setXTitle(std::string const &title) {
+    void MonitorElement::setXTitle(std::string const &title) const {
       makeMutable();
       MonitorElementData::Value::Access access(internal_->value_);
       access.object->SetXTitle(title.c_str());
     }
-    void MonitorElement::setYTitle(std::string const &title) {
+    void MonitorElement::setYTitle(std::string const &title) const {
       makeMutable();
       MonitorElementData::Value::Access access(internal_->value_);
       access.object->SetYTitle(title.c_str());
     }
 
-    void MonitorElement::enableSumw2() {
+    void MonitorElement::enableSumw2() const {
       makeMutable();
       MonitorElementData::Value::Access access(internal_->value_);
       access.object->Sumw2();
     }
 
-    void MonitorElement::disableAlphanumeric() {
+    void MonitorElement::disableAlphanumeric() const {
       makeMutable();
       MonitorElementData::Value::Access access(internal_->value_);
       access.object->GetXaxis()->SetNoAlphanumeric(false);
       access.object->GetYaxis()->SetNoAlphanumeric(false);
     }
 
-    void MonitorElement::setOption(const char *option) {
+    void MonitorElement::setOption(const char *option) const {
       makeMutable();
       MonitorElementData::Value::Access access(internal_->value_);
       access.object->SetOption(option);
