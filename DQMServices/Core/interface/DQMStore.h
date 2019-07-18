@@ -326,18 +326,20 @@ namespace dqm {
       virtual void setBinError(int binx, int biny, int binz, double error);
       virtual void setBinEntries(int bin, double nentries);
       virtual void setEntries(double nentries);
-      virtual void setBinLabel(int bin, const std::string& label, int axis = 1);
+      // const for ex-ConcurrentME users.
+      virtual void setBinLabel(int bin, const std::string& label, int axis = 1) const;
       virtual void setAxisRange(double xmin, double xmax, int axis = 1);
       virtual void setAxisTitle(const std::string& title, int axis = 1);
       virtual void setAxisTimeDisplay(int value, int axis = 1);
       virtual void setAxisTimeFormat(const char* format = "", int axis = 1);
       virtual void setTitle(const std::string& title);
       // --- Operations that origianted in ConcurrentME ---
-      virtual void setXTitle(std::string const& title);
-      virtual void setYTitle(std::string const& title);
-      virtual void enableSumw2();
-      virtual void disableAlphanumeric();
-      virtual void setOption(const char* option);
+      // need to be const so ME const* is a drop in replacement for ConcurrentME
+      virtual void setXTitle(std::string const& title) const;
+      virtual void setYTitle(std::string const& title) const;
+      virtual void enableSumw2() const;
+      virtual void disableAlphanumeric() const;
+      virtual void setOption(const char* option) const;
 
       // these should be non-const, since they are potentially not thread-safe
       virtual TObject* getRootObject() const;
@@ -454,7 +456,6 @@ namespace dqm {
       BAN(virtual void setBinError(int binx, int biny, int binz, double error))
       BAN(virtual void setBinEntries(int bin, double nentries))
       BAN(virtual void setEntries(double nentries))
-      BAN(virtual void setBinLabel(int bin, const std::string& label, int axis = 1))
       BAN(virtual void setAxisRange(double xmin, double xmax, int axis = 1))
       BAN(virtual void setAxisTitle(const std::string& title, int axis = 1))
       BAN(virtual void setAxisTimeDisplay(int value, int axis = 1))
