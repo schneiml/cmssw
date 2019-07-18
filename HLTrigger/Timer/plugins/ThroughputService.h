@@ -14,7 +14,6 @@
 #include <TH1F.h>
 
 // CMSSW headers
-#include "DQMServices/Core/interface/ConcurrentMonitorElement.h"
 #include "DataFormats/Provenance/interface/EventID.h"
 #include "DataFormats/Provenance/interface/ModuleDescription.h"
 #include "DataFormats/Provenance/interface/Timestamp.h"
