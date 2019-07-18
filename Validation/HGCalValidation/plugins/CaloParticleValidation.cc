@@ -36,8 +36,7 @@ struct Histogram_CaloParticleSingle {
   dqm::reco::MonitorElement const* energy_;
   dqm::reco::MonitorElement const* nSimClusters_;
   dqm::reco::MonitorElement const* nHitInSimClusters_;
-  ConcurrentMonitorElement
-      selfEnergy_;  // this is the sum of the energy associated to all recHits linked to all SimClusters
+  dqm::reco::MonitorElement const* selfEnergy_;  // this is the sum of the energy associated to all recHits linked to all SimClusters
   dqm::reco::MonitorElement const* energyDifference_;  // This contains (energy-selfEnergy)/energy
   dqm::reco::MonitorElement const* eta_Zorigin_map_;
   dqm::reco::MonitorElement const* simPFSuperClusterSize_;
