@@ -28,7 +28,8 @@
 
 struct MTVHistoProducerAlgoForTrackerHistograms {
   //sim
-  dqm::reco::MonitorElement const* h_ptSIM, h_etaSIM, h_tracksSIM, h_vertposSIM, h_bunchxSIM;
+  typedef dqm::reco::MonitorElement const* RecoMEConstPtr;
+  RecoMEConstPtr h_ptSIM, h_etaSIM, h_tracksSIM, h_vertposSIM, h_bunchxSIM;
 
   //1D
   std::vector<dqm::reco::MonitorElement const*> h_tracks, h_fakes, h_hits, h_charge, h_algo, h_seedsFitFailed,
