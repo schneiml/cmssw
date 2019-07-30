@@ -27,8 +27,8 @@
 #include <unistd.h>
 
 // User include files
+#include "DQMServices/Core/interface/oneDQMEDAnalyzer.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/LuminosityBlock.h"
@@ -45,7 +45,6 @@
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerEvmReadoutRecord.h"
 
-#include "DQMServices/Core/interface/DQMEDAnalyzer.h"
 
 #include "L1Trigger/GlobalTriggerAnalyzer/interface/L1GtUtils.h"
 

@@ -6,8 +6,8 @@
 #include <unistd.h>
 
 // user include files
+#include "DQMServices/Core/interface/oneDQMEDAnalyzer.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/LuminosityBlock.h"
@@ -15,7 +15,6 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-#include "DQMServices/Core/interface/DQMStore.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
@@ -28,7 +27,6 @@
 #include "DataFormats/Luminosity/interface/LumiDetails.h"  // Luminosity Information
 #include "DataFormats/Luminosity/interface/LumiSummary.h"  // Luminosity Information
 
-#include "DQMServices/Core/interface/DQMEDAnalyzer.h"
 
 #include "L1Trigger/GlobalTriggerAnalyzer/interface/L1GtUtils.h"
 
