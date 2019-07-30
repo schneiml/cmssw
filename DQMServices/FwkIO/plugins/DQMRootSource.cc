@@ -82,6 +82,8 @@ namespace {
         edm::LogError("MergeFailure") << "Failed to merge DQM element " << iOriginal->GetName();
       }
     } else {
+      /*
+      // TODO: Redo.
       if (iOriginal->GetNbinsX() == iToAdd->GetNbinsX() &&
           iOriginal->GetXaxis()->GetXmin() == iToAdd->GetXaxis()->GetXmin() &&
           iOriginal->GetXaxis()->GetXmax() == iToAdd->GetXaxis()->GetXmax() &&
@@ -99,6 +101,7 @@ namespace {
         edm::LogError("MergeFailure") << "Found histograms with different axis limits or different labels'"
                                       << iOriginal->GetName() << "' not merged.";
       }
+      */
     }
   }
 
@@ -568,10 +571,11 @@ void DQMRootSource::readRun_(edm::RunPrincipal& rpCache) {
   //NOTE: need to reset all run elements at this point
   if (m_lastSeenRun != runID || m_lastSeenReducedPHID != m_reducedHistoryIDs.at(runLumiRange.m_historyIDIndex)) {
     if (m_shouldReadMEs) {
-      std::vector<MonitorElement*> allMEs = (*m_store).getAllContents("");
+      auto  allMEs = (*m_store).getAllContents("");
       for (auto const& ME : allMEs) {
-        if (!(*m_store).isCollate())
-          ME->Reset();
+        // TODO: WTF.
+        // if (!(*m_store).isCollate())
+        ME->Reset();
       }
     }
     m_lastSeenReducedPHID = m_reducedHistoryIDs.at(runLumiRange.m_historyIDIndex);
@@ -601,13 +605,6 @@ void DQMRootSource::readLuminosityBlock_(edm::LuminosityBlockPrincipal& lbCache)
   if ((m_lastSeenLumi2 != runLumiRange.m_lumi || m_lastSeenRun2 != runLumiRange.m_run ||
        m_lastSeenReducedPHID2 != m_reducedHistoryIDs.at(runLumiRange.m_historyIDIndex)) &&
       m_shouldReadMEs) {
-    std::vector<MonitorElement*> allMEs = (*m_store).getAllContents("");
-    //for(auto const& ME : allMEs) {
-    //  // We do not want to reset Run Products here!
-    //  if (ME->getLumiFlag()) {
-    //    ME->Reset();
-    //  }
-    //}
     m_lastSeenReducedPHID2 = m_reducedHistoryIDs.at(runLumiRange.m_historyIDIndex);
     m_lastSeenRun2 = runLumiRange.m_run;
     m_lastSeenLumi2 = runLumiRange.m_lumi;
