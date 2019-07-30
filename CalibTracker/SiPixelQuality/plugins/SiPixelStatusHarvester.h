@@ -5,7 +5,7 @@
  *  harvest per-lumi prduced SiPixelDetector status and make the payload for SiPixelQualityFromDB
  *
  */
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "DQMServices/Core/interface/oneDQMEDAnalyzer.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 // Pixel quality harvester
