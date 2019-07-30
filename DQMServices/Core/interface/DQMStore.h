@@ -743,8 +743,8 @@ namespace dqm {
       virtual std::vector<dqm::harvesting::MonitorElement*> getAllContents(std::string const& path) const = 0;
       DQM_DEPRECATED
       virtual std::vector<dqm::harvesting::MonitorElement*> getAllContents(std::string const& path,
-                                                                           uint32_t runNumber = 0,
-                                                                           uint32_t lumi = 0) const = 0;
+                                                                           uint32_t runNumber,
+                                                                           uint32_t lumi) const = 0;
       // TODO: rename to reflect the fact that it requires full path
       // return ME identified by full path `path`, or nullptr
       virtual MonitorElement* get(std::string const& fullpath) const = 0;
