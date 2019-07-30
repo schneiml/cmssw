@@ -49,7 +49,7 @@ public:
 
 private:
   /// Book the DQM plots
-  void bookHistograms(DQMStore::ConcurrentBooker &,
+  void bookHistograms(DQMStore::IBooker &,
                       edm::Run const &,
                       edm::EventSetup const &,
                       dtsegment4d::Histograms &) const override;
