@@ -188,6 +188,7 @@ void DQMFileSaver::saveForOnlinePB(int run, const std::string &suffix) const {
 }
 
 void DQMFileSaver::saveForOnline(int run, const std::string &suffix, const std::string &rewrite) const {
+#if 0
   std::vector<std::string> systems = (dbe_->cd(), dbe_->getSubdirs());
 
   for (size_t i = 0, e = systems.size(); i != e; ++i) {
@@ -247,6 +248,7 @@ void DQMFileSaver::saveForOnline(int run, const std::string &suffix, const std::
                       saveReferenceQMin_,
                       "",
                       ROOT);
+#endif
 }
 
 boost::property_tree::ptree DQMFileSaver::fillJson(int run,
@@ -508,6 +510,7 @@ DQMFileSaver::DQMFileSaver(const edm::ParameterSet &ps)
 
 //--------------------------------------------------------
 void DQMFileSaver::beginJob() {
+#if 0
   nrun_ = nlumi_ = irun_ = 0;
 
   // Determine if we are running multithreading asking to the DQMStore. Not to be moved in the ctor
@@ -517,6 +520,7 @@ void DQMFileSaver::beginJob() {
     transferDestination_ = edm::Service<evf::EvFDaqDirector>()->getStreamDestinations(stream_label_);
     mergeType_ = edm::Service<evf::EvFDaqDirector>()->getStreamMergeType(stream_label_, evf::MergeTypePB);
   }
+#endif
 }
 
 std::shared_ptr<saverDetails::NoCache> DQMFileSaver::globalBeginRun(const edm::Run &r, const edm::EventSetup &) const {
@@ -595,7 +599,8 @@ void DQMFileSaver::globalEndLuminosityBlock(const edm::LuminosityBlock &iLS, con
     }
 
     // after saving per LS, delete the old LS global histograms.
-    dbe_->deleteUnusedLumiHistograms(enableMultiThread_ ? irun : 0, ilumi);
+    // TODO: revise
+    //dbe_->deleteUnusedLumiHistograms(enableMultiThread_ ? irun : 0, ilumi);
   }
 }
 
