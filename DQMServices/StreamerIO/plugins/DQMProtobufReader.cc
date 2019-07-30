@@ -93,6 +93,8 @@ void DQMProtobufReader::readLuminosityBlock_(edm::LuminosityBlockPrincipal& lbCa
 }
 
 void DQMProtobufReader::beginLuminosityBlock(edm::LuminosityBlock& lb) {
+  // TODO: needs to be re-done.
+#if 0
   auto store = std::make_unique<DQMStore>();
 
   // clear the old lumi histograms
@@ -130,6 +132,7 @@ void DQMProtobufReader::beginLuminosityBlock(edm::LuminosityBlock& lb) {
     fiterator_.logFileAction("Not loading the data file at source level ", path);
     fiterator_.logLumiState(currentLumi_, "close: not loading");
   }
+#endif
 }
 
 void DQMProtobufReader::readEvent_(edm::EventPrincipal&){};
