@@ -74,7 +74,7 @@ double deltaRMax = 0.1;
 string benchmarkLabel_;
 double recPt;
 double maxEta;
-std::unique_ptr<DQMStore> dbe_;
+std::unique_ptr<dqm::legacy::DQMStore> dbe_;
 //
 // constants, enums and typedefs
 //

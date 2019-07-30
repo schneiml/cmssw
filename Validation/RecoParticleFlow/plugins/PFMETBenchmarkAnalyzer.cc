@@ -74,7 +74,7 @@ string OutputFileName;
 bool pfmBenchmarkDebug;
 bool xplotAgainstReco;
 string xbenchmarkLabel_;
-std::unique_ptr<DQMStore> xdbe_;
+std::unique_ptr<dqm::legacy::DQMStore> xdbe_;
 //
 // constants, enums and typedefs
 //
