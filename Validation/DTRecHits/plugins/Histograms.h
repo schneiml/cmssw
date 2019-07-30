@@ -43,8 +43,8 @@ inline void divide(dqm::legacy::MonitorElement *eff,
 /// A set of histograms of residuals and pulls for 1D RecHits
 class HRes1DHit {
 public:
-  typedef dqm::legacy::DQMStore DQMStore;
-  typedef dqm::legacy::MonitorElement MonitorElement;
+  typedef dqm::reco::DQMStore DQMStore;
+  typedef dqm::reco::MonitorElement MonitorElement;
 
   HRes1DHit(const std::string &name, DQMStore::IBooker &booker, bool doall = true, bool local = true) {
     std::string pre = "1D_";
@@ -96,14 +96,14 @@ public:
       hResVsDistFE->Fill(distFESimHit, res);
     }
     hRes->Fill(res);
-    hResSt[station - 1].fill(res);
+    hResSt[station - 1]->Fill(res);
     hResVsEta->Fill(etaSimHit, res);
     hResVsPhi->Fill(phiSimHit, res);
     hResVsPos->Fill(distSimHit, res);
     if (errRecHit != 0) {
       float pull = res / errRecHit;
       hPull->Fill(pull);
-      hPullSt[station - 1].fill(pull);
+      hPullSt[station - 1]->Fill(pull);
       if (doall_) {
         hPullVsPos->Fill(distSimHit, pull);
         hPullVsAngle->Fill(thetaSimHit, pull);
@@ -137,8 +137,8 @@ private:
 /// A set of histograms fo efficiency computation for 1D RecHits (producer)
 class HEff1DHit {
 public:
-  typedef dqm::legacy::DQMStore DQMStore;
-  typedef dqm::legacy::MonitorElement MonitorElement;
+  typedef dqm::reco::DQMStore DQMStore;
+  typedef dqm::reco::MonitorElement MonitorElement;
 
   HEff1DHit(const std::string &name, DQMStore::IBooker &booker) {
     std::string pre = "1D_";
@@ -216,8 +216,8 @@ private:
 // Histos of residuals for 2D rechits
 class HRes2DHit {
 public:
-  typedef dqm::legacy::DQMStore DQMStore;
-  typedef dqm::legacy::MonitorElement MonitorElement;
+  typedef dqm::reco::DQMStore DQMStore;
+  typedef dqm::reco::MonitorElement MonitorElement;
 
   HRes2DHit(const std::string &name, DQMStore::IBooker &booker, bool doall = true, bool local = true) {
     doall_ = doall;
@@ -330,8 +330,8 @@ private:
 // Histos for 2D RecHit efficiency (producer)
 class HEff2DHit {
 public:
-  typedef dqm::legacy::DQMStore DQMStore;
-  typedef dqm::legacy::MonitorElement MonitorElement;
+  typedef dqm::reco::DQMStore DQMStore;
+  typedef dqm::reco::MonitorElement MonitorElement;
 
   HEff2DHit(const std::string &name, DQMStore::IBooker &booker) {
     std::string pre = "2D_";
@@ -420,8 +420,8 @@ private:
 // Histos of residuals for 4D rechits
 class HRes4DHit {
 public:
-  typedef dqm::legacy::DQMStore DQMStore;
-  typedef dqm::legacy::MonitorElement MonitorElement;
+  typedef dqm::reco::DQMStore DQMStore;
+  typedef dqm::reco::MonitorElement MonitorElement;
 
   HRes4DHit(const std::string &name, DQMStore::IBooker &booker, bool doall = true, bool local = true)
       : local_(local) {
@@ -940,8 +940,8 @@ private:
 /// A set of histograms for efficiency 4D RecHits (producer)
 class HEff4DHit {
 public:
-  typedef dqm::legacy::DQMStore DQMStore;
-  typedef dqm::legacy::MonitorElement MonitorElement;
+  typedef dqm::reco::DQMStore DQMStore;
+  typedef dqm::reco::MonitorElement MonitorElement;
 
   HEff4DHit(const std::string &name, DQMStore::IBooker &booker) {
     std::string pre = "4D_";
