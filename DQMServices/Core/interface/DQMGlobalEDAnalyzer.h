@@ -5,7 +5,6 @@
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/Run.h"
 #include "FWCore/Framework/interface/global/EDProducer.h"
-#include "FWCore/ServiceRegistry/interface/Service.h"
 
 template <typename H, typename... Args>
 class DQMGlobalEDAnalyzer
@@ -64,6 +63,7 @@ public:
   // methods to be implemented by the user, in order of invocation
   virtual void dqmBeginRun(edm::Run const&, edm::EventSetup const&, H&) const {}
   virtual void bookHistograms(DQMStore::IBooker&, edm::Run const&, edm::EventSetup const&, H&) const = 0;
+  // TODO: rename this analyze() for consistency.
   virtual void dqmAnalyze(edm::Event const&, edm::EventSetup const&, H const&) const = 0;
   virtual void dqmEndRun(edm::Run const&, edm::EventSetup const&, H const&) const {}
 
