@@ -106,16 +106,16 @@ void PSMonitor::bookHistograms(DQMStore::IBooker& booker,
 
   histname = "psColumnIndexVsLS";
   histtitle = "PS column index vs LS";
-  histograms.psColumnIndexVsLS =
-      booker.book2D(histname, histtitle, ls_binning_.nbins, ls_binning_.xmin, ls_binning_.xmax, nbins, xmin, xmax);
-  histograms.psColumnIndexVsLS->setAxisTitle("LS", 1);
-  histograms.psColumnIndexVsLS->setAxisTitle("PS column index", 2);
+  auto me = booker.book2D(histname, histtitle, ls_binning_.nbins, ls_binning_.xmin, ls_binning_.xmax, nbins, xmin, xmax);
+  me->setAxisTitle("LS", 1);
+  me->setAxisTitle("PS column index", 2);
 
   int bin = 1;
   for (auto const& l : labels) {
-    histograms.psColumnIndexVsLS->setBinLabel(bin, l, 2);
+    me->setBinLabel(bin, l, 2);
     bin++;
   }
+  histograms.psColumnIndexVsLS = me;
 }
 
 void PSMonitor::dqmAnalyze(edm::Event const& event, edm::EventSetup const& setup, Histograms const& histograms) const {
