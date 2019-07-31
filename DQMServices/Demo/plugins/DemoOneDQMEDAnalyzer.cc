@@ -19,13 +19,13 @@
 #include <string>
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "DQMServices/Core/interface/oneDQMEDAnalyzer.h"
+#include "DQMServices/Core/interface/DQMOneEDAnalyzer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-class DemoOneDQMEDAnalyzer : public one::DQMEDAnalyzer<> {
+class DemoOneDQMEDAnalyzer : public DQMOneEDAnalyzer<> {
  
 public:
   explicit DemoOneDQMEDAnalyzer(const edm::ParameterSet&);
