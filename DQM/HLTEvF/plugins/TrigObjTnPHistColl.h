@@ -85,8 +85,7 @@
 
 class TrigObjTnPHistColl {
 public:
-  typedef dqm::legacy::DQMStore DQMStore;
-  typedef dqm::legacy::MonitorElement MonitorElement;
+  typedef dqm::reco::DQMStore DQMStore;
 
   class FilterSelector {
   public:
@@ -159,7 +158,7 @@ public:
   public:
     explicit HistFiller(const edm::ParameterSet& config);
     static edm::ParameterSetDescription makePSetDescription();
-    void operator()(const trigger::TriggerObject& probe, float mass, const ConcurrentMonitorElement& hist) const;
+    void operator()(const trigger::TriggerObject& probe, float mass, dqm::reco::MonitorElement const* hist) const;
 
   private:
     VarRangeCutColl<trigger::TriggerObject> localCuts_;
@@ -173,7 +172,7 @@ public:
     public:
       explicit Data(const edm::ParameterSet& config);
       static edm::ParameterSetDescription makePSetDescription();
-      ConcurrentMonitorElement book(DQMStore::IBooker& iBooker,
+      dqm::reco::MonitorElement const* book(DQMStore::IBooker& iBooker,
                                     const std::string& name,
                                     const std::string& title,
                                     const std::vector<float>& massBins) const;
@@ -189,7 +188,7 @@ public:
   public:
     explicit HistDefs(const edm::ParameterSet& config);
     static edm::ParameterSetDescription makePSetDescription();
-    std::vector<std::pair<HistFiller, ConcurrentMonitorElement> > bookHists(DQMStore::IBooker& iBooker,
+    std::vector<std::pair<HistFiller, dqm::reco::MonitorElement const*> > bookHists(DQMStore::IBooker& iBooker,
                                                                             const std::string& name,
                                                                             const std::string& title) const;
 

@@ -299,9 +299,9 @@ edm::ParameterSetDescription TrigObjTnPHistColl::HistFiller::makePSetDescription
 
 void TrigObjTnPHistColl::HistFiller::operator()(const trigger::TriggerObject& probe,
                                                 float mass,
-                                                const dqm::reco::MonitorElement const*& hist) const {
+                                                dqm::reco::MonitorElement const* hist) const {
   if (localCuts_(probe))
-    hist.fill(var_(probe), mass);
+    hist->Fill(var_(probe), mass);
 }
 
 TrigObjTnPHistColl::HistDefs::HistDefs(const edm::ParameterSet& config)
@@ -322,7 +322,7 @@ edm::ParameterSetDescription TrigObjTnPHistColl::HistDefs::makePSetDescription()
   return desc;
 }
 
-std::vector<std::pair<TrigObjTnPHistColl::HistFiller, ConcurrentMonitorElement>> TrigObjTnPHistColl::HistDefs::bookHists(
+std::vector<std::pair<TrigObjTnPHistColl::HistFiller, dqm::reco::MonitorElement const*>> TrigObjTnPHistColl::HistDefs::bookHists(
     DQMStore::IBooker& iBooker, const std::string& name, const std::string& title) const {
   std::vector<std::pair<HistFiller, dqm::reco::MonitorElement const*>> hists;
   for (const auto& data : histData_) {
@@ -346,7 +346,7 @@ edm::ParameterSetDescription TrigObjTnPHistColl::HistDefs::Data::makePSetDescrip
   return desc;
 }
 
-ConcurrentMonitorElement TrigObjTnPHistColl::HistDefs::Data::book(DQMStore::IBooker& iBooker,
+dqm::reco::MonitorElement const* TrigObjTnPHistColl::HistDefs::Data::book(DQMStore::IBooker& iBooker,
                                                                   const std::string& name,
                                                                   const std::string& title,
                                                                   const std::vector<float>& massBins) const {
