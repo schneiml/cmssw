@@ -86,12 +86,7 @@ struct MonitorElementData {
   // depending on the use case. That is what the DEFAULT is for, and it should
   // be used unless some specific granularity is really required.
   // We'll also need to switch the DEFAULT to JOB for multi-run harvesting.
-  enum Scope {
-    JOB = 1,
-    RUN = 2,
-    LUMI = 3,
-    DEFAULT = LUMI
-  };
+  enum Scope { JOB = 1, RUN = 2, LUMI = 3, DEFAULT = LUMI };
 
   // The main ME data. We don't keep references/QTest results, instead we use
   // only the fields stored in DQMIO files.
@@ -131,14 +126,11 @@ struct MonitorElementData {
     std::string objname_;
 
   public:
-    enum class Type {
-      DIR,
-      DIR_AND_NAME
-    };
+    enum class Type { DIR, DIR_AND_NAME };
 
     std::string const& getDirname() const { return dirname_; }
     std::string const& getObjectname() const { return objname_; }
-    
+
     // Clean up the path and normalize it to preserve certain invariants.
     // Instead of reasoning about whatever properties of paths, we just parse
     // the thing and build a normalized instance with no slash in the beginning
@@ -166,12 +158,12 @@ struct MonitorElementData {
       dirname_ = "";
       objname_ = "";
       int numberOfItems = buf.size();
-      for(int i = 0; i < numberOfItems; i++) {
-        if(i == numberOfItems - 1) {
+      for (int i = 0; i < numberOfItems; i++) {
+        if (i == numberOfItems - 1) {
           // Processing last component...
-          if(type == Path::Type::DIR_AND_NAME) {
+          if (type == Path::Type::DIR_AND_NAME) {
             objname_ = buf[i];
-          } else if(type == Path::Type::DIR) {
+          } else if (type == Path::Type::DIR) {
             dirname_ += buf[i] + "/";
           }
         } else {
@@ -216,14 +208,11 @@ struct MonitorElementData {
     }
   };
 
-  bool operator<(MonitorElementData const& other) const {
-    return this->key_ < other.key_;
-  }
+  bool operator<(MonitorElementData const& other) const { return this->key_ < other.key_; }
 
   // The only non class/struct members
   Key key_;
   Value value_;
-
 };
 
 // TODO: We should not use edm::OwnVector once we can, then this can go away
@@ -232,15 +221,14 @@ struct FakeMEDataClone {
     assert(!"This is to make EDM happy.");
     return nullptr;
   };
-
 };
 
 // For now, no additional (meta-)data is needed apart from the MEs themselves.
 // The framework will take care of tracking the plugin and LS/run that the MEs
 // belong to.
-// TODO: move away from OwnVector once we can. 
+// TODO: move away from OwnVector once we can.
 // TODO: what about mergeProduct? Maybe we need a class here, after all.
-using  MonitorElementCollection = edm::OwnVector<const MonitorElementData, FakeMEDataClone>;
+using MonitorElementCollection = edm::OwnVector<const MonitorElementData, FakeMEDataClone>;
 
 // Only to hold the mergeProduct placeholder for now.
 class MonitorElementCollectionHelper {
@@ -271,8 +259,6 @@ public:
     // MEs in the lumi block don't actually correspond to the lumi block they
     // are in) but the DQMIO output should be able to handle that.
   }
-
-
 };
 
 #endif

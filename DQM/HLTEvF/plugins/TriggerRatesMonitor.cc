@@ -58,28 +58,28 @@ namespace {
 
     // per-path HLT plots
     struct HLTRatesPlots {
-      dqm::reco::MonitorElement const* pass_l1_seed;
-      dqm::reco::MonitorElement const* pass_prescale;
-      dqm::reco::MonitorElement const* accept;
-      dqm::reco::MonitorElement const* reject;
-      dqm::reco::MonitorElement const* error;
+      dqm::reco::MonitorElement const *pass_l1_seed;
+      dqm::reco::MonitorElement const *pass_prescale;
+      dqm::reco::MonitorElement const *accept;
+      dqm::reco::MonitorElement const *reject;
+      dqm::reco::MonitorElement const *error;
     };
 
     // overall event count and event types
-    dqm::reco::MonitorElement const* events_processed;
-    std::vector<dqm::reco::MonitorElement const*> tcds_counts;
+    dqm::reco::MonitorElement const *events_processed;
+    std::vector<dqm::reco::MonitorElement const *> tcds_counts;
 
     // L1T triggers
-    std::vector<dqm::reco::MonitorElement const*> l1t_counts;
+    std::vector<dqm::reco::MonitorElement const *> l1t_counts;
 
     // HLT triggers
     std::vector<std::vector<HLTRatesPlots>> hlt_by_dataset_counts;
 
     // datasets
-    std::vector<dqm::reco::MonitorElement const*> dataset_counts;
+    std::vector<dqm::reco::MonitorElement const *> dataset_counts;
 
     // streams
-    std::vector<dqm::reco::MonitorElement const*> stream_counts;
+    std::vector<dqm::reco::MonitorElement const *> stream_counts;
 
     RunBasedHistograms()
         :  // L1T and HLT configuration
@@ -167,7 +167,7 @@ void TriggerRatesMonitor::dqmBeginRun(edm::Run const &run,
                                       edm::EventSetup const &setup,
                                       RunBasedHistograms &histograms) const {
   // this is not in general thread safe, therefore needs const_cast.
-  const_cast<dqm::reco::MonitorElement*>(histograms.events_processed)->Reset();
+  const_cast<dqm::reco::MonitorElement *>(histograms.events_processed)->Reset();
   histograms.tcds_counts.clear();
   histograms.tcds_counts.resize(sizeof(s_tcds_trigger_types) / sizeof(const char *));
 

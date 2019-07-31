@@ -173,9 +173,9 @@ public:
       explicit Data(const edm::ParameterSet& config);
       static edm::ParameterSetDescription makePSetDescription();
       dqm::reco::MonitorElement const* book(DQMStore::IBooker& iBooker,
-                                    const std::string& name,
-                                    const std::string& title,
-                                    const std::vector<float>& massBins) const;
+                                            const std::string& name,
+                                            const std::string& title,
+                                            const std::vector<float>& massBins) const;
       const HistFiller& filler() const { return histFiller_; }
 
     private:
@@ -189,8 +189,8 @@ public:
     explicit HistDefs(const edm::ParameterSet& config);
     static edm::ParameterSetDescription makePSetDescription();
     std::vector<std::pair<HistFiller, dqm::reco::MonitorElement const*> > bookHists(DQMStore::IBooker& iBooker,
-                                                                            const std::string& name,
-                                                                            const std::string& title) const;
+                                                                                    const std::string& name,
+                                                                                    const std::string& title) const;
 
   private:
     std::vector<Data> histData_;

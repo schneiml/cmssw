@@ -7,14 +7,14 @@
 #include "FWCore/Framework/interface/global/EDProducer.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 
-
 template <typename H, typename... Args>
-class DQMGlobalEDAnalyzer : public edm::global::EDProducer<edm::RunCache<H>,
-  // DQMGlobalEDAnalyzer are fundamentally unable to produce histograms for any
-  // other scope than MonitorElement::Scope::RUN.
-  edm::EndRunProducer,
-  edm::Accumulator,
-  Args...> {
+class DQMGlobalEDAnalyzer
+    : public edm::global::EDProducer<edm::RunCache<H>,
+                                     // DQMGlobalEDAnalyzer are fundamentally unable to produce histograms for any
+                                     // other scope than MonitorElement::Scope::RUN.
+                                     edm::EndRunProducer,
+                                     edm::Accumulator,
+                                     Args...> {
 public:
   typedef dqm::reco::DQMStore DQMStore;
   typedef dqm::reco::MonitorElement MonitorElement;
@@ -32,7 +32,7 @@ public:
     dqmBeginRun(run, setup, *h);
 
     // in case of concurrent runs, this will create clones of the already
-    // booked MEs. 
+    // booked MEs.
     dqmstore_->enterLumi(run.run(), edm::invalidLuminosityBlockNumber);
     // TODO: for concurrent runs, we'd have to make sure to return the correct
     // run/lumi version of the (existing) MEs. This requires keeping track of
@@ -59,7 +59,7 @@ public:
 
   // Subsystems could safely override this, but any changes to MEs would not be
   // noticeable since the product was made already.
-  void globalEndRun(edm::Run const&, edm::EventSetup const&) const final {};
+  void globalEndRun(edm::Run const&, edm::EventSetup const&) const final{};
 
   // methods to be implemented by the user, in order of invocation
   virtual void dqmBeginRun(edm::Run const&, edm::EventSetup const&, H&) const {}

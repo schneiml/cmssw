@@ -10,7 +10,6 @@ class TH1F;
 
 class PFCandidateManagerAnalyzer : public BenchmarkAnalyzer, public PFCandidateManager {
 public:
-
   PFCandidateManagerAnalyzer(const edm::ParameterSet &parameterSet);
 
   void analyze(const edm::Event &, const edm::EventSetup &) override;

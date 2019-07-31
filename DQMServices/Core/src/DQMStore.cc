@@ -58,7 +58,8 @@ namespace dqm {
         ME* me_ptr = master_->master_.putME(std::move(me));
 
         // Make a copy of ME sharing the underlying MonitorElementData and root TH1 object
-        localmes_[me_ptr->internal()->key_] = std::make_unique<ME>(me_ptr->internal(), /* is_owned */ false, /* is_readonly */ false);
+        localmes_[me_ptr->internal()->key_] =
+            std::make_unique<ME>(me_ptr->internal(), /* is_owned */ false, /* is_readonly */ false);
 
         return localmes_[me_ptr->internal()->key_].get();
       }
@@ -386,7 +387,7 @@ namespace dqm {
 
           // update ME and store it
           me->setInternal(masterme->internal(), /* is_owned */ false, /* is_readonly */ false);
-          assert(!masterme->isReadonly()); // else above would need to handle it
+          assert(!masterme->isReadonly());  // else above would need to handle it
           assert(!(key < me->internal()->key_) && !(me->internal()->key_ < key));
           newmes[key].swap(me);
         }
@@ -425,7 +426,7 @@ namespace dqm {
             cloneme->Reset();
             newmes[key].swap(cloneme);
             assert(cloneme == nullptr);
-          } 
+          }
           // else there is nothing to do, we have the needed per lumi instance
           // already somewhere else.
 
@@ -547,7 +548,6 @@ namespace dqm {
       return product;
     }
 
-
     template <class ME>
     void DQMStore<ME>::clearProducts() {
       inputs_.clear();
@@ -622,7 +622,8 @@ namespace dqm {
           // Return first element
           if (me == nullptr) {
             // Make a copy of ME sharing the underlying MonitorElementData and root TH1 object
-            me = std::make_unique<dqm::harvesting::MonitorElement>(&meData, /* is_owned */ false, /* is_readonly */ true);
+            me = std::make_unique<dqm::harvesting::MonitorElement>(
+                &meData, /* is_owned */ false, /* is_readonly */ true);
           } else {
             me->setInternal(&meData, /* is_owned */ false, /* is_readonly */ true);
           }
@@ -646,7 +647,7 @@ namespace dqm {
       // collect all names first, since the import will modify the localmes_ map.
       std::set<std::string> names;
       for (auto const& [key, me] : localmes_) {
-        (void) key;
+        (void)key;
         names.insert(me->getFullname());
       }
       for (auto const& name : names) {

@@ -25,7 +25,6 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-
 struct Histograms_Demo2 {
   typedef dqm::reco::MonitorElement MonitorElement;
   MonitorElement* histo_;
@@ -38,43 +37,35 @@ public:
 
   static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
-
 private:
-  void bookHistograms(DQMStore::IBooker &,
-                              edm::Run const&,
-                              edm::EventSetup const&,
-                              Histograms_Demo2&) const override;
+  void bookHistograms(DQMStore::IBooker&, edm::Run const&, edm::EventSetup const&, Histograms_Demo2&) const override;
 
-  void dqmAnalyze(edm::Event const&,
-                          edm::EventSetup const&,
-                          Histograms_Demo2 const&) const override;
+  void dqmAnalyze(edm::Event const&, edm::EventSetup const&, Histograms_Demo2 const&) const override;
 
   std::string folder_;
 };
 
 DemoGlobalDQMEDAnalyzer::DemoGlobalDQMEDAnalyzer(const edm::ParameterSet& iConfig)
     : folder_(iConfig.getParameter<std::string>("folder")) {
-   // now do what ever initialization is needed
+  // now do what ever initialization is needed
 }
-
 
 DemoGlobalDQMEDAnalyzer::~DemoGlobalDQMEDAnalyzer() {
-   // do anything here that needs to be done at desctruction time
-   // (e.g. close files, deallocate resources etc.)
+  // do anything here that needs to be done at desctruction time
+  // (e.g. close files, deallocate resources etc.)
 }
 
-
 // ------------ method called for each event  ------------
-void DemoGlobalDQMEDAnalyzer::dqmAnalyze(edm::Event const& iEvent, edm::EventSetup const& iSetup,
-                      Histograms_Demo2 const & histos) const {
+void DemoGlobalDQMEDAnalyzer::dqmAnalyze(edm::Event const& iEvent,
+                                         edm::EventSetup const& iSetup,
+                                         Histograms_Demo2 const& histos) const {
   histos.histo_->Fill(5);
 }
 
-
-void DemoGlobalDQMEDAnalyzer::bookHistograms(DQMStore::IBooker & ibook,
-                          edm::Run const & run,
-                          edm::EventSetup const & iSetup,
-                          Histograms_Demo2 & histos) const {
+void DemoGlobalDQMEDAnalyzer::bookHistograms(DQMStore::IBooker& ibook,
+                                             edm::Run const& run,
+                                             edm::EventSetup const& iSetup,
+                                             Histograms_Demo2& histos) const {
   ibook.setCurrentFolder(folder_);
   histos.histo_ = ibook.book1D("EXAMPLE", "EXAMPLE", 10, 0., 10.);
 }

@@ -45,10 +45,7 @@ public:
 
 private:
   void dqmBeginRun(edm::Run const&, edm::EventSetup const&, RunBasedHistograms&) const override;
-  void bookHistograms(DQMStore::IBooker&,
-                      edm::Run const&,
-                      edm::EventSetup const&,
-                      RunBasedHistograms&) const override;
+  void bookHistograms(DQMStore::IBooker&, edm::Run const&, edm::EventSetup const&, RunBasedHistograms&) const override;
   void dqmAnalyze(edm::Event const&, edm::EventSetup const&, RunBasedHistograms const&) const override;
 
   // number of bunch crossings
@@ -135,13 +132,13 @@ void TriggerBxVsOrbitMonitor::bookHistograms(DQMStore::IBooker& booker,
   // book 2D histogram to monitor all TCDS trigger types in a single plot
   booker.setCurrentFolder(m_dqm_path + "/orbitVsBX");
   auto me = booker.book2D("OrbitVsBX",
-                                          "Event orbits vs. bunch crossing",
-                                          nBX,
-                                          m_minBX - 0.5,
-                                          m_maxBX + 0.5,
-                                          s_orbit_range + 1,
-                                          -0.5,
-                                          s_orbit_range + 0.5);
+                          "Event orbits vs. bunch crossing",
+                          nBX,
+                          m_minBX - 0.5,
+                          m_maxBX + 0.5,
+                          s_orbit_range + 1,
+                          -0.5,
+                          s_orbit_range + 0.5);
   me->setXTitle("BX");
   me->setYTitle("orbit");
   histograms.orbit_bx_all = me;
@@ -149,13 +146,13 @@ void TriggerBxVsOrbitMonitor::bookHistograms(DQMStore::IBooker& booker,
   for (unsigned int i = 0; i < nLS; ++i) {
     std::string iname = std::to_string(i);
     me = booker.book2D("OrbitVsBX_LS" + iname,
-                                                    "Event orbits vs. bunch crossing, for lumisection " + iname,
-                                                    nBX,
-                                                    m_minBX - 0.5,
-                                                    m_maxBX + 0.5,
-                                                    s_orbit_range + 1,
-                                                    -0.5,
-                                                    s_orbit_range + 0.5);
+                       "Event orbits vs. bunch crossing, for lumisection " + iname,
+                       nBX,
+                       m_minBX - 0.5,
+                       m_maxBX + 0.5,
+                       s_orbit_range + 1,
+                       -0.5,
+                       s_orbit_range + 0.5);
     me->setXTitle("BX");
     me->setYTitle("orbit");
     histograms.orbit_bx_all_byLS[i] = me;
@@ -165,13 +162,13 @@ void TriggerBxVsOrbitMonitor::bookHistograms(DQMStore::IBooker& booker,
   for (unsigned int i = 0; i < size; ++i) {
     if (s_tcds_trigger_types[i]) {
       me = booker.book2D("OrbitVsBX_" + std::string(s_tcds_trigger_types[i]),
-                                             "Event orbits vs. bunch crossing " + std::string(s_tcds_trigger_types[i]),
-                                             nBX,
-                                             m_minBX - 0.5,
-                                             m_maxBX + 0.5,
-                                             s_orbit_range + 1,
-                                             -0.5,
-                                             s_orbit_range + 0.5);
+                         "Event orbits vs. bunch crossing " + std::string(s_tcds_trigger_types[i]),
+                         nBX,
+                         m_minBX - 0.5,
+                         m_maxBX + 0.5,
+                         s_orbit_range + 1,
+                         -0.5,
+                         s_orbit_range + 0.5);
       me->setXTitle("BX");
       me->setYTitle("orbit");
       histograms.orbit_bx[i] = me;

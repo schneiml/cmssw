@@ -546,8 +546,7 @@ void MTVHistoProducerAlgoForTracker::bookSimTrackHistos(DQMStore::IBooker& ibook
   setBinLabelsAlgo(histograms.h_duplicates_oriAlgo_vs_oriAlgo.back(), 2);
 }
 
-void MTVHistoProducerAlgoForTracker::bookSimTrackPVAssociationHistos(DQMStore::IBooker& ibook,
-                                                                     Histograms& histograms) {
+void MTVHistoProducerAlgoForTracker::bookSimTrackPVAssociationHistos(DQMStore::IBooker& ibook, Histograms& histograms) {
   histograms.h_assocdxypv.push_back(ibook.book1D(
       "num_assoc(simToReco)_dxypv", "N of associated tracks (simToReco) vs dxy(PV)", nintDxy, minDxy, maxDxy));
   histograms.h_simuldxypv.push_back(
@@ -1042,16 +1041,13 @@ void MTVHistoProducerAlgoForTracker::bookRecoHistos(DQMStore::IBooker& ibook,
   /////////////////////////////////
 
   auto bookResolutionPlots1D = [&](std::vector<dqm::reco::MonitorElement const*>& vec, auto&&... params) {
-    vec.push_back(doResolutionPlots ? ibook.book1D(std::forward<decltype(params)>(params)...)
-                                    : nullptr);
+    vec.push_back(doResolutionPlots ? ibook.book1D(std::forward<decltype(params)>(params)...) : nullptr);
   };
   auto bookResolutionPlots2D = [&](std::vector<dqm::reco::MonitorElement const*>& vec, bool logx, auto&&... params) {
-    vec.push_back(doResolutionPlots ? make2DIfLogX(ibook, logx, std::forward<decltype(params)>(params)...)
-                                    : nullptr);
+    vec.push_back(doResolutionPlots ? make2DIfLogX(ibook, logx, std::forward<decltype(params)>(params)...) : nullptr);
   };
   auto bookResolutionPlotsProfile2D = [&](std::vector<dqm::reco::MonitorElement const*>& vec, auto&&... params) {
-    vec.push_back(doResolutionPlots ? ibook.bookProfile2D(std::forward<decltype(params)>(params)...)
-                                    : nullptr);
+    vec.push_back(doResolutionPlots ? ibook.bookProfile2D(std::forward<decltype(params)>(params)...) : nullptr);
   };
 
   bookResolutionPlots1D(histograms.h_eta, "eta", "pseudorapidity residue", 1000, -0.1, 0.1);
@@ -1379,8 +1375,7 @@ void MTVHistoProducerAlgoForTracker::bookRecoHistos(DQMStore::IBooker& ibook,
                         maxHit);
 }
 
-void MTVHistoProducerAlgoForTracker::bookRecoPVAssociationHistos(DQMStore::IBooker& ibook,
-                                                                 Histograms& histograms) {
+void MTVHistoProducerAlgoForTracker::bookRecoPVAssociationHistos(DQMStore::IBooker& ibook, Histograms& histograms) {
   histograms.h_recodxypv.push_back(
       ibook.book1D("num_reco_dxypv", "N of reco track vs dxy(PV)", nintDxy, minDxy, maxDxy));
   histograms.h_assoc2dxypv.push_back(ibook.book1D(
@@ -1541,9 +1536,7 @@ void MTVHistoProducerAlgoForTracker::bookSeedHistos(DQMStore::IBooker& ibook, Hi
       ibook.book1D("seeds_fitFailedFraction", "Fraction of seeds for which the fit failed", 100, 0, 1));
 }
 
-void MTVHistoProducerAlgoForTracker::bookMVAHistos(DQMStore::IBooker& ibook,
-                                                   Histograms& histograms,
-                                                   size_t nMVAs) {
+void MTVHistoProducerAlgoForTracker::bookMVAHistos(DQMStore::IBooker& ibook, Histograms& histograms, size_t nMVAs) {
   histograms.h_reco_mva.emplace_back();
   histograms.h_assoc2_mva.emplace_back();
 
@@ -2199,8 +2192,10 @@ void MTVHistoProducerAlgoForTracker::fill_simAssociated_recoTrack_histos(const H
   //nchi2 and hits global distributions
   histograms.h_hits[count]->Fill(track.numberOfValidHits());
   histograms.h_losthits[count]->Fill(track.numberOfLostHits());
-  histograms.h_nmisslayers_inner[count]->Fill(track.hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS));
-  histograms.h_nmisslayers_outer[count]->Fill(track.hitPattern().numberOfLostHits(reco::HitPattern::MISSING_OUTER_HITS));
+  histograms.h_nmisslayers_inner[count]->Fill(
+      track.hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS));
+  histograms.h_nmisslayers_outer[count]->Fill(
+      track.hitPattern().numberOfLostHits(reco::HitPattern::MISSING_OUTER_HITS));
   if (trackFromSeedFitFailed(track))
     return;
 

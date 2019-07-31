@@ -83,7 +83,8 @@ struct HGVHistoProducerAlgoHistograms {
   std::unordered_map<std::string, dqm::reco::MonitorElement const*> h_distancetomaxcell_perthickperlayer;
   std::unordered_map<std::string, dqm::reco::MonitorElement const*> h_distancetomaxcell_perthickperlayer_eneweighted;
   std::unordered_map<std::string, dqm::reco::MonitorElement const*> h_distancebetseedandmaxcell_perthickperlayer;
-  std::unordered_map<std::string, dqm::reco::MonitorElement const*> h_distancebetseedandmaxcellvsclusterenergy_perthickperlayer;
+  std::unordered_map<std::string, dqm::reco::MonitorElement const*>
+      h_distancebetseedandmaxcellvsclusterenergy_perthickperlayer;
 
   std::unordered_map<int, dqm::reco::MonitorElement const*> h_caloparticle_eta;
   std::unordered_map<int, dqm::reco::MonitorElement const*> h_caloparticle_eta_Zorigin;

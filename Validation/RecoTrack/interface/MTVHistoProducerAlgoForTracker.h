@@ -36,39 +36,42 @@ struct MTVHistoProducerAlgoForTrackerHistograms {
       h_seedsFitFailedFraction;
   std::vector<dqm::reco::MonitorElement const*> h_recoeta, h_reco2eta, h_assoceta, h_assoc2eta, h_simuleta, h_loopereta,
       h_misideta, h_pileupeta;
-  std::vector<dqm::reco::MonitorElement const*> h_recopT, h_reco2pT, h_assocpT, h_assoc2pT, h_simulpT, h_looperpT, h_misidpT,
-      h_pileuppT;
-  std::vector<dqm::reco::MonitorElement const*> h_recopTvseta, h_reco2pTvseta, h_assocpTvseta, h_assoc2pTvseta, h_simulpTvseta,
-      h_looperpTvseta, h_misidpTvseta, h_pileuppTvseta;
+  std::vector<dqm::reco::MonitorElement const*> h_recopT, h_reco2pT, h_assocpT, h_assoc2pT, h_simulpT, h_looperpT,
+      h_misidpT, h_pileuppT;
+  std::vector<dqm::reco::MonitorElement const*> h_recopTvseta, h_reco2pTvseta, h_assocpTvseta, h_assoc2pTvseta,
+      h_simulpTvseta, h_looperpTvseta, h_misidpTvseta, h_pileuppTvseta;
   std::vector<dqm::reco::MonitorElement const*> h_recohit, h_assochit, h_assoc2hit, h_simulhit, h_looperhit, h_misidhit,
       h_pileuphit;
   std::vector<dqm::reco::MonitorElement const*> h_recolayer, h_assoclayer, h_assoc2layer, h_simullayer, h_looperlayer,
       h_misidlayer, h_pileuplayer;
-  std::vector<dqm::reco::MonitorElement const*> h_recopixellayer, h_assocpixellayer, h_assoc2pixellayer, h_simulpixellayer,
-      h_looperpixellayer, h_misidpixellayer, h_pileuppixellayer;
-  std::vector<dqm::reco::MonitorElement const*> h_reco3Dlayer, h_assoc3Dlayer, h_assoc23Dlayer, h_simul3Dlayer, h_looper3Dlayer,
-      h_misid3Dlayer, h_pileup3Dlayer;
-  std::vector<dqm::reco::MonitorElement const*> h_recopu, h_reco2pu, h_assocpu, h_assoc2pu, h_simulpu, h_looperpu, h_misidpu,
-      h_pileuppu;
+  std::vector<dqm::reco::MonitorElement const*> h_recopixellayer, h_assocpixellayer, h_assoc2pixellayer,
+      h_simulpixellayer, h_looperpixellayer, h_misidpixellayer, h_pileuppixellayer;
+  std::vector<dqm::reco::MonitorElement const*> h_reco3Dlayer, h_assoc3Dlayer, h_assoc23Dlayer, h_simul3Dlayer,
+      h_looper3Dlayer, h_misid3Dlayer, h_pileup3Dlayer;
+  std::vector<dqm::reco::MonitorElement const*> h_recopu, h_reco2pu, h_assocpu, h_assoc2pu, h_simulpu, h_looperpu,
+      h_misidpu, h_pileuppu;
   std::vector<dqm::reco::MonitorElement const*> h_recophi, h_assocphi, h_assoc2phi, h_simulphi, h_looperphi, h_misidphi,
       h_pileupphi;
   std::vector<dqm::reco::MonitorElement const*> h_recodxy, h_assocdxy, h_assoc2dxy, h_simuldxy, h_looperdxy, h_misiddxy,
       h_pileupdxy;
-  std::vector<dqm::reco::MonitorElement const*> h_recodz, h_assocdz, h_assoc2dz, h_simuldz, h_looperdz, h_misiddz, h_pileupdz;
+  std::vector<dqm::reco::MonitorElement const*> h_recodz, h_assocdz, h_assoc2dz, h_simuldz, h_looperdz, h_misiddz,
+      h_pileupdz;
   std::vector<dqm::reco::MonitorElement const*> h_recodxypv, h_assocdxypv, h_assoc2dxypv, h_simuldxypv, h_looperdxypv,
       h_misiddxypv, h_pileupdxypv;
-  std::vector<dqm::reco::MonitorElement const*> h_recodzpv, h_assocdzpv, h_assoc2dzpv, h_simuldzpv, h_looperdzpv, h_misiddzpv,
-      h_pileupdzpv;
-  std::vector<dqm::reco::MonitorElement const*> h_recodxypvzoomed, h_assocdxypvzoomed, h_assoc2dxypvzoomed, h_simuldxypvzoomed,
-      h_looperdxypvzoomed, h_misiddxypvzoomed, h_pileupdxypvzoomed;
-  std::vector<dqm::reco::MonitorElement const*> h_recodzpvzoomed, h_assocdzpvzoomed, h_assoc2dzpvzoomed, h_simuldzpvzoomed,
-      h_looperdzpvzoomed, h_misiddzpvzoomed, h_pileupdzpvzoomed;
+  std::vector<dqm::reco::MonitorElement const*> h_recodzpv, h_assocdzpv, h_assoc2dzpv, h_simuldzpv, h_looperdzpv,
+      h_misiddzpv, h_pileupdzpv;
+  std::vector<dqm::reco::MonitorElement const*> h_recodxypvzoomed, h_assocdxypvzoomed, h_assoc2dxypvzoomed,
+      h_simuldxypvzoomed, h_looperdxypvzoomed, h_misiddxypvzoomed, h_pileupdxypvzoomed;
+  std::vector<dqm::reco::MonitorElement const*> h_recodzpvzoomed, h_assocdzpvzoomed, h_assoc2dzpvzoomed,
+      h_simuldzpvzoomed, h_looperdzpvzoomed, h_misiddzpvzoomed, h_pileupdzpvzoomed;
 
-  std::vector<dqm::reco::MonitorElement const*> h_recovertpos, h_assocvertpos, h_assoc2vertpos, h_simulvertpos, h_loopervertpos,
-      h_pileupvertpos;
-  std::vector<dqm::reco::MonitorElement const*> h_recozpos, h_assoczpos, h_assoc2zpos, h_simulzpos, h_looperzpos, h_pileupzpos;
+  std::vector<dqm::reco::MonitorElement const*> h_recovertpos, h_assocvertpos, h_assoc2vertpos, h_simulvertpos,
+      h_loopervertpos, h_pileupvertpos;
+  std::vector<dqm::reco::MonitorElement const*> h_recozpos, h_assoczpos, h_assoc2zpos, h_simulzpos, h_looperzpos,
+      h_pileupzpos;
   std::vector<dqm::reco::MonitorElement const*> h_assocdr, h_assoc2dr, h_simuldr, h_recodr, h_looperdr, h_pileupdr;
-  std::vector<dqm::reco::MonitorElement const*> h_assocdrj, h_assoc2drj, h_simuldrj, h_recodrj, h_looperdrj, h_pileupdrj;
+  std::vector<dqm::reco::MonitorElement const*> h_assocdrj, h_assoc2drj, h_simuldrj, h_recodrj, h_looperdrj,
+      h_pileupdrj;
   std::vector<dqm::reco::MonitorElement const*> h_recochi2, h_assoc2chi2, h_looperchi2, h_misidchi2, h_pileupchi2;
   std::vector<dqm::reco::MonitorElement const*> h_recochi2prob, h_assoc2chi2prob, h_looperchi2prob, h_misidchi2prob,
       h_pileupchi2prob;
@@ -81,29 +84,30 @@ struct MTVHistoProducerAlgoForTrackerHistograms {
 
   std::vector<dqm::reco::MonitorElement const*> h_reco_dzpvcut, h_assoc_dzpvcut, h_assoc2_dzpvcut, h_simul_dzpvcut,
       h_simul2_dzpvcut, h_pileup_dzpvcut;
-  std::vector<dqm::reco::MonitorElement const*> h_reco_dzpvsigcut, h_assoc_dzpvsigcut, h_assoc2_dzpvsigcut, h_simul_dzpvsigcut,
-      h_simul2_dzpvsigcut, h_pileup_dzpvsigcut;
+  std::vector<dqm::reco::MonitorElement const*> h_reco_dzpvsigcut, h_assoc_dzpvsigcut, h_assoc2_dzpvsigcut,
+      h_simul_dzpvsigcut, h_simul2_dzpvsigcut, h_pileup_dzpvsigcut;
 
-  std::vector<dqm::reco::MonitorElement const*> h_reco_dzpvcut_pt, h_assoc_dzpvcut_pt, h_assoc2_dzpvcut_pt, h_simul_dzpvcut_pt,
-      h_simul2_dzpvcut_pt, h_pileup_dzpvcut_pt;
+  std::vector<dqm::reco::MonitorElement const*> h_reco_dzpvcut_pt, h_assoc_dzpvcut_pt, h_assoc2_dzpvcut_pt,
+      h_simul_dzpvcut_pt, h_simul2_dzpvcut_pt, h_pileup_dzpvcut_pt;
   std::vector<dqm::reco::MonitorElement const*> h_reco_dzpvsigcut_pt, h_assoc_dzpvsigcut_pt, h_assoc2_dzpvsigcut_pt,
       h_simul_dzpvsigcut_pt, h_simul2_dzpvsigcut_pt, h_pileup_dzpvsigcut_pt;
-  std::vector<dqm::reco::MonitorElement const*> h_reco_simpvz, h_assoc_simpvz, h_assoc2_simpvz, h_simul_simpvz, h_looper_simpvz,
-      h_pileup_simpvz;
+  std::vector<dqm::reco::MonitorElement const*> h_reco_simpvz, h_assoc_simpvz, h_assoc2_simpvz, h_simul_simpvz,
+      h_looper_simpvz, h_pileup_simpvz;
 
-  std::vector<dqm::reco::MonitorElement const*> h_reco_seedingLayerSet, h_assoc2_seedingLayerSet, h_looper_seedingLayerSet,
-      h_pileup_seedingLayerSet;
+  std::vector<dqm::reco::MonitorElement const*> h_reco_seedingLayerSet, h_assoc2_seedingLayerSet,
+      h_looper_seedingLayerSet, h_pileup_seedingLayerSet;
 
   std::vector<std::vector<dqm::reco::MonitorElement const*>> h_reco_mva, h_assoc2_mva;
-  std::vector<std::vector<dqm::reco::MonitorElement const*>> h_reco_mvacut, h_assoc_mvacut, h_assoc2_mvacut, h_simul2_mvacut;
+  std::vector<std::vector<dqm::reco::MonitorElement const*>> h_reco_mvacut, h_assoc_mvacut, h_assoc2_mvacut,
+      h_simul2_mvacut;
   std::vector<std::vector<dqm::reco::MonitorElement const*>> h_reco_mva_hp, h_assoc2_mva_hp;
   std::vector<std::vector<dqm::reco::MonitorElement const*>> h_reco_mvacut_hp, h_assoc_mvacut_hp, h_assoc2_mvacut_hp,
       h_simul2_mvacut_hp;
 
-  std::vector<std::vector<dqm::reco::MonitorElement const*>> h_assoc2_mva_vs_pt, h_fake_mva_vs_pt, h_assoc2_mva_vs_pt_hp,
-      h_fake_mva_vs_pt_hp;
-  std::vector<std::vector<dqm::reco::MonitorElement const*>> h_assoc2_mva_vs_eta, h_fake_mva_vs_eta, h_assoc2_mva_vs_eta_hp,
-      h_fake_mva_vs_eta_hp;
+  std::vector<std::vector<dqm::reco::MonitorElement const*>> h_assoc2_mva_vs_pt, h_fake_mva_vs_pt,
+      h_assoc2_mva_vs_pt_hp, h_fake_mva_vs_pt_hp;
+  std::vector<std::vector<dqm::reco::MonitorElement const*>> h_assoc2_mva_vs_eta, h_fake_mva_vs_eta,
+      h_assoc2_mva_vs_eta_hp, h_fake_mva_vs_eta_hp;
 
   // dE/dx
   // in the future these might become an array
@@ -128,7 +132,8 @@ struct MTVHistoProducerAlgoForTrackerHistograms {
 
   //---- second set of histograms (originally not used by the SeedGenerator)
   //1D
-  std::vector<dqm::reco::MonitorElement const*> h_nchi2, h_nchi2_prob, h_losthits, h_nmisslayers_inner, h_nmisslayers_outer;
+  std::vector<dqm::reco::MonitorElement const*> h_nchi2, h_nchi2_prob, h_losthits, h_nmisslayers_inner,
+      h_nmisslayers_outer;
 
   //2D
   std::vector<dqm::reco::MonitorElement const*> chi2_vs_nhits, etares_vs_eta;
@@ -146,11 +151,13 @@ struct MTVHistoProducerAlgoForTrackerHistograms {
   std::vector<dqm::reco::MonitorElement const*> assoc_chi2_vs_eta, assoc_chi2prob_vs_eta;
 
   //resolution of track params: to be used with fitslicesytool
-  std::vector<dqm::reco::MonitorElement const*> dxyres_vs_eta, ptres_vs_eta, dzres_vs_eta, phires_vs_eta, cotThetares_vs_eta;
+  std::vector<dqm::reco::MonitorElement const*> dxyres_vs_eta, ptres_vs_eta, dzres_vs_eta, phires_vs_eta,
+      cotThetares_vs_eta;
   std::vector<dqm::reco::MonitorElement const*> dxyres_vs_pt, ptres_vs_pt, dzres_vs_pt, phires_vs_pt, cotThetares_vs_pt;
 
   //pulls of track params vs eta: to be used with fitslicesytool
-  std::vector<dqm::reco::MonitorElement const*> dxypull_vs_eta, ptpull_vs_eta, dzpull_vs_eta, phipull_vs_eta, thetapull_vs_eta;
+  std::vector<dqm::reco::MonitorElement const*> dxypull_vs_eta, ptpull_vs_eta, dzpull_vs_eta, phipull_vs_eta,
+      thetapull_vs_eta;
   std::vector<dqm::reco::MonitorElement const*> ptpull_vs_phi, phipull_vs_phi, thetapull_vs_phi;
 };
 

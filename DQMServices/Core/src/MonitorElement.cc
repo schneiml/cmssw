@@ -23,8 +23,9 @@ namespace dqm {
 
     void MonitorElement::makeMutable() const {
       assert(internal_ || !"attempting to modify an invalid ME");
-      if (!is_readonly_) return; // nothing to do
-      assert(!is_owned_); // if we own it we should be able to modify it
+      if (!is_readonly_)
+        return;            // nothing to do
+      assert(!is_owned_);  // if we own it we should be able to modify it
       internal_ = DQMStore::cloneMonitorElementData(internal_);
       is_owned_ = true;
       is_readonly_ = false;
@@ -177,7 +178,7 @@ namespace dqm {
 
     /* almost unused */ void MonitorElement::runQTests() { assert(!"NIY"); }
 
-    TAxis* MonitorElement::accessAxis(TH1& object, int axis) {
+    TAxis *MonitorElement::accessAxis(TH1 &object, int axis) {
       if (axis == 1) {
         return object.GetXaxis();
       } else if (axis == 2) {
@@ -190,77 +191,77 @@ namespace dqm {
 
     // const and data-independent -- safe
     int MonitorElement::getNbinsX() const {
-      MonitorElementData::Value::Access access (internal_->value_);
+      MonitorElementData::Value::Access access(internal_->value_);
       return access.object->GetNbinsX();
     }
     int MonitorElement::getNbinsY() const {
-      MonitorElementData::Value::Access access (internal_->value_);
+      MonitorElementData::Value::Access access(internal_->value_);
       return access.object->GetNbinsY();
     }
     int MonitorElement::getNbinsZ() const {
-      MonitorElementData::Value::Access access (internal_->value_);
+      MonitorElementData::Value::Access access(internal_->value_);
       return access.object->GetNbinsZ();
     }
     std::string MonitorElement::getAxisTitle(int axis) const {
-      MonitorElementData::Value::Access access (internal_->value_);
+      MonitorElementData::Value::Access access(internal_->value_);
       return accessAxis(*access.object, axis)->GetTitle();
     }
     std::string MonitorElement::getTitle() const {
-      MonitorElementData::Value::Access access (internal_->value_);
+      MonitorElementData::Value::Access access(internal_->value_);
       return access.object->GetTitle();
     }
 
     // const but data-dependent -- semantically unsafe in RECO
     double MonitorElement::getMean(int axis) const {
-      MonitorElementData::Value::Access access (internal_->value_);
+      MonitorElementData::Value::Access access(internal_->value_);
       return access.object->GetMean(axis);
     }
     double MonitorElement::getMeanError(int axis) const {
-      MonitorElementData::Value::Access access (internal_->value_);
+      MonitorElementData::Value::Access access(internal_->value_);
       return access.object->GetMeanError(axis);
     }
     double MonitorElement::getRMS(int axis) const {
-      MonitorElementData::Value::Access access (internal_->value_);
+      MonitorElementData::Value::Access access(internal_->value_);
       return access.object->GetRMS(axis);
     }
     double MonitorElement::getRMSError(int axis) const {
-      MonitorElementData::Value::Access access (internal_->value_);
+      MonitorElementData::Value::Access access(internal_->value_);
       return access.object->GetRMSError(axis);
     }
     double MonitorElement::getBinContent(int binx) const {
-      MonitorElementData::Value::Access access (internal_->value_);
+      MonitorElementData::Value::Access access(internal_->value_);
       return access.object->GetBinContent(binx);
     }
     double MonitorElement::getBinContent(int binx, int biny) const {
-      MonitorElementData::Value::Access access (internal_->value_);
+      MonitorElementData::Value::Access access(internal_->value_);
       return access.object->GetBinContent(binx, biny);
     }
     double MonitorElement::getBinContent(int binx, int biny, int binz) const {
-      MonitorElementData::Value::Access access (internal_->value_);
+      MonitorElementData::Value::Access access(internal_->value_);
       return access.object->GetBinContent(binx, biny, binz);
     }
     double MonitorElement::getBinError(int binx) const {
-      MonitorElementData::Value::Access access (internal_->value_);
+      MonitorElementData::Value::Access access(internal_->value_);
       return access.object->GetBinError(binx);
     }
     double MonitorElement::getBinError(int binx, int biny) const {
-      MonitorElementData::Value::Access access (internal_->value_);
+      MonitorElementData::Value::Access access(internal_->value_);
       return access.object->GetBinError(binx, biny);
     }
     double MonitorElement::getBinError(int binx, int biny, int binz) const {
-      MonitorElementData::Value::Access access (internal_->value_);
+      MonitorElementData::Value::Access access(internal_->value_);
       return access.object->GetBinError(binx, biny, binz);
     }
     double MonitorElement::getEntries() const {
-      MonitorElementData::Value::Access access (internal_->value_);
+      MonitorElementData::Value::Access access(internal_->value_);
       return access.object->GetEntries();
     }
     double MonitorElement::getBinEntries(int bin) const {
-      MonitorElementData::Value::Access access (internal_->value_);
+      MonitorElementData::Value::Access access(internal_->value_);
       if (internal_->key_.kind_ == Kind::TPROFILE) {
-        return static_cast<TProfile*>(access.object.get())->GetBinEntries(bin);
+        return static_cast<TProfile *>(access.object.get())->GetBinEntries(bin);
       } else if (internal_->key_.kind_ == Kind::TPROFILE2D) {
-        return static_cast<TProfile2D*>(access.object.get())->GetBinEntries(bin);
+        return static_cast<TProfile2D *>(access.object.get())->GetBinEntries(bin);
       } else {
         assert(!"getBinEntries only exists on TProfile and TProfile2D!");
       }
@@ -301,9 +302,9 @@ namespace dqm {
       makeMutable();
       MonitorElementData::Value::Access access(internal_->value_);
       if (internal_->key_.kind_ == Kind::TPROFILE) {
-        return static_cast<TProfile*>(access.object.get())->SetBinEntries(bin, nentries);
+        return static_cast<TProfile *>(access.object.get())->SetBinEntries(bin, nentries);
       } else if (internal_->key_.kind_ == Kind::TPROFILE2D) {
-        return static_cast<TProfile2D*>(access.object.get())->SetBinEntries(bin, nentries);
+        return static_cast<TProfile2D *>(access.object.get())->SetBinEntries(bin, nentries);
       } else {
         assert(!"setBinEntries only exists on TProfile and TProfile2D!");
       }
@@ -356,36 +357,16 @@ namespace dqm {
       return access.object.get();
     }
 
-    TH1 *MonitorElement::getTH1() const {
-      return dynamic_cast<TH1*>(getRootObject());
-    }
-    TH1F *MonitorElement::getTH1F() const {
-      return dynamic_cast<TH1F*>(getRootObject());
-    }
-    TH1S *MonitorElement::getTH1S() const {
-      return dynamic_cast<TH1S*>(getRootObject());
-    }
-    TH1D *MonitorElement::getTH1D() const {
-      return dynamic_cast<TH1D*>(getRootObject());
-    }
-    TH2F *MonitorElement::getTH2F() const {
-      return dynamic_cast<TH2F*>(getRootObject());
-    }
-    TH2S *MonitorElement::getTH2S() const {
-      return dynamic_cast<TH2S*>(getRootObject());
-    }
-    TH2D *MonitorElement::getTH2D() const {
-      return dynamic_cast<TH2D*>(getRootObject());
-    }
-    TH3F *MonitorElement::getTH3F() const {
-      return dynamic_cast<TH3F*>(getRootObject());
-    }
-    TProfile *MonitorElement::getTProfile() const {
-      return dynamic_cast<TProfile*>(getRootObject());
-    }
-    TProfile2D *MonitorElement::getTProfile2D() const {
-      return dynamic_cast<TProfile2D*>(getRootObject());
-    }
+    TH1 *MonitorElement::getTH1() const { return dynamic_cast<TH1 *>(getRootObject()); }
+    TH1F *MonitorElement::getTH1F() const { return dynamic_cast<TH1F *>(getRootObject()); }
+    TH1S *MonitorElement::getTH1S() const { return dynamic_cast<TH1S *>(getRootObject()); }
+    TH1D *MonitorElement::getTH1D() const { return dynamic_cast<TH1D *>(getRootObject()); }
+    TH2F *MonitorElement::getTH2F() const { return dynamic_cast<TH2F *>(getRootObject()); }
+    TH2S *MonitorElement::getTH2S() const { return dynamic_cast<TH2S *>(getRootObject()); }
+    TH2D *MonitorElement::getTH2D() const { return dynamic_cast<TH2D *>(getRootObject()); }
+    TH3F *MonitorElement::getTH3F() const { return dynamic_cast<TH3F *>(getRootObject()); }
+    TProfile *MonitorElement::getTProfile() const { return dynamic_cast<TProfile *>(getRootObject()); }
+    TProfile2D *MonitorElement::getTProfile2D() const { return dynamic_cast<TProfile2D *>(getRootObject()); }
 
     TObject *MonitorElement::getRefRootObject() const { assert(!"NIY"); }
 
@@ -435,23 +416,25 @@ namespace dqm {
       access.object->SetOption(option);
     }
 
-    void MonitorElement::dump(std::ostream& os) const {
-      os << "MonitorElement@" << (void*) this << "{\n  .internal_ = " << (void*) this->internal_ << ",\n";
+    void MonitorElement::dump(std::ostream &os) const {
+      os << "MonitorElement@" << (void *)this << "{\n  .internal_ = " << (void *)this->internal_ << ",\n";
       os << "  .is_owned_ = " << this->is_owned_ << ", .is_readonly_ = " << this->is_readonly_ << ",\n";
       if (this->internal_) {
         os << "  .kind_ = " << static_cast<int>(this->internal_->key_.kind_) << ",\n";
         os << "  .scope_ = " << static_cast<int>(this->internal_->key_.scope_) << ",\n";
         os << "  .path_ = " << this->getFullname() << ",\n";
-        os << "  .coveredrange_ = [" << this->internal_->key_.coveredrange_.startRun() << ":" << this->internal_->key_.coveredrange_.startLumi() 
-           << " - " << this->internal_->key_.coveredrange_.endRun() << ":" << this->internal_->key_.coveredrange_.endLumi() << "],\n";
+        os << "  .coveredrange_ = [" << this->internal_->key_.coveredrange_.startRun() << ":"
+           << this->internal_->key_.coveredrange_.startLumi() << " - " << this->internal_->key_.coveredrange_.endRun()
+           << ":" << this->internal_->key_.coveredrange_.endLumi() << "],\n";
         MonitorElementData::Value::Access access(this->internal_->value_);
-        os << "  .scalar_ = {" << access.scalar.num << ", " <<  access.scalar.real << ", \"" << access.scalar.str << "\"},\n";
-        os << "  .object_ = " << (void*) access.object.get() << "\n";
+        os << "  .scalar_ = {" << access.scalar.num << ", " << access.scalar.real << ", \"" << access.scalar.str
+           << "\"},\n";
+        os << "  .object_ = " << (void *)access.object.get() << "\n";
       }
       os << "}";
     }
 
-    std::ostream& operator<<(std::ostream& os, MonitorElement const& me) {
+    std::ostream &operator<<(std::ostream &os, MonitorElement const &me) {
       me.dump(os);
       return os;
     }

@@ -10,7 +10,6 @@ class TH1F;
 
 class METBenchmarkAnalyzer : public BenchmarkAnalyzer, public METBenchmark {
 public:
-
   METBenchmarkAnalyzer(const edm::ParameterSet &parameterSet);
 
   void analyze(const edm::Event &, const edm::EventSetup &) override;

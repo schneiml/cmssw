@@ -215,7 +215,7 @@ private:
   std::string m_fileName;
   std::string m_logicalFileName;
   std::unique_ptr<TFile> m_file;
-  std::vector<boost::shared_ptr<TreeHelperBase> > m_treeHelpers;
+  std::vector<boost::shared_ptr<TreeHelperBase>> m_treeHelpers;
 
   unsigned int m_run;
   unsigned int m_lumi;
@@ -291,8 +291,7 @@ DQMRootOutputModule::DQMRootOutputModule(edm::ParameterSet const& pset)
       m_filterOnRun(pset.getUntrackedParameter<unsigned int>("filterOnRun")),
       m_enableMultiThread(false),
       m_fullNameBufferPtr(&m_fullNameBuffer),
-      m_indicesTree(nullptr) {
-}
+      m_indicesTree(nullptr) {}
 
 // DQMRootOutputModule::DQMRootOutputModule(const DQMRootOutputModule& rhs)
 // {
@@ -352,8 +351,7 @@ void DQMRootOutputModule::openFile(edm::FileBlock const&) {
   m_indicesTree->SetDirectory(m_file.get());
 
   unsigned int i = 0;
-  for (std::vector<boost::shared_ptr<TreeHelperBase> >::iterator it = m_treeHelpers.begin(),
-                                                                 itEnd = m_treeHelpers.end();
+  for (std::vector<boost::shared_ptr<TreeHelperBase>>::iterator it = m_treeHelpers.begin(), itEnd = m_treeHelpers.end();
        it != itEnd;
        ++it, ++i) {
     //std::cout <<"making "<<kTypeNames[i]<<std::endl;
@@ -391,10 +389,11 @@ void DQMRootOutputModule::writeLuminosityBlock(edm::LuminosityBlockForOutput con
 
   std::vector<edm::Handle<MonitorElementCollection>> mecs;
 
-  std::vector<std::pair<edm::BranchDescription const *, edm::EDGetToken>> products = keptProducts()[edm::BranchType::InLumi];
+  std::vector<std::pair<edm::BranchDescription const*, edm::EDGetToken>> products =
+      keptProducts()[edm::BranchType::InLumi];
 
   for (auto [desc, token] : products) {
-    (void) desc;
+    (void)desc;
     edm::Handle<MonitorElementCollection> handle;
     iLumi.getByToken(token, handle);
     assert(handle.isValid());
@@ -404,7 +403,8 @@ void DQMRootOutputModule::writeLuminosityBlock(edm::LuminosityBlockForOutput con
       assert(me.key_.coveredrange_.endRun() == m_run);
       assert(me.key_.coveredrange_.startLumi() == m_lumi);
       assert(me.key_.coveredrange_.endLumi() == m_lumi);
-      std::map<unsigned int, unsigned int>::iterator itFound = m_dqmKindToTypeIndex.find(static_cast<int>(me.key_.kind_));
+      std::map<unsigned int, unsigned int>::iterator itFound =
+          m_dqmKindToTypeIndex.find(static_cast<int>(me.key_.kind_));
       assert(itFound != m_dqmKindToTypeIndex.end());
       m_treeHelpers[itFound->second]->fill(&me);
     }
@@ -423,8 +423,7 @@ void DQMRootOutputModule::writeLuminosityBlock(edm::LuminosityBlockForOutput con
   //Now store the relationship between run/lumi and indices in the other TTrees
   bool storedLumiIndex = false;
   unsigned int typeIndex = 0;
-  for (std::vector<boost::shared_ptr<TreeHelperBase> >::iterator it = m_treeHelpers.begin(),
-                                                                 itEnd = m_treeHelpers.end();
+  for (std::vector<boost::shared_ptr<TreeHelperBase>>::iterator it = m_treeHelpers.begin(), itEnd = m_treeHelpers.end();
        it != itEnd;
        ++it, ++typeIndex) {
     if ((*it)->wasFilled()) {
@@ -458,10 +457,11 @@ void DQMRootOutputModule::writeRun(edm::RunForOutput const& iRun) {
   if (!shouldWrite)
     return;
 
-  std::vector<std::pair<edm::BranchDescription const *, edm::EDGetToken>> products = keptProducts()[edm::BranchType::InRun];
+  std::vector<std::pair<edm::BranchDescription const*, edm::EDGetToken>> products =
+      keptProducts()[edm::BranchType::InRun];
 
   for (auto [desc, token] : products) {
-    (void) desc;
+    (void)desc;
     edm::Handle<MonitorElementCollection> handle;
     iRun.getByToken(token, handle);
     assert(handle.isValid());
@@ -469,7 +469,8 @@ void DQMRootOutputModule::writeRun(edm::RunForOutput const& iRun) {
       assert(me.key_.scope_ == MonitorElementData::Scope::RUN);
       assert(me.key_.coveredrange_.startRun() == m_run);
       assert(me.key_.coveredrange_.endRun() == m_run);
-      std::map<unsigned int, unsigned int>::iterator itFound = m_dqmKindToTypeIndex.find(static_cast<int>(me.key_.kind_));
+      std::map<unsigned int, unsigned int>::iterator itFound =
+          m_dqmKindToTypeIndex.find(static_cast<int>(me.key_.kind_));
       assert(itFound != m_dqmKindToTypeIndex.end());
       m_treeHelpers[itFound->second]->fill(&me);
     }
@@ -487,8 +488,7 @@ void DQMRootOutputModule::writeRun(edm::RunForOutput const& iRun) {
 
   //Now store the relationship between run/lumi and indices in the other TTrees
   unsigned int typeIndex = 0;
-  for (std::vector<boost::shared_ptr<TreeHelperBase> >::iterator it = m_treeHelpers.begin(),
-                                                                 itEnd = m_treeHelpers.end();
+  for (std::vector<boost::shared_ptr<TreeHelperBase>>::iterator it = m_treeHelpers.begin(), itEnd = m_treeHelpers.end();
        it != itEnd;
        ++it, ++typeIndex) {
     if ((*it)->wasFilled()) {

@@ -17,12 +17,12 @@
 
 //---------------------------------------------------------------------------------------
 /// Function to fill an efficiency histograms with binomial errors
-inline void divide(dqm::legacy::MonitorElement *eff,
-                   const dqm::legacy::MonitorElement *numerator,
-                   const dqm::legacy::MonitorElement *denominator) {
-  TH1 *effH = eff->getTH1();
-  TH1 *numH = numerator->getTH1();
-  TH1 *denH = denominator->getTH1();
+inline void divide(dqm::legacy::MonitorElement* eff,
+                   const dqm::legacy::MonitorElement* numerator,
+                   const dqm::legacy::MonitorElement* denominator) {
+  TH1* effH = eff->getTH1();
+  TH1* numH = numerator->getTH1();
+  TH1* denH = denominator->getTH1();
   effH->Divide(numH, denH);
 
   // Set the error accordingly to binomial statistics
@@ -46,7 +46,7 @@ public:
   typedef dqm::reco::DQMStore DQMStore;
   typedef dqm::reco::MonitorElement MonitorElement;
 
-  HRes1DHit(const std::string &name, DQMStore::IBooker &booker, bool doall = true, bool local = true) {
+  HRes1DHit(const std::string& name, DQMStore::IBooker& booker, bool doall = true, bool local = true) {
     std::string pre = "1D_";
     pre += name;
     doall_ = doall;
@@ -140,7 +140,7 @@ public:
   typedef dqm::reco::DQMStore DQMStore;
   typedef dqm::reco::MonitorElement MonitorElement;
 
-  HEff1DHit(const std::string &name, DQMStore::IBooker &booker) {
+  HEff1DHit(const std::string& name, DQMStore::IBooker& booker) {
     std::string pre = "1D_";
     pre += name;
     name_ = pre;
@@ -185,7 +185,7 @@ public:
   typedef dqm::legacy::DQMStore DQMStore;
   typedef dqm::legacy::MonitorElement MonitorElement;
 
-  HEff1DHitHarvest(const std::string &name, DQMStore::IBooker &booker, DQMStore::IGetter &getter) {
+  HEff1DHitHarvest(const std::string& name, DQMStore::IBooker& booker, DQMStore::IGetter& getter) {
     std::string pre = "1D_";
     pre += name;
     name_ = pre;
@@ -197,7 +197,7 @@ public:
     computeEfficiency(getter);
   }
 
-  void computeEfficiency(DQMStore::IGetter &getter) {
+  void computeEfficiency(DQMStore::IGetter& getter) {
     std::string pre = "DT/1DRecHits/" + name_;
     divide(hEffVsEta, getter.get(pre + "_hEtaMuRecHit"), getter.get(pre + "_hEtaMuSimHit"));
     divide(hEffVsPhi, getter.get(pre + "_hPhiMuRecHit"), getter.get(pre + "_hPhiMuSimHit"));
@@ -205,9 +205,9 @@ public:
   }
 
 private:
-  MonitorElement *hEffVsEta;
-  MonitorElement *hEffVsPhi;
-  MonitorElement *hEffVsDist;
+  MonitorElement* hEffVsEta;
+  MonitorElement* hEffVsPhi;
+  MonitorElement* hEffVsDist;
 
   std::string name_;
 };
@@ -219,7 +219,7 @@ public:
   typedef dqm::reco::DQMStore DQMStore;
   typedef dqm::reco::MonitorElement MonitorElement;
 
-  HRes2DHit(const std::string &name, DQMStore::IBooker &booker, bool doall = true, bool local = true) {
+  HRes2DHit(const std::string& name, DQMStore::IBooker& booker, bool doall = true, bool local = true) {
     doall_ = doall;
     std::string pre = "2D_";
     pre += name;
@@ -333,7 +333,7 @@ public:
   typedef dqm::reco::DQMStore DQMStore;
   typedef dqm::reco::MonitorElement MonitorElement;
 
-  HEff2DHit(const std::string &name, DQMStore::IBooker &booker) {
+  HEff2DHit(const std::string& name, DQMStore::IBooker& booker) {
     std::string pre = "2D_";
     pre += name;
     name_ = pre;
@@ -385,7 +385,7 @@ public:
   typedef dqm::legacy::DQMStore DQMStore;
   typedef dqm::legacy::MonitorElement MonitorElement;
 
-  HEff2DHitHarvest(const std::string &name, DQMStore::IBooker &booker, DQMStore::IGetter &getter) {
+  HEff2DHitHarvest(const std::string& name, DQMStore::IBooker& booker, DQMStore::IGetter& getter) {
     std::string pre = "2D_";
     pre += name;
     name_ = pre;
@@ -399,7 +399,7 @@ public:
     computeEfficiency(getter);
   }
 
-  void computeEfficiency(DQMStore::IGetter &getter) {
+  void computeEfficiency(DQMStore::IGetter& getter) {
     std::string pre = "DT/2DSegments/" + name_;
     divide(hEffVsEta, getter.get(pre + "_hEtaRecHit"), getter.get(pre + "_hEtaSimSegm"));
     divide(hEffVsPhi, getter.get(pre + "_hPhiRecHit"), getter.get(pre + "_hPhiSimSegm"));
@@ -408,10 +408,10 @@ public:
   }
 
 private:
-  MonitorElement *hEffVsEta;
-  MonitorElement *hEffVsPhi;
-  MonitorElement *hEffVsPos;
-  MonitorElement *hEffVsAngle;
+  MonitorElement* hEffVsEta;
+  MonitorElement* hEffVsPhi;
+  MonitorElement* hEffVsPos;
+  MonitorElement* hEffVsAngle;
 
   std::string name_;
 };
@@ -423,8 +423,7 @@ public:
   typedef dqm::reco::DQMStore DQMStore;
   typedef dqm::reco::MonitorElement MonitorElement;
 
-  HRes4DHit(const std::string &name, DQMStore::IBooker &booker, bool doall = true, bool local = true)
-      : local_(local) {
+  HRes4DHit(const std::string& name, DQMStore::IBooker& booker, bool doall = true, bool local = true) : local_(local) {
     std::string pre = "4D_";
     pre += name;
     doall_ = doall;
@@ -943,7 +942,7 @@ public:
   typedef dqm::reco::DQMStore DQMStore;
   typedef dqm::reco::MonitorElement MonitorElement;
 
-  HEff4DHit(const std::string &name, DQMStore::IBooker &booker) {
+  HEff4DHit(const std::string& name, DQMStore::IBooker& booker) {
     std::string pre = "4D_";
     pre += name;
     name_ = pre;
@@ -1025,7 +1024,7 @@ public:
   typedef dqm::legacy::DQMStore DQMStore;
   typedef dqm::legacy::MonitorElement MonitorElement;
 
-  HEff4DHitHarvest(const std::string &name, DQMStore::IBooker &booker, DQMStore::IGetter &getter) {
+  HEff4DHitHarvest(const std::string& name, DQMStore::IBooker& booker, DQMStore::IGetter& getter) {
     std::string pre = "4D_";
     pre += name;
     name_ = pre;
@@ -1042,7 +1041,7 @@ public:
     computeEfficiency(getter);
   }
 
-  void computeEfficiency(DQMStore::IGetter &getter) {
+  void computeEfficiency(DQMStore::IGetter& getter) {
     std::string pre = "DT/4DSegments/" + name_;
     divide(hEffVsEta, getter.get(pre + "_hEtaRecHit"), getter.get(pre + "_hEtaSimSegm"));
     divide(hEffVsPhi, getter.get(pre + "_hPhiRecHit"), getter.get(pre + "_hPhiSimSegm"));
@@ -1053,14 +1052,14 @@ public:
   }
 
 private:
-  MonitorElement *hEffVsEta;
-  MonitorElement *hEffVsPhi;
+  MonitorElement* hEffVsEta;
+  MonitorElement* hEffVsPhi;
 
-  MonitorElement *hEffVsX;
-  MonitorElement *hEffVsY;
+  MonitorElement* hEffVsX;
+  MonitorElement* hEffVsY;
 
-  MonitorElement *hEffVsAlpha;
-  MonitorElement *hEffVsBeta;
+  MonitorElement* hEffVsAlpha;
+  MonitorElement* hEffVsBeta;
 
   std::string name_;
 };
