@@ -17,39 +17,62 @@ process.source = cms.Source("EmptySource", numberEventsInRun = cms.untracked.uin
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 
 process.ana1 = DQMEDAnalyzer("DemoNormalDQMEDAnalyzer",
-  folder = cms.string("DemoSubsystem1"),
+  folder = cms.string("DemoSubsystemNormal1"),
 )
 
 process.ana2 = DQMEDAnalyzer("DemoNormalDQMEDAnalyzer",
-  folder = cms.string("DemoSubsystem2"),
+  folder = cms.string("DemoSubsystemNormal2"),
 )
 
 process.ana3 = DQMEDAnalyzer("DemoGlobalDQMEDAnalyzer",
-  folder = cms.string("DemoSubsystem3"),
+  folder = cms.string("DemoSubsystemGlobal1"),
 )
 
 process.ana4 = DQMEDAnalyzer("DemoGlobalDQMEDAnalyzer",
-  folder = cms.string("DemoSubsystem4"),
+  folder = cms.string("DemoSubsystemGlobal2"),
+)
+
+process.ana5 = DQMEDAnalyzer("DemoOneDQMEDAnalyzer",
+  folder = cms.string("DemoSubsystemOne1"),
+)
+
+process.ana6 = DQMEDAnalyzer("DemoOneDQMEDAnalyzer",
+  folder = cms.string("DemoSubsystemOne2"),
 )
 
 process.harv1 = DQMEDHarvester("DemoHarvester",
-  target = cms.string("DemoSubsystem1"),
+  target = cms.string("DemoSubsystemNormal1"),
 )
 
 process.harv2 = DQMEDHarvester("DemoHarvester",
-  target = cms.string("DemoSubsystem2"),
+  target = cms.string("DemoSubsystemNormal2"),
 )
 
-process.harv3 = DQMEDHarvester("DemoHarvester",
-  target = cms.string("DemoSubsystem1_lumisummary"),
+process.harv3 = DQMEDHarvester("DemoRunHarvester",
+  target = cms.string("DemoSubsystemGlobal1"),
+)
+
+process.harv4 = DQMEDHarvester("DemoRunHarvester",
+  target = cms.string("DemoSubsystemOne1"),
+)
+
+process.harv5 = DQMEDHarvester("DemoHarvester",
+  target = cms.string("DemoSubsystemNormal1_lumisummary"),
   inputMEs = cms.untracked.VInputTag(
     cms.InputTag("harv1", "DQMGenerationHarvestingRun"),
     cms.InputTag("harv1", "DQMGenerationHarvestingLumi"),
   )
 )
 
-process.demo_reco_dqm = cms.Task(process.ana1, process.ana2, process.ana3, process.ana4)
-process.demo_harvesting = cms.Task(process.harv1, process.harv2, process.harv3)
+process.harv6 = DQMEDHarvester("DemoRunHarvester",
+  target = cms.string("DemoSubsystemGlobal1_runsummary"),
+  inputMEs = cms.untracked.VInputTag(
+    cms.InputTag("harv3", "DQMGenerationHarvestingRun"),
+  )
+)
+
+process.demo_reco_dqm = cms.Task(process.ana1, process.ana2, process.ana3, process.ana4, process.ana5, process.ana6)
+process.demo_harvesting = cms.Task(process.harv1, process.harv2, process.harv3, process.harv4, process.harv5, process.harv6)
 
 process.p = cms.Path(process.demo_reco_dqm, process.demo_harvesting)
 
