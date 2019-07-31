@@ -571,7 +571,7 @@ void DQMRootSource::readRun_(edm::RunPrincipal& rpCache) {
   //NOTE: need to reset all run elements at this point
   if (m_lastSeenRun != runID || m_lastSeenReducedPHID != m_reducedHistoryIDs.at(runLumiRange.m_historyIDIndex)) {
     if (m_shouldReadMEs) {
-      auto  allMEs = (*m_store).getAllContents("");
+      auto allMEs = (*m_store).getAllContents("");
       for (auto const& ME : allMEs) {
         // TODO: WTF.
         // if (!(*m_store).isCollate())

@@ -76,8 +76,10 @@ namespace APVGain {
 
     std::vector<dqm::reco::MonitorElement const*> Charge_Vs_Index;         /*!< Charge per cm for each detector id */
     std::array<std::vector<dqm::reco::MonitorElement const*>, 7> Charge_1; /*!< Charge per cm per layer / wheel */
-    std::array<std::vector<dqm::reco::MonitorElement const*>, 7> Charge_2; /*!< Charge per cm per layer / wheel without G2 */
-    std::array<std::vector<dqm::reco::MonitorElement const*>, 7> Charge_3; /*!< Charge per cm per layer / wheel without G1 */
+    std::array<std::vector<dqm::reco::MonitorElement const*>, 7>
+        Charge_2; /*!< Charge per cm per layer / wheel without G2 */
+    std::array<std::vector<dqm::reco::MonitorElement const*>, 7>
+        Charge_3; /*!< Charge per cm per layer / wheel without G1 */
     std::array<std::vector<dqm::reco::MonitorElement const*>, 7>
         Charge_4; /*!< Charge per cm per layer / wheel without G1 and G1*/
 

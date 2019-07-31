@@ -27,7 +27,6 @@
 #include "DataFormats/Luminosity/interface/LumiDetails.h"  // Luminosity Information
 #include "DataFormats/Luminosity/interface/LumiSummary.h"  // Luminosity Information
 
-
 #include "L1Trigger/GlobalTriggerAnalyzer/interface/L1GtUtils.h"
 
 #include <TString.h>

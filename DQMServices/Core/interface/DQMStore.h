@@ -487,7 +487,7 @@ namespace dqm {
     public:
       MonitorElement() = default;
       MonitorElement(MonitorElementData const* data, bool is_owned, bool is_readonly)
-          : dqm::reco::MonitorElement(data, is_owned, is_readonly) {};
+          : dqm::reco::MonitorElement(data, is_owned, is_readonly){};
       ~MonitorElement() = default;
 
       // In harvesting, we un-ban some of the operations banned before. Eventually,
@@ -1087,7 +1087,7 @@ namespace dqm {
       // if ther previous lumi has not yet finished and recycle reusable MEs if
       // booking/toProduct() left any.
       // enterLumi is idempotent; it can be called at any time to update lumi
-      // ranges in the MEs. This is needed in harvesting, where MEs can be 
+      // ranges in the MEs. This is needed in harvesting, where MEs can be
       // booked at any time.
       void enterLumi(edm::RunNumber_t run, edm::LuminosityBlockNumber_t lumi);
       // Turn the MEs associated with t, run, lumi into a read-only product and
@@ -1112,7 +1112,7 @@ namespace dqm {
       void loadFromProduct();
       // Remove MEs that only borrowed their data from a product (imported by
       // importFromProduct but never modified), to prevent them from going into
-      // the output product. 
+      // the output product.
       void cleanupFromProduct();
 
       // to be used only by DQMEDAnalyzer.
@@ -1137,7 +1137,7 @@ namespace dqm {
       // - "concurrent lumisections" == enterLumi() called again with
       //   different parameters before toProduct() is called with previous
       //   parameters.
-      // - MEs with equal getFullname() only exist when there are concurrent 
+      // - MEs with equal getFullname() only exist when there are concurrent
       //   lumisections. Else, there is at most one ME for each name.
       // - During reco, there is at least one ME for each name.
       //   - This can be a "prototype" (run=0) if there is no active lumi.
@@ -1145,7 +1145,7 @@ namespace dqm {
       //     same (holding pointers to it is safe).
       //   - DQMStores with master_ set don't have concurrent lumis.
       // - MEs should have
-      //   - is_owned = true and is_readonly = false 
+      //   - is_owned = true and is_readonly = false
       //   - or is_owned = false is_readonly = false if master_ is set
       //   - or is_owned = false is_readonly = true in harvesting
       //     - these must not outlive the edm transition that they came from

@@ -63,7 +63,7 @@ public:
   }
 
   // TODO: this is overridden in subsystem code, make sure that is safe.
-  virtual void beginJob() {};
+  virtual void beginJob(){};
 
   void beginStream(edm::StreamID id) {
     dqmstore_ = std::make_unique<DQMStore>();
@@ -97,18 +97,17 @@ public:
                                               LuminosityBlockContext const* context) {
     auto lock = std::scoped_lock(context->global()->master_->lock_);
     auto& master = context->global()->master_->master_;
-    lumi.emplace(context->global()->lumiToken_,  master.toProduct(edm::Transition::EndLuminosityBlock, lumi.run(), lumi.luminosityBlock()));
+    lumi.emplace(context->global()->lumiToken_,
+                 master.toProduct(edm::Transition::EndLuminosityBlock, lumi.run(), lumi.luminosityBlock()));
   }
 
   void endRun(edm::Run const& run, edm::EventSetup const& setup){};
 
-  static void globalEndRunProduce(edm::Run& run,
-                                  edm::EventSetup const& setup,
-                                  RunContext const* context
-                                  ) {
+  static void globalEndRunProduce(edm::Run& run, edm::EventSetup const& setup, RunContext const* context) {
     auto lock = std::scoped_lock(context->global()->master_->lock_);
     auto& master = context->global()->master_->master_;
-    run.emplace(context->global()->runToken_, master.toProduct(edm::Transition::EndRun, run.run(), edm::invalidLuminosityBlockNumber));
+    run.emplace(context->global()->runToken_,
+                master.toProduct(edm::Transition::EndRun, run.run(), edm::invalidLuminosityBlockNumber));
   }
 
   static void globalEndJob(dqm::reco::DQMEDAnalyzerGlobalCache*){};

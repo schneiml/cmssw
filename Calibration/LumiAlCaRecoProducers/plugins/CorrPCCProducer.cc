@@ -46,7 +46,6 @@ ________________________________________________________________**/
 #include "TGraphErrors.h"
 #include "TFile.h"
 
-
 class CorrPCCProducer : public one::DQMEDAnalyzer<edm::one::WatchLuminosityBlocks> {
 public:
   explicit CorrPCCProducer(const edm::ParameterSet&);

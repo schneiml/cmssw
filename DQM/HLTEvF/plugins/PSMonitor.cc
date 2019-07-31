@@ -106,7 +106,8 @@ void PSMonitor::bookHistograms(DQMStore::IBooker& booker,
 
   histname = "psColumnIndexVsLS";
   histtitle = "PS column index vs LS";
-  auto me = booker.book2D(histname, histtitle, ls_binning_.nbins, ls_binning_.xmin, ls_binning_.xmax, nbins, xmin, xmax);
+  auto me =
+      booker.book2D(histname, histtitle, ls_binning_.nbins, ls_binning_.xmin, ls_binning_.xmax, nbins, xmin, xmax);
   me->setAxisTitle("LS", 1);
   me->setAxisTitle("PS column index", 2);
 
