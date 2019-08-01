@@ -29,7 +29,7 @@ public:
     runToken_ = this->template produces<MonitorElementCollection, edm::Transition::EndRun>("DQMGenerationRecoRun");
   }
 
-  void beginRun(edm::Run const& run, edm::EventSetup const& setup) final {
+  void dqmBeginRun(edm::Run const& run, edm::EventSetup const& setup) final {
     dqmBeginRun(run, setup);
 
     // Calling enterLumi twice is safe; this keeps things a bit simpler in case
@@ -86,7 +86,7 @@ class DQMOneLumiEDAnalyzer : public DQMOneEDAnalyzer<edm::EndLuminosityBlockProd
     lumiToken_ = this->template produces<MonitorElementCollection, edm::Transition::EndLuminosityBlock>("DQMGenerationRecoLumi");
   }
 
-  void beginLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& setup) final {
+  void dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& setup) final {
     dqmBeginLuminosityBlock(lumi, setup);
     this->dqmstore_->enterLumi(lumi.run(), lumi.luminosityBlock());
   }
