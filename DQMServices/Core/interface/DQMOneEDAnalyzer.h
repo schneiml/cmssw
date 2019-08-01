@@ -87,7 +87,7 @@ class DQMOneLumiEDAnalyzer : public DQMOneEDAnalyzer<edm::EndLuminosityBlockProd
   }
 
   void beginLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& setup) final {
-    dqmBeginLumi(lumi, setup);
+    dqmBeginLuminosityBlock(lumi, setup);
     this->dqmstore_->enterLumi(lumi.run(), lumi.luminosityBlock());
   }
 
@@ -98,7 +98,7 @@ class DQMOneLumiEDAnalyzer : public DQMOneEDAnalyzer<edm::EndLuminosityBlockProd
   //}
 
   void endLuminosityBlockProduce(edm::LuminosityBlock& lumi, edm::EventSetup const& setup) final {
-    dqmEndLumi(lumi, setup);
+    dqmEndLuminosityBlock(lumi, setup);
     lumi.emplace(lumiToken_, this->dqmstore_->toProduct(edm::Transition::EndLuminosityBlock, lumi.run(), lumi.luminosityBlock()));
   }
 
@@ -107,8 +107,9 @@ class DQMOneLumiEDAnalyzer : public DQMOneEDAnalyzer<edm::EndLuminosityBlockProd
   void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) final{};
 
   // methods to be implemented by the user, in order of invocation
-  virtual void dqmBeginLumi(edm::LuminosityBlock const&, edm::EventSetup const&) {}
-  virtual void dqmEndLumi(edm::LuminosityBlock const&, edm::EventSetup const&) {}
+  virtual void dqmBeginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) {}
+  virtual void dqmEndLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) {}
+
 
 private:
   edm::EDPutTokenT<MonitorElementCollection> lumiToken_;
