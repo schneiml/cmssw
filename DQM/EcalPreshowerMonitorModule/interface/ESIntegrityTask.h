@@ -21,7 +21,7 @@ protected:
   void analyze(const edm::Event& e, const edm::EventSetup& c) override;
 
   /// EndRun
-  void endRun(const edm::Run& r, const edm::EventSetup& c) override;
+  void dqmEndRun(const edm::Run& r, const edm::EventSetup& c) override;
 
   /// Begin Lumi
   void beginLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup& c) override;
