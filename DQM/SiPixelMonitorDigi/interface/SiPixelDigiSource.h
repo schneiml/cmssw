@@ -26,7 +26,7 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "DQMServices/Core/interface/oneDQMEDAnalyzer.h"
+#include "DQMServices/Core/interface/DQMOneEDAnalyzer.h"
 
 #include "DQM/SiPixelMonitorDigi/interface/SiPixelDigiModule.h"
 
@@ -44,7 +44,7 @@
 
 #include <boost/cstdint.hpp>
 
-class SiPixelDigiSource : public one::DQMEDAnalyzer<one::DQMLuminosityBlockElements> {
+class SiPixelDigiSource : public DQMOneLumiEDAnalyzer<> {
 public:
   explicit SiPixelDigiSource(const edm::ParameterSet& conf);
   ~SiPixelDigiSource() override;
