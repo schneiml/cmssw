@@ -1,5 +1,5 @@
-#ifndef DQMServices_Core_DQMOneEDAnalyzer.h
-#define DQMServices_Core_DQMOneEDAnalyzer.h
+#ifndef DQMServices_Core_DQMOneEDAnalyzer_h
+#define DQMServices_Core_DQMOneEDAnalyzer_h
 
 #include "DQMServices/Core/interface/DQMStore.h"
 #include "FWCore/Framework/interface/Event.h"
@@ -29,7 +29,7 @@ public:
     runToken_ = this->template produces<MonitorElementCollection, edm::Transition::EndRun>("DQMGenerationRecoRun");
   }
 
-  void dqmBeginRun(edm::Run const& run, edm::EventSetup const& setup) final {
+  void beginRun(edm::Run const& run, edm::EventSetup const& setup) final {
     dqmBeginRun(run, setup);
 
     // Calling enterLumi twice is safe; this keeps things a bit simpler in case
@@ -79,14 +79,14 @@ template<typename... Args>
 class DQMOneLumiEDAnalyzer : public DQMOneEDAnalyzer<edm::EndLuminosityBlockProducer,
                                               edm::one::WatchLuminosityBlocks,
                                               Args...>  {
-
+public:
   // framework calls in the order of invocation
   DQMOneLumiEDAnalyzer() {
     // for whatever reason we need the explicit `template` keyword here.
     lumiToken_ = this->template produces<MonitorElementCollection, edm::Transition::EndLuminosityBlock>("DQMGenerationRecoLumi");
   }
 
-  void dqmBeginLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& setup) final {
+  void beginLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& setup) final {
     dqmBeginLuminosityBlock(lumi, setup);
     this->dqmstore_->enterLumi(lumi.run(), lumi.luminosityBlock());
   }
@@ -115,4 +115,4 @@ private:
   edm::EDPutTokenT<MonitorElementCollection> lumiToken_;
 };
 
-#endif  // DQMServices_Core_DQMEDAnalyzer_h
+#endif
