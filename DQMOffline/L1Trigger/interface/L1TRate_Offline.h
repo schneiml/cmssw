@@ -6,7 +6,7 @@
 #include <unistd.h>
 
 // user include files
-#include "DQMServices/Core/interface/oneDQMEDAnalyzer.h"
+#include "DQMServices/Core/interface/DQMOneEDAnalyzer.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/Event.h"
@@ -39,7 +39,7 @@
 // class declaration
 //
 
-class L1TRate_Offline : public one::DQMEDAnalyzer<edm::one::WatchLuminosityBlocks> {
+class L1TRate_Offline : public DQMOneEDAnalyzer<edm::one::WatchLuminosityBlocks> {
 public:
   enum Errors { UNKNOWN = 1, WARNING_PY_MISSING_FIT = 2 };
 
