@@ -35,6 +35,8 @@ public:
     // Calling enterLumi twice is safe; this keeps things a bit simpler in case
     // of multiple runs per job.
     dqmstore_->enterLumi(run.run(), edm::invalidLuminosityBlockNumber);
+    TRACE("calling book");
+    dqmstore_->setScope(MonitorElementData::Scope::RUN);
     bookHistograms(*dqmstore_, run, setup);
     dqmstore_->enterLumi(run.run(), edm::invalidLuminosityBlockNumber);
   }
@@ -46,6 +48,7 @@ public:
   void endRunProduce(edm::Run& run, edm::EventSetup const& setup) final {
     dqmEndRun(run, setup);
 
+    TRACE("Calling emplace");
     run.emplace(runToken_, dqmstore_->toProduct(edm::Transition::EndRun, run.run(), edm::invalidLuminosityBlockNumber));
   }
 

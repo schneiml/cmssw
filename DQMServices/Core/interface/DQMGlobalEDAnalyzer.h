@@ -37,6 +37,7 @@ public:
     // TODO: for concurrent runs, we'd have to make sure to return the correct
     // run/lumi version of the (existing) MEs. This requires keeping track of
     // the current run and lumi in DQMStore or IBooker.
+    dqmstore_->setScope(MonitorElementData::Scope::RUN);
     bookHistograms(*dqmstore_, run, setup, *h);
     // Populate run numbers, in case booking only books prototypes.
     // We will not call enterLumi per-lumi, since this is strictly run-based.

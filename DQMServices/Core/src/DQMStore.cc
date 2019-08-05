@@ -29,6 +29,14 @@ namespace dqm {
     template <class ME, class STORE>
     IBooker<ME, STORE>::IBooker(STORE* store) {
       store_ = store;
+      scope_ = MonitorElementData::Scope::DEFAULT;
+    }
+
+    template <class ME, class STORE>
+    MonitorElementData::Scope IBooker<ME, STORE>::setScope(MonitorElementData::Scope newscope) {
+      auto oldscope = scope_;
+      scope_ = newscope;
+      return oldscope;
     }
 
     template <class ME, class STORE>
@@ -38,7 +46,7 @@ namespace dqm {
       key.kind_ = kind;
       std::string fullpath = pwd() + std::string(name.View());
       key.path_.set(fullpath, MonitorElementData::Path::Type::DIR_AND_NAME);
-      key.scope_ = MonitorElementData::Scope::DEFAULT;
+      key.scope_ = scope_;
       data->key_ = key;
       {
         MonitorElementData::Value::Access value(data->value_);

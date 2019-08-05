@@ -86,7 +86,7 @@ struct MonitorElementData {
   // depending on the use case. That is what the DEFAULT is for, and it should
   // be used unless some specific granularity is really required.
   // We'll also need to switch the DEFAULT to JOB for multi-run harvesting.
-  enum Scope { JOB = 1, RUN = 2, LUMI = 3, DEFAULT = LUMI };
+  enum Scope { JOB = 1, RUN = 2, LUMI = 3, DEFAULT = RUN };
 
   // The main ME data. We don't keep references/QTest results, instead we use
   // only the fields stored in DQMIO files.

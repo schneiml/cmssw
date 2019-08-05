@@ -101,6 +101,7 @@ public:
     // version in the products.
     dqmstore_->loadFromProduct();
 
+    dqmstore_->setScope(MonitorElementData::Scope::LUMI);
     dqmEndLuminosityBlock(*dqmstore_, *dqmstore_, lumi, es);
 
     // subsystem code might have triggered more imports from the products (by
@@ -143,6 +144,7 @@ public:
     dqmstore_->loadFromProduct();
 
     // TODO: we should, and probably can, rename this.
+    dqmstore_->setScope(MonitorElementData::Scope::RUN);
     dqmEndJob(*dqmstore_, *dqmstore_);
 
     // subsystem code might have triggered more imports from the products (by
