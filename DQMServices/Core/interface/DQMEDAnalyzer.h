@@ -80,6 +80,7 @@ public:
     dqmBeginRun(run, setup);
     // For multi-run harvesting, we should have a job-level granularity which
     // can also be used by default. Maybe we can make that a per-plugin option?
+    dqmstore_->setScope(MonitorElementData::Scope::LUMI);
     this->bookHistograms(*dqmstore_, run, setup);
   }
 

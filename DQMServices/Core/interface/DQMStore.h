@@ -703,6 +703,7 @@ namespace dqm {
       virtual void setCurrentFolder(std::string const& fullpath) = 0;
       virtual void goUp() = 0;
       virtual std::string const& pwd() = 0;
+      virtual MonitorElementData::Scope setScope(MonitorElementData::Scope newscope) = 0;
 
       DQM_DEPRECATED
       virtual void tag(MonitorElement*, unsigned int) = 0;
@@ -805,6 +806,8 @@ namespace dqm {
       using NavigatorBase::goUp;
       using NavigatorBase::pwd;
       using NavigatorBase::setCurrentFolder;
+
+      virtual MonitorElementData::Scope setScope(MonitorElementData::Scope newscope);
 
       virtual ME* bookInt(TString const& name);
       virtual ME* bookFloat(TString const& name);
@@ -930,6 +933,7 @@ namespace dqm {
       ME* bookME(TString const& name, MonitorElementData::Kind kind, TH1* object);
 
       STORE* store_;
+      MonitorElementData::Scope scope_;
     };
 
     template <class ME, class STORE>
