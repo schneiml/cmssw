@@ -14,11 +14,9 @@
  * It can be combined with edm::LuminosityBlockCache to watch per-lumi things,
  * and fill per-run histograms with the results.
  */
-template<typename... Args>
-class DQMOneEDAnalyzer : public edm::one::EDProducer<edm::EndRunProducer,
-                                              edm::one::WatchRuns,
-                                              edm::Accumulator,
-                                              Args...>  {
+template <typename... Args>
+class DQMOneEDAnalyzer
+    : public edm::one::EDProducer<edm::EndRunProducer, edm::one::WatchRuns, edm::Accumulator, Args...> {
 public:
   typedef dqm::reco::DQMStore DQMStore;
   typedef dqm::reco::MonitorElement MonitorElement;
@@ -41,9 +39,7 @@ public:
     dqmstore_->enterLumi(run.run(), edm::invalidLuminosityBlockNumber);
   }
 
-  void accumulate(edm::Event const& event, edm::EventSetup const& setup) final {
-    analyze(event, setup);
-  }
+  void accumulate(edm::Event const& event, edm::EventSetup const& setup) final { analyze(event, setup); }
 
   void endRunProduce(edm::Run& run, edm::EventSetup const& setup) final {
     dqmEndRun(run, setup);
@@ -78,15 +74,15 @@ protected:
  * probaby care about seeing lumisections in order anyways.
  */
 
-template<typename... Args>
-class DQMOneLumiEDAnalyzer : public DQMOneEDAnalyzer<edm::EndLuminosityBlockProducer,
-                                              edm::one::WatchLuminosityBlocks,
-                                              Args...>  {
+template <typename... Args>
+class DQMOneLumiEDAnalyzer
+    : public DQMOneEDAnalyzer<edm::EndLuminosityBlockProducer, edm::one::WatchLuminosityBlocks, Args...> {
 public:
   // framework calls in the order of invocation
   DQMOneLumiEDAnalyzer() {
     // for whatever reason we need the explicit `template` keyword here.
-    lumiToken_ = this->template produces<MonitorElementCollection, edm::Transition::EndLuminosityBlock>("DQMGenerationRecoLumi");
+    lumiToken_ =
+        this->template produces<MonitorElementCollection, edm::Transition::EndLuminosityBlock>("DQMGenerationRecoLumi");
   }
 
   void beginLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& setup) final {
@@ -102,7 +98,8 @@ public:
 
   void endLuminosityBlockProduce(edm::LuminosityBlock& lumi, edm::EventSetup const& setup) final {
     dqmEndLuminosityBlock(lumi, setup);
-    lumi.emplace(lumiToken_, this->dqmstore_->toProduct(edm::Transition::EndLuminosityBlock, lumi.run(), lumi.luminosityBlock()));
+    lumi.emplace(lumiToken_,
+                 this->dqmstore_->toProduct(edm::Transition::EndLuminosityBlock, lumi.run(), lumi.luminosityBlock()));
   }
 
   // Subsystems could safely override this, but any changes to MEs would not be
@@ -112,7 +109,6 @@ public:
   // methods to be implemented by the user, in order of invocation
   virtual void dqmBeginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) {}
   virtual void dqmEndLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) {}
-
 
 private:
   edm::EDPutTokenT<MonitorElementCollection> lumiToken_;

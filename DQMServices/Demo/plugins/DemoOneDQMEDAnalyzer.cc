@@ -26,7 +26,6 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 class DemoOneDQMEDAnalyzer : public DQMOneEDAnalyzer<> {
- 
 public:
   explicit DemoOneDQMEDAnalyzer(const edm::ParameterSet&);
   ~DemoOneDQMEDAnalyzer() override;
@@ -71,8 +70,8 @@ void DemoOneDQMEDAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSet
 }
 
 void DemoOneDQMEDAnalyzer::bookHistograms(DQMStore::IBooker& ibook,
-                                             edm::Run const& run,
-                                             edm::EventSetup const& iSetup) {
+                                          edm::Run const& run,
+                                          edm::EventSetup const& iSetup) {
   ibook.setCurrentFolder(folder_);
 
   example_ = ibook.book1D("EXAMPLE", "Example 1D", 20, 0., 10.);
