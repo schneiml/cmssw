@@ -733,6 +733,7 @@ FastTimerService::FastTimerService(const edm::ParameterSet& config, edm::Activit
       print_job_summary_(config.getUntrackedParameter<bool>("printJobSummary")),
       // dqm configuration
       enable_dqm_(config.getUntrackedParameter<bool>("enableDQM")),
+      dqmstore_(std::make_unique<dqm::reco::DQMStore>()),
       enable_dqm_bymodule_(config.getUntrackedParameter<bool>("enableDQMbyModule")),
       enable_dqm_bypath_(config.getUntrackedParameter<bool>("enableDQMbyPath")),
       enable_dqm_byls_(config.getUntrackedParameter<bool>("enableDQMbyLumiSection")),
