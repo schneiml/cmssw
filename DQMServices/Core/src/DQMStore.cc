@@ -23,6 +23,7 @@ namespace dqm {
     void NavigatorBase::setCurrentFolder(std::string const& fullpath) {
       MonitorElementData::Path path;
       path.set(fullpath, MonitorElementData::Path::Type::DIR);
+      assert(this);
       cwd_ = path.getDirname();
     }
 
