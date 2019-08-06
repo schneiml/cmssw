@@ -466,7 +466,7 @@ private:
   const bool print_job_summary_;    // print the time spent in each process, path and module for the whole job
 
   // dqm configuration
-  bool enable_dqm_;  // non const, depends on the availability of the DQMStore
+  const bool enable_dqm_;
   std::unique_ptr<dqm::reco::DQMStore> dqmstore_;
   const bool enable_dqm_bymodule_;
   const bool enable_dqm_bypath_;
