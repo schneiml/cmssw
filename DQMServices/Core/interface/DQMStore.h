@@ -456,11 +456,6 @@ namespace dqm {
       BAN(virtual void setBinError(int binx, int biny, int binz, double error))
       BAN(virtual void setBinEntries(int bin, double nentries))
       BAN(virtual void setEntries(double nentries))
-      BAN(virtual void setAxisRange(double xmin, double xmax, int axis = 1))
-      BAN(virtual void setAxisTitle(const std::string& title, int axis = 1))
-      BAN(virtual void setAxisTimeDisplay(int value, int axis = 1))
-      BAN(virtual void setAxisTimeFormat(const char* format = "", int axis = 1))
-      BAN(virtual void setTitle(const std::string& title))
 
       BAN(virtual TObject* getRootObject() const)
       BAN(virtual TH1* getTH1() const)
