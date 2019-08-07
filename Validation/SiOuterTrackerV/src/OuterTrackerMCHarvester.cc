@@ -131,7 +131,7 @@ void OuterTrackerMCHarvester::dqmEndJob(DQMStore::IBooker &ibooker, DQMStore::IG
 
       // Calculate the efficiency
       me_effic_eta->getTH1F()->Divide(numerator, denominator, 1., 1., "B");
-      me_effic_eta->getTH1F()->GetXaxis()->SetTitle("tracking particle #eta");
+      me_effic_eta->setAxisTitle("tracking particle #eta");
       me_effic_eta->getTH1F()->GetYaxis()->SetTitle("Efficiency");
       me_effic_eta->getTH1F()->SetMaximum(1.0);
       me_effic_eta->getTH1F()->SetMinimum(0.0);
@@ -160,7 +160,7 @@ void OuterTrackerMCHarvester::dqmEndJob(DQMStore::IBooker &ibooker, DQMStore::IG
 
       // Calculate the efficiency
       me_effic_pt->getTH1F()->Divide(numerator2, denominator2, 1., 1., "B");
-      me_effic_pt->getTH1F()->GetXaxis()->SetTitle("Tracking particle p_{T} [GeV]");
+      me_effic_pt->setAxisTitle("Tracking particle p_{T} [GeV]");
       me_effic_pt->getTH1F()->GetYaxis()->SetTitle("Efficiency");
       me_effic_pt->getTH1F()->SetMaximum(1.0);
       me_effic_pt->getTH1F()->SetMinimum(0.0);
@@ -189,7 +189,7 @@ void OuterTrackerMCHarvester::dqmEndJob(DQMStore::IBooker &ibooker, DQMStore::IG
 
       // Calculate the efficiency
       me_effic_pt_zoom->getTH1F()->Divide(numerator2_zoom, denominator2_zoom, 1., 1., "B");
-      me_effic_pt_zoom->getTH1F()->GetXaxis()->SetTitle("Tracking particle p_{T} [GeV]");
+      me_effic_pt_zoom->setAxisTitle("Tracking particle p_{T} [GeV]");
       me_effic_pt_zoom->getTH1F()->GetYaxis()->SetTitle("Efficiency");
       me_effic_pt_zoom->getTH1F()->SetMaximum(1.0);
       me_effic_pt_zoom->getTH1F()->SetMinimum(0.0);
@@ -218,7 +218,7 @@ void OuterTrackerMCHarvester::dqmEndJob(DQMStore::IBooker &ibooker, DQMStore::IG
 
       // Calculate the efficiency
       me_effic_d0->getTH1F()->Divide(numerator5, denominator5, 1., 1., "B");
-      me_effic_d0->getTH1F()->GetXaxis()->SetTitle("Tracking particle d_{0} [cm]");
+      me_effic_d0->setAxisTitle("Tracking particle d_{0} [cm]");
       me_effic_d0->getTH1F()->GetYaxis()->SetTitle("Efficiency");
       me_effic_d0->getTH1F()->SetMaximum(1.0);
       me_effic_d0->getTH1F()->SetMinimum(0.0);
@@ -247,7 +247,7 @@ void OuterTrackerMCHarvester::dqmEndJob(DQMStore::IBooker &ibooker, DQMStore::IG
 
       // Calculate the efficiency
       me_effic_VtxR->getTH1F()->Divide(numerator6, denominator6, 1., 1., "B");
-      me_effic_VtxR->getTH1F()->GetXaxis()->SetTitle("Tracking particle VtxR [cm]");
+      me_effic_VtxR->setAxisTitle("Tracking particle VtxR [cm]");
       me_effic_VtxR->getTH1F()->GetYaxis()->SetTitle("Efficiency");
       me_effic_VtxR->getTH1F()->SetMaximum(1.0);
       me_effic_VtxR->getTH1F()->SetMinimum(0.0);
@@ -276,7 +276,7 @@ void OuterTrackerMCHarvester::dqmEndJob(DQMStore::IBooker &ibooker, DQMStore::IG
 
       // Calculate the efficiency
       me_effic_VtxZ->getTH1F()->Divide(numerator7, denominator7, 1., 1., "B");
-      me_effic_VtxZ->getTH1F()->GetXaxis()->SetTitle("Tracking particle VtxZ [cm]");
+      me_effic_VtxZ->setAxisTitle("Tracking particle VtxZ [cm]");
       me_effic_VtxZ->getTH1F()->GetYaxis()->SetTitle("Efficiency");
       me_effic_VtxZ->getTH1F()->SetMaximum(1.0);
       me_effic_VtxZ->getTH1F()->SetMinimum(0.0);
