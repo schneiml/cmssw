@@ -341,6 +341,11 @@ namespace dqm {
       virtual void disableAlphanumeric() const;
       virtual void setOption(const char* option) const;
 
+      // new operations to reduce usage of getTH*
+      virtual double getAxisMin(int axis = 1);
+      virtual double getAxisMax(int axis = 1);
+
+
       // these should be non-const, since they are potentially not thread-safe
       virtual TObject* getRootObject() const;
       virtual TH1* getTH1() const;

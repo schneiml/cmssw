@@ -345,6 +345,16 @@ namespace dqm {
       access.object->SetTitle(title.c_str());
     }
 
+    double MonitorElement::getAxisMin(int axis) {
+      MonitorElementData::Value::Access access(internal_->value_);
+       return accessAxis(*access.object, axis)->GetXmin();
+    }
+
+    double MonitorElement::getAxisMax(int axis) {
+      MonitorElementData::Value::Access access(internal_->value_);
+       return accessAxis(*access.object, axis)->GetXmax();
+    }
+
     void MonitorElement::softReset() { assert(!"NIY"); }
 
     TObject *MonitorElement::getRootObject() const {
