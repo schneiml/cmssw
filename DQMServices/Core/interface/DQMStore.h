@@ -453,9 +453,9 @@ namespace dqm {
       BAN(virtual double getEntries() const)
       BAN(virtual double getBinEntries(int bin) const)
 
-      BAN(virtual void setBinContent(int binx, double content))
-      BAN(virtual void setBinContent(int binx, int biny, double content))
-      BAN(virtual void setBinContent(int binx, int biny, int binz, double content))
+      //BAN(virtual void setBinContent(int binx, double content))
+      //BAN(virtual void setBinContent(int binx, int biny, double content))
+      //BAN(virtual void setBinContent(int binx, int biny, int binz, double content))
       BAN(virtual void setBinError(int binx, double error))
       BAN(virtual void setBinError(int binx, int biny, double error))
       BAN(virtual void setBinError(int binx, int biny, int binz, double error))
