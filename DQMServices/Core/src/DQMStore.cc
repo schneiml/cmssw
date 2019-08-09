@@ -55,7 +55,9 @@ namespace dqm {
       }
 
       std::unique_ptr<ME> me = std::make_unique<ME>(data, /* is_owned */ true, /* is_readonly */ false);
+      assert(me);
       ME* me_ptr = store_->putME(std::move(me));
+      assert(me_ptr);
       return me_ptr;
     }
 
