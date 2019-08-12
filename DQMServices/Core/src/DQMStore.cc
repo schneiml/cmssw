@@ -547,8 +547,6 @@ namespace dqm {
             assert(localMe == nullptr);
           }
 
-          TRACE(meData->key_.path_.getDirname() << " " << meData->key_.path_.getObjectname() << " "
-                                                << (void*)meData->key_.path_.getObjectname().c_str());
           product.push_back(std::move(meData));
           //std::raise(SIGINT);
         } else {

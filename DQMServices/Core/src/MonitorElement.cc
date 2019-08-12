@@ -347,12 +347,17 @@ namespace dqm {
 
     double MonitorElement::getAxisMin(int axis) {
       MonitorElementData::Value::Access access(internal_->value_);
-       return accessAxis(*access.object, axis)->GetXmin();
+      return accessAxis(*access.object, axis)->GetXmin();
     }
 
     double MonitorElement::getAxisMax(int axis) {
       MonitorElementData::Value::Access access(internal_->value_);
-       return accessAxis(*access.object, axis)->GetXmax();
+      return accessAxis(*access.object, axis)->GetXmax();
+    }
+
+    void MonitorElement::setCanExtend(unsigned int value) {
+      MonitorElementData::Value::Access access(internal_->value_);
+      access.object->SetCanExtend(value);
     }
 
     void MonitorElement::softReset() { assert(!"NIY"); }

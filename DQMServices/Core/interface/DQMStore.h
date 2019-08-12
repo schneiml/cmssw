@@ -344,6 +344,11 @@ namespace dqm {
       // new operations to reduce usage of getTH*
       virtual double getAxisMin(int axis = 1);
       virtual double getAxisMax(int axis = 1);
+      // We should avoid extending histograms in general, and if the behaviour
+      // is actually needed, provide a more specific interface rather than
+      // relying on the ROOT behaviour.
+      DQM_DEPRECATED
+      virtual void setCanExtend(unsigned int value);
 
 
       // these should be non-const, since they are potentially not thread-safe
