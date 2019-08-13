@@ -349,6 +349,10 @@ namespace dqm {
       // relying on the ROOT behaviour.
       DQM_DEPRECATED
       virtual void setCanExtend(unsigned int value);
+      // We should decide if we support this (or make it default)
+      DQM_DEPRECATED
+      virtual void setStatOverflows(unsigned int value);
+
 
 
       // these should be non-const, since they are potentially not thread-safe

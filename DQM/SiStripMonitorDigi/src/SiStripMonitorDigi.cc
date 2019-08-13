@@ -1020,7 +1020,7 @@ void SiStripMonitorDigi::createModuleMEs(DQMStore::IBooker& ibooker, ModMEs& mod
     mod_single.NumberOfDigis = ibooker.book1D(hid, hid, 21, -0.5, 20.5);
     ibooker.tag(mod_single.NumberOfDigis, detid);
     mod_single.NumberOfDigis->setAxisTitle("number of digis in one detector module");
-    mod_single.NumberOfDigis->getTH1()->StatOverflows(kTRUE);  // over/underflows in Mean calculation
+    mod_single.NumberOfDigis->setStatOverflows(kTRUE);  // over/underflows in Mean calculation
   }
 
   //nr. of digis per strip in module
@@ -1030,7 +1030,7 @@ void SiStripMonitorDigi::createModuleMEs(DQMStore::IBooker& ibooker, ModMEs& mod
     mod_single.NumberOfDigisPerStrip = ibooker.book1D(hid, hid, nstrips, -0.5, nstrips + 0.5);
     ibooker.tag(mod_single.NumberOfDigisPerStrip, detid);
     mod_single.NumberOfDigisPerStrip->setAxisTitle("number of (digis > 0) per strip");
-    mod_single.NumberOfDigisPerStrip->getTH1()->StatOverflows(kTRUE);  // over/underflows in Mean calculation
+    mod_single.NumberOfDigisPerStrip->setStatOverflows(kTRUE);  // over/underflows in Mean calculation
   }
   //#ADCs for hottest strip
   if (moduleswitchadchotteston) {

@@ -360,6 +360,11 @@ namespace dqm {
       access.object->SetCanExtend(value);
     }
 
+    void MonitorElement::setStatOverflows(unsigned int value) {
+      MonitorElementData::Value::Access access(internal_->value_);
+      access.object->StatOverflows(value);
+    }
+
     void MonitorElement::softReset() { assert(!"NIY"); }
 
     TObject *MonitorElement::getRootObject() const {
