@@ -69,8 +69,13 @@ namespace dqm {
         ME* me_ptr = master_->master_.putME(std::move(me));
 
         // Make a copy of ME sharing the underlying MonitorElementData and root TH1 object
+        if (!localmes_[me_ptr->internal()->key_]) {
         localmes_[me_ptr->internal()->key_] =
             std::make_unique<ME>(me_ptr->internal(), /* is_owned */ false, /* is_readonly */ false);
+        } else {
+          // However, if we already have it (double booking), reuse the existing object.
+          localmes_[me_ptr->internal()->key_]->setInternal(me_ptr->internal(), /* is_owned */ false, /* is_readonly */ false);
+        }
 
         return localmes_[me_ptr->internal()->key_].get();
       }
