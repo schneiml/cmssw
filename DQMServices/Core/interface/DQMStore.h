@@ -1096,6 +1096,8 @@ namespace dqm {
       // Will take ownership of the ROOT object in `me`, deleting it if not
       // needed.
       ME* putME(std::unique_ptr<ME>&& me);
+      // Log a backtrace on booking.
+      void printTrace(std::string const& message);
       // Prepare MEs for the next lumisection. This will create per-lumi copies
       // if ther previous lumi has not yet finished and recycle reusable MEs if
       // booking/toProduct() left any.

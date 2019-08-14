@@ -1,6 +1,7 @@
 // silence deprecation warnings for the DQMStore itself.
 #define DQM_DEPRECATED
 #include "DQMServices/Core/interface/DQMStore.h"
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include <string>
 #include <regex>
 #include <csignal>
@@ -80,6 +81,8 @@ namespace dqm {
         return localmes_[me_ptr->internal()->key_].get();
       }
 
+      printTrace("booking " + me->getFullname());
+
       auto& existing = localmes_[me->internal()->key_];
 
       if (existing != nullptr) {
@@ -96,6 +99,62 @@ namespace dqm {
         return result;
       }
     }
+
+    template<class ME>
+    void DQMStore<ME>::printTrace(std::string const& message) {
+      edm::LogInfo("DQMStoreBooking").log([&]( auto& logger) {
+        std::regex s_rxtrace{"(.*)\\((.*)\\+0x.*\\).*"};
+        std::regex s_rxself{"^[^()]*DQMStore::.*"};
+
+        void* array[10];
+        size_t size;
+        char** strings;
+        int demangle_status = 0;
+        std::vector<std::string> clean_trace;
+
+        // glibc/libgcc backtrace functionality, declared in execinfo.h.
+        size = backtrace(array, 10);
+        strings = backtrace_symbols(array, size);
+
+        size_t level = 1;
+        char* demangled = nullptr;
+        for (; level < size; ++level) {
+          std::cmatch match;
+          bool ok = std::regex_match(strings[level], match, s_rxtrace);
+          if (!ok) {
+            edm::LogWarning("DQMStoreBacktrace") << "failed match" << level << strings[level];
+            continue;
+          }
+          // gnu demangling extension
+          demangled = abi::__cxa_demangle(std::string(match[2]).c_str(), nullptr, nullptr, &demangle_status);
+          if (!demangled || demangle_status != 0) {
+            edm::LogWarning("DQMStoreBacktrace") << "failed demangle! status" << demangle_status << "on" << match[2];
+            continue;
+          }
+          if (std::regex_match(demangled, s_rxself)) {
+            free(demangled);
+            demangled = nullptr;
+            continue;
+          } else {
+            clean_trace.push_back(demangled);
+            free(demangled);
+            demangled = nullptr;
+          }
+        }
+
+        if (clean_trace.size() > 0) {
+          logger << message << " at ";
+          for (auto const& s : clean_trace) {
+            logger << s << "; ";
+          }
+        } else {
+          logger << message << " : failed to collect stack trace.";
+        }
+
+        free(strings);
+      });
+    }
+
 
     template <class ME, class STORE>
     ME* IBooker<ME, STORE>::bookInt(TString const& name) {

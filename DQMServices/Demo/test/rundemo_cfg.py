@@ -3,7 +3,9 @@ import FWCore.ParameterSet.Config as cms
 from DQMServices.Core.DQMEDAnalyzer import DQMEDAnalyzer
 from DQMServices.Core.DQMEDHarvester import DQMEDHarvester
 
+
 process = cms.Process("TEST")
+process.MessageLogger = cms.Service("MessageLogger")
 
 process.options = cms.untracked.PSet()
 process.options.numberOfThreads = cms.untracked.uint32(1)
@@ -94,9 +96,9 @@ process.dqmSaver = cms.EDAnalyzer("DQMFileSaver",
 
 process.o = cms.EndPath(process.out + process.dqmSaver)
 
-process.add_(cms.Service("Tracer",
-  dumpPathsAndConsumes = cms.untracked.bool(True)
-))
+#process.add_(cms.Service("Tracer",
+#  dumpPathsAndConsumes = cms.untracked.bool(True)
+#))
 
 # from FWCore.ParameterSet.Utilities import convertToUnscheduled
 # process = convertToUnscheduled(process)
