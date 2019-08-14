@@ -102,6 +102,23 @@ namespace dqm {
 
     template<class ME>
     void DQMStore<ME>::printTrace(std::string const& message) {
+      edm::LogInfo("DQMStoreBooking") << "test1";
+      edm::LogInfo("DQMStoreBooking").log([](auto& logger) {
+        logger << "test2";
+      });
+      edm::LogInfo("DQMStoreBooking").log([](auto& logger) {
+        edm::LogWarning("DQMStoreBacktrace") << "test3";
+        logger << "test4";
+      });
+      edm::LogWarning("DQMStoreBooking") << "test5";
+      edm::LogWarning("DQMStoreBooking").log([](auto& logger) {
+        logger << "test6";
+      });
+      edm::LogWarning("DQMStoreBooking").log([](auto& logger) {
+        edm::LogWarning("DQMStoreBacktrace") << "test7";
+        logger << "test8";
+      });
+
       edm::LogInfo("DQMStoreBooking").log([&]( auto& logger) {
         std::regex s_rxtrace{"(.*)\\((.*)\\+0x.*\\).*"};
         std::regex s_rxself{"^[^()]*DQMStore::.*"};
