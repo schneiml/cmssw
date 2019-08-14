@@ -102,26 +102,9 @@ namespace dqm {
 
     template<class ME>
     void DQMStore<ME>::printTrace(std::string const& message) {
-      edm::LogInfo("DQMStoreBooking") << "test1";
-      edm::LogInfo("DQMStoreBooking").log([](auto& logger) {
-        logger << "test2";
-      });
-      edm::LogInfo("DQMStoreBooking").log([](auto& logger) {
-        edm::LogWarning("DQMStoreBacktrace") << "test3";
-        logger << "test4";
-      });
-      edm::LogWarning("DQMStoreBooking") << "test5";
-      edm::LogWarning("DQMStoreBooking").log([](auto& logger) {
-        logger << "test6";
-      });
-      edm::LogWarning("DQMStoreBooking").log([](auto& logger) {
-        edm::LogWarning("DQMStoreBacktrace") << "test7";
-        logger << "test8";
-      });
-
-      edm::LogInfo("DQMStoreBooking").log([&]( auto& logger) {
-        std::regex s_rxtrace{"(.*)\\((.*)\\+0x.*\\).*"};
-        std::regex s_rxself{"^[^()]*DQMStore::.*"};
+      edm::LogWarning("DQMStoreBooking").log([&]( auto& logger) {
+        std::regex s_rxtrace{"(.*)\\((.*)\\+0x.*\\).*(\\[.*\\])"};
+        std::regex s_rxself{"^[^()]*dqm::implementation::.*|^[^()]*edm::.*|.*edm::convertException::wrap.*"};
 
         void* array[10];
         size_t size;
@@ -138,22 +121,35 @@ namespace dqm {
         for (; level < size; ++level) {
           std::cmatch match;
           bool ok = std::regex_match(strings[level], match, s_rxtrace);
+
           if (!ok) {
             edm::LogWarning("DQMStoreBacktrace") << "failed match" << level << strings[level];
             continue;
           }
-          // gnu demangling extension
-          demangled = abi::__cxa_demangle(std::string(match[2]).c_str(), nullptr, nullptr, &demangle_status);
-          if (!demangled || demangle_status != 0) {
-            edm::LogWarning("DQMStoreBacktrace") << "failed demangle! status" << demangle_status << "on" << match[2];
+
+          if (match[2].length() == 0) {
+            // no symbol, ignore.
             continue;
           }
+
+          // demangle name to human readable form
+          demangled = abi::__cxa_demangle(std::string(match[2]).c_str(), nullptr, nullptr, &demangle_status);
+          if (!demangled || demangle_status != 0) {
+            edm::LogWarning("DQMStoreBacktrace") << "failed demangle! status " << demangle_status << " on " << match[2];
+            continue;
+          }
+
           if (std::regex_match(demangled, s_rxself)) {
+            // ignore framework/internal methods
             free(demangled);
             demangled = nullptr;
             continue;
           } else {
-            clean_trace.push_back(demangled);
+            // keep the demangled name and the address.
+            // The address can be resolved to a line number in gdb attached to
+            // the process, using `list *0x<addr>`, but it can only be done in
+            // the running process and we can"t easily do it in this code.
+            clean_trace.push_back(std::string(demangled) + std::string(match[3]));
             free(demangled);
             demangled = nullptr;
           }
