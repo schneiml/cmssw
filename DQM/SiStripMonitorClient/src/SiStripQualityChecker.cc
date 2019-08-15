@@ -498,7 +498,7 @@ void SiStripQualityChecker::fillFaultyModuleStatus(DQMStore& dqm_store, const ed
     return;
   std::string mechanical_dir = dqm_store.pwd();
 
-  SiStripFolderOrganizer folder_organizer;
+  SiStripFolderOrganizer folder_organizer(static_cast<DQMStore::IGetter*>(&dqm_store));
   for (auto const [detId, value] : badModuleList) {
     std::string subdet_folder;
     folder_organizer.getSubDetFolder(detId, tTopo, subdet_folder);

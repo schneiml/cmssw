@@ -125,7 +125,7 @@ void SiStripMonitorPedestals::createMEs(DQMStore::IBooker &ibooker, const edm::E
   // use SistripHistoId for producing histogram id (and title)
   SiStripHistoId hidmanager;
   // create SiStripFolderOrganizer
-  SiStripFolderOrganizer folder_organizer;
+  SiStripFolderOrganizer folder_organizer(&ibooker);
 
   edm::LogInfo("SiStripMonitorPedestals") << "SiStripMonitorPedestals::createMEs: "
                                           << "Number of Detector Present in cabling " << SelectedDetIds.size();

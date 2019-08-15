@@ -245,7 +245,7 @@ void SiStripDaqInfo::findExcludedModule(DQMStore& dqm_store,
     ichannel++;
     if (ichannel == 1) {
       std::string subdet_folder;
-      SiStripFolderOrganizer folder_organizer;
+      SiStripFolderOrganizer folder_organizer(static_cast<DQMStore::IBooker*>(&dqm_store));
       folder_organizer.getSubDetFolder(detId, tTopo, subdet_folder);
       if (!dqm_store.dirExists(subdet_folder)) {
         subdet_folder = mechanical_dir + subdet_folder.substr(subdet_folder.find(mdir) + mdir.size());

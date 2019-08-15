@@ -15,6 +15,7 @@ SiStripBaseCondObjDQM::SiStripBaseCondObjDQM(const edm::EventSetup &eSetup,
       hPSet_(hPSet),
       fPSet_(fPSet),
       cacheID_memory(0),
+      folder_organizer(nullptr),
       dqmStore_(std::make_unique<DQMStore>()),
       runNumber_(iRun) {
   reader = new SiStripDetInfoFileReader(

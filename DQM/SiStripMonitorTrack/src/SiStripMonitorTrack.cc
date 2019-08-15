@@ -31,7 +31,8 @@ SiStripMonitorTrack::SiStripMonitorTrack(const edm::ParameterSet& conf)
       tracksCollection_in_EventTree(true),
       firstEvent(-1),
       genTriggerEventFlag_(new GenericTriggerEventFlag(
-          conf.getParameter<edm::ParameterSet>("genericTriggerEventPSet"), consumesCollector(), *this)) {
+          conf.getParameter<edm::ParameterSet>("genericTriggerEventPSet"), consumesCollector(), *this)),
+      folderOrganizer_(nullptr)  {
   Cluster_src_ = conf.getParameter<edm::InputTag>("Cluster_src");
   Mod_On_ = conf.getParameter<bool>("Mod_On");
   Trend_On_ = conf.getParameter<bool>("Trend_On");
@@ -161,7 +162,7 @@ void SiStripMonitorTrack::analyze(const edm::Event& e, const edm::EventSetup& es
 
 //------------------------------------------------------------------------
 void SiStripMonitorTrack::book(DQMStore::IBooker& ibooker, const TrackerTopology* tTopo, const TkDetMap* tkDetMap) {
-  SiStripFolderOrganizer folder_organizer;
+  SiStripFolderOrganizer folder_organizer(&ibooker);
   folder_organizer.setSiStripFolderName(topFolderName_);
   //******** TkHistoMaps
   if (TkHistoMap_On_) {

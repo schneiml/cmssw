@@ -1396,7 +1396,7 @@ void SiStripTrackingRecHitsValid::createMEs(DQMStore::IBooker &ibooker, const ed
   std::vector<uint32_t> activeDets;
   SiStripDetCabling_->addActiveDetectorsRawIds(activeDets);
 
-  SiStripFolderOrganizer folder_organizer;
+  SiStripFolderOrganizer folder_organizer(&ibooker);
   // folder_organizer.setSiStripFolderName(topFolderName_);
   std::string curfold = topFolderName_;
   folder_organizer.setSiStripFolderName(curfold);

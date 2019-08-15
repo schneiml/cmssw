@@ -53,7 +53,7 @@ SiStripMonitorDigi::SiStripMonitorDigi(const edm::ParameterSet& iConfig)
       show_control_view(false),
       select_all_detectors(true),
       reset_each_run(false),
-      folder_organizer(),
+      folder_organizer(nullptr),
       m_cacheID_(0) {
   firstEvent = -1;
   eventNb = 0;
@@ -334,7 +334,7 @@ void SiStripMonitorDigi::createMEs(DQMStore::IBooker& ibooker, const edm::EventS
     }
 
     // create SiStripFolderOrganizer
-    SiStripFolderOrganizer folder_organizer;
+    SiStripFolderOrganizer folder_organizer(&ibooker);
 
     // Create TkHistoMap for Digi and APV shots properies
 

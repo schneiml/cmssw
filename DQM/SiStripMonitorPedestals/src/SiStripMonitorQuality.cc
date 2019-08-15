@@ -104,7 +104,7 @@ void SiStripMonitorQuality::bookHistograms(DQMStore::IBooker &ibooker,
     // use SistripHistoId for producing histogram id (and title)
     SiStripHistoId hidmanager;
     // create SiStripFolderOrganizer
-    SiStripFolderOrganizer folder_organizer;
+    SiStripFolderOrganizer folder_organizer(&ibooker);
     // set appropriate folder using SiStripFolderOrganizer
     folder_organizer.setDetectorFolder(detid,
                                        tTopo);  // pass the detid to this method

@@ -187,7 +187,7 @@ void SiStripCertificationInfo::fillSiStripCertificationMEs(DQMStore& dqm_store, 
   uint16_t nFaultyTot = 0;
   uint16_t nSToNTot = 0;
   float sToNTot = 0.0;
-  SiStripFolderOrganizer folder_organizer;
+  SiStripFolderOrganizer folder_organizer(static_cast<DQMStore::IGetter*>(&dqm_store));
   int xbin = 0;
   for (auto const& [name, subDetME] : SubDetMEsMap) {
     ++xbin;

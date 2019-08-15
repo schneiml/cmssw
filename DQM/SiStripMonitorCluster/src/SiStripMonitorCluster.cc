@@ -264,7 +264,7 @@ void SiStripMonitorCluster::createMEs(const edm::EventSetup& es, DQMStore::IBook
     std::vector<uint32_t> activeDets;
     SiStripDetCabling_->addActiveDetectorsRawIds(activeDets);
 
-    SiStripFolderOrganizer folder_organizer;
+    SiStripFolderOrganizer folder_organizer(&ibooker);
     folder_organizer.setSiStripFolderName(topFolderName_);
     folder_organizer.setSiStripFolder();
 
@@ -721,7 +721,7 @@ void SiStripMonitorCluster::analyze(const edm::Event& iEvent, const edm::EventSe
     iSubdet->second.totNClusters = 0;
   }
 
-  SiStripFolderOrganizer folder_organizer;
+  SiStripFolderOrganizer folder_organizer(nullptr);
   bool found_layer_me = false;
   // Map of cumulative clusters per fed ID.
   std::map<int, int> FEDID_v_clustersum;

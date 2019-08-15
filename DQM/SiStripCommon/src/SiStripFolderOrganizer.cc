@@ -30,10 +30,9 @@
 
 #include <cstring>
 
-SiStripFolderOrganizer::SiStripFolderOrganizer() {
+SiStripFolderOrganizer::SiStripFolderOrganizer(dqm::implementation::NavigatorBase* dbe) :
+ dbe_(dbe) {
   TopFolderName = "SiStrip";
-  // get a pointer to DQMStore
-  dbe_ = std::make_unique<DQMStore>();
 }
 
 SiStripFolderOrganizer::~SiStripFolderOrganizer() {}

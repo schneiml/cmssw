@@ -134,7 +134,7 @@ std::string TkHistoMap::folderDefinition(DQMStore::IBooker& ibooker,
   if (mechanicalView) {
     std::stringstream ss;
 
-    SiStripFolderOrganizer folderOrg;
+    SiStripFolderOrganizer folderOrg(&ibooker);
     folderOrg.setSiStripFolderName(folder);
 
     SiStripDetId::SubDetector subDet;
