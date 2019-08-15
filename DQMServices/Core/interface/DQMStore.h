@@ -580,11 +580,28 @@ namespace dqm {
     };  // namespace harvesting
   }     // namespace harvesting
 
+  namespace implementation {
+    // The common implementation to change folders
+    class NavigatorBase {
+    public:
+      void cd();
+      void cd(std::string const& dir);
+      // This is the only method that is allowed to change cwd_ value
+      void setCurrentFolder(std::string const& fullpath);
+      void goUp();
+      std::string const& pwd();
+
+    protected:
+      NavigatorBase(){};
+      std::string cwd_ = "";
+    };
+  }
+
   namespace legacy {
 
-    // The basic IBooker is a pure virtual interface that returns the common base
+    // The basic IBooker is a virtual interface that returns the common base
     // class of MEs (legacy). That justifies it being in the legacy namespace.
-    class IBooker {
+    class IBooker : public dqm::implementation::NavigatorBase {
     public:
       virtual MonitorElement* bookInt(TString const& name) = 0;
       virtual MonitorElement* bookFloat(TString const& name) = 0;
@@ -707,11 +724,6 @@ namespace dqm {
                                             char const* option = "s") = 0;
       virtual MonitorElement* bookProfile2D(TString const& name, TProfile2D* object) = 0;
 
-      virtual void cd() = 0;
-      virtual void cd(std::string const& dir) = 0;
-      virtual void setCurrentFolder(std::string const& fullpath) = 0;
-      virtual void goUp() = 0;
-      virtual std::string const& pwd() = 0;
       virtual MonitorElementData::Scope setScope(MonitorElementData::Scope newscope) = 0;
 
       DQM_DEPRECATED
@@ -724,7 +736,7 @@ namespace dqm {
     protected:
       IBooker();
     };
-    class IGetter {
+    class IGetter : public dqm::implementation::NavigatorBase {
     public:
       // TODO: review and possibly rename the all methods below:
       // get MEs that are direct children of full path `path`
@@ -771,12 +783,6 @@ namespace dqm {
       // returns whether there are objects at full path `path`
       virtual bool dirExists(std::string const& path) const = 0;
 
-      virtual void cd() = 0;
-      virtual void cd(std::string const& dir) = 0;
-      virtual void setCurrentFolder(std::string const& fullpath) = 0;
-      virtual void goUp() = 0;
-      virtual std::string const& pwd() = 0;
-
       virtual ~IGetter();
 
     protected:
@@ -793,29 +799,9 @@ namespace dqm {
     // We will instantiate this for reco MEs and harvesting MEs, and maybe for
     // legacy as well.
 
-    class NavigatorBase {
-    public:
-      void cd();
-      void cd(std::string const& dir);
-      // This is the only method that is allowed to change cwd_ value
-      void setCurrentFolder(std::string const& fullpath);
-      void goUp();
-      std::string const& pwd();
-
-    protected:
-      NavigatorBase(){};
-      std::string cwd_ = "";
-    };
-
     template <class ME, class STORE>
-    class IBooker : public virtual dqm::legacy::IBooker, public NavigatorBase {
+    class IBooker : public dqm::legacy::IBooker {
     public:
-      // NavigatorBase -- C++ multi-inheritance requires this
-      using NavigatorBase::cd;
-      using NavigatorBase::goUp;
-      using NavigatorBase::pwd;
-      using NavigatorBase::setCurrentFolder;
-
       virtual MonitorElementData::Scope setScope(MonitorElementData::Scope newscope);
 
       virtual ME* bookInt(TString const& name);
@@ -946,14 +932,8 @@ namespace dqm {
     };
 
     template <class ME, class STORE>
-    class IGetter : public dqm::legacy::IGetter, public NavigatorBase {
+    class IGetter : public dqm::legacy::IGetter {
     public:
-      // NavigatorBase -- C++ multi-inheritance requires this
-      using NavigatorBase::cd;
-      using NavigatorBase::goUp;
-      using NavigatorBase::pwd;
-      using NavigatorBase::setCurrentFolder;
-
       // TODO: while we can have covariant return types for individual ME*, it seems we can't for the vectors.
       virtual std::vector<dqm::harvesting::MonitorElement*> getContents(std::string const& path) const;
       virtual std::vector<dqm::harvesting::MonitorElement*> getContents(std::string const& path,
