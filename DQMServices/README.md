@@ -70,6 +70,7 @@ Various functionalities are provided in classes which can be used by the CMSSW p
 
 - `DQMStore`, to interface with the `DQMStore` service and register (book) `MonitorElement`s with the framwork.
 - `MonitorElement`, an object representing a single histogram (or scalar value) of a monitored quantity. In practise, this is a thin wrapper around a ROOT `TH1` instance.
+- `ConcurrentMonitorElement` is a wrapper around `MonitorElement` used by `DQMGlobalEDAnalyzer`.
 - `QCriterion`, an automated check/comparison on a histogram. Many subclasses for specific checks exist.
 
 #### File formats
@@ -96,6 +97,53 @@ DQM code runs in various places during CMS data processing. How much code runs, 
 - _online DQM_: Runs constantly on a small fraction of data directly from HLT while CMS is taking data, on dedicated hardware at Point 5 (4 physical machines). Analyzes a small number of events and live-streams histograms to the online DQMGUI. An identical _playback_ system, also running 24/7 on a small set of stored data, exists as well. 
 - _DQM@HLT_: A small amount of DQM code runs on all HLT nodes to collect statistics over all events at the input of HLT. These histograms get saved into files in the legacy ProtoBuf format, are merged/reduced using the `fastHadd` utility on DAQ systems, and streamed into the online DQM system, where they are repacked and continue like normal online DQM. The output is used by a few HLT experts.
 - _DQMIO merge_: Between RECO and HARVESTING, DQMIO files are partially merged into bigger files. No plugins run in this step, only DQMIO input and output.
+
+Other use cases of the DQM infrastructure exist (_private workflows_), and include for example _multi-run harvesting_, _commissioning tools_ and _validation tools_. For some of them, configuration files are present in CMSSW, but they are not run automatically on production infrastructure.
+
+#### DQMStore modes
+
+The behaviour of the DQMStore serivce can be affected by a number of _modes_ that can be set in the configuration. Which combination of flags exactly enables which mode is not entirely clear.
+
+- _legacy mode_: When `enableMultiThread` is `false`, the `DQMStore` operates in legacy mode, which means it behaves as a single collection of histograms with names. When `enableMultiThread` is `true`, each module and stream get their own, independent view on the histograms. 
+
+- _collate histograms_: When `collateHistograms_` is set to `true`, histograms are not reset at the end of the run/when being booked again. Else, they are.
+
+- _ls based mode_: When `LSbasedMode` is set to `true`, all histograms are saved every lumisection, else only those with the `lumiFlag` set.
+
+- _force reset on begin lumi_: When `forceResetOnBeginLumi` is set, all histograms with the `lumiFlag` set are automatically reset at the beginning of the lumisection.
+
+### Modes of DQM operation
+
+The components and modes mentioned in the previous section can technically be combined in arbitrary ways. However, for most combinations, the behaviour is unknown and probably not useful. Some known combinations are:
+
+- Running in the _RECO_ step (or similar), with all modes off, and only `DQMEDAnalyzer` plugins (default, one, or global). 
+    - Legacy `edm::EDAnalyzer` modules und harvesters are not allowed/supported, though some run and work fine.
+- Running in _HARVESTING_ (or similar), with _legacy mode_, and `DQMEDHarvester` modules. Legacy `edm::EDAnalyzer` modules are allowed.
+    - `DQMEDAnalyzer`s are technically not supported, but may work fine.
+- Running in _HARVESTING_, with _legacy mode_ and _collate histograms_ set. This is used for _multi-run harvesting_.
+- Running in _online DQM_, with _legacy mode_ and _ls based mode_ set. This is used for most of online DQM.
+- Running in the _DQMIO merge step_, with _force reset on begin lumi_ set.
+    - No plugins run in this configuration.
+- Running with _legacy mode_ set. This is used for most other configurations.
+
+Notice that there is no way to run harvesters without setting _legacy mode_: The point of multi-threaded mode is to prevent communication between plugins, and harvesters typically need to read MEs produced by other plugins. A thread-safe mechanism to exchange data was never introduced.
+
+### How do the components interact?
+
+Each plugin has a pointer to the single, global `DQMStore` instance. This pointer is either obtained via the `edm::Service` mechanism (legacy) or passed in from the base class in the form of `IBooker`/`IGetter` objects. (The base classes still obtain them via `edm::Service`). Since the `DQMStore` contains global, mutable state (not only the histogram storage itself, but also e.g. the stateful booking interface with `cd`), interaction with the `DQMStore` is never thread safe. Unsafe, multi-threaded access is possible when the `edm::Service` is used to access the instance, but mostly prevented by convervative locking around the booking callbacks and legacy modules. 
+
+To monitor a quantity, the plugin _books_ a `MonitorElement` with the `DQMStore`. This can happen at any time (legacy code) or only in a specific callback from the base class (`bookHistograms` in `DQMEDAnalyzer`), which is called once per run. The `MonitorElement` is identified by a path that should be unique, together with run number, lumi number (if by lumi), plugin (module) id and stream id (before 2018). The path can be used by other plugins to get access to the same `MonitorElement` (only in legacy mode, or when _global_ `MonitorElement`s are explicitly requested). The result of the booking call is a bare pointer to the `MonitorElement`.
+
+The `MonitorElement` can now be filled with data using the `Fill` call, similar to a ROOT histogram. This can happen at any time. the `MonitorElement` is implemented as a thin wrapper around a ROOT object and all ROOT APIs can be accessed as well. This is usually used in booking to configure the histogram (axis, labels, fill modes). Interactions with the `MonitorElement` are also not thread safe, however `MonitorElement`s are typically local to the plugin instance, and can be safely used in all but `edm::global` modules. The `DQMStore` in threaded mode enforces that pointers to a `MonitorElement` instance are only handed out to a single plugin instance, in case of `edm::stream` modules, multiple `MonitorElement` instances are booked.
+
+For use in `edm::global` modules, `ConcurrentMonitorElement` provides a (partially) thread-safe, but incompatible, API. Otherwise, `ConcurrentMonitorElement`s are backed by normal `MonitorElement`s and handled the same.
+
+Whenever the DQM data should be copied somewhere else (output file or live monitoring), a plugin queries the `DQMStore` for `MonitorElement`s. In threaded mode, the `MonitorElement`s need to be cloned under certain circumstances, because the plugin "owning" a `MonitorElement` may continue filling it from another thread while it is used.
+
+`MonitorElement`s typically collect statistics over a run or job (depending on _collate mode_, though typically irrelevant because there is only one run per job -- many modules make assumptions that are incorrect with more than one run per job). In the _RECO_ case, jobs are typically a small fraction of a run, and full run statistics are only available in _HARVESTING_. To get histograms saved on a finer granularity, _ls based mode_ (global) or the _lumi flag_ (per ME) can be used. This will make sure that the ME is saved every lumisection, and in HARVESTING statistics _accumulate_ over the run, unless the histogram is explicitly reset. Bugs and incorrect assumptions are common regarding this behaviour.
+
+When reading histograms from DQMIO data for merging or harvesting, matching histograms from different files need to be merged. As long as no more than a single run is covered and the data was produced using a sane configuration (same software version for all files), this should always be possible. However, in multi-run harvesting, it is possible that histograms of the same path are not booked with the same parameters and cannot be merged. The merging code tries to catch and ignore these cases, but it can still fail and crash in certain scenarios (e.g. sometimes ROOT fails merging even on identical histograms).
+
 
 
 
