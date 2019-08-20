@@ -138,11 +138,71 @@ The `MonitorElement` can now be filled with data using the `Fill` call, similar 
 
 For use in `edm::global` modules, `ConcurrentMonitorElement` provides a (partially) thread-safe, but incompatible, API. Otherwise, `ConcurrentMonitorElement`s are backed by normal `MonitorElement`s and handled the same.
 
-Whenever the DQM data should be copied somewhere else (output file or live monitoring), a plugin queries the `DQMStore` for `MonitorElement`s. In threaded mode, the `MonitorElement`s need to be cloned under certain circumstances, because the plugin "owning" a `MonitorElement` may continue filling it from another thread while it is used.
+Whenever the DQM data should be copied somewhere else (output file or live monitoring), a plugin queries the `DQMStore` for `MonitorElement`s. In threaded mode, the `MonitorElement`s need to be cloned under certain circumstances, because the plugin "owning" a `MonitorElement` may continue filling it from another thread while it is used. Typically, these 
 
 `MonitorElement`s typically collect statistics over a run or job (depending on _collate mode_, though typically irrelevant because there is only one run per job -- many modules make assumptions that are incorrect with more than one run per job). In the _RECO_ case, jobs are typically a small fraction of a run, and full run statistics are only available in _HARVESTING_. To get histograms saved on a finer granularity, _ls based mode_ (global) or the _lumi flag_ (per ME) can be used. This will make sure that the ME is saved every lumisection, and in HARVESTING statistics _accumulate_ over the run, unless the histogram is explicitly reset. Bugs and incorrect assumptions are common regarding this behaviour.
 
 When reading histograms from DQMIO data for merging or harvesting, matching histograms from different files need to be merged. As long as no more than a single run is covered and the data was produced using a sane configuration (same software version for all files), this should always be possible. However, in multi-run harvesting, it is possible that histograms of the same path are not booked with the same parameters and cannot be merged. The merging code tries to catch and ignore these cases, but it can still fail and crash in certain scenarios (e.g. sometimes ROOT fails merging even on identical histograms).
+
+Future: DQM after the 2019 ("product") migration
+------------------------------------------------
+
+_a.k.a. The new DQMStore project._
+
+### Which components exist?
+
+#### Plugins
+
+DQM code runs as CMSSW plugins there are two main types of plugins: *Analyzers* and *Harvesters*. Both exist in a number of technical variations, defined by the base class used.
+
+- Analyzers:
+    - `DQMEDAnalyzer`: Based on `edm::stream::EDProducer`, the recommended default base class.
+    - `DQMOneEDAnalyzer`: Based on `edm::one::EDProducer`, to be used if `edm::one` behaviour is specifically required. Limited functionality, only run-based histograms are possible.
+    - `DQMOneLumiEDAnalyzer`: Based on `edm::one::EDProducer` with lumi transitions. Not recommended for future use, only to migrate existing legacy code.
+    - `DQMGlobalEDAnalyzer`: Based on `edm::global::EDProducer`, only recommended if `edm::global` behaviour is really required. Limited functionality, only run-based histograms are possible.
+    - `edm::EDAnalyzer`: EDM legacy base class. Can be safely used but will by default not interact with the rest of DQM.
+- Harvesters:
+    - `DQMEDHarvester`: Recommended base class for harvesters, `edm::one::EDProducer` based.
+
+For DQMIO, there is an `OutputModule` (`DQMRootOutputModule`), and an `InputSource` (`DQMRootSource`). 
+
+#### Library Classes
+
+- `DQMStore` is the main container that manages `MonitorElement`s. It does not interact with the outside world and can be instantiated as needed. The plugin base classes all provide a `dqmstore_` member, and the base classes make sure that all histograms in this `DQMStore` are visible to the rest of DQM.
+- `MonitorElement` is a thread-safe proxy for a histogram. `MonitorElement` provides all the histogram operations that are commonly used and forwards them to its backing object, `MonitorElementData`. Multiple `MonitorElement`s can share the same `MonitorElementData`. Multi-threaded access is memory-safe, but race conditions and order dependence can appear when non-commutative operations are used (that means any operation except `Fill`).
+
+These two classes (plus the `IBooker` and `IGetter` interfaces referring to/used by them) exist in three different namespaces:
+- `dqm::legacy::` specifies the full interface, mostly as provided by the old `MonitorElement`. Any `MonitorElement` can be (implicitly) casted to `dqm::legacy::MonitorElement`, how ever operations on legacy `MonitorElement`s can fail at runtime.
+- `dqm::reco::` restricts the interface to operations that are safe in a multi-threaded context. Unsafe operations are deprecated and can be detected at compile-time, and will fail at run time. Non-deprecated operations will not fail at runtime.
+- `dqm::harvesting::` restricts the interface to operations that are fully supported in harvesting. These are a superset of the operations allowed by `dqm::reco::`, but some functionality of `dqm::legacy::` remains deprecated.
+
+Internally, there are a few more important classes:
+- `MonitorElementData` encapsulates a ROOT Histogram (optional), the metadata for it (run, lumi, path), and a lock to protect the histogram from concurrent modifications.
+- `MonitorElementCollection` is a dumb container of `MonitorElementData` objects used as a EDM product.
+
+#### File formats
+
+DQM data (mostly histograms, more specifically `MonitorElement`s) can be save in multiple different formats. The formats differ in how slow IO is.
+
+- _DQMIO_: this is the "official" DQM data format. It is used for the DQMIO datatier stored after the RECO step in processing jobs. Histograms are stored in ROOT `TTree`s, which makes IO reasonably fast. EDM metadata is preserved, ME metadata is properly encoded and multiple runs/lumisections can be store in a single file. DQMIO data may also be preserved after _HARVESTING_ (to be iscussed).
+- _Legacy ROOT_ (`DQM_*.root`): this is the most "popular" DQM data format. It is used for the uploads to DQMGUI and typically saved after the HARVESTING step. Histograms are stored in a `TDirectory`, which makes IO very slow but easy. Run/lumi metadata is not supported everywhere. We will continue to provide this format for compatibility with exisitng tooling, but might switch to producing it only on demand (to be discussed).
+- _EDM event_: We might support writing `MonitorElementCollection`s directly into EDM event files, if a use case appears.
+
+Data is archived for eternity by CMS computing in DQMIO format (TODO: confirm the precise rules), and in the DQMGUI index (hosted by CMSWEB, on disk, instant access to any ME). Legacy ROOT format files will remain available, but might be produced on-demand from one of the other formats. DQMIO is the recommended format for DQM data, including streaming to the DQMGUIs (not supported yet).
+
+#### Processing environments
+
+_See this section in the old system. No changes are expected._
+
+### Modes of DQM operation
+
+In the _RECO_ step, `DQMEDAnalyzer` plugins run and produce `MonitorElementCollection` products, which they put into the runs and lumi blocks after filling is finished. All handling of products is done in the base classes, the subsystem code only books and fills histograms. The `bookHistograms` callback remains as the only recommended way to book `MonitorElement`s, but since all operations are local to the `DQMStore`, this is not strictily required. To trigger all the `DQMStore` operations, the base class needs to receive many edm framework callbacks. If these callbacks are also needed in the plugin code, the respective `dqm*`-prefixed version should be implemented. Finally, DQMIO output module selects all `MonitorElementCollection` products and writes them into the DQMIO output file. The EDM framework and `DQMStore` ensure that only the minimal number of histograms required remains in memory.
+
+To keep the amount of duplicate histograms in memory manageable, for the default `edm::stream::` based `DQMEDAnalyzer`, a single _master_ `DQMStore` holds all the histogram while the `DQMStore` instances local to the per-stream instances act as proxies to this master instance. The hand out `MonitorElement` objects backed by shared histograms held in the master `DQMStore`. The backing histograms are automatically switched as the stream enters new lumisections and runs, while bare pointers to the `MonitorElement` remain valid.
+
+In the _HARVESTING_ `DQMHarvester` plugins run and read `MonitorElementCollection`s from the runs and lumisections. All MEs in the products are available to the plugin code by calling `get` on the `DQMStore` or `IGetter`. If a `MonitorElement` may be modified by the plugin code, it is cloned and the new instance will be put into the plugins `MonitorElementCollection` product. The collections produced by harvesters have a different label to prevent cyclical dependencies by default (explicit dependency declaration in the configuration can be used in ambiguous cases). Output modules collect *all* MEs and wirite them to output files (DQMIO or legacy ROOT format). Merging of partial run products is handled in the DQMIO input source.
+
+
 
 
 
