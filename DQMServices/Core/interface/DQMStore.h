@@ -824,6 +824,7 @@ namespace dqm::impl {
     std::string readSelectedDirectory_{};
     uint32_t run_{};
     uint32_t moduleId_{};
+    std::string moduleName_{};
     // set to true in the transaction if module supports per-lumi saving.
     bool canSaveByLumi_{false};
     // set to true in configuration if per-lumi saving is requested.

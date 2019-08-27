@@ -4,6 +4,10 @@
 #include "DQMServices/Core/interface/QTest.h"
 #include "DQMServices/Core/src/ROOTFilePB.pb.h"
 #include "DQMServices/Core/src/DQMError.h"
+#if !WITHOUT_CMS_FRAMEWORK
+#include "FWCore/ServiceRegistry/interface/GlobalContext.h"
+#include "FWCore/ServiceRegistry/interface/ModuleCallingContext.h"
+#endif
 #include "classlib/utils/RegexpMatch.h"
 #include "classlib/utils/Regexp.h"
 #include "classlib/utils/StringOps.h"
@@ -708,6 +712,35 @@ namespace dqm::impl {
 #endif
     }
     ar.watchPostGlobalBeginLumi(this, &DQMStore::postGlobalBeginLumi);
+
+
+#if !WITHOUT_CMS_FRAMEWORK
+    // watch which module is running at the moment to report who booked what.
+    auto setModuleName = [this](edm::GlobalContext const&, edm::ModuleCallingContext const& mod) {
+      this->moduleName_ = mod.moduleDescription()->moduleName();
+    };
+    auto unsetModuleName = [this](edm::GlobalContext const&, edm::ModuleCallingContext const&) {
+      this->moduleName_ = "(unset)";
+    };
+    auto setModuleNameJob = [this](edm::ModuleDescription const& desc) {
+      this->moduleName_ = desc.moduleName();
+    };
+    auto unsetModuleNameJob = [this](edm::ModuleDescription const&) {
+      this->moduleName_ = "(unset)";
+    };
+    ar.watchPreModuleGlobalBeginRun(setModuleName);
+    ar.watchPostModuleGlobalBeginRun(unsetModuleName);
+    ar.watchPreModuleGlobalEndRun(setModuleName);
+    ar.watchPostModuleGlobalEndRun(unsetModuleName);
+    ar.watchPreModuleGlobalBeginLumi(setModuleName);
+    ar.watchPostModuleGlobalBeginLumi(unsetModuleName);
+    ar.watchPreModuleGlobalEndLumi(setModuleName);
+    ar.watchPostModuleGlobalEndLumi(unsetModuleName);
+    ar.watchPreModuleBeginJob(setModuleNameJob);
+    ar.watchPostModuleBeginJob(unsetModuleNameJob);
+    ar.watchPreModuleEndJob(setModuleNameJob);
+    ar.watchPostModuleEndJob(unsetModuleNameJob);
+#endif
   }
 
   DQMStore::DQMStore(edm::ParameterSet const& pset) { initializeFrom(pset); }
@@ -1205,6 +1238,7 @@ namespace dqm::impl {
       print_trace(dir, name);
     std::string path;
     mergePath(path, dir, name);
+    std::cout << "DQMStore::" << context << " " << moduleName_ << " " << path << "\n";
 
     // Put us in charge of h.
     h->SetDirectory(nullptr);
@@ -1266,15 +1300,16 @@ namespace dqm::impl {
 
   MonitorElement* DQMStore::book_(std::string const& dir, std::string const& name, char const* context) {
     assert(name.find('/') == std::string::npos);
+    std::string path;
+    mergePath(path, dir, name);
+    std::cout << "DQMStore::" << context << " " << moduleName_ << " " << path << "\n";
+
     if (verbose_ > 3)
       print_trace(dir, name);
 
     // Check if the request monitor element already exists.
     if (MonitorElement* me = findObject(run_, 0, moduleId_, dir, name)) {
       if (verbose_ > 1) {
-        std::string path;
-        mergePath(path, dir, name);
-
         std::cout << "DQMStore: " << context << ": monitor element '" << path << "' already exists, resetting"
                   << std::endl;
       }
