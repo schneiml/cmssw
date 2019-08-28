@@ -67,7 +67,7 @@ sqlite3 access.db
  )
  GROUP BY module ORDER BY 1 DESC;
 
- -- or more detailed, by PD
+# or more detailed, by PD
 sqlite3 access.db <<SQL
  ATTACH "booking.db" as booking;
  CREATE TEMP TABLE pdviews AS SELECT substr(dataset, 0, instr(dataset, '/')) as pd, count(*) as views  FROM Access GROUP BY pd;
@@ -85,6 +85,20 @@ sqlite3 access.db <<SQL
    SELECT views FROM pdviews WHERE pdviews.pd = pathviews.pd
  ) DESC, sum(views) DESC;
 SQL
+
+
+# or more detailed, MEs by PD
+for PD in StreamExpress JetHT ZeroBias StreamExpressCosmics SingleMuon Cosmics EGamma; do
+sqlite3 access.db <<SQL
+.separator \t
+.header on
+SELECT count(*), 
+  replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(path, '9', '?'), '8', '?'), '7', '?'), '6', '?'), '5', '?'), '4', '?'), '3', '?'), '2', '?'), '1', '?'), '0', '?') as cleanpath, 
+  substr(dataset, 0, instr(dataset, '/')) as pd 
+FROM Access WHERE pd = '$PD' 
+GROUP BY cleanpath ORDER BY count(*) DESC LIMIT 50;
+SQL
+done | column -t -s "	" > topmes.txt 
 
 
 # result is in result.txt
