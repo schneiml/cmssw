@@ -35,7 +35,9 @@ for f in /data/srv/logs/dqmgui/offline/old-logs-2018*.zip; do
     match($0, /obj=archive%2F[0-9]+%2F([^%]+%2F[^%]+%2F[^%]+)%2F([^;]+);.*auth: OK "([^"]*)"/, a) { 
       gsub(/%2F/, "/", a[1]); 
       gsub(/%2F/, "/", a[2]); 
-      gsub(/%22/, " ", a[2]); 
+      gsub(/%20/, " ", a[2]); 
+      gsub(/%2B/, "+", a[2]); 
+      gsub(/%3D/, "=", a[2]); 
       print("INSERT INTO Access(dataset, path, who) VALUES(\x22" a[1] "\x22, \x22" a[2] "\x22, \x22" a[3] "\x22);" ) 
     } 
     END { 
@@ -44,6 +46,10 @@ for f in /data/srv/logs/dqmgui/offline/old-logs-2018*.zip; do
   ' | sqlite3 access.db
 done
 
+# Also do that on the other GUI(s), and copy and merge the files to one place:
+sqlite access.db
+ ATTACH 'relval_access.db' as relval;
+ INSERT INTO Access(dataset, path, who) SELECT dataset, path, who FROM relval.Access;
 
 # do some analysis
 sqlite3 booking.db
@@ -61,174 +67,24 @@ sqlite3 access.db
  )
  GROUP BY module ORDER BY 1 DESC;
 
+ -- or more detailed, by PD
+sqlite3 access.db <<SQL
+ ATTACH "booking.db" as booking;
+ CREATE TEMP TABLE pdviews AS SELECT substr(dataset, 0, instr(dataset, '/')) as pd, count(*) as views  FROM Access GROUP BY pd;
+.separator \t
+.header on
+.once result.txt
+ SELECT sum(views), module, pd 
+ FROM (
+   SELECT count(*) as views, path, substr(dataset, 0, instr(dataset, '/')) as pd FROM Access GROUP BY path, pd
+ ) AS pathviews NATURAL JOIN (
+   SELECT DISTINCT path, module FROM Booking WHERE module not in ("(unset)", "EDMtoMEConverter")
+ ) 
+ GROUP BY module, pd HAVING sum(views) > 1000 
+ ORDER BY (
+   SELECT views FROM pdviews WHERE pdviews.pd = pathviews.pd
+ ) DESC, sum(views) DESC;
+SQL
 
-# Result:
-#
-sum(views)      module
-825784  JetAnalyzer
-666842  SiStripMonitorTrack
-658608  TrackingMonitor
-491834  SiPixelPhase1TrackClusters
-440580  MuonRecoAnalyzer
-424184  SiPixelPhase1Clusters
-392198  MonitorTrackResiduals
-353941  METAnalyzer
-318910  SiPixelPhase1Digis
-224059  CSCOfflineMonitor
-178597  DQMGenericClient
-178442  SiStripMonitorCluster
-146469  SiStripFEDMonitorPlugin
-135815  MuonKinVsEtaAnalyzer
-134705  ElectronAnalyzer
-77108   SiPixelPhase1Harvester
-74265   JetAnalyzer_HeavyIons
-63678   PrimaryVertexMonitor
-60003   SiStripOfflineDQM
-53993   SiPixelPhase1TrackEfficiency
-44601   SiPixelPhase1Summary
-33584   DQMPFCandidateAnalyzer
-31534   DQMDcsInfoClient
-28223   L1TStage2CaloLayer2Offline
-23770   SiStripMonitorDigi
-22782   DiMuonHistograms
-21125   SiPixelPhase1RawData
-18128   L1TMuonDQMOffline
-17983   DQMFileSaver
-17163   SiPixelPhase1RecHits
-17117   SiPixelPhase1TrackResiduals
-16597   CSCMonitorModule
-14477   TauTagValidation
-14459   RPCMonitorDigi
-13175   TrackingOfflineDQM
-11887   RPCDqmClient
-10981   L1TTauOffline
-10578   L1TEGammaOffline
-8676    DQMDcsInfo
-8207    PrimaryVertexResolution
-5779    ElectronOfflineClient
-5713    V0Monitor
-5193    RPCChamberQuality
-3323    EfficiencyPlotter
-3291    TauDQMHistEffProducer
-3201    ElectronTagProbeAnalyzer
-2514    SiStripGainsPCLHarvester
-2249    SiPixelTrackResidualSource
-2122    SiPixelEDAClient
-1881    BTagPerformanceAnalyzerOnData
-1651    DQMEventInfo
-1631    SiPixelMonitorTrackResiduals
-1514    MuonIsolationDQM
-1366    CentralityDQM
-1362    MuonIdDQM
-1264    TrackingRecoMaterialAnalyser
-1195    EcalDQMonitorTask
-1157    TrackEfficiencyMonitor
-1074    L1TStage2EMTF
-895     HLTMuonOfflineAnalyzer
-847     RPCEfficiencySecond
-705     MillePedeDQMModule
-700     MuonSeedsAnalyzer
-688     DataCertificationJetMET
-651     L1TStage2uGMT
-562     DigiTask
-512     RecHitTask
-488     DTResolutionAnalysisTest
-419     DQMMessageLogger
-404     TrackEfficiencyClient
-389     ZToMuMuGammaAnalyzer
-370     PhotonAnalyzer
-350     HcalRecHitsAnalyzer
-350     SiStripGainsPCLWorker
-344     GeneralHLTOffline
-322     DQMMessageLoggerClient
-276     SiPixelDigiSource
-263     TopMonitor
-256     SiPixelClusterSource
-252     EfficiencyAnalyzer
-231     L1TStage2RegionalMuonCandComp
-227     HiggsDQM
-223     DTSegmentAnalysisTest
-219     dEdxAnalyzer
-217     SiStripDaqInfo
-214     TkAlCaRecoMonitor
-206     RPCEfficiencyShiftHisto
-205     TopDiLeptonOfflineDQM
-201     MuonRecoOneHLT
-192     DTChamberEfficiencyClient
-184     SiStripCertificationInfo
-166     AlcaBeamMonitor
-154     PhotonOfflineClient
-150     HcalOfflineHarvesting
-134     DTRunConditionVarClient
-133     RPCEventSummary
-132     TPTask
-131     RPCFEDIntegrity
-126     SiStripDcsInfo
-125     RPCDcsInfoClient
-120     TrackSplittingMonitor
-117     SiStripFEDCheckPlugin
-101     LogMessageMonitor
-100     L1TEventInfoClient
-100     RPCRecHitProbability
-95      ExoticaDQM
-89      METMonitor
-88      RawTask
-87      PiZeroAnalyzer
-84      ElectronGeneralAnalyzer
-79      DQMScaleToClient
-74      TopSingleLeptonDQM
-72      HLTObjectsMonitor
-72      SingleTopTChannelLeptonDQM
-70      L1TObjectsTiming
-70      RPCEfficiency
-62      L1TStage2OMTF
-62      MuonTestSummary
-60      PFClient_JetRes
-58      SUSYDQMAnalyzer
-57      MuonEnergyDepositAnalyzer
-55      DTDataIntegrityTask
-55      JetMETHLTOfflineSource
-54      SegmentTrackAnalyzer
-52      L1TStage2CaloLayer2
-46      L1TdeStage2EMTF
-45      L1TStage2BMTF
-42      TrackingCertificationInfo
-40      DTSegmentAnalysisTask
-40      SusyPostProcessor
-33      BTagPerformanceHarvester
-32      DTResolutionAnalysisTask
-31      DQMFEDIntegrityClient
-31      DTSegmentsTask
-30      BPhysicsOniaDQM
-28      MuonPFAnalyzer
-26      DTDCSByLumiSummary
-25      CSCDcsInfo
-24      PhotonDataCertification
-21      L1TStage2uGMTMuon
-20      DQMOfflineHLTEventInfoClient
-20      DTRunConditionVar
-16      ESDaqInfoTask
-16      dEdxHitAnalyzer
-12      DTBlockedROChannelsTest
-12      SiPixelDaqInfo
-12      SiPixelDcsInfo
-12      SiPixelHitEfficiencySource
-10      DTDCSByLumiTask
-10      DTTriggerEfficiencyTest
-10      L1TStage2CaloLayer1
-10      MuonRecoTest
-10      MuonTrackResidualsTest
-9       EcalFEDMonitor
-9       SiStripBadComponentInfo
-8       LumiMonitor
-5       CastorMonitorModule
-4       DTCertificationSummary
-4       DTDAQInfo
-4       DTOfflineSummaryClients
-4       HTMonitor
-4       L1TStage2RatioClient
-2       RecoSusyDQM
-1       CSCCertificationInfo
-1       CSCDaqInfo
-1       CSCOfflineClient
 
+# result is in result.txt
