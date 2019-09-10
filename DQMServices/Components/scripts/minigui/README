@@ -1,0 +1,14 @@
+This is a very simple DQMGUI prototype, reading straight from EOS and rendering client-side using JSROOT. The TDirectory ROOT files are accessed using uproot, which is much easier (and seems to be faster?) than "real" root.
+
+To run:
+
+ssh $USER@lxplus.cern.ch -L 8086:localhost:8086
+cmsrel CMSSW_11_0_0_pre6
+cd CMSSW_11_0_0_pre6/src/
+cmsenv
+git cms-init
+git cms-merge-topic schneiml:dqmgui-mini-prototype
+cd DQMServices/Components/scripts/minigui/
+python minigui.py
+
+Then browse to http://localhost:8086/
