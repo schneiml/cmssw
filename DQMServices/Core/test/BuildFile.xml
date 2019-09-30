@@ -23,5 +23,3 @@
 </bin>
 <bin   file="DQMFastMatchTest.cc">
 </bin>
-<bin   file="DQMTestStandaloneBuildOfDQMStore.cc">
-</bin>
