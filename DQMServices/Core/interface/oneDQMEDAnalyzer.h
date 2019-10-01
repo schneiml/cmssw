@@ -34,7 +34,7 @@ namespace one {
         : public edm::one::EDProducer<edm::Accumulator, edm::EndRunProducer, edm::one::WatchRuns, T...> {
     public:
       typedef dqm::reco::DQMStore DQMStore;
-      typedef dqm::reco::MonitorElement MonitorElement;
+      typedef dqm::legacy::MonitorElement MonitorElement;
       DQMRunEDProducer() : runToken_{this->template produces<DQMToken, edm::Transition::EndRun>("endRun")} {}
       ~DQMRunEDProducer() override = default;
       DQMRunEDProducer(DQMRunEDProducer<T...> const&) = delete;
@@ -76,7 +76,7 @@ namespace one {
     {
     public:
       typedef dqm::reco::DQMStore DQMStore;
-      typedef dqm::reco::MonitorElement MonitorElement;
+      typedef dqm::legacy::MonitorElement MonitorElement;
       DQMLumisEDProducer();
       ~DQMLumisEDProducer() override = default;
       DQMLumisEDProducer(DQMLumisEDProducer const&) = delete;
