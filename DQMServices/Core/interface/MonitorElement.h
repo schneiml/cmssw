@@ -23,6 +23,7 @@
 #include "TObjString.h"
 #include "TAxis.h"
 
+#include <mutex>
 #include <string>
 #include <atomic>
 #include <sstream>
@@ -40,19 +41,30 @@ struct MonitorElementNoCloneTag {};
 
 namespace dqm::impl {
 
+  using dqmmutex = tbb::spin_mutex;
+
   struct Access {
-    std::unique_lock<tbb::spinlock> guard_;
+    std::unique_lock<dqmmutex> guard_;
+    MonitorElementData::Key const& key;
+    MonitorElementData::Value const& value;
+  };
+  // TODO: can this be the same type, just const?
+  struct AccessMut {
+    std::unique_lock<dqmmutex> guard_;
     MonitorElementData::Key const& key;
     MonitorElementData::Value& value;
-  }
+  };
 
-  class MutableMonitorElementData {
+  struct MutableMonitorElementData {
     MonitorElementData data_;
-    tbb::spinlock lock_;
+    dqmmutex lock_;
     Access access() {
-      return Access{std::unique_lock<tbb::spinlock>(lock_), data_.key_, data_.value_};
+      return Access{std::unique_lock<dqmmutex>(lock_), data_.key_, data_.value_};
     }
-  }
+    AccessMut accessMut() {
+      return AccessMut{std::unique_lock<dqmmutex>(lock_), data_.key_, data_.value_};
+    }
+  };
 
   /** The base class for all MonitorElements (ME) */
   class MonitorElement {
@@ -97,18 +109,21 @@ namespace dqm::impl {
       if (frozen) {
         // in case of an immutable object read from edm products, create an
         // access object without lock. 
-        return Access{std::unique_lock(), frozen->key_, frozen->value_}
+        return Access{std::unique_lock<dqmmutex>(), frozen->key_, frozen->value_};
       }
       // else
       assert(!"Attempting to access MonitorElement not backed by any data!");
     }
 
-    Access accessMut() {
+    AccessMut accessMut() {
+      // For completeness, set the legacy `updated` marker.
+      this->update();
+
       // First, check if there is a mutable object
       auto mut = mutable_.load();
       if (mut) {
         // if there is a mutable object, that is the truth, and we take a lock.
-        return mut->access();
+        return mut->accessMut();
       } // else
       auto frozen = frozen_.load();
       if (!frozen) {
@@ -117,11 +132,11 @@ namespace dqm::impl {
       // in case of an immutable object read from edm products, attempt to
       // make a clone.
       MutableMonitorElementData* clone = new MutableMonitorElementData();
-      clone->data_.key_ = frozen.key_;
+      clone->data_.key_ = frozen->key_;
       clone->data_.value_.scalar_ = frozen->value_.scalar_;
-      if (frozen_->value_.object_) {
+      if (frozen->value_.object_) {
         // Clone() the TH1
-        clone->data_.value_.object_ = std::unique_ptr<TH1>(static_cast<TH1*>(frozen_->value_.object_->Clone()));
+        clone->data_.value_.object_ = std::unique_ptr<TH1>(static_cast<TH1*>(frozen->value_.object_->Clone()));
       }
 
       // now try to set our clone, and see if it was still needed (sb. else
@@ -131,10 +146,10 @@ namespace dqm::impl {
       if (!ok) {
         // somebody else made a clone already, it is now in existing
         delete clone;
-        return existing->access();
+        return existing->accessMut();
       } else {
         // we won the race, and our clone is the real one now.
-        return clone->access();
+        return clone->accessMut();
       }
       // in either case, if somebody destroyed the mutable object between us 
       // getting the pointer and us locking it, we are screwed. We have to rely
@@ -197,7 +212,7 @@ namespace dqm::impl {
     bool wasUpdated() const { return data_.flags & DQMNet::DQM_PROP_NEW; }
 
     /// Mark the object updated.
-    void update() const { data_.flags |= DQMNet::DQM_PROP_NEW; }
+    void update() { data_.flags |= DQMNet::DQM_PROP_NEW; }
 
     /// specify whether ME should be reset at end of monitoring cycle (default:false);
     /// (typically called by Sources that control the original ME)
@@ -221,56 +236,56 @@ namespace dqm::impl {
     };
 
   protected:
-    void doFill(int64_t x) const;
+    void doFill(int64_t x) ;
   public:
-    void Fill(long long x) const {
+    void Fill(long long x) {
       fits_in_int64_t<long long>();
       doFill(static_cast<int64_t>(x));
     }
-    void Fill(unsigned long long x) const {
+    void Fill(unsigned long long x) {
       fits_in_int64_t<unsigned long long>();
       doFill(static_cast<int64_t>(x));
     }
-    void Fill(unsigned long x) const {
+    void Fill(unsigned long x) {
       fits_in_int64_t<unsigned long>();
       doFill(static_cast<int64_t>(x));
     }
-    void Fill(long x) const {
+    void Fill(long x) {
       fits_in_int64_t<long>();
       doFill(static_cast<int64_t>(x));
     }
-    void Fill(unsigned int x) const {
+    void Fill(unsigned int x) {
       fits_in_int64_t<unsigned int>();
       doFill(static_cast<int64_t>(x));
     }
-    void Fill(int x) const {
+    void Fill(int x) {
       fits_in_int64_t<int>();
       doFill(static_cast<int64_t>(x));
     }
-    void Fill(short x) const {
+    void Fill(short x) {
       fits_in_int64_t<short>();
       doFill(static_cast<int64_t>(x));
     }
-    void Fill(unsigned short x) const {
+    void Fill(unsigned short x) {
       fits_in_int64_t<unsigned short>();
       doFill(static_cast<int64_t>(x));
     }
-    void Fill(char x) const {
+    void Fill(char x) {
       fits_in_int64_t<char>();
       doFill(static_cast<int64_t>(x));
     }
-    void Fill(unsigned char x) const {
+    void Fill(unsigned char x) {
       fits_in_int64_t<unsigned char>();
       doFill(static_cast<int64_t>(x));
     }
 
-    void Fill(float x) const { Fill(static_cast<double>(x)); }
-    void Fill(double x) const;
-    void Fill(std::string& value) const;
+    void Fill(float x) { Fill(static_cast<double>(x)); }
+    void Fill(double x) ;
+    void Fill(std::string& value) ;
 
-    void Fill(double x, double yw) const;
-    void Fill(double x, double y, double zw) const;
-    void Fill(double x, double y, double z, double w) const;
+    void Fill(double x, double yw) ;
+    void Fill(double x, double y, double zw) ;
+    void Fill(double x, double y, double z, double w) ;
     DQM_DEPRECATED
     void ShiftFillLast(double y, double ye = 0., int32_t xscale = 1);
 
@@ -342,24 +357,22 @@ namespace dqm::impl {
     virtual void setBinError(int binx, int biny, int binz, double error);
     virtual void setBinEntries(int bin, double nentries);
     virtual void setEntries(double nentries);
-    // const for ex-ConcurrentME users.
-    virtual void setBinLabel(int bin, const std::string& label, int axis = 1) const;
+    virtual void setBinLabel(int bin, const std::string& label, int axis = 1) ;
     virtual void setAxisRange(double xmin, double xmax, int axis = 1);
     virtual void setAxisTitle(const std::string& title, int axis = 1);
     virtual void setAxisTimeDisplay(int value, int axis = 1);
     virtual void setAxisTimeFormat(const char* format = "", int axis = 1);
     virtual void setTitle(const std::string& title);
     // --- Operations that origianted in ConcurrentME ---
-    // need to be const so ME const* is a drop in replacement for ConcurrentME
-    virtual void setXTitle(std::string const& title) const;
-    virtual void setYTitle(std::string const& title) const;
-    virtual void enableSumw2() const;
-    virtual void disableAlphanumeric() const;
-    virtual void setOption(const char* option) const;
+    virtual void setXTitle(std::string const& title) ;
+    virtual void setYTitle(std::string const& title) ;
+    virtual void enableSumw2() ;
+    virtual void disableAlphanumeric() ;
+    virtual void setOption(const char* option) ;
 
     // new operations to reduce usage of getTH*
-    virtual double getAxisMin(int axis = 1);
-    virtual double getAxisMax(int axis = 1);
+    virtual double getAxisMin(int axis = 1) const;
+    virtual double getAxisMax(int axis = 1) const;
     // We should avoid extending histograms in general, and if the behaviour
     // is actually needed, provide a more specific interface rather than
     // relying on the ROOT behaviour.
@@ -370,17 +383,17 @@ namespace dqm::impl {
     virtual void setStatOverflows(unsigned int value);
 
     // these should be non-const, since they are potentially not thread-safe
-    virtual TObject* getRootObject() const;
-    virtual TH1* getTH1() const;
-    virtual TH1F* getTH1F() const;
-    virtual TH1S* getTH1S() const;
-    virtual TH1D* getTH1D() const;
-    virtual TH2F* getTH2F() const;
-    virtual TH2S* getTH2S() const;
-    virtual TH2D* getTH2D() const;
-    virtual TH3F* getTH3F() const;
-    virtual TProfile* getTProfile() const;
-    virtual TProfile2D* getTProfile2D() const;
+    virtual TObject const* getRootObject() const;
+    virtual TH1* getTH1() ;
+    virtual TH1F* getTH1F() ;
+    virtual TH1S* getTH1S() ;
+    virtual TH1D* getTH1D() ;
+    virtual TH2F* getTH2F() ;
+    virtual TH2S* getTH2S() ;
+    virtual TH2D* getTH2D() ;
+    virtual TH3F* getTH3F() ;
+    virtual TProfile* getTProfile() ;
+    virtual TProfile2D* getTProfile2D() ;
 
   public:
     virtual int64_t getIntValue() const;
@@ -391,7 +404,9 @@ namespace dqm::impl {
 
   private:
     void incompatible(const char *func) const;
-    TH1 *accessRootObject(MonitorElementData::Value::Access& access, const char *func, int reqdim) const;
+    TH1 const* accessRootObject(Access const& access, const char *func, int reqdim) const;
+    TH1 *accessRootObject(AccessMut const&, const char *func, int reqdim) const;
+
     void setAxisTimeOffset(double toffset, const char *option = "local", int axis = 1);
 
     /// whether soft-reset is enabled; default is false
@@ -417,7 +432,8 @@ namespace dqm::impl {
     /// until method is called with flag = false again
     void setAccumulate(bool /* flag */) { data_.flags |= DQMNet::DQM_PROP_ACCUMULATE; }
 
-    TAxis *getAxis(MonitorElementData::Value::Access& access, const char *func, int axis) const;
+    TAxis const* getAxis(Access const& access, const char *func, int axis) const;
+    TAxis *getAxis(AccessMut const& access, const char *func, int axis) const;
 
     // ------------ Operations for MEs that are normally never reset ---------
   private:
@@ -445,21 +461,6 @@ namespace dqm::impl {
     TH3F *getRefTH3F() const;
     TProfile *getRefTProfile() const;
     TProfile2D *getRefTProfile2D() const;
-
-    int64_t getIntValue() const {
-      assert(kind() == Kind::INT);
-      return scalar_.num;
-    }
-
-    double getFloatValue() const {
-      assert(kind() == Kind::REAL);
-      return scalar_.real;
-    }
-
-    const std::string &getStringValue() const {
-      assert(kind() == Kind::STRING);
-      return scalar_.str;
-    }
 
     const uint32_t run() const { return data_.run; }
     const uint32_t lumi() const { return data_.lumi; }
