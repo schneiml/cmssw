@@ -154,7 +154,8 @@ namespace dqm::impl {
     return this;
   }
 
-  MonitorElement::MonitorElement() : frozen_(nullptr), mutable_(new MutableMonitorElementData()), reference_(nullptr), refvalue_(nullptr) {
+  MonitorElement::MonitorElement()
+      : frozen_(nullptr), mutable_(new MutableMonitorElementData()), reference_(nullptr), refvalue_(nullptr) {
     data_.version = 0;
     data_.dirname = nullptr;
     data_.run = 0;
@@ -211,7 +212,7 @@ namespace dqm::impl {
   }
 
   MonitorElement::~MonitorElement() {
-    // TODO: this is only as long as we use the edm::Service DQMStore. 
+    // TODO: this is only as long as we use the edm::Service DQMStore.
     delete mutable_;
     delete refvalue_;
   }
@@ -627,7 +628,7 @@ namespace dqm::impl {
                   data_.objname.c_str());
   }
 
-  TH1 const* MonitorElement::accessRootObject(Access const& access, const char *func, int reqdim) const {
+  TH1 const *MonitorElement::accessRootObject(Access const &access, const char *func, int reqdim) const {
     if (kind() < Kind::TH1F)
       raiseDQMError("MonitorElement",
                     "Method '%s' cannot be invoked on monitor"
@@ -636,7 +637,7 @@ namespace dqm::impl {
                     data_.objname.c_str());
     return access.value.object_.get();
   }
-  TH1* MonitorElement::accessRootObject(AccessMut const& access, const char *func, int reqdim) const {
+  TH1 *MonitorElement::accessRootObject(AccessMut const &access, const char *func, int reqdim) const {
     if (kind() < Kind::TH1F)
       raiseDQMError("MonitorElement",
                     "Method '%s' cannot be invoked on monitor"
@@ -674,19 +675,22 @@ namespace dqm::impl {
   }
 
   /// get # of bins in X-axis
-  int MonitorElement::getNbinsX() const { 
+  int MonitorElement::getNbinsX() const {
     auto access = this->access();
-    return accessRootObject(access, __PRETTY_FUNCTION__, 1)->GetNbinsX(); }
+    return accessRootObject(access, __PRETTY_FUNCTION__, 1)->GetNbinsX();
+  }
 
   /// get # of bins in Y-axis
-  int MonitorElement::getNbinsY() const { 
+  int MonitorElement::getNbinsY() const {
     auto access = this->access();
-    return accessRootObject(access, __PRETTY_FUNCTION__, 2)->GetNbinsY(); }
+    return accessRootObject(access, __PRETTY_FUNCTION__, 2)->GetNbinsY();
+  }
 
   /// get # of bins in Z-axis
-  int MonitorElement::getNbinsZ() const { 
+  int MonitorElement::getNbinsZ() const {
     auto access = this->access();
-    return accessRootObject(access, __PRETTY_FUNCTION__, 3)->GetNbinsZ(); }
+    return accessRootObject(access, __PRETTY_FUNCTION__, 3)->GetNbinsZ();
+  }
 
   /// get content of bin (1-D)
   double MonitorElement::getBinContent(int binx) const {
@@ -725,17 +729,18 @@ namespace dqm::impl {
   }
 
   /// get # of entries
-  double MonitorElement::getEntries() const { 
+  double MonitorElement::getEntries() const {
     auto access = this->access();
-    return accessRootObject(access, __PRETTY_FUNCTION__, 1)->GetEntries(); }
+    return accessRootObject(access, __PRETTY_FUNCTION__, 1)->GetEntries();
+  }
 
   /// get # of bin entries (for profiles)
   double MonitorElement::getBinEntries(int bin) const {
     auto access = this->access();
     if (kind() == Kind::TPROFILE)
-      return static_cast<TProfile const*>(accessRootObject(access, __PRETTY_FUNCTION__, 1))->GetBinEntries(bin);
+      return static_cast<TProfile const *>(accessRootObject(access, __PRETTY_FUNCTION__, 1))->GetBinEntries(bin);
     else if (kind() == Kind::TPROFILE2D)
-      return static_cast<TProfile2D const*>(accessRootObject(access, __PRETTY_FUNCTION__, 1))->GetBinEntries(bin);
+      return static_cast<TProfile2D const *>(accessRootObject(access, __PRETTY_FUNCTION__, 1))->GetBinEntries(bin);
     else {
       incompatible(__PRETTY_FUNCTION__);
       return 0;
@@ -749,9 +754,10 @@ namespace dqm::impl {
   }
 
   /// get MonitorElement title
-  std::string MonitorElement::getTitle() const { 
+  std::string MonitorElement::getTitle() const {
     auto access = this->access();
-    return accessRootObject(access, __PRETTY_FUNCTION__, 1)->GetTitle(); }
+    return accessRootObject(access, __PRETTY_FUNCTION__, 1)->GetTitle();
+  }
 
   /*** setter methods (wrapper around ROOT methods) ****/
   //
@@ -861,8 +867,8 @@ namespace dqm::impl {
     accessRootObject(access, __PRETTY_FUNCTION__, 1)->SetTitle(title.c_str());
   }
 
-  TAxis *MonitorElement::getAxis(AccessMut const& access, const char* func, int axis) const {
-    TH1 * h = accessRootObject(access, func, axis-1);
+  TAxis *MonitorElement::getAxis(AccessMut const &access, const char *func, int axis) const {
+    TH1 *h = accessRootObject(access, func, axis - 1);
     TAxis *a = nullptr;
     if (axis == 1)
       a = h->GetXaxis();
@@ -882,9 +888,9 @@ namespace dqm::impl {
     return a;
   }
 
-  TAxis const* MonitorElement::getAxis(Access const& access, const char* func, int axis) const {
-    TH1 const* h = accessRootObject(access, func, axis-1);
-    TAxis const* a = nullptr;
+  TAxis const *MonitorElement::getAxis(Access const &access, const char *func, int axis) const {
+    TH1 const *h = accessRootObject(access, func, axis - 1);
+    TAxis const *a = nullptr;
     if (axis == 1)
       a = h->GetXaxis();
     else if (axis == 2)
@@ -926,7 +932,6 @@ namespace dqm::impl {
     access.value.object_->GetXaxis()->SetNoAlphanumeric(false);
     access.value.object_->GetYaxis()->SetNoAlphanumeric(false);
   }
-
 
   void MonitorElement::setOption(const char *option) {
     auto access = this->accessMut();
@@ -1331,7 +1336,7 @@ namespace dqm::impl {
 
   // -------------------------------------------------------------------
   // TODO: all of these are UNSAFE and have to be NON-const.
-  TObject const* MonitorElement::getRootObject() const {
+  TObject const *MonitorElement::getRootObject() const {
     auto access = this->access();
     return access.value.object_.get();
   }
@@ -1396,13 +1401,9 @@ namespace dqm::impl {
   }
 
   // -------------------------------------------------------------------
-  TObject *MonitorElement::getRefRootObject() const {
-    return reference_;
-  }
+  TObject *MonitorElement::getRefRootObject() const { return reference_; }
 
-  TH1 *MonitorElement::getRefTH1() const {
-    return checkRootObject(data_.objname, reference_, __PRETTY_FUNCTION__, 0);
-  }
+  TH1 *MonitorElement::getRefTH1() const { return checkRootObject(data_.objname, reference_, __PRETTY_FUNCTION__, 0); }
 
   TH1F *MonitorElement::getRefTH1F() const {
     assert(kind() == Kind::TH1F);
