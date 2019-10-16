@@ -172,7 +172,6 @@ namespace dqm::impl {
     MonitorElement(const std::string *path, const std::string &name, uint32_t run, uint32_t moduleId);
     MonitorElement(const MonitorElement &, MonitorElementNoCloneTag);
     MonitorElement(const MonitorElement &);
-    MonitorElement(MonitorElement &&);
     MonitorElement &operator=(const MonitorElement &) = delete;
     MonitorElement &operator=(MonitorElement &&) = delete;
     virtual ~MonitorElement();
