@@ -7,6 +7,9 @@
 
 #include "DQMServices/Core/interface/DQMNet.h"
 #include "DQMServices/Core/interface/QReport.h"
+
+#include "DataFormats/Histograms/interface/MonitorElementCollection.h"
+
 #include "TF1.h"
 #include "TH1F.h"
 #include "TH1S.h"
@@ -19,16 +22,15 @@
 #include "TProfile2D.h"
 #include "TObjString.h"
 #include "TAxis.h"
-#include <sys/time.h>
+
 #include <string>
-#include <set>
-#include <map>
+#include <atomic>
 #include <sstream>
 #include <iomanip>
 #include <cassert>
 #include <cstdint>
-
-#include "DataFormats/Histograms/interface/MonitorElementCollection.h"
+#include <sys/time.h>
+#include <tbb/spin_mutex.h>
 
 class QCriterion;
 class DQMService;
@@ -37,6 +39,21 @@ class DQMService;
 struct MonitorElementNoCloneTag {};
 
 namespace dqm::impl {
+
+  struct Access {
+    std::unique_lock<tbb::spinlock> guard_;
+    MonitorElementData::Key const& key;
+    MonitorElementData::Value& value;
+  }
+
+  class MutableMonitorElementData {
+    MonitorElementData data_;
+    tbb::spinlock lock_;
+    Access access() {
+      return Access{std::unique_lock<tbb::spinlock>(lock_), data_.key_, data_.value_};
+    }
+  }
+
   /** The base class for all MonitorElements (ME) */
   class MonitorElement {
     friend class DQMStore;
@@ -48,10 +65,84 @@ namespace dqm::impl {
 
 
   private:
-    mutable DQMNet::CoreObject data_;        //< Core object information.
+    DQMNet::CoreObject data_;        //< Core object information.
     // TODO: we only use the ::Value part so far.
     // Still using the full thing to remain compatible with the new ME implementation.
-    mutable MonitorElementData const* internal_; // main object data
+    
+    std::atomic<MonitorElementData const*> frozen_; // only set if this ME is in a product already
+    std::atomic<MutableMonitorElementData*> mutable_; // only set if there is a mutable copy of this ME
+    /** 
+     * To do anything to the MEs data, one needs to obtain an access object.
+     * This object will contain the lock guard if one is needed. We differentiate
+     * access for reading and access for mutation (denoted by `Access` or
+     * `const Access`, however, also read-only access may need to take a lock
+     * if it is to a mutable object. Obtaining mutable access may involve
+     * creating a clone of the backing data. In this case, the pointers are
+     * updated using atomic operations. It can happen that reads go to the old
+     * object while a new object exists already, but this is fine; concurrent
+     * reads and writes can happen in arbitrary order. However, we need to
+     * protect against the case where clones happen concurrently and avoid
+     * leaking memory or loosing updates in this case, using atomics.
+     * We want all of this inlined and redundant operations any copies/refs
+     * optimized away.
+     */
+    const Access access() const {
+      // First, check if there is a mutable object
+      auto mut = mutable_.load();
+      if (mut) {
+        // if there is a mutable object, that is the truth, and we take a lock.
+        return mut->access();
+      } // else
+      auto frozen = frozen_.load();
+      if (frozen) {
+        // in case of an immutable object read from edm products, create an
+        // access object without lock. 
+        return Access{std::unique_lock(), frozen->key_, frozen->value_}
+      }
+      // else
+      assert(!"Attempting to access MonitorElement not backed by any data!");
+    }
+
+    Access accessMut() {
+      // First, check if there is a mutable object
+      auto mut = mutable_.load();
+      if (mut) {
+        // if there is a mutable object, that is the truth, and we take a lock.
+        return mut->access();
+      } // else
+      auto frozen = frozen_.load();
+      if (!frozen) {
+        assert(!"Attempting to access MonitorElement not backed by any data!");
+      }
+      // in case of an immutable object read from edm products, attempt to
+      // make a clone.
+      MutableMonitorElementData* clone = new MutableMonitorElementData();
+      clone->data_.key_ = frozen.key_;
+      clone->data_.value_.scalar_ = frozen->value_.scalar_;
+      if (frozen_->value_.object_) {
+        // Clone() the TH1
+        clone->data_.value_.object_ = std::unique_ptr<TH1>(static_cast<TH1*>(frozen_->value_.object_->Clone()));
+      }
+
+      // now try to set our clone, and see if it was still needed (sb. else
+      // might have made a clone already!)
+      MutableMonitorElementData* existing = nullptr;
+      bool ok = mutable_.compare_exchange_strong(existing, clone);
+      if (!ok) {
+        // somebody else made a clone already, it is now in existing
+        delete clone;
+        return existing->access();
+      } else {
+        // we won the race, and our clone is the real one now.
+        return clone->access();
+      }
+      // in either case, if somebody destroyed the mutable object between us 
+      // getting the pointer and us locking it, we are screwed. We have to rely
+      // on edm and the DQM code to make sure we only turn mutable objects into
+      // products once all processing is done (logically, this is safe).
+    }
+
+    //TODO:  to be dropped.
     TH1 *reference_;                 //< Current ROOT reference object.
     TH1 *refvalue_;                  //< Soft reference if any.
     std::vector<QReport> qreports_;  //< QReports associated to this object.
