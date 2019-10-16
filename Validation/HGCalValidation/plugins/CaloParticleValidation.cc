@@ -177,7 +177,7 @@ void CaloParticleValidation::dqmAnalyze(edm::Event const& iEvent,
       histo.nSimClusters_->Fill(caloParticle.simClusters().size());
       // Find the corresponding vertex.
       histo.eta_Zorigin_map_->Fill(simVertices.at(caloParticle.g4Tracks()[0].vertIndex()).position().z(),
-                                  caloParticle.eta());
+                                   caloParticle.eta());
       int simHits = 0;
       float energy = 0.;
       for (auto const sc : caloParticle.simClusters()) {

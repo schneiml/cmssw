@@ -45,10 +45,7 @@ public:
 
 private:
   void dqmBeginRun(edm::Run const&, edm::EventSetup const&, RunBasedHistograms&) const override;
-  void bookHistograms(DQMStore::IBooker&,
-                      edm::Run const&,
-                      edm::EventSetup const&,
-                      RunBasedHistograms&) const override;
+  void bookHistograms(DQMStore::IBooker&, edm::Run const&, edm::EventSetup const&, RunBasedHistograms&) const override;
   void dqmAnalyze(edm::Event const&, edm::EventSetup const&, RunBasedHistograms const&) const override;
 
   // number of bunch crossings

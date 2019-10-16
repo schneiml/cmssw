@@ -423,7 +423,6 @@ namespace dqm::dqmstoreimpl {
 
   void DQMStore::IGetter::setCurrentFolder(std::string const& fullpath) { owner_->setCurrentFolder(fullpath); }
 
-
   void DQMStore::IBooker::goUp() { owner_->goUp(); }
 
   std::string const& DQMStore::IBooker::pwd() { return owner_->pwd(); }

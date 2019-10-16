@@ -131,66 +131,66 @@ void LumiMonitor::bookHistograms(DQMStore::IBooker& booker,
 
   if (doPixelLumi_) {
     auto me = booker.book1D("numberOfPixelClustersVsLS",
-                                                         "number of pixel clusters vs LS",
-                                                         ls_binning_.nbins,
-                                                         ls_binning_.xmin,
-                                                         ls_binning_.xmax);
+                            "number of pixel clusters vs LS",
+                            ls_binning_.nbins,
+                            ls_binning_.xmin,
+                            ls_binning_.xmax);
     me->setAxisTitle("LS", 1);
     me->setAxisTitle("number of pixel clusters", 2);
     histograms.numberOfPixelClustersVsLS = me;
 
     me = booker.bookProfile("numberOfPixelClustersVsLumi",
-                                                                "number of pixel clusters vs scal lumi",
-                                                                lumi_binning_.nbins,
-                                                                lumi_binning_.xmin,
-                                                                lumi_binning_.xmax,
-                                                                pixelCluster_binning_.xmin,
-                                                                pixelCluster_binning_.xmax);
+                            "number of pixel clusters vs scal lumi",
+                            lumi_binning_.nbins,
+                            lumi_binning_.xmin,
+                            lumi_binning_.xmax,
+                            pixelCluster_binning_.xmin,
+                            pixelCluster_binning_.xmax);
     me->setAxisTitle("scal inst lumi E30 [Hz cm^{-2}]", 1);
     me->setAxisTitle("number of pixel clusters", 2);
     histograms.numberOfPixelClustersVsLumi = me;
 
     me = booker.bookProfile("pixelLumiVsLS",
-                                                  "pixel-lumi vs LS",
-                                                  ls_binning_.nbins,
-                                                  ls_binning_.xmin,
-                                                  ls_binning_.xmax,
-                                                  pixellumi_binning_.xmin,
-                                                  pixellumi_binning_.xmax);
+                            "pixel-lumi vs LS",
+                            ls_binning_.nbins,
+                            ls_binning_.xmin,
+                            ls_binning_.xmax,
+                            pixellumi_binning_.xmin,
+                            pixellumi_binning_.xmax);
     me->setAxisTitle("LS", 1);
     me->setAxisTitle("pixel-based inst lumi E30 [Hz cm^{-2}]", 2);
     histograms.pixelLumiVsLS = me;
 
     me = booker.bookProfile("pixelLumiVsLumi",
-                                                    "pixel-lumi vs scal lumi",
-                                                    lumi_binning_.nbins,
-                                                    lumi_binning_.xmin,
-                                                    lumi_binning_.xmax,
-                                                    pixellumi_binning_.xmin,
-                                                    lumi_binning_.xmax);
+                            "pixel-lumi vs scal lumi",
+                            lumi_binning_.nbins,
+                            lumi_binning_.xmin,
+                            lumi_binning_.xmax,
+                            pixellumi_binning_.xmin,
+                            lumi_binning_.xmax);
     me->setAxisTitle("scal inst lumi E30 [Hz cm^{-2}]", 1);
     me->setAxisTitle("pixel-based inst lumi E30 [Hz cm^{-2}]", 2);
     histograms.pixelLumiVsLumi = me;
   }
 
   auto me = booker.bookProfile("lumiVsLS",
-                                           "scal lumi vs LS",
-                                           ls_binning_.nbins,
-                                           ls_binning_.xmin,
-                                           ls_binning_.xmax,
-                                           lumi_binning_.xmin,
-                                           lumi_binning_.xmax);
+                               "scal lumi vs LS",
+                               ls_binning_.nbins,
+                               ls_binning_.xmin,
+                               ls_binning_.xmax,
+                               lumi_binning_.xmin,
+                               lumi_binning_.xmax);
   me->setAxisTitle("LS", 1);
   me->setAxisTitle("scal inst lumi E30 [Hz cm^{-2}]", 2);
   histograms.lumiVsLS = me;
 
   me = booker.bookProfile("puVsLS",
-                                         "scal PU vs LS",
-                                         ls_binning_.nbins,
-                                         ls_binning_.xmin,
-                                         ls_binning_.xmax,
-                                         pu_binning_.xmin,
-                                         pu_binning_.xmax);
+                          "scal PU vs LS",
+                          ls_binning_.nbins,
+                          ls_binning_.xmin,
+                          ls_binning_.xmax,
+                          pu_binning_.xmin,
+                          pu_binning_.xmax);
   me->setAxisTitle("LS", 1);
   me->setAxisTitle("scal PU", 2);
   histograms.puVsLS = me;
