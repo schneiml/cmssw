@@ -30,12 +30,12 @@ namespace {
   };
 
   struct Histograms {
-    dqm::reco::MonitorElement const* numberOfPixelClustersVsLS;
-    dqm::reco::MonitorElement const* numberOfPixelClustersVsLumi;
-    dqm::reco::MonitorElement const* lumiVsLS;
-    dqm::reco::MonitorElement const* puVsLS;
-    dqm::reco::MonitorElement const* pixelLumiVsLS;
-    dqm::reco::MonitorElement const* pixelLumiVsLumi;
+    dqm::reco::MonitorElement* numberOfPixelClustersVsLS;
+    dqm::reco::MonitorElement* numberOfPixelClustersVsLumi;
+    dqm::reco::MonitorElement* lumiVsLS;
+    dqm::reco::MonitorElement* puVsLS;
+    dqm::reco::MonitorElement* pixelLumiVsLS;
+    dqm::reco::MonitorElement* pixelLumiVsLumi;
   };
 }  // namespace
 

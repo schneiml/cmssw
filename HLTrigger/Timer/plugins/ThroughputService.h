@@ -43,8 +43,8 @@ public:
   static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
 private:
-  dqm::reco::MonitorElement const* m_sourced_events;
-  dqm::reco::MonitorElement const* m_retired_events;
+  dqm::reco::MonitorElement* m_sourced_events;
+  dqm::reco::MonitorElement* m_retired_events;
 
   std::chrono::steady_clock::time_point m_startup;
 

@@ -31,7 +31,7 @@ class PileupSummaryInfo;
 
 struct HGCalValidatorHistograms {
   HGVHistoProducerAlgoHistograms histoProducerAlgo;
-  std::vector<dqm::reco::MonitorElement const*> h_layerclusters_coll;
+  std::vector<dqm::reco::MonitorElement*> h_layerclusters_coll;
 };
 
 class HGCalValidator : public DQMGlobalEDAnalyzer<HGCalValidatorHistograms> {

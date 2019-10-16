@@ -306,7 +306,7 @@ namespace dqm::dqmstoreimpl {
     }
 
     // Similar function used to book "global" histograms via the
-    // dqm::reco::MonitorElement const* interface.
+    // dqm::reco::MonitorElement* interface.
     template <typename iFunc>
     void bookConcurrentTransaction(iFunc f, uint32_t run) {
       std::lock_guard<std::mutex> guard(book_mutex_);

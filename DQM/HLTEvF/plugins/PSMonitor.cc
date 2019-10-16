@@ -28,7 +28,7 @@ namespace {
   };
 
   struct Histograms {
-    dqm::reco::MonitorElement const* psColumnIndexVsLS;
+    dqm::reco::MonitorElement* psColumnIndexVsLS;
   };
 }  // namespace
 

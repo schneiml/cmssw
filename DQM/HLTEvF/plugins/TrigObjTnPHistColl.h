@@ -159,7 +159,7 @@ public:
   public:
     explicit HistFiller(const edm::ParameterSet& config);
     static edm::ParameterSetDescription makePSetDescription();
-    void operator()(const trigger::TriggerObject& probe, float mass, dqm::reco::MonitorElement const* hist) const;
+    void operator()(const trigger::TriggerObject& probe, float mass, dqm::reco::MonitorElement* hist) const;
 
   private:
     VarRangeCutColl<trigger::TriggerObject> localCuts_;
@@ -173,7 +173,7 @@ public:
     public:
       explicit Data(const edm::ParameterSet& config);
       static edm::ParameterSetDescription makePSetDescription();
-      dqm::reco::MonitorElement const* book(DQMStore::IBooker& iBooker,
+      dqm::reco::MonitorElement* book(DQMStore::IBooker& iBooker,
                                             const std::string& name,
                                             const std::string& title,
                                             const std::vector<float>& massBins) const;
@@ -189,7 +189,7 @@ public:
   public:
     explicit HistDefs(const edm::ParameterSet& config);
     static edm::ParameterSetDescription makePSetDescription();
-    std::vector<std::pair<HistFiller, dqm::reco::MonitorElement const*> > bookHists(DQMStore::IBooker& iBooker,
+    std::vector<std::pair<HistFiller, dqm::reco::MonitorElement*> > bookHists(DQMStore::IBooker& iBooker,
                                                                                     const std::string& name,
                                                                                     const std::string& title) const;
 
@@ -208,7 +208,7 @@ public:
     void fill(const trigger::TriggerObject& probe, float mass) const;
 
   private:
-    std::vector<std::pair<HistFiller, dqm::reco::MonitorElement const*> > hists_;
+    std::vector<std::pair<HistFiller, dqm::reco::MonitorElement*> > hists_;
   };
 
   class ProbeData {

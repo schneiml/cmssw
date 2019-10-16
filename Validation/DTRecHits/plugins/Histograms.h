@@ -115,20 +115,20 @@ public:
   }
 
 private:
-  dqm::reco::MonitorElement const* hDist;
-  dqm::reco::MonitorElement const* hRes;
-  dqm::reco::MonitorElement const* hResSt[4];
-  dqm::reco::MonitorElement const* hResVsEta;
-  dqm::reco::MonitorElement const* hResVsPhi;
-  dqm::reco::MonitorElement const* hResVsPos;
-  dqm::reco::MonitorElement const* hResVsAngle;
-  dqm::reco::MonitorElement const* hResVsDistFE;
+  dqm::reco::MonitorElement* hDist;
+  dqm::reco::MonitorElement* hRes;
+  dqm::reco::MonitorElement* hResSt[4];
+  dqm::reco::MonitorElement* hResVsEta;
+  dqm::reco::MonitorElement* hResVsPhi;
+  dqm::reco::MonitorElement* hResVsPos;
+  dqm::reco::MonitorElement* hResVsAngle;
+  dqm::reco::MonitorElement* hResVsDistFE;
 
-  dqm::reco::MonitorElement const* hPull;
-  dqm::reco::MonitorElement const* hPullSt[4];
-  dqm::reco::MonitorElement const* hPullVsPos;
-  dqm::reco::MonitorElement const* hPullVsAngle;
-  dqm::reco::MonitorElement const* hPullVsDistFE;
+  dqm::reco::MonitorElement* hPull;
+  dqm::reco::MonitorElement* hPullSt[4];
+  dqm::reco::MonitorElement* hPullVsPos;
+  dqm::reco::MonitorElement* hPullVsAngle;
+  dqm::reco::MonitorElement* hPullVsDistFE;
   bool doall_;
   std::string name_;
 };
@@ -166,14 +166,14 @@ public:
   }
 
 private:
-  dqm::reco::MonitorElement const* hEtaMuSimHit;
-  dqm::reco::MonitorElement const* hEtaRecHit;
+  dqm::reco::MonitorElement* hEtaMuSimHit;
+  dqm::reco::MonitorElement* hEtaRecHit;
 
-  dqm::reco::MonitorElement const* hPhiMuSimHit;
-  dqm::reco::MonitorElement const* hPhiRecHit;
+  dqm::reco::MonitorElement* hPhiMuSimHit;
+  dqm::reco::MonitorElement* hPhiRecHit;
 
-  dqm::reco::MonitorElement const* hDistMuSimHit;
-  dqm::reco::MonitorElement const* hDistRecHit;
+  dqm::reco::MonitorElement* hDistMuSimHit;
+  dqm::reco::MonitorElement* hDistRecHit;
 
   std::string name_;
 };
@@ -309,18 +309,18 @@ public:
   }
 
 private:
-  dqm::reco::MonitorElement const* hRecAngle;
-  dqm::reco::MonitorElement const* hSimAngle;
-  dqm::reco::MonitorElement const* hRecVsSimAngle;
-  dqm::reco::MonitorElement const* hResAngle;
-  dqm::reco::MonitorElement const* hResAngleVsEta;
-  dqm::reco::MonitorElement const* hResAngleVsPhi;
-  dqm::reco::MonitorElement const* hResPos;
-  dqm::reco::MonitorElement const* hResPosVsEta;
-  dqm::reco::MonitorElement const* hResPosVsPhi;
-  dqm::reco::MonitorElement const* hResPosVsResAngle;
-  dqm::reco::MonitorElement const* hPullAngle;
-  dqm::reco::MonitorElement const* hPullPos;
+  dqm::reco::MonitorElement* hRecAngle;
+  dqm::reco::MonitorElement* hSimAngle;
+  dqm::reco::MonitorElement* hRecVsSimAngle;
+  dqm::reco::MonitorElement* hResAngle;
+  dqm::reco::MonitorElement* hResAngleVsEta;
+  dqm::reco::MonitorElement* hResAngleVsPhi;
+  dqm::reco::MonitorElement* hResPos;
+  dqm::reco::MonitorElement* hResPosVsEta;
+  dqm::reco::MonitorElement* hResPosVsPhi;
+  dqm::reco::MonitorElement* hResPosVsResAngle;
+  dqm::reco::MonitorElement* hPullAngle;
+  dqm::reco::MonitorElement* hPullPos;
 
   std::string name_;
   bool doall_;
@@ -366,14 +366,14 @@ public:
   }
 
 private:
-  dqm::reco::MonitorElement const* hEtaSimSegm;
-  dqm::reco::MonitorElement const* hEtaRecHit;
-  dqm::reco::MonitorElement const* hPhiSimSegm;
-  dqm::reco::MonitorElement const* hPhiRecHit;
-  dqm::reco::MonitorElement const* hPosSimSegm;
-  dqm::reco::MonitorElement const* hPosRecHit;
-  dqm::reco::MonitorElement const* hAngleSimSegm;
-  dqm::reco::MonitorElement const* hAngleRecHit;
+  dqm::reco::MonitorElement* hEtaSimSegm;
+  dqm::reco::MonitorElement* hEtaRecHit;
+  dqm::reco::MonitorElement* hPhiSimSegm;
+  dqm::reco::MonitorElement* hPhiRecHit;
+  dqm::reco::MonitorElement* hPosSimSegm;
+  dqm::reco::MonitorElement* hPosRecHit;
+  dqm::reco::MonitorElement* hAngleSimSegm;
+  dqm::reco::MonitorElement* hAngleRecHit;
 
   std::string name_;
 };
@@ -875,60 +875,60 @@ public:
   }
 
 private:
-  dqm::reco::MonitorElement const* hRecAlpha;
-  dqm::reco::MonitorElement const* hRecBeta;
-  dqm::reco::MonitorElement const* hSimAlpha;
-  dqm::reco::MonitorElement const* hSimBeta;
-  dqm::reco::MonitorElement const* hRecVsSimAlpha;
-  dqm::reco::MonitorElement const* hRecVsSimBeta;
-  dqm::reco::MonitorElement const* hResAlpha;
-  dqm::reco::MonitorElement const* hResAlphaVsEta;
-  dqm::reco::MonitorElement const* hResAlphaVsPhi;
-  dqm::reco::MonitorElement const* hResBeta;
-  dqm::reco::MonitorElement const* hResBetaVsEta;
-  dqm::reco::MonitorElement const* hResBetaVsPhi;
-  dqm::reco::MonitorElement const* hResX;
-  dqm::reco::MonitorElement const* hResXVsEta;
-  dqm::reco::MonitorElement const* hResXVsPhi;
-  dqm::reco::MonitorElement const* hResY;
-  dqm::reco::MonitorElement const* hResYVsEta;
-  dqm::reco::MonitorElement const* hResYVsPhi;
-  dqm::reco::MonitorElement const* hResAlphaVsResBeta;
-  dqm::reco::MonitorElement const* hResXVsResY;
-  dqm::reco::MonitorElement const* hResAlphaVsResX;
-  dqm::reco::MonitorElement const* hResAlphaVsResY;
-  dqm::reco::MonitorElement const* hPullAlpha;
-  dqm::reco::MonitorElement const* hPullAlphaVsEta;
-  dqm::reco::MonitorElement const* hPullAlphaVsPhi;
-  dqm::reco::MonitorElement const* hPullBeta;
-  dqm::reco::MonitorElement const* hPullBetaVsEta;
-  dqm::reco::MonitorElement const* hPullBetaVsPhi;
-  dqm::reco::MonitorElement const* hPullX;
-  dqm::reco::MonitorElement const* hPullXVsEta;
-  dqm::reco::MonitorElement const* hPullXVsPhi;
-  dqm::reco::MonitorElement const* hPullY;
-  dqm::reco::MonitorElement const* hPullYVsEta;
-  dqm::reco::MonitorElement const* hPullYVsPhi;
+  dqm::reco::MonitorElement* hRecAlpha;
+  dqm::reco::MonitorElement* hRecBeta;
+  dqm::reco::MonitorElement* hSimAlpha;
+  dqm::reco::MonitorElement* hSimBeta;
+  dqm::reco::MonitorElement* hRecVsSimAlpha;
+  dqm::reco::MonitorElement* hRecVsSimBeta;
+  dqm::reco::MonitorElement* hResAlpha;
+  dqm::reco::MonitorElement* hResAlphaVsEta;
+  dqm::reco::MonitorElement* hResAlphaVsPhi;
+  dqm::reco::MonitorElement* hResBeta;
+  dqm::reco::MonitorElement* hResBetaVsEta;
+  dqm::reco::MonitorElement* hResBetaVsPhi;
+  dqm::reco::MonitorElement* hResX;
+  dqm::reco::MonitorElement* hResXVsEta;
+  dqm::reco::MonitorElement* hResXVsPhi;
+  dqm::reco::MonitorElement* hResY;
+  dqm::reco::MonitorElement* hResYVsEta;
+  dqm::reco::MonitorElement* hResYVsPhi;
+  dqm::reco::MonitorElement* hResAlphaVsResBeta;
+  dqm::reco::MonitorElement* hResXVsResY;
+  dqm::reco::MonitorElement* hResAlphaVsResX;
+  dqm::reco::MonitorElement* hResAlphaVsResY;
+  dqm::reco::MonitorElement* hPullAlpha;
+  dqm::reco::MonitorElement* hPullAlphaVsEta;
+  dqm::reco::MonitorElement* hPullAlphaVsPhi;
+  dqm::reco::MonitorElement* hPullBeta;
+  dqm::reco::MonitorElement* hPullBetaVsEta;
+  dqm::reco::MonitorElement* hPullBetaVsPhi;
+  dqm::reco::MonitorElement* hPullX;
+  dqm::reco::MonitorElement* hPullXVsEta;
+  dqm::reco::MonitorElement* hPullXVsPhi;
+  dqm::reco::MonitorElement* hPullY;
+  dqm::reco::MonitorElement* hPullYVsEta;
+  dqm::reco::MonitorElement* hPullYVsPhi;
 
   // RZ SL
-  dqm::reco::MonitorElement const* hRecBetaRZ;
-  dqm::reco::MonitorElement const* hSimBetaRZ;
-  dqm::reco::MonitorElement const* hRecVsSimBetaRZ;
-  dqm::reco::MonitorElement const* hResBetaRZ;
-  dqm::reco::MonitorElement const* hResBetaVsEtaRZ;
-  dqm::reco::MonitorElement const* hResBetaVsPhiRZ;
-  dqm::reco::MonitorElement const* hResYRZ;
-  dqm::reco::MonitorElement const* hResYVsEtaRZ;
-  dqm::reco::MonitorElement const* hResYVsPhiRZ;
-  dqm::reco::MonitorElement const* hPullBetaRZ;
-  dqm::reco::MonitorElement const* hPullBetaVsEtaRZ;
-  dqm::reco::MonitorElement const* hPullBetaVsPhiRZ;
-  dqm::reco::MonitorElement const* hPullYRZ;
-  dqm::reco::MonitorElement const* hPullYVsEtaRZ;
-  dqm::reco::MonitorElement const* hPullYVsPhiRZ;
+  dqm::reco::MonitorElement* hRecBetaRZ;
+  dqm::reco::MonitorElement* hSimBetaRZ;
+  dqm::reco::MonitorElement* hRecVsSimBetaRZ;
+  dqm::reco::MonitorElement* hResBetaRZ;
+  dqm::reco::MonitorElement* hResBetaVsEtaRZ;
+  dqm::reco::MonitorElement* hResBetaVsPhiRZ;
+  dqm::reco::MonitorElement* hResYRZ;
+  dqm::reco::MonitorElement* hResYVsEtaRZ;
+  dqm::reco::MonitorElement* hResYVsPhiRZ;
+  dqm::reco::MonitorElement* hPullBetaRZ;
+  dqm::reco::MonitorElement* hPullBetaVsEtaRZ;
+  dqm::reco::MonitorElement* hPullBetaVsPhiRZ;
+  dqm::reco::MonitorElement* hPullYRZ;
+  dqm::reco::MonitorElement* hPullYVsEtaRZ;
+  dqm::reco::MonitorElement* hPullYVsPhiRZ;
 
-  dqm::reco::MonitorElement const* hHitMult;
-  dqm::reco::MonitorElement const* ht0;
+  dqm::reco::MonitorElement* hHitMult;
+  dqm::reco::MonitorElement* ht0;
 
   bool doall_;
   bool local_;
@@ -999,20 +999,20 @@ public:
   }
 
 private:
-  dqm::reco::MonitorElement const* hEtaSimSegm;
-  dqm::reco::MonitorElement const* hEtaRecHit;
-  dqm::reco::MonitorElement const* hPhiSimSegm;
-  dqm::reco::MonitorElement const* hPhiRecHit;
-  dqm::reco::MonitorElement const* hXSimSegm;
-  dqm::reco::MonitorElement const* hXRecHit;
-  dqm::reco::MonitorElement const* hYSimSegm;
-  dqm::reco::MonitorElement const* hYRecHit;
-  dqm::reco::MonitorElement const* hAlphaSimSegm;
-  dqm::reco::MonitorElement const* hAlphaRecHit;
-  dqm::reco::MonitorElement const* hBetaSimSegm;
-  dqm::reco::MonitorElement const* hBetaRecHit;
+  dqm::reco::MonitorElement* hEtaSimSegm;
+  dqm::reco::MonitorElement* hEtaRecHit;
+  dqm::reco::MonitorElement* hPhiSimSegm;
+  dqm::reco::MonitorElement* hPhiRecHit;
+  dqm::reco::MonitorElement* hXSimSegm;
+  dqm::reco::MonitorElement* hXRecHit;
+  dqm::reco::MonitorElement* hYSimSegm;
+  dqm::reco::MonitorElement* hYRecHit;
+  dqm::reco::MonitorElement* hAlphaSimSegm;
+  dqm::reco::MonitorElement* hAlphaRecHit;
+  dqm::reco::MonitorElement* hBetaSimSegm;
+  dqm::reco::MonitorElement* hBetaRecHit;
 
-  dqm::reco::MonitorElement const* hNSeg;
+  dqm::reco::MonitorElement* hNSeg;
 
   std::string name_;
 };

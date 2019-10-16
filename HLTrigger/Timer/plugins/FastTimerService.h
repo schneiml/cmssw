@@ -324,14 +324,14 @@ private:
 
   private:
     // resources spent in the module
-    dqm::reco::MonitorElement const* time_thread_;       // TH1F
-    dqm::reco::MonitorElement const* time_thread_byls_;  // TProfile
-    dqm::reco::MonitorElement const* time_real_;         // TH1F
-    dqm::reco::MonitorElement const* time_real_byls_;    // TProfile
-    dqm::reco::MonitorElement const* allocated_;         // TH1F
-    dqm::reco::MonitorElement const* allocated_byls_;    // TProfile
-    dqm::reco::MonitorElement const* deallocated_;       // TH1F
-    dqm::reco::MonitorElement const* deallocated_byls_;  // TProfile
+    dqm::reco::MonitorElement* time_thread_;       // TH1F
+    dqm::reco::MonitorElement* time_thread_byls_;  // TProfile
+    dqm::reco::MonitorElement* time_real_;         // TH1F
+    dqm::reco::MonitorElement* time_real_byls_;    // TProfile
+    dqm::reco::MonitorElement* allocated_;         // TH1F
+    dqm::reco::MonitorElement* allocated_byls_;    // TProfile
+    dqm::reco::MonitorElement* deallocated_;       // TH1F
+    dqm::reco::MonitorElement* deallocated_byls_;  // TProfile
   };
 
   // plots associated to each path or endpath
@@ -360,12 +360,12 @@ private:
     //   be better suited than a double, but there is no "TH1L" in ROOT.
 
     // how many times each module and their dependencies has run
-    dqm::reco::MonitorElement const* module_counter_;  // TH1D
+    dqm::reco::MonitorElement* module_counter_;  // TH1D
     // resources spent in each module and their dependencies
-    dqm::reco::MonitorElement const* module_time_thread_total_;  // TH1D
-    dqm::reco::MonitorElement const* module_time_real_total_;    // TH1D
-    dqm::reco::MonitorElement const* module_allocated_total_;    // TH1D
-    dqm::reco::MonitorElement const* module_deallocated_total_;  // TH1D
+    dqm::reco::MonitorElement* module_time_thread_total_;  // TH1D
+    dqm::reco::MonitorElement* module_time_real_total_;    // TH1D
+    dqm::reco::MonitorElement* module_allocated_total_;    // TH1D
+    dqm::reco::MonitorElement* module_deallocated_total_;  // TH1D
   };
 
   class PlotsPerProcess {

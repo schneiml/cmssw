@@ -39,7 +39,6 @@
 namespace {
 
   struct RunBasedHistograms {
-    typedef dqm::reco::MonitorElement MonitorElement;
     // HLT configuration
     struct HLTIndices {
       unsigned int index_l1_seed;
@@ -58,28 +57,28 @@ namespace {
 
     // per-path HLT plots
     struct HLTRatesPlots {
-      dqm::reco::MonitorElement const *pass_l1_seed;
-      dqm::reco::MonitorElement const *pass_prescale;
-      dqm::reco::MonitorElement const *accept;
-      dqm::reco::MonitorElement const *reject;
-      dqm::reco::MonitorElement const *error;
+      dqm::reco::MonitorElement *pass_l1_seed;
+      dqm::reco::MonitorElement *pass_prescale;
+      dqm::reco::MonitorElement *accept;
+      dqm::reco::MonitorElement *reject;
+      dqm::reco::MonitorElement *error;
     };
 
     // overall event count and event types
-    dqm::reco::MonitorElement const *events_processed;
-    std::vector<dqm::reco::MonitorElement const *> tcds_counts;
+    dqm::reco::MonitorElement *events_processed;
+    std::vector<dqm::reco::MonitorElement *> tcds_counts;
 
     // L1T triggers
-    std::vector<dqm::reco::MonitorElement const *> l1t_counts;
+    std::vector<dqm::reco::MonitorElement *> l1t_counts;
 
     // HLT triggers
     std::vector<std::vector<HLTRatesPlots>> hlt_by_dataset_counts;
 
     // datasets
-    std::vector<dqm::reco::MonitorElement const *> dataset_counts;
+    std::vector<dqm::reco::MonitorElement *> dataset_counts;
 
     // streams
-    std::vector<dqm::reco::MonitorElement const *> stream_counts;
+    std::vector<dqm::reco::MonitorElement *> stream_counts;
 
     RunBasedHistograms()
         :  // L1T and HLT configuration

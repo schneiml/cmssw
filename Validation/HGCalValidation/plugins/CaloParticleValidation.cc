@@ -31,24 +31,24 @@
 //
 
 struct Histogram_CaloParticleSingle {
-  dqm::reco::MonitorElement const* eta_;
-  dqm::reco::MonitorElement const* pt_;
-  dqm::reco::MonitorElement const* energy_;
-  dqm::reco::MonitorElement const* nSimClusters_;
-  dqm::reco::MonitorElement const* nHitInSimClusters_;
-  dqm::reco::MonitorElement const*
+  dqm::reco::MonitorElement* eta_;
+  dqm::reco::MonitorElement* pt_;
+  dqm::reco::MonitorElement* energy_;
+  dqm::reco::MonitorElement* nSimClusters_;
+  dqm::reco::MonitorElement* nHitInSimClusters_;
+  dqm::reco::MonitorElement*
       selfEnergy_;  // this is the sum of the energy associated to all recHits linked to all SimClusters
-  dqm::reco::MonitorElement const* energyDifference_;  // This contains (energy-selfEnergy)/energy
-  dqm::reco::MonitorElement const* eta_Zorigin_map_;
-  dqm::reco::MonitorElement const* simPFSuperClusterSize_;
-  dqm::reco::MonitorElement const* simPFSuperClusterEnergy_;
-  dqm::reco::MonitorElement const* pfcandidateType_;
-  dqm::reco::MonitorElement const* pfcandidateEnergy_;
-  dqm::reco::MonitorElement const* pfcandidatePt_;
-  dqm::reco::MonitorElement const* pfcandidateEta_;
-  dqm::reco::MonitorElement const* pfcandidatePhi_;
-  dqm::reco::MonitorElement const* pfcandidateElementsInBlocks_;
-  dqm::reco::MonitorElement const* pfcandidate_vect_sum_pt_;  // This is indeed a cumulative istogram
+  dqm::reco::MonitorElement* energyDifference_;  // This contains (energy-selfEnergy)/energy
+  dqm::reco::MonitorElement* eta_Zorigin_map_;
+  dqm::reco::MonitorElement* simPFSuperClusterSize_;
+  dqm::reco::MonitorElement* simPFSuperClusterEnergy_;
+  dqm::reco::MonitorElement* pfcandidateType_;
+  dqm::reco::MonitorElement* pfcandidateEnergy_;
+  dqm::reco::MonitorElement* pfcandidatePt_;
+  dqm::reco::MonitorElement* pfcandidateEta_;
+  dqm::reco::MonitorElement* pfcandidatePhi_;
+  dqm::reco::MonitorElement* pfcandidateElementsInBlocks_;
+  dqm::reco::MonitorElement* pfcandidate_vect_sum_pt_;  // This is indeed a cumulative istogram
 };
 
 using Histograms_CaloParticleValidation = std::unordered_map<int, Histogram_CaloParticleSingle>;

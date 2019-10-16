@@ -48,7 +48,7 @@ namespace {
   }
 
   template <typename... Args>
-  dqm::reco::MonitorElement const* make1DIfLogX(DQMStore::IBooker& ibook, bool logx, Args&&... args) {
+  dqm::reco::MonitorElement* make1DIfLogX(DQMStore::IBooker& ibook, bool logx, Args&&... args) {
     auto h = std::make_unique<TH1F>(std::forward<Args>(args)...);
     if (logx)
       BinLogX(h.get());
@@ -57,7 +57,7 @@ namespace {
   }
 
   template <typename... Args>
-  dqm::reco::MonitorElement const* makeProfileIfLogX(DQMStore::IBooker& ibook, bool logx, Args&&... args) {
+  dqm::reco::MonitorElement* makeProfileIfLogX(DQMStore::IBooker& ibook, bool logx, Args&&... args) {
     auto h = std::make_unique<TProfile>(std::forward<Args>(args)...);
     if (logx)
       BinLogX(h.get());
@@ -66,7 +66,7 @@ namespace {
   }
 
   template <typename... Args>
-  dqm::reco::MonitorElement const* make2DIfLogX(DQMStore::IBooker& ibook, bool logx, Args&&... args) {
+  dqm::reco::MonitorElement* make2DIfLogX(DQMStore::IBooker& ibook, bool logx, Args&&... args) {
     auto h = std::make_unique<TH2F>(std::forward<Args>(args)...);
     if (logx)
       BinLogX(h.get());
@@ -75,7 +75,7 @@ namespace {
   }
 
   template <typename... Args>
-  dqm::reco::MonitorElement const* make2DIfLogY(DQMStore::IBooker& ibook, bool logy, Args&&... args) {
+  dqm::reco::MonitorElement* make2DIfLogY(DQMStore::IBooker& ibook, bool logy, Args&&... args) {
     auto h = std::make_unique<TH2F>(std::forward<Args>(args)...);
     if (logy)
       BinLogY(h.get());
@@ -83,24 +83,24 @@ namespace {
     return ibook.book2D(name, h.release());
   }
 
-  void setBinLabels(dqm::reco::MonitorElement const*& h, const std::vector<std::string>& labels) {
+  void setBinLabels(dqm::reco::MonitorElement*& h, const std::vector<std::string>& labels) {
     for (size_t i = 0; i < labels.size(); ++i) {
       h->setBinLabel(i + 1, labels[i]);
     }
     h->disableAlphanumeric();
   }
 
-  void setBinLabelsAlgo(dqm::reco::MonitorElement const*& h, int axis = 1) {
+  void setBinLabelsAlgo(dqm::reco::MonitorElement*& h, int axis = 1) {
     for (size_t i = 0; i < reco::TrackBase::algoSize; ++i) {
       h->setBinLabel(i + 1, reco::TrackBase::algoName(static_cast<reco::TrackBase::TrackAlgorithm>(i)), axis);
     }
     h->disableAlphanumeric();
   }
 
-  void fillMVAHistos(const std::vector<dqm::reco::MonitorElement const*>& h_mva,
-                     const std::vector<dqm::reco::MonitorElement const*>& h_mvacut,
-                     const std::vector<dqm::reco::MonitorElement const*>& h_mva_hp,
-                     const std::vector<dqm::reco::MonitorElement const*>& h_mvacut_hp,
+  void fillMVAHistos(const std::vector<dqm::reco::MonitorElement*>& h_mva,
+                     const std::vector<dqm::reco::MonitorElement*>& h_mvacut,
+                     const std::vector<dqm::reco::MonitorElement*>& h_mva_hp,
+                     const std::vector<dqm::reco::MonitorElement*>& h_mvacut_hp,
                      const std::vector<float>& mvas,
                      unsigned int selectsLoose,
                      unsigned int selectsHP) {
@@ -119,8 +119,8 @@ namespace {
   }
 
   void fillMVAHistos(double xval,
-                     const std::vector<dqm::reco::MonitorElement const*>& h_mva,
-                     const std::vector<dqm::reco::MonitorElement const*>& h_mva_hp,
+                     const std::vector<dqm::reco::MonitorElement*>& h_mva,
+                     const std::vector<dqm::reco::MonitorElement*>& h_mva_hp,
                      const std::vector<float>& mvas,
                      unsigned int selectsLoose,
                      unsigned int selectsHP) {
@@ -1042,13 +1042,13 @@ void MTVHistoProducerAlgoForTracker::bookRecoHistos(DQMStore::IBooker& ibook,
 
   /////////////////////////////////
 
-  auto bookResolutionPlots1D = [&](std::vector<dqm::reco::MonitorElement const*>& vec, auto&&... params) {
+  auto bookResolutionPlots1D = [&](std::vector<dqm::reco::MonitorElement*>& vec, auto&&... params) {
     vec.push_back(doResolutionPlots ? ibook.book1D(std::forward<decltype(params)>(params)...) : nullptr);
   };
-  auto bookResolutionPlots2D = [&](std::vector<dqm::reco::MonitorElement const*>& vec, bool logx, auto&&... params) {
+  auto bookResolutionPlots2D = [&](std::vector<dqm::reco::MonitorElement*>& vec, bool logx, auto&&... params) {
     vec.push_back(doResolutionPlots ? make2DIfLogX(ibook, logx, std::forward<decltype(params)>(params)...) : nullptr);
   };
-  auto bookResolutionPlotsProfile2D = [&](std::vector<dqm::reco::MonitorElement const*>& vec, auto&&... params) {
+  auto bookResolutionPlotsProfile2D = [&](std::vector<dqm::reco::MonitorElement*>& vec, auto&&... params) {
     vec.push_back(doResolutionPlots ? ibook.bookProfile2D(std::forward<decltype(params)>(params)...) : nullptr);
   };
 

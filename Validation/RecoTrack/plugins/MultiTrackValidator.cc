@@ -232,7 +232,7 @@ void MultiTrackValidator::bookHistograms(DQMStore::IBooker& ibook,
   const auto maxColl = label.size() - 0.5;
   const auto nintColl = label.size();
 
-  auto binLabels = [&](dqm::reco::MonitorElement const* me) {
+  auto binLabels = [&](dqm::reco::MonitorElement* me) {
     for (size_t i = 0; i < label.size(); ++i) {
       me->setBinLabel(i + 1, label[i].label());
     }

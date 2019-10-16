@@ -30,9 +30,9 @@ namespace {
   typedef dqm::reco::MonitorElement MonitorElement;
 
   struct RunBasedHistograms {
-    dqm::reco::MonitorElement const* orbit_bx_all;
-    std::vector<dqm::reco::MonitorElement const*> orbit_bx;
-    std::vector<dqm::reco::MonitorElement const*> orbit_bx_all_byLS;
+    dqm::reco::MonitorElement* orbit_bx_all;
+    std::vector<dqm::reco::MonitorElement*> orbit_bx;
+    std::vector<dqm::reco::MonitorElement*> orbit_bx_all_byLS;
   };
 }  // namespace
 

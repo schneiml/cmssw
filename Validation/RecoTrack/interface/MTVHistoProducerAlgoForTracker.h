@@ -28,7 +28,7 @@
 
 struct MTVHistoProducerAlgoForTrackerHistograms {
   //sim
-  using METype = dqm::reco::MonitorElement const*;
+  using METype = dqm::reco::MonitorElement*;
   METype h_ptSIM, h_etaSIM, h_tracksSIM, h_vertposSIM, h_bunchxSIM;
 
   //1D

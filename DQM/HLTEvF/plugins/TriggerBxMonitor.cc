@@ -53,15 +53,15 @@ namespace {
     HLTConfigProvider hltConfig;
 
     // L1T and HLT results
-    dqm::reco::MonitorElement const* tcds_bx_all;
-    dqm::reco::MonitorElement const* l1t_bx_all;
-    dqm::reco::MonitorElement const* hlt_bx_all;
-    std::vector<dqm::reco::MonitorElement const*> tcds_bx;
-    std::vector<dqm::reco::MonitorElement const*> l1t_bx;
-    std::vector<dqm::reco::MonitorElement const*> hlt_bx;
-    std::vector<dqm::reco::MonitorElement const*> tcds_bx_2d;
-    std::vector<dqm::reco::MonitorElement const*> l1t_bx_2d;
-    std::vector<dqm::reco::MonitorElement const*> hlt_bx_2d;
+    dqm::reco::MonitorElement* tcds_bx_all;
+    dqm::reco::MonitorElement* l1t_bx_all;
+    dqm::reco::MonitorElement* hlt_bx_all;
+    std::vector<dqm::reco::MonitorElement*> tcds_bx;
+    std::vector<dqm::reco::MonitorElement*> l1t_bx;
+    std::vector<dqm::reco::MonitorElement*> hlt_bx;
+    std::vector<dqm::reco::MonitorElement*> tcds_bx_2d;
+    std::vector<dqm::reco::MonitorElement*> l1t_bx_2d;
+    std::vector<dqm::reco::MonitorElement*> hlt_bx_2d;
   };
 
 }  // namespace
