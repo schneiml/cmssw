@@ -473,22 +473,24 @@ namespace dqm::reco {
 }
 namespace dqm::legacy {
   class MonitorElement : public dqm::reco::MonitorElement {
-    public:
+  public:
     using dqm::reco::MonitorElement::MonitorElement;
-    virtual TObject *getRootObject() const { return const_cast<dqm::legacy::MonitorElement*>(this)->getRootObject(); };
-    virtual TH1 *getTH1() const { return const_cast<dqm::legacy::MonitorElement*>(this)->getTH1(); };
-    virtual TH1F *getTH1F() const { return const_cast<dqm::legacy::MonitorElement*>(this)->getTH1F(); };
-    virtual TH1S *getTH1S() const { return const_cast<dqm::legacy::MonitorElement*>(this)->getTH1S(); };
-    virtual TH1D *getTH1D() const { return const_cast<dqm::legacy::MonitorElement*>(this)->getTH1D(); };
-    virtual TH2F *getTH2F() const { return const_cast<dqm::legacy::MonitorElement*>(this)->getTH2F(); };
-    virtual TH2S *getTH2S() const { return const_cast<dqm::legacy::MonitorElement*>(this)->getTH2S(); };
-    virtual TH2D *getTH2D() const { return const_cast<dqm::legacy::MonitorElement*>(this)->getTH2D(); };
-    virtual TH3F *getTH3F() const { return const_cast<dqm::legacy::MonitorElement*>(this)->getTH3F(); };
-    virtual TProfile *getTProfile() const { return const_cast<dqm::legacy::MonitorElement*>(this)->getTProfile(); };
-    virtual TProfile2D *getTProfile2D() const { return const_cast<dqm::legacy::MonitorElement*>(this)->getTProfile2D(); };
+    virtual TObject *getRootObject() const { return const_cast<dqm::legacy::MonitorElement *>(this)->getRootObject(); };
+    virtual TH1 *getTH1() const { return const_cast<dqm::legacy::MonitorElement *>(this)->getTH1(); };
+    virtual TH1F *getTH1F() const { return const_cast<dqm::legacy::MonitorElement *>(this)->getTH1F(); };
+    virtual TH1S *getTH1S() const { return const_cast<dqm::legacy::MonitorElement *>(this)->getTH1S(); };
+    virtual TH1D *getTH1D() const { return const_cast<dqm::legacy::MonitorElement *>(this)->getTH1D(); };
+    virtual TH2F *getTH2F() const { return const_cast<dqm::legacy::MonitorElement *>(this)->getTH2F(); };
+    virtual TH2S *getTH2S() const { return const_cast<dqm::legacy::MonitorElement *>(this)->getTH2S(); };
+    virtual TH2D *getTH2D() const { return const_cast<dqm::legacy::MonitorElement *>(this)->getTH2D(); };
+    virtual TH3F *getTH3F() const { return const_cast<dqm::legacy::MonitorElement *>(this)->getTH3F(); };
+    virtual TProfile *getTProfile() const { return const_cast<dqm::legacy::MonitorElement *>(this)->getTProfile(); };
+    virtual TProfile2D *getTProfile2D() const {
+      return const_cast<dqm::legacy::MonitorElement *>(this)->getTProfile2D();
+    };
     void runQTests();
   };
-}
+}  // namespace dqm::legacy
 namespace dqm::harvesting {
   typedef dqm::legacy::MonitorElement MonitorElement;
 }
