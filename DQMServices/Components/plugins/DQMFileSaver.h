@@ -1,7 +1,7 @@
 #ifndef DQMSERVICES_COMPONENTS_DQMFILESAVER_H
 #define DQMSERVICES_COMPONENTS_DQMFILESAVER_H
 
-#include "FWCore/Framework/interface/global/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "DQMServices/Core/interface/DQMStore.h"
 
 #include <boost/property_tree/ptree.hpp>
@@ -11,12 +11,9 @@
 namespace evf {
   class FastMonitoringService;
 }
-namespace saverDetails {
-  struct NoCache {};
-}  // namespace saverDetails
-
-class DQMFileSaver : public edm::global::EDAnalyzer<edm::RunCache<saverDetails::NoCache>,
-                                                    edm::LuminosityBlockCache<saverDetails::NoCache> > {
+class DQMFileSaver : public edm::one::EDAnalyzer<edm::one::SharedResources,
+                                                 edm::one::WatchLuminosityBlocks,
+                                                 edm::one::WatchRuns> {
 public:
   typedef dqm::legacy::DQMStore DQMStore;
   typedef dqm::legacy::MonitorElement MonitorElement;
@@ -31,12 +28,12 @@ public:
 
 protected:
   void beginJob() override;
-  std::shared_ptr<saverDetails::NoCache> globalBeginRun(const edm::Run &, const edm::EventSetup &) const override;
-  std::shared_ptr<saverDetails::NoCache> globalBeginLuminosityBlock(const edm::LuminosityBlock &,
-                                                                    const edm::EventSetup &) const override;
-  void analyze(edm::StreamID, const edm::Event &e, const edm::EventSetup &) const override;
-  void globalEndLuminosityBlock(const edm::LuminosityBlock &, const edm::EventSetup &) const override;
-  void globalEndRun(const edm::Run &, const edm::EventSetup &) const override;
+  void beginRun(const edm::Run &, const edm::EventSetup &) override;
+  void beginLuminosityBlock(const edm::LuminosityBlock &,
+                                                                    const edm::EventSetup &) override;
+  void analyze(const edm::Event &e, const edm::EventSetup &) override;
+  void endLuminosityBlock(const edm::LuminosityBlock &, const edm::EventSetup &) override;
+  void endRun(const edm::Run &, const edm::EventSetup &) override;
   void endJob() override;
 
 public:

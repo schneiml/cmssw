@@ -10,6 +10,8 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/MessageLogger/interface/JobReport.h"
 
+#include "DataFormats/Histograms/interface/DQMToken.h"
+
 #include "EventFilter/Utilities/interface/EvFDaqDirector.h"
 #include "EventFilter/Utilities/interface/FastMonitoringService.h"
 
@@ -365,6 +367,12 @@ DQMFileSaver::DQMFileSaver(const edm::ParameterSet &ps)
       nlumi_(0),
       irun_(0),
       fms_(nullptr) {
+  // Consume *all* DQM output to enforce proper ordering.
+  consumesMany<DQMToken, edm::InLumi>();
+  consumesMany<DQMToken, edm::InRun>();
+  // to make sure no harvesters run while we are saving.
+  usesResource("DQMStore");
+
   // Determine the file saving convention, and adjust defaults accordingly.
   std::string convention = ps.getUntrackedParameter<std::string>("convention", "Offline");
   fakeFilterUnitMode_ = ps.getUntrackedParameter<bool>("fakeFilterUnitMode", false);
@@ -519,7 +527,7 @@ void DQMFileSaver::beginJob() {
   }
 }
 
-std::shared_ptr<saverDetails::NoCache> DQMFileSaver::globalBeginRun(const edm::Run &r, const edm::EventSetup &) const {
+void DQMFileSaver::beginRun(const edm::Run &r, const edm::EventSetup &) {
   ++nrun_;
 
   // For Filter Unit, create an empty ini file:
@@ -533,22 +541,20 @@ std::shared_ptr<saverDetails::NoCache> DQMFileSaver::globalBeginRun(const edm::R
     file.close();
   }
 
-  return nullptr;
 }
 
-std::shared_ptr<saverDetails::NoCache> DQMFileSaver::globalBeginLuminosityBlock(const edm::LuminosityBlock &l,
-                                                                                const edm::EventSetup &) const {
+void DQMFileSaver::beginLuminosityBlock(const edm::LuminosityBlock &l,
+                                                                                const edm::EventSetup &) {
   ++nlumi_;
-  return nullptr;
 }
 
-void DQMFileSaver::analyze(edm::StreamID, const edm::Event &e, const edm::EventSetup &) const {
+void DQMFileSaver::analyze(const edm::Event &e, const edm::EventSetup &) {
   //save by event and save by time are not supported
   //anymore in the threaded framework. please use
   //savebyLumiSection instead.
 }
 
-void DQMFileSaver::globalEndLuminosityBlock(const edm::LuminosityBlock &iLS, const edm::EventSetup &) const {
+void DQMFileSaver::endLuminosityBlock(const edm::LuminosityBlock &iLS, const edm::EventSetup &) {
   int ilumi = iLS.id().luminosityBlock();
   int irun = iLS.id().run();
   if (ilumi > 0 && saveByLumiSection_ > 0) {
@@ -599,7 +605,7 @@ void DQMFileSaver::globalEndLuminosityBlock(const edm::LuminosityBlock &iLS, con
   }
 }
 
-void DQMFileSaver::globalEndRun(const edm::Run &iRun, const edm::EventSetup &) const {
+void DQMFileSaver::endRun(const edm::Run &iRun, const edm::EventSetup &) {
   int irun = iRun.id().run();
   irun_ = irun;
   if (irun > 0 && saveByRun_ > 0 && (nrun_ % saveByRun_) == 0) {
