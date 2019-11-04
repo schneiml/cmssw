@@ -1,85 +1,133 @@
 #ifndef DQMServices_Core_DQMEDAnalyzer_h
 #define DQMServices_Core_DQMEDAnalyzer_h
 
+#include "FWCore/Framework/interface/stream/makeGlobal.h"
+
+namespace dqm {
+  namespace reco {
+    struct DQMEDAnalyzerGlobalCache;
+  };  // namespace reco
+}  // namespace dqm
+
+namespace edm::stream::impl {
+  template <typename T>
+  T* makeStreamModule(edm::ParameterSet const& iPSet, dqm::reco::DQMEDAnalyzerGlobalCache const* global) {
+    return new T(iPSet);
+  }
+}  // namespace edm::stream::impl
+
 #include "DQMServices/Core/interface/DQMStore.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/Run.h"
+
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
-#include "FWCore/Framework/interface/one/EDProducer.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "FWCore/Utilities/interface/EDPutToken.h"
 #include "DataFormats/Histograms/interface/DQMToken.h"
 
-/**
- * The standard DQM module base. For now, this is the same as DQMOneLumiEDAnalyzer,
- * but they can (and will) diverge in the future.
- */
-class DQMEDAnalyzer : public edm::one::EDProducer<edm::EndRunProducer,
-                                                  edm::one::WatchRuns,
-                                                  edm::EndLuminosityBlockProducer,
-                                                  edm::one::WatchLuminosityBlocks,
-                                                  edm::Accumulator> {
+namespace dqm {
+  namespace reco {
+    struct DQMEDAnalyzerGlobalCache {
+      mutable std::mutex lock_;
+      mutable DQMStore* master_;
+      mutable edm::EDPutTokenT<DQMToken> lumiToken_;
+      mutable edm::EDPutTokenT<DQMToken> runToken_;
+    };
+  };  // namespace reco
+}  // namespace dqm
+
+class DQMEDAnalyzer : public edm::stream::EDProducer<
+                          // We use a lot of edm features. We need all the caches to get the global
+                          // transitions, where we can pull the (shared) MonitorElements out of the
+                          // DQMStores.
+                          edm::GlobalCache<dqm::reco::DQMEDAnalyzerGlobalCache>,
+                          edm::EndLuminosityBlockProducer,
+                          edm::EndRunProducer,
+                          // This feature is essentially made for DQM and required to get per-event calls.
+                          edm::Accumulator> {
+protected:
+  dqm::reco::DQMStore* dqmstore_;
+  edm::EDPutTokenT<DQMToken> lumiToken_;
+  edm::EDPutTokenT<DQMToken> runToken_;
+
 public:
   typedef dqm::reco::DQMStore DQMStore;
   typedef dqm::reco::MonitorElement MonitorElement;
 
-  virtual bool getCanSaveByLumi() { return true; }
+  // The following EDM methods are listed (as much as possible) in the order
+  // that edm calls them in.
 
-  // framework calls in the order of invocation
-  DQMEDAnalyzer() {
-    // for whatever reason we need the explicit `template` keyword here.
-    runToken_ = this->template produces<DQMToken, edm::Transition::EndRun>("DQMGenerationRecoRun");
-    lumiToken_ = this->template produces<DQMToken, edm::Transition::EndLuminosityBlock>("DQMGenerationRecoLumi");
+  static std::unique_ptr<dqm::reco::DQMEDAnalyzerGlobalCache> initializeGlobalCache(edm::ParameterSet const&) {
+    return std::make_unique<dqm::reco::DQMEDAnalyzerGlobalCache>();
   }
 
-  void beginRun(edm::Run const& run, edm::EventSetup const& setup) final {
+  DQMEDAnalyzer() {
+    lumiToken_ = produces<DQMToken, edm::Transition::EndLuminosityBlock>("DQMGenerationRecoLumi");
+    runToken_ = produces<DQMToken, edm::Transition::EndRun>("DQMGenerationRecoRun");
+  }
+
+  // TODO: this is overridden in subsystem code, make sure that is safe.
+  virtual void beginJob(){};
+
+  void beginStream(edm::StreamID id) {
+    dqmstore_ = edm::Service<DQMStore>().operator->();
+
+    auto lock = std::scoped_lock(globalCache()->lock_);
+    if (globalCache()->runToken_.isUninitialized()) {
+      globalCache()->lumiToken_ = lumiToken_;
+      globalCache()->runToken_ = runToken_;
+      globalCache()->master_ = dqmstore_;
+    }
+  }
+
+  void beginRun(edm::Run const& run, edm::EventSetup const& setup) {
     dqmBeginRun(run, setup);
-    edm::Service<DQMStore>()->bookTransaction(
+    // Booking can happen while another stream is already filling. As long as
+    // the booking code is sane, this is safe and correct; however, it would be
+    // cleaner to avoid re-configuring existing MEs.
+    // TODO: implement a way to prevent re-configuring MEs, by having users
+    // pass in a macro that only gets called when a ME is newly booked.
+    // TODO: what about re-booking semantics?
+    // TODO: need to thread-in module IDs again, or use local DQMStores.
+    dqmstore_->bookTransaction(
         [this, &run, &setup](DQMStore::IBooker& booker) {
           booker.cd();
           this->bookHistograms(booker, run, setup);
         },
         run.run(),
         this->moduleDescription().id(),
-        this->getCanSaveByLumi());
+        /* canSaveByLumi */ true);
   }
 
-  void beginLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& setup) final {
+  void beginLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& setup) {
+    dqmstore_->enterLumi(lumi.run(), lumi.luminosityBlock());
     dqmBeginLuminosityBlock(lumi, setup);
   }
 
-  void accumulate(edm::Event const& event, edm::EventSetup const& setup) final { analyze(event, setup); }
+  void accumulate(edm::Event const& ev, edm::EventSetup const& es) { analyze(ev, es); }
 
-  void endLuminosityBlockProduce(edm::LuminosityBlock& lumi, edm::EventSetup const& setup) final {
-    dqmEndLuminosityBlock(lumi, setup);
-    edm::Service<DQMStore>()->cloneLumiHistograms(lumi.run(), lumi.luminosityBlock(), this->moduleDescription().id());
-    lumi.emplace(lumiToken_);
+  void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&){};
+
+  static void globalEndLuminosityBlockProduce(edm::LuminosityBlock& lumi,
+                                              edm::EventSetup const& setup,
+                                              LuminosityBlockContext const* context) {
+    context->global()->master_->toProduct(lumi.run(), lumi.luminosityBlock());
+    lumi.emplace<DQMToken>(context->global()->lumiToken_);
   }
 
-  // Subsystems could safely override this, but any changes to MEs would not be
-  // noticeable since the product was made already.
-  void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) final{};
+  void endRun(edm::Run const& run, edm::EventSetup const& setup){};
 
-  void endRunProduce(edm::Run& run, edm::EventSetup const& setup) final {
-    dqmEndRun(run, setup);
-    edm::Service<DQMStore>()->cloneRunHistograms(run.run(), this->moduleDescription().id());
-    run.emplace<DQMToken>(runToken_);
+  static void globalEndRunProduce(edm::Run& run, edm::EventSetup const& setup, RunContext const* context) {
+    context->global()->master_->toProduct(run.run(), 0);
+    run.emplace<DQMToken>(context->global()->runToken_);
   }
 
-  // Subsystems could safely override this, but any changes to MEs would not be
-  // noticeable since the product was made already.
-  void endRun(edm::Run const&, edm::EventSetup const&) final{};
+  static void globalEndJob(dqm::reco::DQMEDAnalyzerGlobalCache*){};
 
-  // methods to be implemented by the user, in order of invocation
-  virtual void dqmBeginRun(edm::Run const&, edm::EventSetup const&) {}
-  virtual void bookHistograms(DQMStore::IBooker&, edm::Run const&, edm::EventSetup const&) = 0;
-  virtual void dqmBeginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) {}
-  virtual void analyze(edm::Event const&, edm::EventSetup const&) {}
-  virtual void dqmEndLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) {}
-  virtual void dqmEndRun(edm::Run const&, edm::EventSetup const&) {}
-
-protected:
-  edm::EDPutTokenT<DQMToken> runToken_;
-  edm::EDPutTokenT<DQMToken> lumiToken_;
+  // Methods to be implemented by the users
+  virtual void bookHistograms(DQMStore::IBooker& i, edm::Run const&, edm::EventSetup const&) = 0;
+  virtual void dqmBeginRun(edm::Run const& run, edm::EventSetup const& setup){};
+  virtual void dqmBeginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&){};
+  virtual void analyze(edm::Event const&, edm::EventSetup const&){};
+  // void endJob() final; // TODO: implemented in a few palces, not sure if ever called.
 };
 
 #endif  // DQMServices_Core_DQMEDAnalyzer_h
