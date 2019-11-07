@@ -28,6 +28,7 @@
 #include "DataFormats/FEDRawData/interface/FEDNumbering.h"
 
 #include "DQMServices/Core/interface/DQMStore.h"
+#include "DataFormats/Histograms/interface/DQMToken.h" 
 
 #include "DQM/SiStripCommon/interface/SiStripFolderOrganizer.h"
 #include "DQM/SiStripMonitorClient/interface/SiStripActionExecutor.h"
@@ -64,6 +65,8 @@ SiStripOfflineDQM::SiStripOfflineDQM(edm::ParameterSet const& pSet)
     tkinfoTree_ = edm::Service<TFileService> {}
     ->make<TTree>("TkDetIdInfo", "");
   }
+  consumes<DQMToken, edm::InRun>(edm::InputTag("siStripQTester"));
+  consumes<DQMToken, edm::InLumi>(edm::InputTag("siStripQTester"));
 }
 
 void SiStripOfflineDQM::beginJob() {
