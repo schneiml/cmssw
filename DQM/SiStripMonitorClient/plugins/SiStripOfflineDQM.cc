@@ -107,9 +107,7 @@ void SiStripOfflineDQM::beginRun(edm::Run const& run, edm::EventSetup const& eSe
   }
 }
 
-void SiStripOfflineDQM::analyze(edm::Event const&, edm::EventSetup const&) {}
-
-void SiStripOfflineDQM::endLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& iSetup) {
+void SiStripOfflineDQM::dqmEndLuminosityBlock(DQMStore::IBooker&, DQMStore::IGetter&, edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& iSetup) {
   edm::LogInfo("EndLumiBlock") << "SiStripOfflineDQM::endLuminosityBlock";
   if (trackerFEDsFound_) {
     if (globalStatusFilling_ > 0) {
@@ -119,7 +117,7 @@ void SiStripOfflineDQM::endLuminosityBlock(edm::LuminosityBlock const& lumiSeg, 
   }
 }
 
-void SiStripOfflineDQM::endRun(edm::Run const& run, edm::EventSetup const& eSetup) {
+void SiStripOfflineDQM::dqmEndRun(DQMStore::IBooker&, DQMStore::IGetter&, edm::Run const& run, edm::EventSetup const& eSetup) {
   edm::LogInfo("EndOfRun") << "SiStripOfflineDQM::endRun";
 
   // Access Cabling
@@ -165,7 +163,7 @@ void SiStripOfflineDQM::endRun(edm::Run const& run, edm::EventSetup const& eSetu
   }
 }
 
-void SiStripOfflineDQM::endJob() {
+void SiStripOfflineDQM::dqmEndJob(DQMStore::IBooker&, DQMStore::IGetter&) {
   edm::LogInfo("EndOfJob") << "SiStripOfflineDQM::endJob";
   if (usedWithEDMtoMEConverter_)
     return;

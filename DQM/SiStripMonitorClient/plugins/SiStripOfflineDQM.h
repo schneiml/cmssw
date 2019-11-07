@@ -20,40 +20,34 @@
 //         Created:  Wed Oct 5 16:47:14 CET 2006
 //
 
-#include <string>
 
+#include "DQMServices/Core/interface/DQMEDHarvester.h"
 #include "DQM/SiStripMonitorClient/interface/SiStripActionExecutor.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
-#include "FWCore/Framework/interface/ESHandle.h"
-#include "FWCore/Framework/interface/EventSetup.h"
-#include "FWCore/Framework/interface/LuminosityBlock.h"
-#include "FWCore/Framework/interface/Run.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "DQMServices/Core/interface/DQMStore.h"
 
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
+#include <string>
 #include <map>
 #include <TTree.h>
 
 class SiStripDetCabling;
 
-class SiStripOfflineDQM : public edm::EDAnalyzer {
+// TODO: this module does many things that are varying degrees of "illegal".
+// It is a legacy module; the fact that it is based on DQMEDHarvester does not 
+// change that. It uses the DQMEDHarvester base clase only to get approximately
+// sane order-of-execution relative to other modules (QualityTester).
+class SiStripOfflineDQM : public DQMEDHarvester {
 public:
-  typedef dqm::harvesting::MonitorElement MonitorElement;
-  typedef dqm::harvesting::DQMStore DQMStore;
-
   SiStripOfflineDQM(edm::ParameterSet const& ps);
 
 private:
   void beginJob() override;
   void beginRun(edm::Run const& run, edm::EventSetup const& eSetup) override;
-  void analyze(edm::Event const& e, edm::EventSetup const& eSetup) override;
-  void endLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& iSetup) override;
-  void endRun(edm::Run const& run, edm::EventSetup const& eSetup) override;
-  void endJob() override;
+  void dqmEndLuminosityBlock(DQMStore::IBooker& , DQMStore::IGetter&, edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& iSetup) override;
+  void dqmEndRun(DQMStore::IBooker& , DQMStore::IGetter&, edm::Run const& run, edm::EventSetup const& eSetup) override;
+  void dqmEndJob(DQMStore::IBooker& , DQMStore::IGetter&) override;
 
   void checkTrackerFEDs(edm::Event const& e);
   bool openInputFile(DQMStore& dqm_store);

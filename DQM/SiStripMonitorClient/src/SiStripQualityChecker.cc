@@ -405,6 +405,7 @@ void SiStripQualityChecker::getModuleStatus(DQMStore& dqm_store,
     if (qreports.empty())
       continue;
     std::string name = me->getName();
+    std::cout << "+++ got " << qreports.size() << " qreports on " << name << "\n";
     std::vector<DQMChannel> bad_channels_me;
     if (me->kind() == MonitorElement::Kind::TPROFILE) {
       bad_channels_me = qreports[0]->getBadChannels();
