@@ -40,7 +40,6 @@ namespace dqmstorepb {
   class ROOTFilePB_Histo;
 }  // namespace dqmstorepb
 
-class QCriterion;
 class TFile;
 class TBufferFile;
 class TObject;
@@ -245,12 +244,6 @@ namespace dqm::dqmstoreimpl {
       template <typename... Args>
       std::vector<MonitorElement*> getContents(Args&&... args) {
         return owner_->getContents(std::forward<Args>(args)...);
-      }
-
-      // for the supported syntaxes, see the declarations of DQMStore::removeElement
-      template <typename... Args>
-      void removeElement(Args&&... args) {
-        return owner_->removeElement(std::forward<Args>(args)...);
       }
 
       std::vector<MonitorElement*> getAllContents(std::string const& path, uint32_t runNumber = 0, uint32_t lumi = 0);
@@ -506,17 +499,6 @@ namespace dqm::dqmstoreimpl {
     std::vector<MonitorElement*> getContents(std::string const& path) const;
     void getContents(std::vector<std::string>& into, bool showContents = true) const;
 
-    // ---------------------- softReset methods -------------------------------
-    void softReset(MonitorElement* me);
-    void disableSoftReset(MonitorElement* me);
-
-    // ---------------------- Public deleting ---------------------------------
-    void rmdir(std::string const& fullpath);
-    void removeContents();
-    void removeContents(std::string const& dir);
-    void removeElement(std::string const& name);
-    void removeElement(std::string const& dir, std::string const& name, bool warning = true);
-
     // ------------------------------------------------------------------------
     // ---------------------- public I/O --------------------------------------
     void save(std::string const& filename,
@@ -545,16 +527,6 @@ namespace dqm::dqmstoreimpl {
 
     // ---------------------- Public check options -----------------------------
     bool isCollate() const;
-
-    // -------------------------------------------------------------------------
-    // ---------------------- Quality Test methods -----------------------------
-    QCriterion* getQCriterion(std::string const& qtname) const;
-    QCriterion* createQTest(std::string const& algoname, std::string const& qtname);
-    void useQTest(std::string const& dir, std::string const& qtname);
-    int useQTestByMatch(std::string const& pattern, std::string const& qtname);
-    void runQTests();
-    int getStatus(std::string const& path = "") const;
-    void scaleElements();
 
   private:
     // ---------------- Navigation -----------------------
@@ -651,18 +623,11 @@ namespace dqm::dqmstoreimpl {
     static void collateProfile(MonitorElement* me, TProfile* h, unsigned verbose);
     static void collateProfile2D(MonitorElement* me, TProfile2D* h, unsigned verbose);
 
-    // --- Operations on MEs that are normally reset at end of monitoring cycle ---
-    void setAccumulate(MonitorElement* me, bool flag);
-
     void print_trace(std::string const& dir, std::string const& name);
 
     //-------------------------------------------------------------------------------
     //-------------------------------------------------------------------------------
-    using QTestSpec = std::pair<fastmatch*, QCriterion*>;
-    using QTestSpecs = std::list<QTestSpec>;
     using MEMap = std::set<MonitorElement>;
-    using QCMap = std::map<std::string, QCriterion*>;
-    using QAMap = std::map<std::string, QCriterion* (*)(std::string const&)>;
 
     // ------------------------ private I/O helpers ------------------------------
     void saveMonitorElementToPB(MonitorElement const& me, dqmstorepb::ROOTFilePB& file);
@@ -703,10 +668,6 @@ namespace dqm::dqmstoreimpl {
     std::string pwd_{};
     MEMap data_;
     std::set<std::string> dirs_;
-
-    QCMap qtests_;
-    QAMap qalgos_;
-    QTestSpecs qtestspecs_;
 
     std::mutex book_mutex_;
 
