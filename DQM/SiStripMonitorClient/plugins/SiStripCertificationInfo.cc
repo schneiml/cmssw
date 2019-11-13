@@ -15,6 +15,8 @@
 #include "DataFormats/TrackerCommon/interface/TrackerTopology.h"
 #include "Geometry/Records/interface/TrackerTopologyRcd.h"
 
+#include "DataFormats/Histograms/interface/DQMToken.h"
+
 //Run Info
 #include "CondFormats/DataRecord/interface/RunSummaryRcd.h"
 #include "CondFormats/RunInfo/interface/RunSummary.h"
@@ -27,7 +29,14 @@
 #include <sstream>
 #include <cmath>
 
-SiStripCertificationInfo::SiStripCertificationInfo(edm::ParameterSet const&) {}
+SiStripCertificationInfo::SiStripCertificationInfo(edm::ParameterSet const&) {
+  // TODO: this is a "fake" dependence. Actually, this module does not depend
+  // on anything in the run (not even in the DQMStore at endRun), but instead
+  // this is to manipulate the state in EDM in a way that this module runs
+  // after siStripOfflineAnalyser in *endJob*. This is undefined behaviour,
+  // but relying on endJob transitions was *always* undefined behaviour.
+  consumes<DQMToken, edm::InRun>(edm::InputTag("", "DQMGenerationSiStripAnalyserRun"));
+}
 
 void SiStripCertificationInfo::beginRun(edm::Run const& run, edm::EventSetup const& eSetup) {
   edm::LogInfo("SiStripCertificationInfo") << "SiStripCertificationInfo:: Begining of Run";

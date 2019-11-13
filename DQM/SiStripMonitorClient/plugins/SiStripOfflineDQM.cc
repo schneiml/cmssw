@@ -71,6 +71,7 @@ SiStripOfflineDQM::SiStripOfflineDQM(edm::ParameterSet const& pSet)
   consumes<DQMToken, edm::InRun>(edm::InputTag("siStripQTester", "DQMGenerationQTestRun"));
   consumes<DQMToken, edm::InLumi>(edm::InputTag("siStripQTester", "DQMGenerationQTestLumi"));
   usesResource("DQMStore");
+  produces<DQMToken, edm::InRun>("DQMGenerationSiStripAnalyserRun");
 }
 
 void SiStripOfflineDQM::beginJob() {
@@ -114,7 +115,7 @@ void SiStripOfflineDQM::beginRun(edm::Run const& run, edm::EventSetup const& eSe
   }
 }
 
-void SiStripOfflineDQM::analyze(edm::Event const&, edm::EventSetup const&) {}
+void SiStripOfflineDQM::produce(edm::Event&, edm::EventSetup const&) {}
 
 void SiStripOfflineDQM::endLuminosityBlock(edm::LuminosityBlock const& lumiSeg, edm::EventSetup const& iSetup) {
   edm::LogInfo("EndLumiBlock") << "SiStripOfflineDQM::endLuminosityBlock";
