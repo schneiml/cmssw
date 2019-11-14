@@ -68,7 +68,6 @@ private:
   std::string filterName_;
   int version_;
   bool runIsComplete_;
-  bool enableMultiThread_;
   bool fakeFilterUnitMode_;
 
   int saveByLumiSection_;
