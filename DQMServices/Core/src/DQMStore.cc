@@ -1,7 +1,6 @@
 #include "DQMServices/Core/interface/Standalone.h"
 #include "DQMServices/Core/interface/DQMStore.h"
 #include "DQMServices/Core/interface/QReport.h"
-#include "DQMServices/Core/interface/QTest.h"
 #include "DQMServices/Core/src/ROOTFilePB.pb.h"
 #include "DQMServices/Core/src/DQMError.h"
 #include "classlib/utils/RegexpMatch.h"
@@ -107,16 +106,6 @@ namespace dqm::dqmstoreimpl {
     if (!path.empty())
       path += '/';
     path += name;
-  }
-
-  template <class T>
-  QCriterion* makeQCriterion(std::string const& qtname) {
-    return new T{qtname};
-  }
-
-  template <class T>
-  void initQCriterion(std::map<std::string, QCriterion* (*)(std::string const&)>& m) {
-    m[T::getAlgoName()] = &makeQCriterion<T>;
   }
 
   /////////////////////////////////////////////////////////////
@@ -481,13 +470,7 @@ namespace dqm::dqmstoreimpl {
 
   DQMStore::DQMStore(edm::ParameterSet const& pset) { initializeFrom(pset); }
 
-  DQMStore::~DQMStore() {
-    for (auto& qtest : qtests_)
-      delete qtest.second;
-
-    for (auto& qtestspec : qtestspecs_)
-      delete qtestspec.first;
-  }
+  DQMStore::~DQMStore() {}
 
   void DQMStore::initializeFrom(edm::ParameterSet const& pset) {
     makeDirectory("");
@@ -523,17 +506,6 @@ namespace dqm::dqmstoreimpl {
       std::cout << "DQMStore: using reference file '" << ref << "'\n";
       readFile(ref, true, "", s_referenceDirName, StripRunDirs, false);
     }
-
-    initQCriterion<ContentsXRange>(qalgos_);
-    initQCriterion<ContentsYRange>(qalgos_);
-    initQCriterion<MeanWithinExpected>(qalgos_);
-    initQCriterion<DeadChannel>(qalgos_);
-    initQCriterion<NoisyChannel>(qalgos_);
-    initQCriterion<ContentSigma>(qalgos_);
-    initQCriterion<ContentsWithinExpected>(qalgos_);
-    initQCriterion<CompareToMedian>(qalgos_);
-    initQCriterion<CompareLastFilledBin>(qalgos_);
-    initQCriterion<CheckVariance>(qalgos_);
 
     scaleFlag_ = pset.getUntrackedParameter<double>("ScalingFlag", 0.0);
     if (verbose_ > 0)
@@ -1000,12 +972,6 @@ namespace dqm::dqmstoreimpl {
       }
       me = (MonitorElement*)const_cast<MonitorElement&>(*data_.insert(std::move(proto)).first)
                .initialise((MonitorElement::Kind)kind, h);
-
-      // Initialise quality test information.
-      for (auto const& q : qtestspecs_) {
-        if (q.first->match(path))
-          me->addQReport(q.second);
-      }
 
       // If we just booked a (plain) MonitorElement, and there is a reference
       // MonitorElement with the same name, link the two together.
@@ -2048,7 +2014,11 @@ namespace dqm::dqmstoreimpl {
             return false;
           }
 
-          me->addQReport(qv, /* FIXME: getQTest(qv.qtname)? */ nullptr);
+          QReport* qr_ref;
+          DQMNet::QValue* qv_ref;
+          me->getQReport(true, qv.qtname, qr_ref, qv_ref);
+          *qv_ref = qv;
+          me->update();
         }
       } else {
         std::cout << "*** DQMStore: WARNING: cannot extract object '" << obj->GetName() << "' of type '"
@@ -2808,198 +2778,6 @@ namespace dqm::dqmstoreimpl {
   //////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////
-  /// delete directory and all contents;
-  /// delete directory (all contents + subfolders);
-  void DQMStore::rmdir(std::string const& path) {
-    std::string clean;
-    std::string const* cleaned = nullptr;
-    cleanTrailingSlashes(path, clean, cleaned);
-    MonitorElement proto(cleaned, std::string());
-
-    auto e = data_.end();
-    auto i = data_.lower_bound(proto);
-    while (i != e && isSubdirectory(*cleaned, *i->data_.dirname))
-      data_.erase(i++);
-
-    auto de = dirs_.end();
-    auto di = dirs_.lower_bound(*cleaned);
-    while (di != de && isSubdirectory(*cleaned, *di))
-      dirs_.erase(di++);
-  }
-
-  /// remove all monitoring elements from directory;
-  void DQMStore::removeContents(std::string const& dir) {
-    MonitorElement proto(&dir, std::string());
-    auto e = data_.end();
-    auto i = data_.lower_bound(proto);
-    while (i != e && isSubdirectory(dir, *i->data_.dirname))
-      if (dir == *i->data_.dirname)
-        data_.erase(i++);
-      else
-        ++i;
-  }
-
-  /// erase all monitoring elements in current directory (not including subfolders);
-  void DQMStore::removeContents() { removeContents(pwd_); }
-
-  /// erase monitoring element in current directory
-  /// (opposite of book1D,2D,etc. action);
-  void DQMStore::removeElement(std::string const& name) { removeElement(pwd_, name); }
-
-  /// remove monitoring element from directory;
-  /// if warning = true, print message if element does not exist
-  void DQMStore::removeElement(std::string const& dir, std::string const& name, bool const warning /* = true */) {
-    MonitorElement proto(&dir, name);
-    auto pos = data_.find(proto);
-    if (pos != data_.end())
-      data_.erase(pos);
-    else if (warning) {
-      std::cout << "DQMStore: WARNING: attempt to remove non-existent"
-                << " monitor element '" << name << "' in '" << dir << "'\n";
-    }
-  }
-
-  //////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////
-  /// get QCriterion corresponding to <qtname>
-  /// (null pointer if QCriterion does not exist)
-  QCriterion* DQMStore::getQCriterion(std::string const& qtname) const {
-    auto i = qtests_.find(qtname);
-    auto e = qtests_.end();
-    return (i == e ? nullptr : i->second);
-  }
-
-  /// create quality test with unique name <qtname> (analogous to ME name);
-  /// quality test can then be attached to ME with useQTest method
-  /// (<algo_name> must match one of known algorithms)
-  QCriterion* DQMStore::createQTest(std::string const& algoname, std::string const& qtname) {
-    if (qtests_.count(qtname))
-      raiseDQMError("DQMStore", "Attempt to create duplicate quality test '%s'", qtname.c_str());
-
-    auto i = qalgos_.find(algoname);
-    if (i == qalgos_.end())
-      raiseDQMError("DQMStore",
-                    "Cannot create a quality test using unknown"
-                    " algorithm '%s'",
-                    algoname.c_str());
-
-    QCriterion* qc = i->second(qtname);
-    qc->setVerbose(verboseQT_);
-
-    qtests_[qtname] = qc;
-    return qc;
-  }
-
-  /// attach quality test <qtname> to directory contents
-  /// (need exact pathname without wildcards, e.g. A/B/C);
-  void DQMStore::useQTest(std::string const& dir, std::string const& qtname) {
-    // Clean the path
-    std::string clean;
-    std::string const* cleaned = nullptr;
-    cleanTrailingSlashes(dir, clean, cleaned);
-
-    // Validate the path.
-    if (cleaned->find_first_not_of(s_safe) != std::string::npos)
-      raiseDQMError("DQMStore",
-                    "Monitor element path name '%s'"
-                    " uses unacceptable characters",
-                    cleaned->c_str());
-
-    // Redirect to the pattern match version.
-    useQTestByMatch(*cleaned + "/*", qtname);
-  }
-
-  /// attach quality test <qc> to monitor elements matching <pattern>.
-  int DQMStore::useQTestByMatch(std::string const& pattern, std::string const& qtname) {
-    QCriterion* qc = getQCriterion(qtname);
-    if (!qc)
-      raiseDQMError("DQMStore", "Cannot apply non-existent quality test '%s'", qtname.c_str());
-
-    auto* fm = new fastmatch(pattern);
-
-    // Record the test for future reference.
-    QTestSpec qts(fm, qc);
-    qtestspecs_.push_back(qts);
-
-    // Apply the quality test.
-    std::string path;
-    int cases = 0;
-    for (auto const& me : data_) {
-      path.clear();
-      mergePath(path, *me.data_.dirname, me.data_.objname);
-      if (fm->match(path)) {
-        ++cases;
-        const_cast<MonitorElement&>(me).addQReport(qts.second);
-      }
-    }
-
-    //return the number of matched cases
-    return cases;
-  }
-  /// run quality tests (also finds updated contents in last monitoring cycle,
-  /// including newly added content)
-  void DQMStore::runQTests() {
-    if (verbose_ > 0)
-      std::cout << "DQMStore: running runQTests() with reset = " << (reset_ ? "true" : "false") << std::endl;
-
-    // Apply quality tests to each monitor element, skipping references.
-    for (auto const& me : data_)
-      if (!isSubdirectory(s_referenceDirName, *me.data_.dirname))
-        const_cast<MonitorElement&>(me).runQTests();
-
-    reset_ = false;
-  }
-
-  /// get "global" folder <path> status (one of:STATUS_OK, WARNING, ERROR, OTHER);
-  /// returns most sever error, where ERROR > WARNING > OTHER > STATUS_OK;
-  /// see Core/interface/QTestStatus.h for details on "OTHER"
-  int DQMStore::getStatus(std::string const& path /* = "" */) const {
-    std::string clean;
-    std::string const* cleaned = nullptr;
-    cleanTrailingSlashes(path, clean, cleaned);
-
-    int status = dqm::qstatus::STATUS_OK;
-    for (auto const& me : data_) {
-      if (!cleaned->empty() && !isSubdirectory(*cleaned, *me.data_.dirname))
-        continue;
-
-      if (me.hasError())
-        return dqm::qstatus::ERROR;
-      else if (me.hasWarning())
-        status = dqm::qstatus::WARNING;
-      else if (status < dqm::qstatus::WARNING && me.hasOtherReport())
-        status = dqm::qstatus::OTHER;
-    }
-    return status;
-  }
-
-  //////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////
-  /// reset contents (does not erase contents permanently)
-  /// (makes copy of current contents; will be subtracted from future contents)
-  void DQMStore::softReset(MonitorElement* me) {
-    if (me)
-      me->softReset();
-  }
-
-  // reverts action of softReset
-  void DQMStore::disableSoftReset(MonitorElement* me) {
-    if (me)
-      me->disableSoftReset();
-  }
-
-  /// if true, will accumulate ME contents (over many periods)
-  /// until method is called with flag = false again
-  void DQMStore::setAccumulate(MonitorElement* me, bool const flag) {
-    if (me)
-      me->setAccumulate(flag);
-  }
-
-  //////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////
   void DQMStore::showDirStructure() const {
     std::vector<std::string> contents;
     getContents(contents);
@@ -3026,75 +2804,4 @@ namespace dqm::dqmstoreimpl {
     return me && isSubdirectory(s_collateDirName, *me->data_.dirname);
   }
 
-  //////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////
-  /** Invoke this method after flushing all recently changed monitoring.
-    Clears updated flag on all MEs and calls their Reset() method. */
-  void DQMStore::scaleElements() {
-    if (scaleFlag_ == 0.0)
-      return;
-    if (verbose_ > 0)
-      std::cout << " =========== "
-                << " ScaleFlag " << scaleFlag_ << std::endl;
-    double factor = scaleFlag_;
-    int events = 1;
-    if (dirExists("Info/EventInfo")) {
-      if (scaleFlag_ == -1.0) {
-        MonitorElement* scale_me = get("Info/EventInfo/ScaleFactor");
-        if (scale_me && scale_me->kind() == MonitorElement::Kind::REAL)
-          factor = scale_me->getFloatValue();
-      }
-      MonitorElement* event_me = get("Info/EventInfo/processedEvents");
-      if (event_me && event_me->kind() == MonitorElement::Kind::INT)
-        events = event_me->getIntValue();
-    }
-    factor = factor / (events * 1.0);
-
-    for (auto const& m : data_) {
-      auto& me = const_cast<MonitorElement&>(m);
-      switch (me.kind()) {
-        case MonitorElement::Kind::TH1F: {
-          me.getTH1F()->Scale(factor);
-          break;
-        }
-        case MonitorElement::Kind::TH1S: {
-          me.getTH1S()->Scale(factor);
-          break;
-        }
-        case MonitorElement::Kind::TH1D: {
-          me.getTH1D()->Scale(factor);
-          break;
-        }
-        case MonitorElement::Kind::TH2F: {
-          me.getTH2F()->Scale(factor);
-          break;
-        }
-        case MonitorElement::Kind::TH2S: {
-          me.getTH2S()->Scale(factor);
-          break;
-        }
-        case MonitorElement::Kind::TH2D: {
-          me.getTH2D()->Scale(factor);
-          break;
-        }
-        case MonitorElement::Kind::TH3F: {
-          me.getTH3F()->Scale(factor);
-          break;
-        }
-        case MonitorElement::Kind::TPROFILE: {
-          me.getTProfile()->Scale(factor);
-          break;
-        }
-        case MonitorElement::Kind::TPROFILE2D: {
-          me.getTProfile2D()->Scale(factor);
-          break;
-        }
-        default:
-          if (verbose_ > 0)
-            std::cout << " The DQM object '" << me.getFullname() << "' is not scalable object " << std::endl;
-          continue;
-      }
-    }
-  }
 }  // namespace dqm::dqmstoreimpl
