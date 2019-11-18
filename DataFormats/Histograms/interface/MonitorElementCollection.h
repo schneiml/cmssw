@@ -53,7 +53,7 @@ struct MonitorElementData {
   // another layer of wrapping. The APIs are used in some places in subsystem
   // code, and could be changed, but not removed.
   class QReport {
-    public:
+  public:
     struct QValue {
       int code;
       float qtresult;
@@ -99,18 +99,20 @@ struct MonitorElementData {
     float getQTresult() const { return qvalue_->qtresult; }
 
     /// get message attached to test
-    const std::string &getMessage() const { return qvalue_->message; }
+    const std::string& getMessage() const { return qvalue_->message; }
 
     /// get name of quality test
-    const std::string &getQRName() const { return qvalue_->qtname; }
+    const std::string& getQRName() const { return qvalue_->qtname; }
 
     /// get vector of channels that failed test
     /// (not relevant for all quality tests!)
-    const std::vector<DQMChannel> &getBadChannels() const { return badChannels_; }
+    const std::vector<DQMChannel>& getBadChannels() const { return badChannels_; }
+    void setBadChannels(std::vector<DQMChannel> badChannels) { badChannels_ = badChannels; }
 
-    QReport(DQMNet::QValue *value) : qvalue_(value) {}
+    QReport(QValue* value) : qvalue_(value) {}
+
   private:
-    DQMNet::QValue *qvalue_;               //< Pointer to the actual data.
+    QValue* qvalue_;                       //< Pointer to the actual data.
     std::vector<DQMChannel> badChannels_;  //< Bad channels from QCriterion.
   };
 
