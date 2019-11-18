@@ -511,7 +511,7 @@ void DQMFileSaver::beginJob() {
   nrun_ = nlumi_ = irun_ = 0;
 
   // Determine if we are running multithreading asking to the DQMStore. Not to be moved in the ctor
-  enableMultiThread_ = false; //dbe_->enableMultiThread_;
+  enableMultiThread_ = false;  //dbe_->enableMultiThread_;
 
   if ((convention_ == FilterUnit) && (!fakeFilterUnitMode_)) {
     transferDestination_ = edm::Service<evf::EvFDaqDirector>()->getStreamDestinations(stream_label_);
