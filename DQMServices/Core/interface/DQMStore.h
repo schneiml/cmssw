@@ -40,7 +40,6 @@ namespace dqmstorepb {
   class ROOTFilePB_Histo;
 }  // namespace dqmstorepb
 
-class QCriterion;
 class TFile;
 class TBufferFile;
 class TObject;
@@ -71,29 +70,6 @@ namespace dqm::dqmstoreimpl {
   // dqmstoreimpl is a different namespace from dqm::impl, so we can globally
   // change the ME subtype here
   typedef dqm::legacy::MonitorElement MonitorElement;
-
-  /** Implements RegEx patterns which occur often in a high-performant
-    mattern. For all other expressions, the full RegEx engine is used.
-    Note: this class can only be used for lat::Regexp::Wildcard-like
-    patterns.  */
-  class fastmatch {
-    enum MatchingHeuristicEnum { UseFull, OneStarStart, OneStarEnd, TwoStar };
-
-  public:
-    fastmatch(std::string fastString);
-
-    bool match(std::string const& s) const;
-
-  private:
-    // checks if two strings are equal, starting at the back of the strings
-    bool compare_strings_reverse(std::string const& pattern, std::string const& input) const;
-    // checks if two strings are equal, starting at the front of the strings
-    bool compare_strings(std::string const& pattern, std::string const& input) const;
-
-    std::unique_ptr<lat::Regexp> regexp_{nullptr};
-    std::string fastString_;
-    MatchingHeuristicEnum matching_;
-  };
 
   class DQMStore {
   public:
@@ -247,12 +223,6 @@ namespace dqm::dqmstoreimpl {
         return owner_->getContents(std::forward<Args>(args)...);
       }
 
-      // for the supported syntaxes, see the declarations of DQMStore::removeElement
-      template <typename... Args>
-      void removeElement(Args&&... args) {
-        return owner_->removeElement(std::forward<Args>(args)...);
-      }
-
       std::vector<MonitorElement*> getAllContents(std::string const& path, uint32_t runNumber = 0, uint32_t lumi = 0);
       MonitorElement* get(std::string const& path);
 
@@ -306,35 +276,11 @@ namespace dqm::dqmstoreimpl {
       }
     }
 
-    // Similar function used to book "global" histograms via the
-    // dqm::reco::MonitorElement* interface.
-    template <typename iFunc>
-    void bookConcurrentTransaction(iFunc f, uint32_t run) {
-      std::lock_guard<std::mutex> guard(book_mutex_);
-      /* Set the run_ member only if enableMultiThread is enabled */
-      if (enableMultiThread_) {
-        run_ = run;
-        moduleId_ = 0;
-        canSaveByLumi_ = false;
-      }
-      IBooker booker(this);
-      f(booker);
-
-      /* Reset the run_ member only if enableMultiThread is enabled */
-      if (enableMultiThread_) {
-        run_ = 0;
-        moduleId_ = 0;
-        canSaveByLumi_ = false;
-      }
-    }
-
-    // Signature needed in the harvesting where the booking is done in
-    // the endJob. No handles to the run there. Two arguments ensure the
-    // capability of booking and getting. The method relies on the
-    // initialization of run, stream and module ID to 0. The mutex is
-    // not needed.
     template <typename iFunc>
     void meBookerGetter(iFunc f) {
+      // TODO: we can't lock here since sometimes people call this while in
+      // booking. Either needs these cases fixed or a recursive mutex.
+      //std::lock_guard<std::mutex> guard(book_mutex_);
       IBooker booker{this};
       IGetter getter{this};
       f(booker, getter);
@@ -506,17 +452,6 @@ namespace dqm::dqmstoreimpl {
     std::vector<MonitorElement*> getContents(std::string const& path) const;
     void getContents(std::vector<std::string>& into, bool showContents = true) const;
 
-    // ---------------------- softReset methods -------------------------------
-    void softReset(MonitorElement* me);
-    void disableSoftReset(MonitorElement* me);
-
-    // ---------------------- Public deleting ---------------------------------
-    void rmdir(std::string const& fullpath);
-    void removeContents();
-    void removeContents(std::string const& dir);
-    void removeElement(std::string const& name);
-    void removeElement(std::string const& dir, std::string const& name, bool warning = true);
-
     // ------------------------------------------------------------------------
     // ---------------------- public I/O --------------------------------------
     void save(std::string const& filename,
@@ -545,16 +480,6 @@ namespace dqm::dqmstoreimpl {
 
     // ---------------------- Public check options -----------------------------
     bool isCollate() const;
-
-    // -------------------------------------------------------------------------
-    // ---------------------- Quality Test methods -----------------------------
-    QCriterion* getQCriterion(std::string const& qtname) const;
-    QCriterion* createQTest(std::string const& algoname, std::string const& qtname);
-    void useQTest(std::string const& dir, std::string const& qtname);
-    int useQTestByMatch(std::string const& pattern, std::string const& qtname);
-    void runQTests();
-    int getStatus(std::string const& path = "") const;
-    void scaleElements();
 
   private:
     // ---------------- Navigation -----------------------
@@ -651,18 +576,11 @@ namespace dqm::dqmstoreimpl {
     static void collateProfile(MonitorElement* me, TProfile* h, unsigned verbose);
     static void collateProfile2D(MonitorElement* me, TProfile2D* h, unsigned verbose);
 
-    // --- Operations on MEs that are normally reset at end of monitoring cycle ---
-    void setAccumulate(MonitorElement* me, bool flag);
-
     void print_trace(std::string const& dir, std::string const& name);
 
     //-------------------------------------------------------------------------------
     //-------------------------------------------------------------------------------
-    using QTestSpec = std::pair<fastmatch*, QCriterion*>;
-    using QTestSpecs = std::list<QTestSpec>;
     using MEMap = std::set<MonitorElement>;
-    using QCMap = std::map<std::string, QCriterion*>;
-    using QAMap = std::map<std::string, QCriterion* (*)(std::string const&)>;
 
     // ------------------------ private I/O helpers ------------------------------
     void saveMonitorElementToPB(MonitorElement const& me, dqmstorepb::ROOTFilePB& file);
@@ -703,10 +621,6 @@ namespace dqm::dqmstoreimpl {
     std::string pwd_{};
     MEMap data_;
     std::set<std::string> dirs_;
-
-    QCMap qtests_;
-    QAMap qalgos_;
-    QTestSpecs qtestspecs_;
 
     std::mutex book_mutex_;
 
