@@ -38,10 +38,9 @@ public:
           booker.cd();
           this->bookHistograms(booker, run, setup);
         },
-        /* run */ 0,  // MEs booked here apply for all runs
         this->moduleDescription().id(),
         this->getCanSaveByLumi());
-    edm::Service<DQMStore>()->enterLumi(run.run(), 0, this->moduleDescription().id());
+    edm::Service<DQMStore>()->enterLumi(run.run(), /* lumi */ 0, this->moduleDescription().id());
   }
 
   void beginLuminosityBlock(edm::LuminosityBlock const& lumi, edm::EventSetup const& setup) final {
@@ -63,7 +62,7 @@ public:
 
   void endRunProduce(edm::Run& run, edm::EventSetup const& setup) final {
     dqmEndRun(run, setup);
-    edm::Service<DQMStore>()->leaveLumi(run.run(), 0, this->moduleDescription().id());
+    edm::Service<DQMStore>()->leaveLumi(run.run(), /* lumi */ 0, this->moduleDescription().id());
     run.emplace<DQMToken>(runToken_);
   }
 
