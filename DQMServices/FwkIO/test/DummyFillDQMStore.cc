@@ -127,10 +127,7 @@ public:
   virtual void dqmBeginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
   virtual void dqmEndLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
 
-
-
 private:
-
   // ----------member data ---------------------------
   edm::ParameterSet iConfig;
   std::vector<std::shared_ptr<FillerBase> > m_runFillers;
