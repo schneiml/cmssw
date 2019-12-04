@@ -84,6 +84,7 @@ public:
   static const std::map<std::string, unsigned int> PlotConfigNames;
 
 protected:
+  void dqmBeginRun(const edm::Run& run, const edm::EventSetup& iSetup) override;
   void bookHistograms(DQMStore::IBooker&, edm::Run const&, edm::EventSetup const&) override;
   void analyze(edm::Event const& e, edm::EventSetup const& eSetup) override;
   void endJob() override;

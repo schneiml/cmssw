@@ -29,7 +29,6 @@ public:
   ~SUSY_HLT_InclusiveHT() override;
 
 protected:
-  void dqmBeginRun(edm::Run const &, edm::EventSetup const &) override;
   void bookHistograms(DQMStore::IBooker &, edm::Run const &, edm::EventSetup const &) override;
   void analyze(edm::Event const &e, edm::EventSetup const &eSetup) override;
 
