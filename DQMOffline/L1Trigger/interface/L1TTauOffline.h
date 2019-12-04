@@ -84,11 +84,8 @@ public:
   static const std::map<std::string, unsigned int> PlotConfigNames;
 
 protected:
-  void dqmBeginRun(const edm::Run& run, const edm::EventSetup& iSetup) override;
-  /* void dqmBeginRun(edm::Run const &, edm::EventSetup const &) override; */
   void bookHistograms(DQMStore::IBooker&, edm::Run const&, edm::EventSetup const&) override;
   void analyze(edm::Event const& e, edm::EventSetup const& eSetup) override;
-  void dqmEndRun(edm::Run const& run, edm::EventSetup const& eSetup) override;
   void endJob() override;
 
   const reco::Vertex getPrimaryVertex(edm::Handle<reco::VertexCollection> const& vertex,
