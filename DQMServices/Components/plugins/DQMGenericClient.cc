@@ -1201,7 +1201,7 @@ void DQMGenericClient::findAllSubdirectories(DQMStore::IBooker& ibooker,
     if (pattern.Contains(nonPerlWildcard))
       pattern.ReplaceAll("*", ".*");
     TPRegexp regexp(pattern);
-    ibooker.cd(dir);
+    igetter.cd(dir);
     vector<string> foundDirs = igetter.getSubdirs();
     for (vector<string>::const_iterator iDir = foundDirs.begin(); iDir != foundDirs.end(); ++iDir) {
       TString dirName = iDir->substr(iDir->rfind('/') + 1, iDir->length());
@@ -1214,7 +1214,7 @@ void DQMGenericClient::findAllSubdirectories(DQMStore::IBooker& ibooker,
     //std::cout << "... it exists! Inserting it into the list ";
     myList->insert(dir);
     //std::cout << "... now list has size " << myList->size() << std::endl;
-    ibooker.cd(dir);
+    igetter.cd(dir);
     findAllSubdirectories(ibooker, igetter, dir, myList, "*");
   } else {
     //std::cout << "... DOES NOT EXIST!!! Skip bogus dir" << std::endl;

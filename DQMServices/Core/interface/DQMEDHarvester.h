@@ -113,6 +113,8 @@ public:
     //lumimegetter_.fillHandles(lumi, refs);
 
     dqmstore_->meBookerGetter([this, &lumi, &es](DQMStore::IBooker &b, DQMStore::IGetter &g) {
+      b.cd();
+      g.cd();
       this->dqmEndLuminosityBlock(b, g, lumi, es);
     });
 
@@ -122,8 +124,11 @@ public:
   void endLuminosityBlock(edm::LuminosityBlock const &, edm::EventSetup const &) final{};
 
   void endRunProduce(edm::Run &run, edm::EventSetup const &es) final {
-    dqmstore_->meBookerGetter(
-        [this, &run, &es](DQMStore::IBooker &b, DQMStore::IGetter &g) { this->dqmEndRun(b, g, run, es); });
+    dqmstore_->meBookerGetter([this, &run, &es](DQMStore::IBooker &b, DQMStore::IGetter &g) {
+      b.cd();
+      g.cd();
+      this->dqmEndRun(b, g, run, es);
+    });
 
     run.put(runToken_, std::make_unique<DQMToken>());
   }
@@ -131,7 +136,11 @@ public:
   void endRun(edm::Run const &, edm::EventSetup const &) override{};
 
   void endJob() final {
-    dqmstore_->meBookerGetter([this](DQMStore::IBooker &b, DQMStore::IGetter &g) { this->dqmEndJob(b, g); });
+    dqmstore_->meBookerGetter([this](DQMStore::IBooker &b, DQMStore::IGetter &g) {
+      b.cd();
+      g.cd();
+      this->dqmEndJob(b, g);
+    });
   };
 
   ~DQMEDHarvester() override = default;

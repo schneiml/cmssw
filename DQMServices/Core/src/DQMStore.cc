@@ -14,7 +14,14 @@ namespace dqm::implementation {
 
   std::string const& NavigatorBase::pwd() { return cwd_; }
   void NavigatorBase::cd() { setCurrentFolder(""); }
-  void NavigatorBase::cd(std::string const& dir) { setCurrentFolder(cwd_ + dir); }
+  void NavigatorBase::cd(std::string const& dir) { 
+    assert(dir != ".." || cwd_ != "");
+    if (dir.length() > 0 && dir[0] == '/') {
+      setCurrentFolder(dir);
+    } else {
+      setCurrentFolder(cwd_ + dir); 
+    }
+  }
   void NavigatorBase::goUp() { cd(".."); }
   void NavigatorBase::setCurrentFolder(std::string const& fullpath) {
     MonitorElementData::Path path;
@@ -527,6 +534,7 @@ namespace dqm::implementation {
   }
 
   std::vector<std::string> IGetter::getSubdirs() const {
+    TRACE(cwd_);
     // This is terribly inefficient, esp. if this method is then used to
     // recursively enumerate whatever getAllContents would return anyways.
     // But that is fine, any such code should just use getAllContents instead.

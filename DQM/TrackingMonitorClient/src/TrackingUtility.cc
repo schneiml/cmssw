@@ -188,7 +188,7 @@ void TrackingUtility::getMEValue(MonitorElement* me, std::string& val) {
 // -- go to a given Directory
 //
 bool TrackingUtility::goToDir(DQMStore::IBooker& ibooker, DQMStore::IGetter& igetter, std::string name) {
-  std::string currDir = ibooker.pwd();
+  std::string currDir = igetter.pwd();
   std::string dirName = currDir.substr(currDir.find_last_of("/") + 1);
   if (dirName.find(name) == 0) {
     return true;
@@ -201,9 +201,11 @@ bool TrackingUtility::goToDir(DQMStore::IBooker& ibooker, DQMStore::IGetter& ige
       continue;
     igetter.cd(fname);
     if (!goToDir(ibooker, igetter, name))
-      ibooker.goUp();
-    else
+      igetter.goUp();
+    else {
+      ibooker.cd(igetter.pwd());
       return true;
+    }
   }
   return false;
 }
