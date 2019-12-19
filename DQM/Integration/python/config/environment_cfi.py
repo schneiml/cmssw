@@ -23,17 +23,17 @@ dqmRunConfigDefaults = {
     'userarea': cms.PSet(
         type = cms.untracked.string("userarea"),
         collectorPort = cms.untracked.int32(9190),
-        collectorHost = cms.untracked.string('127.0.0.1'),
+        collectorHost = cms.untracked.string("127.0.0.1"),
     ),
     'playback': cms.PSet(
         type = cms.untracked.string("playback"),
         collectorPort = cms.untracked.int32(9090),
-        collectorHost = cms.untracked.string('dqm-integration.cms'),
+        collectorHost = cms.untracked.string("127.0.0.1"),
     ),
     'production': cms.PSet(
         type = cms.untracked.string("production"),
         collectorPort = cms.untracked.int32(9090),
-        collectorHost = cms.untracked.string('dqm-prod-local.cms'),
+        collectorHost = cms.untracked.string("127.0.0.1"),
     ),
 }
 

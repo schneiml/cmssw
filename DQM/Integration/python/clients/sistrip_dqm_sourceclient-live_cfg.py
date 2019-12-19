@@ -14,7 +14,7 @@ process.MessageLogger = cms.Service("MessageLogger",
     destinations = cms.untracked.vstring('cout')
 )
 
-live=True
+live=False
 # uncomment for running on lxplus
 #live=False
 offlineTesting=not live
@@ -636,3 +636,5 @@ if (process.runType.getRunType() == process.runType.hi_run):
 ### process customizations included here
 from DQM.Integration.config.online_customizations_cfi import *
 process = customise(process)
+
+process.DQMStore.trackME = cms.untracked.string("HitResiduals_TOB__Layer__5")
