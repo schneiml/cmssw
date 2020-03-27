@@ -201,6 +201,8 @@ private:
   void write(edm::EventForOutput const& e) override;
   void writeLuminosityBlock(edm::LuminosityBlockForOutput const&) override;
   void writeRun(edm::RunForOutput const&) override;
+  void realWriteRun(unsigned int runtoget);
+  void endJob() override;
   bool isFileOpen() const override;
   void openFile(edm::FileBlock const&) override;
   void reallyCloseFile() override;
@@ -226,6 +228,8 @@ private:
   std::string* m_fullNameBufferPtr;
   std::map<unsigned int, unsigned int> m_dqmKindToTypeIndex;
   TTree* m_indicesTree;
+
+  unsigned int m_saveAtEndJob;
 
   std::vector<edm::ProcessHistoryID> m_seenHistories;
   edm::ProcessHistoryRegistry m_processHistoryRegistry;
@@ -284,28 +288,12 @@ DQMRootOutputModule::DQMRootOutputModule(edm::ParameterSet const& pset)
       m_presentHistoryIndex(0),
       m_filterOnRun(pset.getUntrackedParameter<unsigned int>("filterOnRun")),
       m_fullNameBufferPtr(&m_fullNameBuffer),
-      m_indicesTree(nullptr) {}
-
-// DQMRootOutputModule::DQMRootOutputModule(const DQMRootOutputModule& rhs)
-// {
-//    // do actual copying here;
-// }
+      m_indicesTree(nullptr),
+      m_saveAtEndJob(pset.getUntrackedParameter<unsigned int>("saveAtEndJob")) {}
 
 void DQMRootOutputModule::beginJob() {}
 
 DQMRootOutputModule::~DQMRootOutputModule() {}
-
-//
-// assignment operators
-//
-// const DQMRootOutputModule& DQMRootOutputModule::operator=(const DQMRootOutputModule& rhs)
-// {
-//   //An exception safe implementation is
-//   DQMRootOutputModule temp(rhs);
-//   swap(rhs);
-//
-//   return *this;
-// }
 
 //
 // member functions
@@ -428,7 +416,6 @@ void DQMRootOutputModule::writeLuminosityBlock(edm::LuminosityBlockForOutput con
 
 void DQMRootOutputModule::writeRun(edm::RunForOutput const& iRun) {
   //std::cout << "DQMRootOutputModule::writeRun"<< std::endl;
-  edm::Service<DQMStore> dstore;
   m_run = iRun.id().run();
   m_lumi = 0;
   m_beginTime = iRun.beginTime().value();
@@ -438,14 +425,6 @@ void DQMRootOutputModule::writeRun(edm::RunForOutput const& iRun) {
   if (!shouldWrite)
     return;
 
-  std::vector<MonitorElement*> items(dstore->getAllContents("", m_run, 0));
-  for (std::vector<MonitorElement*>::iterator it = items.begin(), itEnd = items.end(); it != itEnd; ++it) {
-    assert((*it)->getScope() == MonitorElementData::Scope::RUN);
-    std::map<unsigned int, unsigned int>::iterator itFound = m_dqmKindToTypeIndex.find((int)(*it)->kind());
-    assert(itFound != m_dqmKindToTypeIndex.end());
-    m_treeHelpers[itFound->second]->fill(*it);
-  }
-
   const edm::ProcessHistoryID& id = iRun.processHistoryID();
   std::vector<edm::ProcessHistoryID>::iterator itFind = std::find(m_seenHistories.begin(), m_seenHistories.end(), id);
   if (itFind == m_seenHistories.end()) {
@@ -454,6 +433,26 @@ void DQMRootOutputModule::writeRun(edm::RunForOutput const& iRun) {
     m_seenHistories.push_back(id);
   } else {
     m_presentHistoryIndex = itFind - m_seenHistories.begin();
+  }
+
+  if (m_saveAtEndJob)
+    return;
+
+  realWriteRun(m_run);
+
+  edm::Service<edm::JobReport> jr;
+  jr->reportRunNumber(m_jrToken, m_run);
+}
+
+void DQMRootOutputModule::realWriteRun(unsigned int runtoget) {
+  edm::Service<DQMStore> dstore;
+
+  std::vector<MonitorElement*> items(dstore->getAllContents("", runtoget, 0));
+  for (auto me : items) {
+    assert(m_saveAtEndJob || me->getScope() == MonitorElementData::Scope::RUN);
+    std::map<unsigned int, unsigned int>::iterator itFound = m_dqmKindToTypeIndex.find((int)me->kind());
+    assert(itFound != m_dqmKindToTypeIndex.end());
+    m_treeHelpers[itFound->second]->fill(me);
   }
 
   //Now store the relationship between run/lumi and indices in the other TTrees
@@ -467,14 +466,25 @@ void DQMRootOutputModule::writeRun(edm::RunForOutput const& iRun) {
       m_indicesTree->Fill();
     }
   }
+}
 
-  edm::Service<edm::JobReport> jr;
-  jr->reportRunNumber(m_jrToken, m_run);
+void DQMRootOutputModule::endJob() {
+  // writeRun has set up everything for writing, here we just need to call
+  // realWriteRun which will then read all it needs from members.
+  if (m_saveAtEndJob) {
+    realWriteRun(0);
+    // we prevent reallyCloseFile from the framwork, so we need to do it's work here.
+    startEndFile();
+    finishEndFile();
+  }
 }
 
 void DQMRootOutputModule::reallyCloseFile() {
-  startEndFile();
-  finishEndFile();
+  // keep the file open until endJob in case of saveAtEndJob
+  if (!m_saveAtEndJob) {
+    startEndFile();
+    finishEndFile();
+  }
 }
 
 void DQMRootOutputModule::startEndFile() {
@@ -561,6 +571,8 @@ void DQMRootOutputModule::fillDescriptions(edm::ConfigurationDescriptions& descr
   dataSet.setAllowAnything();
   desc.addUntracked<edm::ParameterSetDescription>("dataset", dataSet)
       ->setComment("PSet is only used by Data Operations and not by this module.");
+  desc.addUntracked<unsigned int>("saveAtEndJob", 0)
+      ->setComment("Save run section only at job end, using job histograms.");
 
   descriptions.addDefault(desc);
 }
