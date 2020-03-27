@@ -2011,7 +2011,7 @@ class ConfigBuilder(object):
                 setattr(self.process,name+"_step",cms.Path(harvestingstream))
                 self.schedule.append(getattr(self.process,name+"_step"))
 
-        self.scheduleSequence('DQMSaver','dqmsave_step')
+        self.scheduleSequence('DQMSaver','dqmsave_step', what="EndPath")
         return
 
     def prepare_ALCAHARVEST(self, sequence = None):
