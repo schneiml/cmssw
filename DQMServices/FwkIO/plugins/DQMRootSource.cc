@@ -89,32 +89,36 @@ struct DQMTTreeIO {
 
     // NOTE: the merge logic comes from DataFormats/Histograms/interface/MEtoEDMFormat.h
     static void mergeTogether(TH1* original, TH1* toAdd) {
-      if (original->CanExtendAllAxes() && toAdd->CanExtendAllAxes()) {
-        TList list;
-        list.Add(toAdd);
-        if (original->Merge(&list) == -1) {
-          edm::LogError("MergeFailure") << "Failed to merge DQM element " << original->GetName();
-        }
-      } else {
-        // TODO: Redo. This is both more strict than what ROOT checks for yet
-        // allows cases where ROOT fails with merging.
-        if (original->GetNbinsX() == toAdd->GetNbinsX() &&
-            original->GetXaxis()->GetXmin() == toAdd->GetXaxis()->GetXmin() &&
-            original->GetXaxis()->GetXmax() == toAdd->GetXaxis()->GetXmax() &&
-            original->GetNbinsY() == toAdd->GetNbinsY() &&
-            original->GetYaxis()->GetXmin() == toAdd->GetYaxis()->GetXmin() &&
-            original->GetYaxis()->GetXmax() == toAdd->GetYaxis()->GetXmax() &&
-            original->GetNbinsZ() == toAdd->GetNbinsZ() &&
-            original->GetZaxis()->GetXmin() == toAdd->GetZaxis()->GetXmin() &&
-            original->GetZaxis()->GetXmax() == toAdd->GetZaxis()->GetXmax() &&
-            CheckBinLabels(original->GetXaxis(), toAdd->GetXaxis()) &&
-            CheckBinLabels(original->GetYaxis(), toAdd->GetYaxis()) &&
-            CheckBinLabels(original->GetZaxis(), toAdd->GetZaxis())) {
-          original->Add(toAdd);
+      try {
+        if (original->CanExtendAllAxes() && toAdd->CanExtendAllAxes()) {
+          TList list;
+          list.Add(toAdd);
+          if (original->Merge(&list) == -1) {
+            edm::LogError("MergeFailure") << "Failed to merge DQM element " << original->GetName();
+          }
         } else {
-          edm::LogError("MergeFailure") << "Found histograms with different axis limits or different labels '"
-                                        << original->GetName() << "' not merged.";
+          // TODO: Redo. This is both more strict than what ROOT checks for yet
+          // allows cases where ROOT fails with merging.
+          if (original->GetNbinsX() == toAdd->GetNbinsX() &&
+              original->GetXaxis()->GetXmin() == toAdd->GetXaxis()->GetXmin() &&
+              original->GetXaxis()->GetXmax() == toAdd->GetXaxis()->GetXmax() &&
+              original->GetNbinsY() == toAdd->GetNbinsY() &&
+              original->GetYaxis()->GetXmin() == toAdd->GetYaxis()->GetXmin() &&
+              original->GetYaxis()->GetXmax() == toAdd->GetYaxis()->GetXmax() &&
+              original->GetNbinsZ() == toAdd->GetNbinsZ() &&
+              original->GetZaxis()->GetXmin() == toAdd->GetZaxis()->GetXmin() &&
+              original->GetZaxis()->GetXmax() == toAdd->GetZaxis()->GetXmax() &&
+              CheckBinLabels(original->GetXaxis(), toAdd->GetXaxis()) &&
+              CheckBinLabels(original->GetYaxis(), toAdd->GetYaxis()) &&
+              CheckBinLabels(original->GetZaxis(), toAdd->GetZaxis())) {
+            original->Add(toAdd);
+          } else {
+            edm::LogError("MergeFailure") << "Found histograms with different axis limits or different labels '"
+                                          << original->GetName() << "' not merged.";
+          }
         }
+      } catch (cms::Exception const& e) {
+        edm::LogError("MergeFailure") << "ROOT merge operation threw.\n'" << original->GetName() << "' not merged.";
       }
     }
   };
