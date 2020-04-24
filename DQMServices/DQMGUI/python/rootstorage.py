@@ -6,6 +6,7 @@ import zlib
 import time
 import re
 
+from concurrent.futures import ProcessPoolExecutor
 from collections import namedtuple, defaultdict
 from functools import lru_cache
 
@@ -23,6 +24,10 @@ COMMIT;
 """
 with sqlite3.connect(DBNAME) as db:
     db.executescript(DBSCHEMA)
+
+# This is used for indexing.
+pool = ProcessPoolExecutor(max_workers=4)
+inprogress = dict()
 
 # Some types, related to the DB schema.
 Sample = namedtuple("Sample", ["dataset", "run", "lumi", "filename", "menamesid", "meoffsetsid"])
@@ -63,13 +68,24 @@ def registerfiles(fileurls):
                    [(sample.dataset, sample.run, sample.lumi, sample.filename) for sample in samples])
         db.execute("COMMIT;")
 
-# TODO: do the slow recursivelist in a separate process, returning the blobs.
-def importsample(sample):
+def importsampleimpl(sample):
     melist = []
     rootf = uproot.open(sample.filename)
     recursivelist(rootf, b"", melist)
     storemelist(sample, melist)
     rootf.close()
+    return True
+
+def importsample(sample):
+    if sample in inprogress:
+        # TODO: clean up done jobs here, but that is hard to get thread safe.
+        # result() should block if it is not done.
+        return inprogress[sample].result()
+    else:     
+        # this is not 100% thread safe but it is not terrible to have multiple jobs for the same sample.
+        inprogress[sample] = pool.submit(importsampleimpl, sample)
+        return importsample(sample) # this time it should hit the other branch.
+
     
 # This traverses a full TDirectory based file. Slow.
 def recursivelist(d, path, out):

@@ -146,7 +146,6 @@ def plotoverlay(args):
             refctr += 1
     spec = ";".join(k + "=" + v[0] for k, v in args.items())
     with renderpool.renderer() as r:
-        print("Rendering ", len(refs), spec)
         png, error = r.renderhisto(main, refs, name = fullname, spec=spec, width=width, height=height, efficiency = bool(effi))
     if error:
         print("Rendering error for ", run, dataset, fullname, args)
