@@ -100,6 +100,60 @@ def plotpng(run, dataset, fullname, args):
             print("Rendering error for ", run, dataset, fullname, args)
         return png
 
+def plotoverlay(args):
+    args = parse_qs(args)
+    width = int(args['w'][0]) if 'w' in args else 400
+    height = int(args['h'][0]) if 'h' in args else 320
+    #while width < 300 or height < 200:
+    #    width, height = width * 2, height * 2
+    if 'w' in args: del args['w']
+    if 'h' in args: del args['h']
+    obj = args['obj']
+    reflabel = args['reflabel']
+    del args['obj']
+    del args['reflabel']
+    # clean up garbage on the first argument
+    ref = [(k, v) for k, v in args.items() if 'ref' in k]
+    del args[ref[0][0]]
+    args['ref'] = ref[0][1]
+    data = []
+    for o in obj:
+         parts = o.split("/")
+         assert parts[0] == 'archive'
+         assert len(parts) > 5
+         run = int(parts[1])
+         dataset = '/' + '/'.join(parts[2:5])
+         fullname = '/'.join(parts[5:])
+         sample = storage.Sample(dataset, run, 0, None, None, None)
+         mes = storage.readme(sample, fullname.encode("utf-8"))
+         data.append(mes)
+    if not data[0]:
+        with renderpool.renderer() as r:
+            png, error = r.renderscalar("object not found", width=width, height=height)
+        return png
+    main = data[0][0]
+    if isinstance(obj, storage.ScalarValue):
+        with renderpool.renderer() as r:
+            png, error = r.renderscalar(obj.value.decode("utf-8"),  width=width, height=height)
+        return png
+    effi = [x for x in data[0] if isinstance(x, storage.EfficiencyFlag)]
+    refs = []
+    refctr = 1
+    for mes in data[1:]:
+        if mes:
+            refs.append(mes[0])
+            args['reflabel%d' % refctr] = [reflabel[refctr-1]]
+            refctr += 1
+    spec = ";".join(k + "=" + v[0] for k, v in args.items())
+    with renderpool.renderer() as r:
+        print("Rendering ", len(refs), spec)
+        png, error = r.renderhisto(main, refs, name = fullname, spec=spec, width=width, height=height, efficiency = bool(effi))
+    if error:
+        print("Rendering error for ", run, dataset, fullname, args)
+    return png
+
+
+
 def index():
     datasets = sorted(set(x.dataset for x in storage.searchsamples()))
     return (['<ul>'] +
@@ -142,6 +196,7 @@ ROUTES = [
     (re.compile('/+data/json/archive/([0-9]+)(/[^/]+/[^/]+/[^/]+)/?(.*)'), list, "json"),
     (re.compile('/+jsrootfairy/archive/([0-9]+)(/[^/]+/[^/]+/[^/]+)/([^?]*)[?]?(.+)?'), jsroot, "application/json"),
     (re.compile('/+plotfairy/archive/([0-9]+)(/[^/]+/[^/]+/[^/]+)/([^?]*)[?]?(.+)?'), plotpng, "image/png"),
+    (re.compile('/+plotfairy/overlay?(.*)?'), plotoverlay, "image/png"),
 ]
 
 
