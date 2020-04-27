@@ -23,7 +23,7 @@ if len(storage.searchsamples()) == 0:
     EOSPREFIX = "root://eoscms.cern.ch/"
     print(f"Listing all files on EOS ({EOSPATH}), this can take a while...")
     files = glob.glob(EOSPATH)
-    storage.registerfiles([EOSPREFIX + f for f in files])
+    storage.registerfiles([f for f in files])
     print(f"Done, registered {len(files)} files.")
 
 def samples(args):

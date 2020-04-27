@@ -1,20 +1,21 @@
-
 import sqlite3
-import uproot
 import struct
 import zlib
 import time
+import mmap
 import re
 
 from concurrent.futures import ProcessPoolExecutor
 from collections import namedtuple, defaultdict
 from functools import lru_cache
 
+from  DQMServices.DQMGUI import nanoroot
+
 DBNAME = "directory.sqlite"
 
 DBSCHEMA = """
 BEGIN;
-CREATE TABLE IF NOT EXISTS samples(dataset, run, lumi, filename, menamesid, meoffsetsid);
+CREATE TABLE IF NOT EXISTS samples(dataset, run, lumi, filename, menamesid, meoffsetsid, problems);
 CREATE INDEX IF NOT EXISTS samplelookup ON samples(dataset, run, lumi);
 CREATE UNIQUE INDEX IF NOT EXISTS uniquesamples on samples(dataset, run, lumi, filename);
 CREATE TABLE IF NOT EXISTS menames(menamesid INTEGER PRIMARY KEY, menameblob);
@@ -35,6 +36,9 @@ MEKey = namedtuple("MEKey", ["name", "secondary", "offset"])
 EfficiencyFlag = namedtuple("EfficiencyFlag", ["name"])
 ScalarValue = namedtuple("ScalarValue", ["name", "value"]) # could add type here
 QTest = namedtuple("QTest", ["name", "qtestname", "status", "result", "algorithm", "message"])
+
+# don't import these (kown obsolete/broken stuff)
+blacklist = re.compile(b"By Lumi Section |/Reference/|BadModuleList")
     
 # SQLite is at heart single-threaded. However, since we expect a read-heavy
 # workload, we can work around that by having multiple connections open at the
@@ -68,14 +72,6 @@ def registerfiles(fileurls):
                    [(sample.dataset, sample.run, sample.lumi, sample.filename) for sample in samples])
         db.execute("COMMIT;")
 
-def importsampleimpl(sample):
-    melist = []
-    rootf = uproot.open(sample.filename)
-    recursivelist(rootf, b"", melist)
-    storemelist(sample, melist)
-    rootf.close()
-    return True
-
 def importsample(sample):
     if sample in inprogress:
         # TODO: clean up done jobs here, but that is hard to get thread safe.
@@ -86,42 +82,62 @@ def importsample(sample):
         inprogress[sample] = pool.submit(importsampleimpl, sample)
         return importsample(sample) # this time it should hit the other branch.
 
-    
+def importsampleimpl(sample):
+    melist = []
+    #try:
+    with open(sample.filename, 'rb') as f:
+        with mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ) as mm:
+            tf = nanoroot.TFile(mm, normalize=dqmnormalize, classes=dqmclasses)
+            melist = list(recursivelist(tf))
+            print("meslist: ", len(melist))
+            error = "Problems on import" if tf.error else None
+    #except:
+    #    melist = []
+    #    error = "Excception on import"
+    storemelist(sample, melist, error)
+    return True
+
 # This traverses a full TDirectory based file. Slow.
-def recursivelist(d, path, out):
-    normpath = normalizepath(path)
-    if normpath == None: 
-        return # don't even bother to look at obsolete stuff
-    for k in d._keys:
-        if k._fClassName.startswith(b'TDirectory'):
-            o = k.get()
-            recursivelist(o, path + k._fName + b"/", out)
-        elif k._fClassName == b'TObjString':
-            # this could be Efficiency flag, scalar ME or QTest
-            thing = parsestringentry(k._fName) # name == value!
+def recursivelist(tfile):
+    for path, name, cls, offset in tfile.fulllist():
+        if blacklist.search(path):
+            continue
+        if cls == b'TObjString':
+            thing = parsestringentry(name)
             if isinstance(thing, EfficiencyFlag): # efficiency flag on this ME
-                out.append(MEKey(normpath + thing.name, b'e=1', k._fSeekKey))
+                yield MEKey(path + thing.name, b'e=1', offset)
             elif isinstance(thing, ScalarValue):
                 # scalar ME. Store the name, value needs to be fetched from the file later.
-                out.append(MEKey(normpath + thing.name, b'', k._fSeekKey))
+                yield MEKey(path + thing.name, b'', offset)
             else:
                 # QTest. Only save mename and qtestname, values need to be fetched later.
-                out.append(MEKey(normpath + thing.name, b'.' + thing.qtestname, k._fSeekKey))
+                yield MEKey(path + thing.name, b'.' + thing.qtestname, offset)
         else:
             # path, name, second name, position
-            out.append(MEKey(normpath + k._fName, b'', k._fSeekKey))
+            yield MEKey(path + name, b'', offset)
 
-def normalizepath(k):
-    # CMSSW strucured TDirectory files have some levels of folder structure.
-    # Remove that.
-    # TODO: we could properly handle multi-run TDirectory files...
-    parts = k.split(b"/")
-    if len(parts) < 4 or parts[3] != b"Run summary":
-        if b'Lumi' in k or b'Reference' in k:
-            return None # known obsolete stuff
-        else:
-            return k # not sure what this could be, better leave as is.
-    return parts[2]+ b'/' + b'/'.join(parts[4:-1]) + b'/'
+# Remove the folder strucutre that CMSSW adds.
+# TODO: Check run numbers here?
+def dqmnormalize(parts):
+    if len(parts) < 5 or parts[4] != b'Run summary':
+        return b'<broken>' + b'/'.join(parts) + b'/'
+    else:
+        return b'/'.join((parts[3],) + (parts[5:]) + (b'',))
+        
+# Only import these types.
+def dqmclasses(name):
+    return name in {
+        b'TH1D',
+        b'TH1F',
+        b'TH1S',
+        b'TH2D',
+        b'TH2F',
+        b'TH2S',
+        b'TH3F',
+        b'TObjString',
+        b'TProfile',
+        b'TProfile2D',
+    }
 
 def parsestringentry(val):
     # non-object data is stored in fake-XML stings in the TDirectory.
@@ -143,7 +159,7 @@ def parsestringentry(val):
         assert x == b'st'
         return QTest(mename, qtestname, status, result, algorithm, message)
 
-def storemelist(sample, melist):
+def storemelist(sample, melist, problems = None):
     nameblob, offsetblob = melisttoblob(melist)
     # TODO: Sqlite does not like MT-writing. Use a RWLock or sth.?
     # TODO: make this an upsert if the sample already exists.
@@ -155,8 +171,8 @@ def storemelist(sample, melist):
         db.execute("INSERT INTO meoffsets(meoffsetsblob) VALUES(?);", (offsetblob,))
         cur = db.execute("SELECT last_insert_rowid();")
         meoffsetsid = list(cur)[0][0]
-        db.execute("UPDATE samples SET (menamesid, meoffsetsid) = (?, ?) WHERE (dataset, run, lumi, filename) == (?, ?, ?, ?);", 
-                   (menamesid, meoffsetsid, sample.dataset, sample.run, sample.lumi, sample.filename))
+        db.execute("UPDATE samples SET (menamesid, meoffsetsid, problems) = (?, ?, ?) WHERE (dataset, run, lumi, filename) == (?, ?, ?, ?);", 
+                   (menamesid, meoffsetsid, problems, sample.dataset, sample.run, sample.lumi, sample.filename))
         db.execute("COMMIT;")
 
 def melisttoblob(melist):
@@ -295,11 +311,6 @@ def bound(access, key, lower, upper):
         return bound(access, key, lower, mid)
 
 
-# Keep a cache od open xrootd connections.
-# Since these do go stale, only reuse them is younger than a minute.
-# Maybe the overhead for a connection could be reduced by using the
-# uproot.source directly, not using a full file; uproot reads a lot
-# of stuff (streamers) in the beginning.
 filecache = defaultdict(list)
 class FileHandle:
     def __init__(self, filename, cache):
@@ -312,12 +323,15 @@ class FileHandle:
                 lastused, self.file = self.cache[self.filename].pop()
                 if time.time() - lastused > 60:
                     # too old, don't use.
-                    self.file.close()
+                    self.file[0].close()
+                    self.file[1].close()
                     self.file = None
         except IndexError:
             # no open files left
             # maybe add more options here
-            self.file = uproot.open(self.filename)
+            f = open(self.filename, 'rb')
+            mm = mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ)
+            self.file = (f, mm)
         return self.file
     def __exit__(self, type, value, traceback):
         self.cache[self.filename].append((time.time(), self.file))
@@ -326,15 +340,10 @@ class FileHandle:
 def readobject(file, mekey):
     if mekey.secondary == b'e=1': # nothing to read here.
         return EfficiencyFlag(mekey.name)
-    # using uproot TKey to read the TKey metadata, and then the value
-    # this will typically do only 1 request, since uproot xrootd reads 1M `chunkbytes` at once.
-    # going via the TKey gives us ROOT class name and compression handling for free.
-    kcur = uproot.source.cursor.Cursor(mekey.offset)
-    k = uproot.rootio.TKey.read(file.source, kcur, file._context, None)
-    cur = k._cursor.copied()
-    buf = bytes(cur.bytes(k._source, k._fObjlen))
-    if k._fClassName == b"TObjString":
-        thing = parsestringentry(k._fName)
+    k = nanoroot.TKey(file[1], mekey.offset)
+    buf = k.objdata()
+    if k.classname() == b"TObjString":
+        thing = parsestringentry(k.objname())
         # could sanity check stuff here...
         return thing
     else:
@@ -343,7 +352,7 @@ def readobject(file, mekey):
         # @length is 4byte length of the *entire* remaining object with bit 0x40 (kByteCountMask)
         # set in the first (most significant) byte. This prints as "@" in the dump...
         # the data inside the TKey seems to have the version already.
-        classname = k._fClassName
+        classname = k.classname()
         totlen = 4 + len(classname) + 1 + len(buf)
         head = struct.pack(">II", totlen | 0x40000000, 0xFFFFFFFF)
         return head + classname + b'\0' + buf
