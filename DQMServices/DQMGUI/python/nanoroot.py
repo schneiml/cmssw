@@ -92,31 +92,37 @@ class TFile:
             if x.error:
                 self.error = True
             x = n
-
+        
 class TKey:
     # Structure also here: https://root.cern.ch/doc/master/classTFile.html
     Fields = namedtuple("TKeyFields", ["fNbytes", "fVersion", "fObjLen", "fDatime", "fKeyLen", "fCycle", "fSeekKey", "fSeekPdir"])
-    structure = struct.Struct(">iHIIHHII")
+    structure_small = struct.Struct(">iHIIHHII")
+    structure_big   = struct.Struct(">iHIIHHQQ")
     sizefield = struct.Struct(">i")
-    
+
     # In this case of curruption, we search for the next known class name and try it there.
     # This should never be used in the normal case.
     resync = re.compile(b'TDirectory|TH[123][DFSI]|TProfile|TProfile2D')
-    
-    # Decode key at offset `fSeekKey` in `buf`. `end` can be the file end 
+
+    # Decode key at offset `fSeekKey` in `buf`. `end` can be the file end
     # address if it is less then the buffer end.
     def __init__(self, buf, fSeekKey, end = None):
         self.buf = buf
         self.end = end if end != None else len(buf)
         self.fSeekKey = fSeekKey
-        self.fields = TKey.Fields(*TKey.structure.unpack(
-            self.buf[self.fSeekKey : self.fSeekKey + TKey.structure.size]))
+        self.fields = TKey.Fields(*TKey.structure_small.unpack(
+            self.buf[self.fSeekKey : self.fSeekKey + TKey.structure_small.size]))
+        self.headersize = TKey.structure_small.size
+        if self.fields.fVersion > 1000:
+            self.fields = TKey.Fields(*TKey.structure_big.unpack(
+                self.buf[self.fSeekKey : self.fSeekKey + TKey.structure_big.size]))
+            self.headersize = TKey.structure_big.size
         assert self.fields.fSeekKey == self.fSeekKey, f"{self} is corrupted!"
         self.error = False
-        
+
     def __repr__(self):
         return f"TKey({self.buf}, {self.fSeekKey}, fields = {self.fields})"
-    
+
     # Read the TKey following this key. According to the documentation these
     # should be one after the other in the file, but in practice there are
     # sometimes gaps (resized/deleted objects?), which are skipped here.
@@ -124,7 +130,7 @@ class TKey:
     # by searching for a familiar class name.
     def next(self):
         offset = self.fields.fSeekKey + self.fields.fNbytes
-        while (offset+TKey.structure.size) < self.end:
+        while (offset+TKey.structure_small.size) < self.end:
             # It seems that a negative length indicates an unused block of that size. Skip it.
             # The number of such blocks matches nfree in the TFile.
             size, = TKey.sizefield.unpack(self.buf[offset:offset+4])
@@ -135,14 +141,15 @@ class TKey:
                 k = TKey(self.buf, offset, self.end)
                 return k
             except AssertionError:
-                m = TKey.resync.search(self.buf, offset + TKey.structure.size + 2)
+                m = TKey.resync.search(self.buf, offset + TKey.structure_small.size + 2)
                 if not m: break
-                newoffset = m.start() - 1 - TKey.structure.size
+                newoffset = m.start() - 1 - TKey.structure_small.size
+                # TODO: also try big header
                 print(f"Error: corrupted TKey at {offset}:{repr(self.buf[offset:offset+32])} resyncing (+{newoffset-offset})")
                 self.error = True
                 offset = newoffset
         return None
-        
+
     def _getstr(self, pos):
         size = self.buf[pos]
         if size == 255: # soultion for when length does not fit one byte
@@ -151,21 +158,21 @@ class TKey:
         nextpos = pos + size + 1
         value = self.buf[pos+1:nextpos]
         return value, nextpos
-    
+
     # Parse the three strings in the TKey (classname, objname, objtitle)
     def names(self):
-        pos = self.fSeekKey + TKey.structure.size
+        pos = self.fSeekKey + self.headersize
         classname, pos = self._getstr(pos)
         objname, pos = self._getstr(pos)
         objtitle, pos = self._getstr(pos)
         return classname, objname, objtitle
-    
+
     def classname(self):
-        return self._getstr(self.fSeekKey + TKey.structure.size)[0]
-    
+        return self._getstr(self.fSeekKey + self.headersize)[0]
+
     def objname(self):
         # optimized self.names()[1]
-        pos = self.fSeekKey + TKey.structure.size
+        pos = self.fSeekKey + self.headersize
         pos += self.buf[pos] + 1
         if self.buf[pos] == 255:
             size, = TKey.sizefield.unpack(self.buf[pos+1:pos+5])
@@ -174,10 +181,9 @@ class TKey:
         else:
             nextpos = pos + self.buf[pos]
         return self.buf[pos+1:nextpos+1]
-
     def compressed(self):
         return self.fields.fNbytes - self.fields.fKeyLen != self.fields.fObjLen
-    
+
     # Return and potentially decompress object data.
     def objdata(self):
         start = self.fields.fSeekKey + self.fields.fKeyLen
@@ -186,7 +192,7 @@ class TKey:
             return self.buf[start:end]
         else:
             comp = self.buf[start:start+2]
-            assert comp == b'ZL', "Only Zlib compression supported, not " + repr(comp) 
+            assert comp == b'ZL', "Only Zlib compression supported, not " + repr(comp)
             # There are a bunch of header bytes, not exactly sure what they mean.
             return zlib.decompress(self.buf[start+9:end])
 
@@ -196,12 +202,11 @@ class TKey:
         if self.fields.fSeekPdir == 0:
             return None
         return TKey(self.buf, self.fields.fSeekPdir, self.end)
-    
-    
+
     # Derive the full path of an object by recursing up the parents.
     # slow, primarily for debugging.
     def fullname(self):
         parent = self.parent()
         parentname = parent.fullname() if parent else b''
         return b"%s/%s" % (parentname, self.objname())
-        
+
