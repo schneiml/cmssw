@@ -1,3 +1,4 @@
+import threading
 import sqlite3
 import struct
 import zlib
@@ -27,7 +28,7 @@ with sqlite3.connect(DBNAME) as db:
     db.executescript(DBSCHEMA)
 
 # This is used for indexing.
-pool = ProcessPoolExecutor(max_workers=4)
+pool = ProcessPoolExecutor(max_workers=10)
 inprogress = dict()
 
 # Some types, related to the DB schema.
@@ -48,11 +49,14 @@ class DBHandle:
         self.cache = cache
         self.db = None
     def __enter__(self):
-        self.db = sqlite3.connect(DBNAME)
+        self.cache[0].acquire()
+        self.db = self.cache.pop()
         return self.db
     def __exit__(self, type, value, traceback):
-        self.db.close()
-dbcache = None # Actually, we don't really need any cache. Makeing sqlite connections is fast.
+        self.cache.append(self.db)
+        self.db = None
+        self.cache[0].release()
+dbcache = [threading.Lock(), sqlite3.connect(DBNAME, check_same_thread=False)]
 
 # TODO: this should go somewhere else, just some glue code for now.
 # TODO: this is where Rucio comes in in the future.
@@ -76,7 +80,8 @@ def importsample(sample):
     if sample in inprogress:
         # TODO: clean up done jobs here, but that is hard to get thread safe.
         # result() should block if it is not done.
-        return inprogress[sample].result()
+        nameblob, offsetblob, problem = inprogress[sample].result()
+        storemelist(sample, nameblob, offsetblob, problem)
     else:     
         # this is not 100% thread safe but it is not terrible to have multiple jobs for the same sample.
         inprogress[sample] = pool.submit(importsampleimpl, sample)
@@ -94,8 +99,8 @@ def importsampleimpl(sample):
     #except:
     #    melist = []
     #    error = "Excception on import"
-    storemelist(sample, melist, error)
-    return True
+    nameblob, offsetblob = melisttoblob(melist)
+    return (nameblob, offsetblob, error)
 
 # This traverses a full TDirectory based file. Slow.
 def recursivelist(tfile):
@@ -159,12 +164,17 @@ def parsestringentry(val):
         assert x == b'st'
         return QTest(mename, qtestname, status, result, algorithm, message)
 
-def storemelist(sample, melist, problems = None):
-    nameblob, offsetblob = melisttoblob(melist)
+def storemelist(sample, nameblob, offsetblob, problems = None):
     # TODO: Sqlite does not like MT-writing. Use a RWLock or sth.?
     # TODO: make this an upsert if the sample already exists.
     with DBHandle(dbcache) as db:
         db.execute("BEGIN;")
+        cur = db.execute("SELECT menamesid, meoffsetsid, problems FROM samples WHERE (dataset, run, lumi, filename) == (?, ?, ?, ?);", 
+                   (sample.dataset, sample.run, sample.lumi, sample.filename))
+        menamesid, meoffsetsid, existingproblems = list(cur)[0]
+        if menamesid and  meoffsetsid and existingproblems == problems:
+            print(f"Sample {sample} exists already, ignored.")
+            return
         db.execute("INSERT OR IGNORE INTO menames(menameblob) VALUES(?);", (nameblob,))
         cur = db.execute("SELECT menamesid FROM menames WHERE menameblob = ?;",  (nameblob,))
         menamesid = list(cur)[0][0]
