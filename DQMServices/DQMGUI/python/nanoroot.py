@@ -210,3 +210,215 @@ class TKey:
         parentname = parent.fullname() if parent else b''
         return b"%s/%s" % (parentname, self.objname())
 
+
+
+# Some minimal TTree IO. The structure of a TTree is not terribly complicated:
+# A TTree (table) consists of TBranches (columns). Each TBranch stores its values
+# in a list of TBaskets, which contain a variable number of entries each.
+# The TBaskets are stored in TKeys in the top level of the directory structure.
+# All other info about the TTree (TBranches, TLeafs) is serialized in the
+# TTree object in a TKey in the directory.
+# Decoding that TTree blob is not easy. But we don't have to: Just reading the
+# TBranch keys tells us the TBranch name (name) and TTree name (title) they
+# belong to. What remains to be figured out is how many entries there are in
+# the TBasket and what the first ID in this TBasket is. For the latter, we will
+# just assume that the TBaskets are stored in the file in the order of their
+# start IDs; this is not guaranteed but seems to hold.
+# To find how many objects there are in a TBasket, there are two cases: 1. it
+# holds fixed size objects, then it's just size/object size, or 2. if holds
+# variable size objects. In this case, there is an array at the end of the 
+# basket data that provides the offset inside the basket data where the n'th
+# object starts. By reading this array, we can know how many entries there are
+# and where they are.
+# The only problem is that we don't know where this arrray starts (that would
+# be encoded somewhere in the TTree object), so we have to read the data from
+# the back, heuristically guessing where it ends... but we have a good chance
+# that this works: the array header is the length of the array, and we know
+# where the first object starts, so we have two consistency checks.
+# The other problem is that we don't know the type of the TBaskets (we'd need
+# to read the TLeafs from the TTree blob for that), so we require an explicit
+# schema from the user.
+
+# First, the schema.
+# We use struct.Struct for fixed size types, and objects with a `size` of None
+# and a `unpack` method for variable size types.
+
+Int32 = struct.Struct(">i")
+Int64 = struct.Struct(">q")
+Float64 = struct.Struct(">d")
+
+class String:
+    size = None
+    @staticmethod
+    def unpack(buf, start, end):
+        size = buf[start]
+        start += 1
+        if size == 0xFF:
+            size, = Int32.unpack(buf[start:start+4])
+            start += 4
+        s = buf[start:end]
+        assert len(s) == size, f"Size of string does not match buffer size: {repr(buf[start:end])}, {size})"
+        return s
+
+class ObjectBlob:
+    class Range:
+        def __init__(self, buf, start, end):
+            self.buf = buf
+            self.start = start
+            self.end = end
+        def data(self):
+            return self.buf[self.start:self.end]
+        def __repr__(self):
+            return f"Range(buf=<len()={len(self.buf)}>, start={self.start}, end={self.end})"
+    size = None
+    @staticmethod
+    def unpack(buf, start, end):
+        # return object here, so we can later extract pointers pointing *into* the basket.
+        # To make that possible, API needs to diverge from Struct.unpack...
+        return ObjectBlob.Range(buf, start, end)
+    
+# A schema for a TTree is a dict mapping branch names to types.
+# A schema for a file is a dict mapping TTree names to TTree schemas.
+# TODO: this does not belong here.
+dqmioschema = {
+    b'Indices': {b'Run': Int32, b'Lumi': Int32, b'Type': Int32,
+                 b'FirstIndex': Int64, b'LastIndex': Int64},
+    b'Floats': {b'FullName': String, b'Flags': Int32, b'Value': Float64},
+    b'Ints':   {b'FullName': String, b'Flags': Int32, b'Value': Int64},
+    b'Strings':{b'FullName': String, b'Flags': Int32, b'Value': String},
+    b'TH1Fs':  {b'FullName': String, b'Flags': Int32, b'Value': ObjectBlob},
+    b'TH1Ds':  {b'FullName': String, b'Flags': Int32, b'Value': ObjectBlob},
+    b'TH2Fs':  {b'FullName': String, b'Flags': Int32, b'Value': ObjectBlob},
+    b'TH2Ds':  {b'FullName': String, b'Flags': Int32, b'Value': ObjectBlob},
+    b'TProfiles':   {b'FullName': String, b'Flags': Int32, b'Value': ObjectBlob},
+    b'TProfile2Ds': {b'FullName': String, b'Flags': Int32, b'Value': ObjectBlob},
+}
+
+# A Tbasket is pretty self-contained, we can read it from a TKey and its type.
+# The only thing it does not know is its starting index in the full table.
+class TBasket:
+    def __init__(self, tkey, ttype, startindex = None):
+        assert tkey.classname() == b'TBasket'
+        self.tkey = tkey
+        self.ttype = ttype
+        self.startindex = startindex
+        self.buf = tkey.objdata() # read and decompress once.
+        if ttype.size != None:
+            self.initfixed()
+        else:
+            self.initvariable()
+    def initfixed(self):
+        self.offsets = [i*self.ttype.size for i in range(len(self.buf)//self.ttype.size + 1)]
+    def initvariable(self):
+        buf = self.buf
+        pos = len(buf) - 4
+        def getint(pos):
+            i, = Int32.unpack(buf[pos:pos+4])
+            return i
+        assert getint(pos) == 0
+        pos -= 4
+        prev = getint(pos)
+        offs = []
+        while True:
+            cur = getint(pos)
+            # First object should start at fKeyLen, and the last word is the length
+            if cur - 1 == len(offs) and offs[-1] == self.tkey.fields.fKeyLen:
+                break
+            offs.append(cur)
+            assert cur <= prev, f"objects should have ascending offsets ({cur} < {prev})"
+            prev = cur
+            pos -= 4
+        self.offsets = [x - self.tkey.fields.fKeyLen for x in reversed(offs)]
+        self.offsets.append(pos)
+    def __len__(self):
+        #  offsets always contains the end as well
+        return len(self.offsets) - 1
+    def localindex(self, i):
+        if self.ttype.size == None:
+            return self.ttype.unpack(self.buf, self.offsets[i], self.offsets[i+1])
+        else:
+            return self.ttype.unpack(self.buf[self.offsets[i] : self.offsets[i+1]])
+    # local iteration
+    def __iter__(self):
+        for i in range(len(self)):
+            yield self.localindex(i)
+    # global index stuff
+    def iterat(self, start):
+        for i in range(max(start, self.startindex), self.startindex + len(self)):
+            yield i, self.localindex(i - self.startindex)
+    def __getitem__(self, i):
+        idx, x = next(self.iterat(i))
+        assert i == idx
+        return x
+
+# Next, a branch holds a list of TBaskets.
+# Its main job is managing the starting indices.
+# Most of the code is actually to set up a fast way to iterate.
+class TBranch:
+    def __init__(self, ttype):
+        self.ttype = ttype
+        self.baskets = [(None, 0)]
+    def addbasket(self, tkey):
+        currentend = self.baskets[-1][1]
+        basket = TBasket(tkey, self.ttype, currentend)
+        self.baskets.append((basket, currentend + len(basket)))
+    def iterat(self, start, end = -1):
+        # Binary search here would be smart, but we don't use this much anyways.
+        for basket, basketend in self.baskets:
+            if start < basketend:
+                for i, x in basket.iterat(start):
+                    if end > 0 and i >= end:
+                        return
+                    yield i, x
+    def __getitem__(self, i):
+        idx, x = next(self.iterat(i))
+        assert i == idx
+        return x
+    def __iter__(self):
+        for i, x in self.iterat(0):
+            yield x
+    def __len__(self):
+        return self.baskets[-1][1]
+
+# The TTree is a pretty stupid container that contains TBranches according to the schema.
+class TTree:
+    def __init__(self, schema):
+        self.branches = {
+            name: TBranch(ttype) for name, ttype in schema.items()
+        }
+        self.branchnames = sorted(schema.keys())
+    def addbasket(self, tkey):
+        cls, branch, tree = tkey.names()
+        # ignore branches that we don't have a schema for; this is how we can do partial reads.
+        if branch in self.branches:
+            self.branches[branch].addbasket(tkey)
+    def __getitem__(self, i):
+        return {name: branch[i] for name, branch in self.branches.items()}
+    def __len__(self):
+        lens = list(set(len(branch) for branch in self.branches.values()))
+        assert len(lens) == 1, "Branches have uneven lenghts! %s" % repr(lens)
+        return lens[0]
+    def __iter__(self):
+        return zip(*[self.branches[name] for name in self.branchnames])
+    def iterat(self, start, end):
+        return zip(*[self.branches[name].iterat(start, end) for name in self.branchnames])
+
+# Finally, set everything up based on a file.
+# This is necessarily slow: we read and decompress everything into memory here.
+# This is because we need to read each basket to see its length...
+# To *not* read everything, reduce the schema to only the things you need.
+class TTreeFile:
+    def __init__(self, tfile, schema):
+        self.trees = {
+            name: TTree(treeschem) for name, treeschem in schema.items()
+        }
+        k = tfile.first()
+        while k:
+            cls, branch, tree = k.names()
+            if cls == b'TBasket':
+                if tree in self.trees:
+                    self.trees[tree].addbasket(k)
+            k = k.next()
+    def tree(self, name):
+        return self.trees[name]
+
