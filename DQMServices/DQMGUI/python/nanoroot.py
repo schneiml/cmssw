@@ -211,6 +211,18 @@ class TKey:
         return b"%s/%s" % (parentname, self.objname())
 
 
+# TBufferFile data contains more headers compared to the data in a TKey or
+# TTree. This function tries to add the missing headers.
+def TBufferFile(objdata, classname, version = None):
+    # The format is <@length><kNewClassTag=0xFFFFFFFF><classname><nul><@length><2 bytes version><data ...
+    # @length is 4byte length of the *entire* remaining object with bit 0x40 (kByteCountMask)
+    # set in the first (most significant) byte. This prints as "@" in the dump...
+    # the data inside the TKey seems to have the version already.
+    assert version == None, "Can't add version headers yet."
+    totlen = 4 + len(classname) + 1 + len(objdata)
+    head = struct.pack(">II", totlen | 0x40000000, 0xFFFFFFFF)
+    return head + classname + b'\0' + objdata
+
 
 # Some minimal TTree IO. The structure of a TTree is not terribly complicated:
 # A TTree (table) consists of TBranches (columns). Each TBranch stores its values
@@ -279,27 +291,15 @@ class ObjectBlob:
     
 # A schema for a TTree is a dict mapping branch names to types.
 # A schema for a file is a dict mapping TTree names to TTree schemas.
-# TODO: this does not belong here.
-dqmioschema = {
-    b'Indices': {b'Run': Int32, b'Lumi': Int32, b'Type': Int32,
-                 b'FirstIndex': Int64, b'LastIndex': Int64},
-    b'Floats': {b'FullName': String, b'Flags': Int32, b'Value': Float64},
-    b'Ints':   {b'FullName': String, b'Flags': Int32, b'Value': Int64},
-    b'Strings':{b'FullName': String, b'Flags': Int32, b'Value': String},
-    b'TH1Fs':  {b'FullName': String, b'Flags': Int32, b'Value': ObjectBlob},
-    b'TH1Ds':  {b'FullName': String, b'Flags': Int32, b'Value': ObjectBlob},
-    b'TH2Fs':  {b'FullName': String, b'Flags': Int32, b'Value': ObjectBlob},
-    b'TH2Ds':  {b'FullName': String, b'Flags': Int32, b'Value': ObjectBlob},
-    b'TProfiles':   {b'FullName': String, b'Flags': Int32, b'Value': ObjectBlob},
-    b'TProfile2Ds': {b'FullName': String, b'Flags': Int32, b'Value': ObjectBlob},
-}
 
 # A Tbasket is pretty self-contained, we can read it from a TKey and its type.
 # The only thing it does not know is its starting index in the full table.
+# We don't save stuff that is not absolutely needed, like names or a ref to the
+# file (we do keep a copy of the (decompressed) data).
 class TBasket:
     def __init__(self, tkey, ttype, startindex = None):
         assert tkey.classname() == b'TBasket'
-        self.tkey = tkey
+        self.fKeyLen = tkey.fields.fKeyLen
         self.ttype = ttype
         self.startindex = startindex
         self.buf = tkey.objdata() # read and decompress once.
@@ -322,13 +322,13 @@ class TBasket:
         while True:
             cur = getint(pos)
             # First object should start at fKeyLen, and the last word is the length
-            if cur - 1 == len(offs) and offs[-1] == self.tkey.fields.fKeyLen:
+            if cur - 1 == len(offs) and offs[-1] == self.fKeyLen:
                 break
             offs.append(cur)
             assert cur <= prev, f"objects should have ascending offsets ({cur} < {prev})"
             prev = cur
             pos -= 4
-        self.offsets = [x - self.tkey.fields.fKeyLen for x in reversed(offs)]
+        self.offsets = [x - self.fKeyLen for x in reversed(offs)]
         self.offsets.append(pos)
     def __len__(self):
         #  offsets always contains the end as well
@@ -363,6 +363,7 @@ class TBranch:
         basket = TBasket(tkey, self.ttype, currentend)
         self.baskets.append((basket, currentend + len(basket)))
     def iterat(self, start, end = -1):
+        # TODO: we could use this for tbranch[start:end]...
         # Binary search here would be smart, but we don't use this much anyways.
         for basket, basketend in self.baskets:
             if start < basketend:
@@ -401,24 +402,26 @@ class TTree:
     def __iter__(self):
         return zip(*[self.branches[name] for name in self.branchnames])
     def iterat(self, start, end):
+        # TODO: this is rather messy output.
         return zip(*[self.branches[name].iterat(start, end) for name in self.branchnames])
 
 # Finally, set everything up based on a file.
 # This is necessarily slow: we read and decompress everything into memory here.
 # This is because we need to read each basket to see its length...
 # To *not* read everything, reduce the schema to only the things you need.
-class TTreeFile:
-    def __init__(self, tfile, schema):
-        self.trees = {
-            name: TTree(treeschem) for name, treeschem in schema.items()
-        }
-        k = tfile.first()
-        while k:
-            cls, branch, tree = k.names()
-            if cls == b'TBasket':
-                if tree in self.trees:
-                    self.trees[tree].addbasket(k)
-            k = k.next()
-    def tree(self, name):
-        return self.trees[name]
+# But we'll still need to touch each TKey, potentially triggering loading the
+# full file to cache.
+# The file can be closed after this, we don't keep any references to it.
+def TTreeFile(tfile, schema):
+    trees = {
+        name: TTree(treeschem) for name, treeschem in schema.items()
+    }
+    k = tfile.first()
+    while k:
+        cls, branch, tree = k.names()
+        if cls == b'TBasket':
+            if tree in trees:
+                trees[tree].addbasket(k)
+        k = k.next()
+    return trees
 

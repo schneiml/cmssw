@@ -358,14 +358,7 @@ def readobject(file, mekey):
         return thing
     else:
         # tobject, reconstruct frame for TBufferFile
-        # The format is <@length><kNewClassTag=0xFFFFFFFF><classname><nul><@length><2 bytes version><data ...
-        # @length is 4byte length of the *entire* remaining object with bit 0x40 (kByteCountMask)
-        # set in the first (most significant) byte. This prints as "@" in the dump...
-        # the data inside the TKey seems to have the version already.
-        classname = k.classname()
-        totlen = 4 + len(classname) + 1 + len(buf)
-        head = struct.pack(">II", totlen | 0x40000000, 0xFFFFFFFF)
-        return head + classname + b'\0' + buf
+        return nanoroot.TBufferFile(buf, k.classname())
 
 # Samples search API
 def searchsamples(datasetre = None, runre = None):
