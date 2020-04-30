@@ -262,7 +262,7 @@ Float64 = struct.Struct(">d")
 class String:
     size = None
     @staticmethod
-    def unpack(buf, start, end):
+    def unpack(buf, start, end, basket):
         size = buf[start]
         start += 1
         if size == 0xFF:
@@ -274,20 +274,22 @@ class String:
 
 class ObjectBlob:
     class Range:
-        def __init__(self, buf, start, end):
+        def __init__(self, buf, start, end, fSeekKey):
             self.buf = buf
             self.start = start
             self.end = end
+            self.fSeekKey = fSeekKey # address of the basket this came from
         def data(self):
             return self.buf[self.start:self.end]
         def __repr__(self):
-            return f"Range(buf=<len()={len(self.buf)}>, start={self.start}, end={self.end})"
+            return f"Range(buf=<len()={len(self.buf)}>, start={self.start}, end={self.end}, fSeekKey={self.fSeekKey})"
     size = None
     @staticmethod
-    def unpack(buf, start, end):
+    def unpack(buf, start, end, basket):
         # return object here, so we can later extract pointers pointing *into* the basket.
         # To make that possible, API needs to diverge from Struct.unpack...
-        return ObjectBlob.Range(buf, start, end)
+        # The basket also passes itself in so we can keep whatever info we need.
+        return ObjectBlob.Range(buf, start, end, basket.fSeekKey)
     
 # A schema for a TTree is a dict mapping branch names to types.
 # A schema for a file is a dict mapping TTree names to TTree schemas.
@@ -300,6 +302,7 @@ class TBasket:
     def __init__(self, tkey, ttype, startindex = None):
         assert tkey.classname() == b'TBasket'
         self.fKeyLen = tkey.fields.fKeyLen
+        self.fSeekKey = tkey.fields.fSeekKey # we don't really need that, but keep it for later
         self.ttype = ttype
         self.startindex = startindex
         self.buf = tkey.objdata() # read and decompress once.
@@ -335,9 +338,9 @@ class TBasket:
         return len(self.offsets) - 1
     def localindex(self, i):
         if self.ttype.size == None:
-            return self.ttype.unpack(self.buf, self.offsets[i], self.offsets[i+1])
-        else:
-            return self.ttype.unpack(self.buf[self.offsets[i] : self.offsets[i+1]])
+            return self.ttype.unpack(self.buf, self.offsets[i], self.offsets[i+1], self)
+        else: # The [0] is for 1-element structs. We could support larger ones, but not sure for what...
+            return self.ttype.unpack(self.buf[self.offsets[i] : self.offsets[i+1]])[0]
     # local iteration
     def __iter__(self):
         for i in range(len(self)):
@@ -372,12 +375,17 @@ class TBranch:
                         return
                     yield i, x
     def __getitem__(self, i):
-        idx, x = next(self.iterat(i))
-        assert i == idx
-        return x
+        if isinstance(i, slice):
+            start, end, stride = i.indices(len(self))
+            assert stride == 1
+            for i, x in self.iterat(start, end):
+                yield x
+        else:
+            idx, x = next(self.iterat(i))
+            assert i == idx
+            return x
     def __iter__(self):
-        for i, x in self.iterat(0):
-            yield x
+        return self[:]
     def __len__(self):
         return self.baskets[-1][1]
 
@@ -394,16 +402,17 @@ class TTree:
         if branch in self.branches:
             self.branches[branch].addbasket(tkey)
     def __getitem__(self, i):
-        return {name: branch[i] for name, branch in self.branches.items()}
+        if isinstance(i, slice):
+            for tup in zip(*[self.brnaches[name][i] for name in self.branchnames]):
+                yield dict(zip(self.branchnames, tup))
+        else:
+            return {name: branch[i] for name, branch in self.branches.items()}
     def __len__(self):
         lens = list(set(len(branch) for branch in self.branches.values()))
         assert len(lens) == 1, "Branches have uneven lenghts! %s" % repr(lens)
         return lens[0]
     def __iter__(self):
         return zip(*[self.branches[name] for name in self.branchnames])
-    def iterat(self, start, end):
-        # TODO: this is rather messy output.
-        return zip(*[self.branches[name].iterat(start, end) for name in self.branchnames])
 
 # Finally, set everything up based on a file.
 # This is necessarily slow: we read and decompress everything into memory here.

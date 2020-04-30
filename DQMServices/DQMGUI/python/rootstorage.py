@@ -175,7 +175,8 @@ class MEInfo:
         else:
             obj = data[self.offset : self.offset + self.size]
         if self.metype == b'String':
-            return obj # TODO: some decoding and stuff here.
+            s = nanoroot.String.unpack(obj, 0, len(obj), None)
+            return ScalarValue(b'', s, b's')
         # else
         return nanoroot.TBufferFile(obj, self.metype) # metype doubles as root class name here.
 
@@ -231,12 +232,17 @@ def registerfiles(fileurls):
         lumi = 0
         return Sample(dataset, run, lumi, fileurl)
     samples = [tosample(f) for f in fileurls]
+    registersamples(samples)
+
+def registersamples(samples):
     with DBHandle(dbcache) as db:
         db.execute("BEGIN;")
         db.executemany("INSERT OR REPLACE INTO samples(dataset, run, lumi, filename) VALUES(?, ?, ?, ?);", 
                    [(sample.dataset, sample.run, sample.lumi, sample.filename) for sample in samples])
         db.execute("COMMIT;")
 
+# Index TDirectory data. This lauches the actual indexer in a process pool.
+# This will usually happen on-demand.
 def importsample(sample):
     if sample in inprogress:
         # TODO: clean up done jobs here, but that is hard to get thread safe.
@@ -309,7 +315,77 @@ def recursivelist(tfile):
         else:
             # path position
             yield (path + name, MEInfo(cls, offset))
+
+# Import DQMIO data. This is much harder to do on demand, unless we know which
+# Sample are in the file from some other source.
+def importdqmio(dataset, filename):
+    from DQMServices.DQMGUI.nanoroot import Int32, Int64, Float64, String, ObjectBlob
+    dqmioschema = {
+        b'Indices': {b'Run': Int32, b'Lumi': Int32, b'Type': Int32,
+                     b'FirstIndex': Int64, b'LastIndex': Int64},
+        b'Ints':   {b'FullName': String, b'Value': Int64},
+        b'Floats': {b'FullName': String, b'Value': Float64},
+        b'Strings':{b'FullName': String, b'Value': ObjectBlob},
+        b'TH1Fs':  {b'FullName': String, b'Value': ObjectBlob},
+        b'TH1Ss':  {b'FullName': String, b'Value': ObjectBlob},
+        b'TH1Ds':  {b'FullName': String, b'Value': ObjectBlob},
+        b'TH2Fs':  {b'FullName': String, b'Value': ObjectBlob},
+        b'TH2Ss':  {b'FullName': String, b'Value': ObjectBlob},
+        b'TH2Ds':  {b'FullName': String, b'Value': ObjectBlob},
+        b'TProfiles':   {b'FullName': String, b'Value': ObjectBlob},
+        b'TProfile2Ds': {b'FullName': String, b'Value': ObjectBlob},
+    }
+    treenames = {
+      0: b"Ints",
+      1: b"Floats",
+      2: b"Strings",
+      3: b"TH1Fs",
+      4: b"TH1Ss",
+      5: b"TH1Ds",
+      6: b"TH2Fs",
+      7: b"TH2Ss",
+      8: b"TH2Ds",
+      9: b"TH3Fs",
+      10: b"TProfiles",
+      11: b"TProfile2Ds",
+    }
+
+    with open(filename, 'rb') as f:
+        with mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ) as mm:
+            trees = nanoroot.TTreeFile(nanoroot.TFile(mm), dqmioschema)
+
+    IndexEntry = namedtuple("IndexEntry", [name.decode("utf-8") for name in trees[b'Indices'].branchnames])
+    idxtree = trees[b'Indices']
+    entries = [IndexEntry(*x) for x in idxtree]
             
+    def createinfo(value, typeid):
+        metype = MEInfo.idtotype[typeid]
+        if metype in (b'Int', b'Float'):
+            return MEInfo(metype, value = value)
+        else:
+            # value is ObjectBlob.Range
+            return MEInfo(metype, value.fSeekKey, value.start, value.end - value.start)
+
+    infos = defaultdict(list)
+    for e in entries:
+        tree = trees[treenames[e.Type]]
+        names = tree.branches[b'FullName'][e.FirstIndex : e.LastIndex+1]
+        values = [createinfo(v, e.Type) for v in tree.branches[b'Value'][e.FirstIndex : e.LastIndex+1]]
+        infos[(e.Run, e.Lumi)] += list(zip(names, values))
+    out = []
+    for (run, lumi), melist in infos.items():
+        if lumi > 0: continue # Only run data for this test.
+        melist.sort()
+        nameblob, infoblob = melisttoblob(melist)
+        out.append((Sample(dataset, run, lumi, filename), nameblob, infoblob))
+    return out
+
+def tryimportdqmio(dataset, filename):
+    try:
+        return importdqmio(dataset, filename)
+    except Exception as e:
+        print("Failed to import DQMIO file ", filename, e)
+        return []
 
 def melisttoblob(melist):
     melist.sort()

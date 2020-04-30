@@ -15,16 +15,32 @@ os.chdir(BASE)
 from DQMServices.DQMGUI.render import RenderPool
 import DQMServices.DQMGUI.rootstorage as storage
 
-renderpool = RenderPool(workers=1)
+renderpool = RenderPool(workers=5)
 
 if len(storage.searchsamples()) == 0:
     import glob
-    EOSPATH = "/eos/cms/store/group/comm_dqm/DQMGUI_data/Run*/*/R000*/DQM_*.root"
-    EOSPREFIX = "root://eoscms.cern.ch/"
-    print(f"Listing all files on EOS ({EOSPATH}), this can take a while...")
-    files = glob.glob(EOSPATH)
-    storage.registerfiles([f for f in files])
-    print(f"Done, registered {len(files)} files.")
+    USE_DQMIO = False
+    if USE_DQMIO:
+        from concurrent.futures import ProcessPoolExecutor
+        print("Importing DQMIO files...")
+        DQMIOPATH = "/data/mschneid/reharvest/reharvest_*/run*.root"
+        files = glob.glob(DQMIOPATH)
+        print(f"Found {len(files)} files at {DQMIOPATH}.")
+        p = ProcessPoolExecutor()
+        dataset = "/some/dataset/DQMIO"
+        for sampleblobs in p.map(storage.tryimportdqmio, [dataset] * len(files), files):
+            samples = [sample for sample, _, __ in sampleblobs]
+            storage.registersamples(samples)
+            for sample, nameblob, offsetblob in sampleblobs:
+                storage.storemelist(sample, nameblob, offsetblob, None)
+        print(f"Done, imported {len(files)} files.")
+    else:
+        EOSPATH = "/eos/cms/store/group/comm_dqm/DQMGUI_data/Run*/*/R000*/DQM_*.root"
+        EOSPREFIX = "root://eoscms.cern.ch/"
+        print(f"Listing all files on EOS ({EOSPATH}), this can take a while...")
+        files = glob.glob(EOSPATH)
+        storage.registerfiles([f for f in files])
+        print(f"Done, registered {len(files)} files.")
 
 def samples(args):
     args = parse_qs(args)
