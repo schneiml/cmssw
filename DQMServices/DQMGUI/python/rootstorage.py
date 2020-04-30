@@ -16,7 +16,7 @@ DBNAME = "directory.sqlite"
 
 DBSCHEMA = """
 BEGIN;
-CREATE TABLE IF NOT EXISTS samples(dataset, run, lumi, filename, menamesid, meoffsetsid, problems);
+CREATE TABLE IF NOT EXISTS samples(dataset, run, lumi, filename, menamesid, meoffsetsid, isdqmio, problems);
 CREATE INDEX IF NOT EXISTS samplelookup ON samples(dataset, run, lumi);
 CREATE UNIQUE INDEX IF NOT EXISTS uniquesamples on samples(dataset, run, lumi, filename);
 CREATE TABLE IF NOT EXISTS menames(menamesid INTEGER PRIMARY KEY, menameblob);
@@ -32,7 +32,8 @@ pool = ProcessPoolExecutor(max_workers=10)
 inprogress = dict()
 
 # Some types, related to the DB schema.
-Sample = namedtuple("Sample", ["dataset", "run", "lumi", "filename", "menamesid", "meoffsetsid"])
+Sample = namedtuple("Sample", ["dataset", "run", "lumi", "filename", "menamesid", "meoffsetsid", "isdqmio"],
+                   defaults = [None,      None,   0,     None,      None,        None,          False])
 MEKey = namedtuple("MEKey", ["name", "secondary", "offset"])
 EfficiencyFlag = namedtuple("EfficiencyFlag", ["name"])
 ScalarValue = namedtuple("ScalarValue", ["name", "value"]) # could add type here
@@ -68,7 +69,7 @@ def registerfiles(fileurls):
         run = int(parts[0])
         dataset = "/" + "/".join(parts[1:])
         lumi = 0
-        return Sample(dataset, run, lumi, fileurl, None, None)
+        return Sample(dataset, run, lumi, fileurl)
     samples = [tosample(f) for f in fileurls]
     with DBHandle(dbcache) as db:
         db.execute("BEGIN;")
@@ -181,8 +182,8 @@ def storemelist(sample, nameblob, offsetblob, problems = None):
         db.execute("INSERT INTO meoffsets(meoffsetsblob) VALUES(?);", (offsetblob,))
         cur = db.execute("SELECT last_insert_rowid();")
         meoffsetsid = list(cur)[0][0]
-        db.execute("UPDATE samples SET (menamesid, meoffsetsid, problems) = (?, ?, ?) WHERE (dataset, run, lumi, filename) == (?, ?, ?, ?);", 
-                   (menamesid, meoffsetsid, problems, sample.dataset, sample.run, sample.lumi, sample.filename))
+        db.execute("UPDATE samples SET (menamesid, meoffsetsid, problems, isdqmio) = (?, ?, ?, ?) WHERE (dataset, run, lumi, filename) == (?, ?, ?, ?);", 
+                   (menamesid, meoffsetsid, problems, sample.isdqmio, sample.dataset, sample.run, sample.lumi, sample.filename))
         db.execute("COMMIT;")
 
 def melisttoblob(melist):
@@ -261,10 +262,10 @@ def readme(sample, fullname):
 @lru_cache(maxsize=10)
 def queryforsample(sample):
     with DBHandle(dbcache) as db:
-        cur = db.execute("SELECT filename, menamesid, meoffsetsid FROM samples WHERE (dataset, run, lumi) == (?, ?, ?);", 
+        cur = db.execute("SELECT filename, menamesid, meoffsetsid, isdqmio FROM samples WHERE (dataset, run, lumi) == (?, ?, ?);", 
                          (sample.dataset, sample.run, sample.lumi))
-        file, menamesid, meoffsetsid = list(cur)[0]
-        sample = Sample(sample.dataset, sample.run, sample.lumi, file, menamesid, meoffsetsid)
+        file, menamesid, meoffsetsid, idqmio = list(cur)[0]
+        sample = Sample(sample.dataset, sample.run, sample.lumi, file, menamesid, meoffsetsid, isdqmio)
     if file and menamesid == None or meoffsetsid == None:
         importsample(sample)
         return queryforsample(sample) # retry
@@ -370,7 +371,7 @@ def searchsamples(datasetre = None, runre = None):
         cur = db.execute("SELECT DISTINCT dataset, run FROM samples ORDER BY dataset, run;")
         for dataset, run in cur:
             if (not dsmatch or dsmatch.search(dataset)) and (not runmatch or runmatch.search(str(run))):
-                out.append(Sample(dataset, run, 0, None, None, None))
+                out.append(Sample(dataset, run, 0))
         return out
 
 # list API, should be sort-of compatible with old GUI behaviour with recursive = False

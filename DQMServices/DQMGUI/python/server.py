@@ -41,7 +41,7 @@ def samples(args):
 
 def list(run, dataset, folder):
     run = int(run)
-    sample = storage.Sample(dataset, run, 0, None, None, None)
+    sample = storage.Sample(dataset, run)
     if len(folder) > 1 and not folder.endswith("/"):
         folder += "/"
     items = storage.listmes(sample, folder.encode("utf-8"), recursive = False)
@@ -75,7 +75,7 @@ def plotpng(run, dataset, fullname, args):
     if 'w' in args: del args['w']
     if 'h' in args: del args['h']
     spec = ";".join(k + "=" + v[0] for k, v in args.items())
-    sample = storage.Sample(dataset, run, 0, None, None, None)
+    sample = storage.Sample(dataset, run)
     mes = storage.readme(sample, fullname.encode("utf-8"))
     if mes:
         obj = mes[0]
@@ -124,7 +124,7 @@ def plotoverlay(args):
          run = int(parts[1])
          dataset = '/' + '/'.join(parts[2:5])
          fullname = '/'.join(parts[5:])
-         sample = storage.Sample(dataset, run, 0, None, None, None)
+         sample = storage.Sample(dataset, run)
          mes = storage.readme(sample, fullname.encode("utf-8"))
          data.append(mes)
     if not data[0]:
@@ -167,7 +167,7 @@ def listruns(dataset):
 
 def showdata(run, dataset, folder):
     run = int(run)
-    sample = storage.Sample(dataset, run, 0, None, None, None)
+    sample = storage.Sample(dataset, run)
     items = sorted(storage.listmes(sample, folder.encode("utf-8"), recursive = False))
     out = [f'<h1><a href="/runsfordataset/{dataset}">{dataset}</a> {run}</h1>', '<h2>']
     breadcrumbs = folder.split("/")
