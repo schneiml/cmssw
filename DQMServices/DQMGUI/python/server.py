@@ -15,7 +15,7 @@ os.chdir(BASE)
 from DQMServices.DQMGUI.render import RenderPool
 import DQMServices.DQMGUI.rootstorage as storage
 
-renderpool = RenderPool(workers=5)
+renderpool = RenderPool(workers=1)
 
 if len(storage.searchsamples()) == 0:
     import glob
@@ -90,8 +90,12 @@ def plotpng(run, dataset, fullname, args):
                     png, error = r.renderhisto(obj, [], name = fullname, spec=spec, width=width, height=height, 
                                                efficiency = bool(effi), streamerfile = s.filename.encode("utf-8"))
         elif isinstance(obj, storage.ScalarValue):
+            if isinstance(obj.value, bytes):
+                value = obj.value.decode("utf-8")
+            else:
+                value = str(obj.value)
             with renderpool.renderer() as r:
-                png, error = r.renderscalar(obj.value.decode("utf-8"),  width=width, height=height)
+                png, error = r.renderscalar(value,  width=width, height=height)
         else:
             with renderpool.renderer() as r:
                 png, error = r.renderscalar("object not found", width=width, height=height)

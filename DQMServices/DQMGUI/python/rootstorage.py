@@ -16,7 +16,7 @@ DBNAME = "directory.sqlite"
 
 DBSCHEMA = """
 BEGIN;
-CREATE TABLE IF NOT EXISTS samples(dataset, run, lumi, filename, menamesid, meoffsetsid, isdqmio, problems);
+CREATE TABLE IF NOT EXISTS samples(dataset, run, lumi, filename, menamesid, meoffsetsid, problems);
 CREATE INDEX IF NOT EXISTS samplelookup ON samples(dataset, run, lumi);
 CREATE UNIQUE INDEX IF NOT EXISTS uniquesamples on samples(dataset, run, lumi, filename);
 CREATE TABLE IF NOT EXISTS menames(menamesid INTEGER PRIMARY KEY, menameblob);
@@ -32,15 +32,175 @@ pool = ProcessPoolExecutor(max_workers=10)
 inprogress = dict()
 
 # Some types, related to the DB schema.
-Sample = namedtuple("Sample", ["dataset", "run", "lumi", "filename", "menamesid", "meoffsetsid", "isdqmio"],
-                   defaults = [None,      None,   0,     None,      None,        None,          False])
-MEKey = namedtuple("MEKey", ["name", "secondary", "offset"])
+Sample = namedtuple("Sample", ["dataset", "run", "lumi", "filename", "menamesid", "meoffsetsid"],
+                   defaults = [None,      None,   0,     None,      None,        None])
 EfficiencyFlag = namedtuple("EfficiencyFlag", ["name"])
-ScalarValue = namedtuple("ScalarValue", ["name", "value"]) # could add type here
+ScalarValue = namedtuple("ScalarValue", ["name", "value", "type"])
 QTest = namedtuple("QTest", ["name", "qtestname", "status", "result", "algorithm", "message"])
 
 # don't import these (kown obsolete/broken stuff)
+# The notorious SiStrip bad component workflow creates are varying number of MEs
+# for each run. We just hardcode-ban them here to help the deduplication
 blacklist = re.compile(b"By Lumi Section |/Reference/|BadModuleList")
+
+# This class represents a ME in storage. It needs to be very small, since we 
+# will store billions of these in DB. For example, it does not know it's name.
+# It does store the offsets into the ROOT file and everything else needed to
+# read the data from the ROOT file.
+class MEInfo:
+    idtotype = {
+      # these match the DQMIO encoding where possible. But they don't really need to.
+      0: b"Int",
+      1: b"Float",
+      2: b"String",
+      3: b"TH1F",
+      4: b"TH1S",
+      5: b"TH1D",
+      6: b"TH2F",
+      7: b"TH2S",
+      8: b"TH2D",
+      9: b"TH3F",
+      10: b"TProfile",
+      11: b"TProfile2D",
+      20: b"Flag",
+      21: b"QTest",
+      22: b"XMLString", # For string type in TDirectory
+    }
+    typetoid = {v: k for k, v in idtotype.items()}
+
+    # These are used to store the MEInfo into a blob. The scalar
+    # version stores the value directly. They are all the
+    # same size to allow direct indexing.
+    normalformat = struct.Struct("<qiihh")
+    # This is a bit of a hack: the deltaencode below needs all topmost bits to be unused.
+    # so we spread the double and int64 values for scalars with a bit of padding to keep them free.
+    scalarformat = struct.Struct("<xBBBBBBxxBBxxxxxHxx") 
+    intformat    = struct.Struct("<q")
+    floatformat  = struct.Struct("<d")
+    
+    @staticmethod
+    def listtoblob(meinfos):
+        # For the meinfos, Zlib compression is not very effective: there is
+        # little repetition for the LZ77 and the Huffmann coder struggles with the
+        # large numbers.
+        # But, since the list is roughly increasing in order, delta coding makes most
+        # values small. Then, the Huffmann coder in Zlib compresses well.
+        # Decreases output size about 4x.
+        words = MEInfo.normalformat
+        def deltacode(a):
+            prev = [0,0,0,0,0]
+            for x in a:
+                new = words.unpack(x)
+                yield words.pack(*[a-b for a, b in zip(new, prev)])
+                prev = new
+        delta = deltacode(i.pack() for i in meinfos)
+        buf = b''.join(delta)
+        infoblob = zlib.compress(buf)
+        print (f"MEInfo: compression {len(buf)/len(infoblob)}, total {len(buf)}")
+        return infoblob
+    
+    @staticmethod
+    def blobtopacked(infoblob):
+        words = MEInfo.normalformat
+        def deltadecode(d):
+            prev = [0,0,0,0,0]
+            for x in d:
+                new = [a+b for a, b in zip(prev, words.unpack(x))]
+                yield words.pack(*new)
+                prev = new
+        buf = zlib.decompress(infoblob)
+        packed = deltadecode(buf[i:i+words.size] for i in range(0, len(buf), words.size))
+        return list(packed)
+    
+    @staticmethod
+    def blobtolist(infoblob):
+        packed = MEInfo.blobtopacked(infoblob)
+        return [MEInfo.unpack(x) for x in packed]
+    
+    def __init__(self, metype, seekkey = 0, offset = 0, size = -1, value = None, qteststatus = 0):
+        self.metype = metype
+        self.seekkey = seekkey
+        self.offset = offset
+        self.size = size
+        self.value = value
+        self.qteststatus = qteststatus
+        
+    def __repr__(self):
+        return (f"MEInfo(metype={repr(self.metype)}" +
+            f"{', seekkey=%d' % self.seekkey if self.seekkey else ''}" +
+            f"{', offset=%d' % self.offset if self.offset else ''}" +    
+            f"{', size=%d' % self.size if self.size > 0 else ''}" +
+            f"{', value=%s' % repr(self.value) if self.value else ''}" +
+            f"{', qteststatus=%d' % self.qteststatus if self.qteststatus else ''}" +
+            ")")
+    
+    def __lt__(self, other):
+        return (self.metype, self.seekkey, self.offset) <  (other.metype, other.seekkey, other.offset)
+    
+    def pack(self):
+        if self.metype == b'Int':
+            buf = MEInfo.intformat.pack(self.value)
+            return MEInfo.scalarformat.pack(*buf, MEInfo.typetoid[self.metype])
+        if self.metype == b'Float':
+            buf = MEInfo.floatformat.pack(self.value)
+            return MEInfo.scalarformat.pack(*buf, MEInfo.typetoid[self.metype])
+        return MEInfo.normalformat.pack(self.seekkey, self.offset, self.size, 
+                                        MEInfo.typetoid[self.metype], self.qteststatus)
+    @staticmethod
+    def unpack(buf):
+        k, o, s, t, st = MEInfo.normalformat.unpack(buf)
+        metype = MEInfo.idtotype[t]
+        if metype == b'Int':
+            buf = MEInfo.scalarformat.unpack(buf)
+            v, = MEInfo.intformat.unpack(bytes(buf[:-1])) # last is metype again
+            return MEInfo(metype, value = v)
+        if metype == b'Float':
+            buf = MEInfo.scalarformat.unpack(buf)
+            v, = MEInfo.floatformat.unpack(bytes(buf[:-1])) # last is metype again
+            return MEInfo(metype, value = v)
+        return MEInfo(metype, seekkey = k, offset = o, size = s, qteststatus = st)
+    
+    def read(self, rootfile):
+        if self.value != None:
+            return ScalarValue(b'', self.value, b'') # TODO: do sth. better.
+        key = nanoroot.TKey(rootfile, self.seekkey)
+        data = key.objdata()
+        if self.metype == b'QTest':
+            # TODO: this won't work for DQMIO, but we don't have QTests there anyways...
+            return parsestringentry(key.objname())
+        if self.metype == b'XMLString':
+            return parsestringentry(key.objname())
+        if self.offset == 0 and self.size == -1:
+            obj = data
+        else:
+            obj = data[self.offset : self.offset + self.size]
+        if self.metype == b'String':
+            return obj # TODO: some decoding and stuff here.
+        # else
+        return nanoroot.TBufferFile(obj, self.metype) # metype doubles as root class name here.
+
+def parsestringentry(val):
+    # non-object data is stored in fake-XML stings in the TDirectory.
+    # This decodes these strings into an object of correct type.
+    assert val[0] == b'<'[0]
+    name = val[1:].split(b'>', 1)[0]
+    value = val[1+len(name)+1:].split(b'<', 1)[0]
+    if value == b"e=1": # efficiency flag on this ME
+        return EfficiencyFlag(name)
+    elif len(value) >= 2 and value[1] == b'='[0]:
+        return ScalarValue(name, value[2:], value[0:1])
+    else: # should be a qtest in this case
+        assert value.startswith(b'qr=')
+        assert b'.' in name
+        mename, qtestname = name.split(b'.', 1)
+        parts = value[3:].split(b':', 4)
+        assert len(parts) == 5, "Expect 5 parts, not " + repr(parts)
+        x, status, result, algorithm, message = parts
+        assert x == b'st'
+        return QTest(mename, qtestname, status, result, algorithm, message)
+        
+
+
     
 # SQLite is at heart single-threaded. However, since we expect a read-heavy
 # workload, we can work around that by having multiple connections open at the
@@ -89,6 +249,28 @@ def importsample(sample):
         return importsample(sample) # this time it should hit the other branch.
 
 def importsampleimpl(sample):
+    # Remove the folder strucutre that CMSSW adds.
+    # TODO: Check run numbers here?
+    def dqmnormalize(parts):
+        if len(parts) < 5 or parts[4] != b'Run summary':
+            return b'<broken>' + b'/'.join(parts) + b'/'
+        else:
+            return b'/'.join((parts[3],) + (parts[5:]) + (b'',))
+            
+    # Only import these types.
+    def dqmclasses(name):
+        return name in {
+            b'TH1D',
+            b'TH1F',
+            b'TH1S',
+            b'TH2D',
+            b'TH2F',
+            b'TH2S',
+            b'TH3F',
+            b'TObjString',
+            b'TProfile',
+            b'TProfile2D',
+        }
     melist = []
     #try:
     with open(sample.filename, 'rb') as f:
@@ -103,7 +285,6 @@ def importsampleimpl(sample):
     nameblob, offsetblob = melisttoblob(melist)
     return (nameblob, offsetblob, error)
 
-# This traverses a full TDirectory based file. Slow.
 def recursivelist(tfile):
     for path, name, cls, offset in tfile.fulllist():
         if blacklist.search(path):
@@ -111,59 +292,39 @@ def recursivelist(tfile):
         if cls == b'TObjString':
             thing = parsestringentry(name)
             if isinstance(thing, EfficiencyFlag): # efficiency flag on this ME
-                yield MEKey(path + thing.name, b'e=1', offset)
+                yield (path + thing.name + b'\0e=1', MEInfo(b'Flag'))
             elif isinstance(thing, ScalarValue):
-                # scalar ME. Store the name, value needs to be fetched from the file later.
-                yield MEKey(path + thing.name, b'', offset)
+                # scalar ME.
+                if thing.type == b'i':
+                    yield (path + thing.name, MEInfo(b'Int', value = int(thing.value.decode("ascii"))))
+                elif thing.type == b'f':
+                    yield (path + thing.name, MEInfo(b'Float', value = float(thing.value.decode("ascii"))))
+                else:
+                    yield (path + thing.name, MEInfo(b'XMLString', offset))
             else:
                 # QTest. Only save mename and qtestname, values need to be fetched later.
-                yield MEKey(path + thing.name, b'.' + thing.qtestname, offset)
+                # Separate QTest name with \0 to prevent collisions with ME names.
+                yield (path + thing.name + b'\0.' + thing.qtestname, 
+                       MEInfo(b'QTest', offset, qteststatus=int(thing.status.decode("ascii"))))
         else:
-            # path, name, second name, position
-            yield MEKey(path + name, b'', offset)
+            # path position
+            yield (path + name, MEInfo(cls, offset))
+            
 
-# Remove the folder strucutre that CMSSW adds.
-# TODO: Check run numbers here?
-def dqmnormalize(parts):
-    if len(parts) < 5 or parts[4] != b'Run summary':
-        return b'<broken>' + b'/'.join(parts) + b'/'
-    else:
-        return b'/'.join((parts[3],) + (parts[5:]) + (b'',))
-        
-# Only import these types.
-def dqmclasses(name):
-    return name in {
-        b'TH1D',
-        b'TH1F',
-        b'TH1S',
-        b'TH2D',
-        b'TH2F',
-        b'TH2S',
-        b'TH3F',
-        b'TObjString',
-        b'TProfile',
-        b'TProfile2D',
-    }
+def melisttoblob(melist):
+    melist.sort()
+    buf = b'\n'.join(key for key, _ in melist)
+    nameblob = zlib.compress(buf)
+    print (f"Compression {len(buf)/len(nameblob)}, total {len(buf)}")
+    infos = [info for _, info in melist]
+    infoblob = MEInfo.listtoblob(infos)
+    return nameblob, infoblob
 
-def parsestringentry(val):
-    # non-object data is stored in fake-XML stings in the TDirectory.
-    # This decodes these strings into an object of correct type.
-    assert val[0] == b'<'[0]
-    name = val[1:].split(b'>', 1)[0]
-    value = val[1+len(name)+1:].split(b'<', 1)[0]
-    if value == b"e=1": # efficiency flag on this ME
-        return EfficiencyFlag(name)
-    elif len(value) >= 2 and value[1] == b'='[0]:
-        return ScalarValue(name, value[2:])
-    else: # should be a qtest in this case
-        assert value.startswith(b'qr=')
-        assert b'.' in name
-        mename, qtestname = name.split(b'.', 1)
-        parts = value[3:].split(b':', 4)
-        assert len(parts) == 5, "Expect 5 parts, not " + repr(parts)
-        x, status, result, algorithm, message = parts
-        assert x == b'st'
-        return QTest(mename, qtestname, status, result, algorithm, message)
+def meoffsetsfromblob(offsetblob):
+    return MEInfo.blobtolist(offsetblob)
+
+def melistfromblob(namesblob):
+    return zlib.decompress(namesblob).splitlines()
 
 def storemelist(sample, nameblob, offsetblob, problems = None):
     # TODO: Sqlite does not like MT-writing. Use a RWLock or sth.?
@@ -182,68 +343,10 @@ def storemelist(sample, nameblob, offsetblob, problems = None):
         db.execute("INSERT INTO meoffsets(meoffsetsblob) VALUES(?);", (offsetblob,))
         cur = db.execute("SELECT last_insert_rowid();")
         meoffsetsid = list(cur)[0][0]
-        db.execute("UPDATE samples SET (menamesid, meoffsetsid, problems, isdqmio) = (?, ?, ?, ?) WHERE (dataset, run, lumi, filename) == (?, ?, ?, ?);", 
-                   (menamesid, meoffsetsid, problems, sample.isdqmio, sample.dataset, sample.run, sample.lumi, sample.filename))
+        db.execute("UPDATE samples SET (menamesid, meoffsetsid, problems) = (?, ?, ?) WHERE (dataset, run, lumi, filename) == (?, ?, ?, ?);", 
+                   (menamesid, meoffsetsid, problems, sample.dataset, sample.run, sample.lumi, sample.filename))
         db.execute("COMMIT;")
 
-def melisttoblob(melist):
-    # '\n' is a separator that we cna fairly safely use, so we use it for both
-    # rows and "colums". One entry is always four rows.
-    # Entries are sorted.
-    def mekeytorow(key):
-        return b'\n'.join(key[:-1])
-    # For the list of offsets, Zlib compression is not very effective: there is
-    # little repetition for the LZ77 and the Huffmann coder struggles with the
-    # large numbers.
-    # But, since the list is roughly increasing in order, delta coding makes most
-    # values small. Then, the Huffmann coder in Zlib compresses well.
-    def deltacode(a):
-        prev = 0
-        out = []
-        for x in a:
-            out.append(x - prev)
-            prev = x
-        return out     
-    # The notorious SiStrip bad component workflow creates are varying number of MEs
-    # for each run. We just hardcode-ban them here to help the deduplication
-    mes = sorted(key for key in melist if not b'BadModuleList' in key.name)
-    buf = b'\n'.join(mekeytorow(key) for key in mes)
-    nameblob = zlib.compress(buf)
-    print (f"Compression {len(buf)/len(nameblob)}, total {len(buf)}")
-    offsets = [key.offset for key in mes]
-    delta = deltacode(offsets)
-    buf = struct.pack("%di" % len(delta), *delta)
-    offsetblob = zlib.compress(buf)
-    print (f"Compression {len(buf)/len(offsetblob)}, total {len(buf)}")
-    return nameblob, offsetblob
-
-# Uncompress the ME names. The offsets will be all -1.
-def melistfromblob(nameblob):
-    buf = zlib.decompress(nameblob)
-    lines = buf.split(b'\n')
-    k = len(MEKey._fields) - 1
-    out = []
-    for x in range(0, len(lines), k):
-        parts = list(lines[x:x+k])
-        parts.append(-1)
-        out.append(MEKey(*parts))
-    return out
-
-# Uncompress the ME offsets independently. The result is a bare list of ints,
-# matching the names in order.
-def meoffsetsfromblob(offsetblob):
-    # analog to melisttoblob.
-    def deltadecode(d):
-        prev = 0
-        out = []
-        for x in d:
-            new = prev + x
-            out.append(new)
-            prev = new
-        return out
-    buf = zlib.decompress(offsetblob)
-    delta = struct.unpack("%di" % (len(buf)/4), buf)
-    return deltadecode(delta)
 
 # This is the main entry point. Given a (partial) Sample tuple and a full name,
 # return data for this ME.
@@ -255,17 +358,17 @@ def readme(sample, fullname):
     offsets = meoffsetsfromid(fullsample.meoffsetsid)
     keys = locateme(mes, offsets, fullname)
     with FileHandle(fullsample.filename, filecache) as f:
-        return [readobject(f, k) for k in keys]
+        return [info.read(f[1]) for name, info in keys]
     
 # Collect sample info from DB.
 # All DB accesses are per-sample and cached.
 @lru_cache(maxsize=10)
 def queryforsample(sample):
     with DBHandle(dbcache) as db:
-        cur = db.execute("SELECT filename, menamesid, meoffsetsid, isdqmio FROM samples WHERE (dataset, run, lumi) == (?, ?, ?);", 
+        cur = db.execute("SELECT filename, menamesid, meoffsetsid FROM samples WHERE (dataset, run, lumi) == (?, ?, ?);", 
                          (sample.dataset, sample.run, sample.lumi))
-        file, menamesid, meoffsetsid, idqmio = list(cur)[0]
-        sample = Sample(sample.dataset, sample.run, sample.lumi, file, menamesid, meoffsetsid, isdqmio)
+        file, menamesid, meoffsetsid = list(cur)[0]
+        sample = Sample(sample.dataset, sample.run, sample.lumi, file, menamesid, meoffsetsid)
     if file and menamesid == None or meoffsetsid == None:
         importsample(sample)
         return queryforsample(sample) # retry
@@ -294,15 +397,13 @@ def locateme(mes, offsets, fullname):
     # This is different from the (path, name) order in DQMIO FullName column.
     # But fine, since we make the list ourselves.
     def access(i):
-        return mes[i].name
+        return mes[i]
     idx = bound(access, fullname, 0, len(mes))
-    out = []
     while idx < len(mes) and access(idx) == fullname:
         offset = offsets[idx]
         # Attach the offset to the tuple. A bit messy since tuples are immutable...
-        out.append(MEKey(*(mes[idx][:-1] + (offset,))))
+        yield (mes[idx], offset)
         idx += 1
-    return out 
 
 # Return the index of the first element that is not smaller than key.
 # lower is the index of the first element to consider.
@@ -347,20 +448,6 @@ class FileHandle:
     def __exit__(self, type, value, traceback):
         self.cache[self.filename].append((time.time(), self.file))
 
-# Actually fetch a remote object.
-def readobject(file, mekey):
-    if mekey.secondary == b'e=1': # nothing to read here.
-        return EfficiencyFlag(mekey.name)
-    k = nanoroot.TKey(file[1], mekey.offset)
-    buf = k.objdata()
-    if k.classname() == b"TObjString":
-        thing = parsestringentry(k.objname())
-        # could sanity check stuff here...
-        return thing
-    else:
-        # tobject, reconstruct frame for TBufferFile
-        return nanoroot.TBufferFile(buf, k.classname())
-
 # Samples search API
 def searchsamples(datasetre = None, runre = None):
     dsmatch = re.compile(datasetre) if datasetre else None
@@ -380,9 +467,9 @@ def listmes(sample, path, match=None, recursive=True):
     mes = melistfromid(s.menamesid)
     if match:
         exp = re.compile(match)
-        cand = [x.name for x in mes if x.name.startswith(path) and exp.search(x.name)]
+        cand = [x for x in mes if x.startswith(path) and exp.search(x)]
     else:
-        cand = [x.name for x in mes if x.name.startswith(path)]
+        cand = [x for x in mes if x.startswith(path)]
     if recursive:
         return set(cand)
     else:
@@ -390,9 +477,10 @@ def listmes(sample, path, match=None, recursive=True):
         def relativize(subpath):
             tail = subpath[len(path):]
             if b'/' in tail:
-                return tail.split(b'/')[0] + b'/'
-            else:
-                return tail
+                tail = tail.split(b'/')[0] + b'/'
+            if b'\0' in tail: # QTest with secondary name
+                tail = tail.split(b'\0')[0] 
+            return tail
         return set(relativize(x) for x in cand)
         
 
