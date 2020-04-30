@@ -178,7 +178,9 @@ class MEInfo:
             s = nanoroot.String.unpack(obj, 0, len(obj), None)
             return ScalarValue(b'', s, b's')
         # else
-        return nanoroot.TBufferFile(obj, self.metype) # metype doubles as root class name here.
+        classversion = 3 #TODO: we need to have a better guess here...
+        # metype doubles as root class name here.
+        return nanoroot.TBufferFile(obj, self.metype, classversion) 
 
 def parsestringentry(val):
     # non-object data is stored in fake-XML stings in the TDirectory.
