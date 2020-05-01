@@ -311,8 +311,11 @@ class ObjectBlob:
         def data(self):
             return self.buf[self.start:self.end]
         def __repr__(self):
-            return f"Range(buf=<len()={len(self.buf)}>, start={self.start}, end={self.end}, fSeekKey={self.fSeekKey})"
+            return f"Range(buf=<len()={len(self.buf) if self.buf else 'None'}>, start={self.start}, end={self.end}, fSeekKey={self.fSeekKey})"
     size = None
+    # This tells the TBranch to not keep the uncompressed data. To actually get
+    # the data, the buffer has to be reconstructed using the seekkey and TKey.
+    dropdata = True 
     @staticmethod
     def unpack(buf, start, end, basket):
         # return object here, so we can later extract pointers pointing *into* the basket.
@@ -326,9 +329,9 @@ class ObjectBlob:
 # A Tbasket is pretty self-contained, we can read it from a TKey and its type.
 # The only thing it does not know is its starting index in the full table.
 # We don't save stuff that is not absolutely needed, like names or a ref to the
-# file (we do keep a copy of the (decompressed) data).
+# file (we do keep a copy of the (decompressed) data, unless dropdata is set).
 class TBasket:
-    def __init__(self, tkey, ttype, startindex = None):
+    def __init__(self, tkey, ttype, startindex = None, dropdata = False):
         assert tkey.classname() == b'TBasket'
         self.fKeyLen = tkey.fields.fKeyLen
         self.fSeekKey = tkey.fields.fSeekKey # we don't really need that, but keep it for later
@@ -339,6 +342,10 @@ class TBasket:
             self.initfixed()
         else:
             self.initvariable()
+        if dropdata:
+            del self.buf
+            self.buf = None
+
     def initfixed(self):
         self.offsets = [i*self.ttype.size for i in range(len(self.buf)//self.ttype.size + 1)]
     def initvariable(self):
@@ -392,7 +399,8 @@ class TBranch:
         self.baskets = [(None, 0)]
     def addbasket(self, tkey):
         currentend = self.baskets[-1][1]
-        basket = TBasket(tkey, self.ttype, currentend)
+        dropdata = self.ttype.dropdata if hasattr(self.ttype, 'dropdata') else False
+        basket = TBasket(tkey, self.ttype, currentend, dropdata)
         self.baskets.append((basket, currentend + len(basket)))
     def iterat(self, start, end = -1):
         # TODO: we could use this for tbranch[start:end]...
