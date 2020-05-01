@@ -183,7 +183,7 @@ class MEInfo:
         return nanoroot.TBufferFile(obj, self.metype, classversion) 
 
 def parsestringentry(val):
-    # non-object data is stored in fake-XML stings in the TDirectory.
+    # non-object data is stored in fake-XML strings in the TDirectory.
     # This decodes these strings into an object of correct type.
     assert val[0] == b'<'[0]
     name = val[1:].split(b'>', 1)[0]
@@ -203,8 +203,6 @@ def parsestringentry(val):
         return QTest(mename, qtestname, status, result, algorithm, message)
         
 
-
-    
 # SQLite is at heart single-threaded. However, since we expect a read-heavy
 # workload, we can work around that by having multiple connections open at the
 # same time. 
@@ -280,16 +278,18 @@ def importsampleimpl(sample):
             b'TProfile2D',
         }
     melist = []
-    #try:
-    with open(sample.filename, 'rb') as f:
-        with mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ) as mm:
-            tf = nanoroot.TFile(mm, normalize=dqmnormalize, classes=dqmclasses)
-            melist = list(recursivelist(tf))
-            print("meslist: ", len(melist))
-            error = "Problems on import" if tf.error else None
-    #except:
-    #    melist = []
-    #    error = "Excception on import"
+    try:
+        f, mm = openfile(sample.filename, pagesize=2**30) # Just preload the full file
+        tf = nanoroot.TFile(mm, normalize=dqmnormalize, classes=dqmclasses)
+        melist = list(recursivelist(tf))
+        print("meslist: ", len(melist))
+        error = "Problems on import" if tf.error else None
+    except Exception as e:
+        melist = []
+        error = "Exception on import: " + repr(e)
+        raise e # comment out to actually ignore and continue
+    finally:
+        f.close(), mm.close()
     nameblob, offsetblob = melisttoblob(melist)
     return (nameblob, offsetblob, error)
 
@@ -502,6 +502,18 @@ def bound(access, key, lower, upper):
 
 
 filecache = defaultdict(list)
+def openfile(filename, pagesize = 2**20):
+    # maybe add more options here
+    if filename.startswith("root:"):
+        xf = nanoroot.XRDFile(filename)
+        cf = nanoroot.CachedFile(xf, pagesize=pagesize)
+        file = (xf, cf)
+    else: 
+        f = open(filename, 'rb')
+        mm = mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ)
+        file = (f, mm)
+    return file
+
 class FileHandle:
     def __init__(self, filename, cache):
         self.cache = cache
@@ -518,10 +530,7 @@ class FileHandle:
                     self.file = None
         except IndexError:
             # no open files left
-            # maybe add more options here
-            f = open(self.filename, 'rb')
-            mm = mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ)
-            self.file = (f, mm)
+            self.file = openfile(self.filename)
         return self.file
     def __exit__(self, type, value, traceback):
         self.cache[self.filename].append((time.time(), self.file))

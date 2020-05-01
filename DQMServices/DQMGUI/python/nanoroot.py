@@ -33,9 +33,11 @@ class TFile:
         self.buf = buf
         self.normalize = normalize
         self.classes = classes
-        self.fields = TFile.Fields(*TFile.structure_small.unpack_from(self.buf, 0))
+        self.fields = TFile.Fields(*TFile.structure_small.unpack(
+            self.buf[0:TFile.structure_small.size]))
         if self.fields.fVersion > 1000000:
-            self.fields = TFile.Fields(*TFile.structure_big.unpack_from(self.buf, 0))
+            self.fields = TFile.Fields(*TFile.structure_big.unpack(
+                self.buf[0:TFile.structure_big.size]))
         assert self.fields.root == b'root'
         self.normalizedcache = dict()
         self.dircache = dict()
@@ -471,3 +473,75 @@ def TTreeFile(tfile, schema):
         k = k.next()
     return trees
 
+# XRootD IO, using pyxrootd. IO latency with xrootd is not as bad as one could 
+# think, it takes a few 100ms to open a remote file and a few ten's of me to
+# perform a random read. This is comparable to a normal filesystem on spinning 
+# disks and faster than CEPH or mounted EOS (EOS xrootd is maybe 10x faster
+# then xrootd from GRID, and slightly faster than mounted EOS, which is faster
+# than CEPH standard volumes).
+# Throughput can be over 100MBytes/s.
+# However, there is no caching at all in xrootd itself, so directly using the
+# connection will be way slower than a local file system. CachedFile provides
+# a layer of caching with variable page size to fix that. 
+# Both classes provide an interface similar to `mmap.mmap`, which is in turn
+# similar to `bytes`: len(...) and [...:...] (no stride or negative indices).
+
+import pyxrootd.client
+
+class XRDFile:
+    def __init__(self, url, timeout = 5):
+        self.timeout = timeout
+        self.file = pyxrootd.client.File()
+        ok, res = self.file.open(url, timeout=self.timeout)
+        assert not ok['error'], repr(ok)
+        ok, stat = self.file.stat()
+        assert not ok['error'], repr(ok)
+        self.size = stat['size']
+    def __len__(self):
+        return self.size
+    def __getitem__(self, idx):
+        if isinstance(idx, slice):
+            start, end, stride = idx.indices(len(self))
+            assert stride == 1 and start >= 0 and end >= 0
+            ok, buf = self.file.read(start, end-start, timeout = self.timeout)
+            assert not ok['error'], repr(ok)
+            return buf
+        else:
+            return self[idx:idx+1][0]
+    def close(self):
+        self.file.close()
+
+class CachedFile:
+    def __init__(self, backingfile, pagesize=2**20):
+        self.backingfile = backingfile
+        self.pagesize = pagesize
+        self.cache = dict()
+        self.hits = 0
+        self.misses = 0
+    def __len__(self):
+        return len(self.backingfile)
+    def getpage(self, pageid):
+        if pageid in self.cache:
+            self.hits += 1
+            return self.cache[pageid]
+        else:
+            self.misses += 1
+            print(f"CachedFile miss: {self.hits} hits, {self.misses} misses")
+            page = self.backingfile[pageid*self.pagesize : (pageid+1)*self.pagesize]
+            self.cache[pageid] = page
+            return page
+    def getparts(self, idxslice):
+        start, end, stride = idxslice.indices(len(self))
+        assert stride == 1 and start >= 0 and end >= 0
+        firstpage, lastpage = start//self.pagesize, end//self.pagesize
+        for pageid in range(firstpage, lastpage+1):
+            page = self.getpage(pageid)
+            offset = pageid*self.pagesize
+            yield page[max(0, start-offset) : max(0, end-offset)]
+    def __getitem__(self, idx):
+        if isinstance(idx, slice):
+            return b''.join(self.getparts(idx))
+        else:
+            return self[idx:idx+1][0]
+    def close(self):
+        self.cache.clear()

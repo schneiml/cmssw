@@ -15,7 +15,7 @@ os.chdir(BASE)
 from DQMServices.DQMGUI.render import RenderPool
 import DQMServices.DQMGUI.rootstorage as storage
 
-renderpool = RenderPool(workers=5)
+renderpool = RenderPool(workers=1)
 
 if len(storage.searchsamples()) == 0:
     import glob
@@ -39,7 +39,7 @@ if len(storage.searchsamples()) == 0:
         EOSPREFIX = "root://eoscms.cern.ch/"
         print(f"Listing all files on EOS ({EOSPATH}), this can take a while...")
         files = glob.glob(EOSPATH)
-        storage.registerfiles([f for f in files])
+        storage.registerfiles([EOSPREFIX + f for f in files])
         print(f"Done, registered {len(files)} files.")
 
 def samples(args):
