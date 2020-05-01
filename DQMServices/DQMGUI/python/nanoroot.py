@@ -14,8 +14,9 @@ from collections import namedtuple
 
 class TFile:
     # Structure from here: https://root.cern.ch/doc/master/classTFile.html
-    Fields = namedtuple("TFileFields", ["root", "fVersion", "fBEGIN", "fEND", "fSeekFree", "fNbytesFree", "nfree", "fNbytesName", "fUnits", "fCompress", "fSeekInfo", "fNbytesInfo", "fUUID"])
-    structure = struct.Struct(">4sIIIIIIIbIIII")
+    Fields = namedtuple("TFileFields", ["root", "fVersion", "fBEGIN", "fEND", "fSeekFree", "fNbytesFree", "nfree", "fNbytesName", "fUnits", "fCompress", "fSeekInfo", "fNbytesInfo", "fUUID_low", "fUUID_high"])
+    structure_small = struct.Struct(">4sIIIIIIIbIIIQQ")
+    structure_big   = struct.Struct(">4sIIQQIIIbIQIQQ")
 
     
     # These two are default transforms that can be overwritten.
@@ -32,8 +33,9 @@ class TFile:
         self.buf = buf
         self.normalize = normalize
         self.classes = classes
-        self.fields = TFile.Fields(*TFile.structure.unpack(
-            self.buf[0 : TFile.structure.size]))
+        self.fields = TFile.Fields(*TFile.structure_small.unpack_from(self.buf, 0))
+        if self.fields.fVersion > 1000000:
+            self.fields = TFile.Fields(*TFile.structure_big.unpack_from(self.buf, 0))
         assert self.fields.root == b'root'
         self.normalizedcache = dict()
         self.dircache = dict()
@@ -99,6 +101,7 @@ class TKey:
     structure_small = struct.Struct(">iHIIHHII")
     structure_big   = struct.Struct(">iHIIHHQQ")
     sizefield = struct.Struct(">i")
+    compressedheader = struct.Struct("2sBBBBBBB")
 
     # In this case of curruption, we search for the next known class name and try it there.
     # This should never be used in the normal case.
@@ -191,10 +194,20 @@ class TKey:
         if not self.compressed():
             return self.buf[start:end]
         else:
-            comp = self.buf[start:start+2]
-            assert comp == b'ZL', "Only Zlib compression supported, not " + repr(comp)
-            # There are a bunch of header bytes, not exactly sure what they mean.
-            return zlib.decompress(self.buf[start+9:end])
+            out = []
+            while start < end:
+                 # Thanks uproot!
+                 algo, method, c1, c2, c3, u1, u2, u3 = TKey.compressedheader.unpack(
+                     self.buf[start : start + TKey.compressedheader.size])
+                 compressedbytes = c1 + (c2 << 8) + (c3 << 16)
+                 uncompressedbytes = u1 + (u2 << 8) + (u3 << 16)
+                 start += TKey.compressedheader.size
+                 assert algo == b'ZL', "Only Zlib compression supported, not " + repr(comp)
+                 uncomp =  zlib.decompress(self.buf[start:start+compressedbytes])
+                 out.append(uncomp)
+                 assert len(uncomp) == uncompressedbytes
+                 start += compressedbytes
+            return b''.join(out)
 
     # Each key (except the root) has a parent directory.
     # Creates a new TKey pointing there.
