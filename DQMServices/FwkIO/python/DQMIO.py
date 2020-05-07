@@ -1,10 +1,25 @@
+from __future__ import print_function
+
 import ROOT
 # try to get some better multi-threading support out of root. Needs to happen as early as possible.
 ROOT.ROOT.EnableThreadSafety()
 #ROOT.TFile.Open._threaded = True
 
 import time
-from functools import lru_cache
+try:
+    from functools import lru_cache
+except:
+    class lru_cache:
+        def __init__(self, **kwargs):
+            self.cache = dict()
+        def __call__(self, func):
+            def cached(*args, **kwargs):
+                key = (tuple(args), tuple((k, kwargs[k]) for k in sorted(kwargs.keys())))
+                if key not in self.cache:
+                    self.cache[key] = func(*args, **kwargs)
+                return self.cache[key]
+            return cached
+    
 from collections import namedtuple, defaultdict
 
 MonitorElement = namedtuple('MonitorElement', ['run', 'lumi', 'name', 'type', 'data'])
@@ -134,9 +149,9 @@ class DQMIOFileIO:
         if self.openfiles[name]:
             tfile, lastused = self.openfiles[name].pop()
             if time.time() - lastused > CACHETIMEOUT:
-              return self.getfromcache(name) # recursive retry
+                return self.getfromcache(name) # recursive retry
             else:
-              return tfile
+                return tfile
         return None
         
     def addtocache(self, name, tfile):
@@ -329,9 +344,9 @@ def processtasks(tasks, callback, taskname):
     totaltasks = len(tasks)
     failed = []
     while tasks:
-        print(f"Processing {taskname}: {totaltasks - len(tasks)} out of {totaltasks} " +
-              f"done ({ (1 - (len(tasks)/totaltasks))*100:.2f}%), {len(failed)} failed, " + 
-              f"{time.time() - starttime:.1f}s elapsed", end="\r")
+        print("Processing {}: {} out of {} ".format(taskname, totaltasks - len(tasks), totaltasks) +
+              "done ({:.2f}%), {} failed, ".format((1 - (len(tasks)/totaltasks))*100, len(failed)) + 
+              "{:.1f}s elapsed".format(time.time() - starttime), end="\r")
         time.sleep(0.1)
         tasks, done = splitdone(tasks)
         for workitem, future in done:
@@ -341,8 +356,8 @@ def processtasks(tasks, callback, taskname):
             else:
                 result = future.result()
                 callback(workitem, result)
-    print(f"\n{totaltasks} {taskname} tasks done in {time.time()-starttime:.2f}s." 
-       + (f" ({len(failed)} failed)" if failed else ""))
+    print("\n{} {} tasks done in {:.2f}s.".format(totaltasks, taskname, time.time()-starttime)
+       + (" ({} failed)".format(len(failed)) if failed else ""))
     return failed
 
 # SQLite is at heart single-threaded. However, since we expect a read-heavy
@@ -389,7 +404,7 @@ class DQMIOReader:
         """
         Query DAS for datasets matching `datasetpattern` and add their files.
         """
-        dqmiodatasets = subprocess.check_output(['dasgoclient', '-query', 'dataset dataset=/*/*/DQMIO'])
+        dqmiodatasets = subprocess.check_output(['dasgoclient', '-query', 'dataset status=* dataset=/*/*/DQMIO'])
         datasets = []
         for name in dqmiodatasets.splitlines():
             datasetname = name.decode("utf-8")
@@ -420,13 +435,13 @@ class DQMIOReader:
         Add ROOT files to the metadata database, under the given dataset name.
         """
         with self.getdb() as db:
-            db.execute("BEGIN;")
+            #db.execute("BEGIN;")
             db.execute("INSERT OR IGNORE INTO dataset(datasetname) VALUES (?);", (datasetname,))
             db.execute("UPDATE dataset SET lastchecked = datetime('now') WHERE datasetname = ?;", (datasetname,))
-            datasetid = db.execute(f"SELECT id FROM dataset WHERE datasetname = ?;", (datasetname,))
+            datasetid = db.execute("SELECT id FROM dataset WHERE datasetname = ?;", (datasetname,))
             datasetid = list(datasetid)[0][0]
             db.executemany("INSERT OR IGNORE INTO file(datasetid, name) VALUES (?, ?)", [(datasetid, name) for name in filelist])  
-            db.execute("COMMIT;")
+            #db.execute("COMMIT;")
           
     def datasets(self):
         """
@@ -449,7 +464,7 @@ class DQMIOReader:
             """, (since,)))
 
             lastcommit = [time.time()]
-            db.execute("BEGIN;")
+            #db.execute("BEGIN;")
             def storeindex(filename, index):
                 db.execute("UPDATE file SET readable = ? WHERE name = ?;", (index != None, filename))
                 db.execute("UPDATE file SET lastchecked = datetime('now') WHERE name = ?;", (filename,))
@@ -460,14 +475,14 @@ class DQMIOReader:
 
                 # SQLite DB transactions can be really slow, so we rate-limit them to 1 in 10s.
                 if (time.time() - lastcommit[0]) > 10:
-                    db.execute("COMMIT;")
-                    db.execute("BEGIN;")
+                    #db.execute("COMMIT;")
+                    #db.execute("BEGIN;")
                     lastcommit[0] = time.time()
 
 
             tasks = [(filename, self.pool.submit(self.io.readindex, filename)) for filename, in newfiles]
             failed = processtasks(tasks, storeindex, "index read")
-            db.execute("COMMIT;")
+            #db.execute("COMMIT;")
     
     def samples(self):
         """
@@ -480,7 +495,7 @@ class DQMIOReader:
                 INNER JOIN dataset ON file.datasetid = dataset.id;"""))
 
     def entriesforsample(self, datasetname, run, lumi, onefileonly=False):
-        query = f"""
+        query = """
             SELECT run, lumi, type, file.name, firstidx, lastidx
             FROM dataset
             INNER JOIN file ON file.datasetid = dataset.id 
@@ -501,7 +516,7 @@ class DQMIOReader:
         tasks = [(None, self.pool.submit(self.io.locateme, e, fullname)) for e in entries for fullname in fullnames]
         processtasks(tasks, append, "ME locate")
         tasks = [(None, self.pool.submit(self.io.getme, *e_idx)) for e_idx in items if e_idx]
-        items.clear()
+        items[:] = []
         processtasks(tasks, append, "ME get")
         self.io.cleancache()
         return items
