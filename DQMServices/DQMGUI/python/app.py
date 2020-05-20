@@ -13,6 +13,7 @@ and configured here.
 import time
 import asyncio
 import logging
+import argparse
 
 from logging.handlers import TimedRotatingFileHandler
 
@@ -26,10 +27,6 @@ from helpers import get_absolute_path
 from data_types import RenderingOptions, MEDescription
 
 from layouts.layout_manager import LayoutManager
-
-# Constants
-SERVER_PORT = 8889
-NUMBER_OF_RENDERERS = 2
 
 
 # Services
@@ -155,6 +152,8 @@ async def render_legacy(request):
 
     data = await service.get_rendered_image([me_description], options)
 
+    if data == b'crashed':
+        return web.HTTPInternalServerError()
     return web.Response(body=data, content_type='image/png')
 
 
@@ -174,6 +173,8 @@ async def render_v1(request):
 
     data = await service.get_rendered_image([me_description], options)
 
+    if data == b'crashed':
+        return web.HTTPInternalServerError()
     return web.Response(body=data, content_type='image/png')
 
 
@@ -194,6 +195,8 @@ async def render_overlay_legacy(request):
 
     data = await service.get_rendered_image(me_descriptions, options)
 
+    if data == b'crashed':
+        return web.HTTPInternalServerError()
     return web.Response(body=data, content_type='image/png')
 
 
@@ -214,6 +217,8 @@ async def render_overlay_v1(request):
 
     data = await service.get_rendered_image(me_descriptions, options)
 
+    if data == b'crashed':
+        return web.HTTPInternalServerError()
     return web.Response(body=data, content_type='image/png')
 
 
@@ -236,6 +241,9 @@ async def jsroot_legacy(request):
     options = RenderingOptions(json=True)
 
     data = await service.get_rendered_json([me_description], options)
+
+    if data == b'crashed':
+        return web.HTTPInternalServerError()
     return web.json_response(data)
 
 
@@ -256,6 +264,8 @@ async def jsroot_overlay(request):
 
     data = await service.get_rendered_json(me_descriptions, options)
 
+    if data == b'crashed':
+        return web.HTTPInternalServerError()
     return web.json_response(data)
 
 
@@ -263,10 +273,10 @@ async def jsroot_overlay(request):
 # ==================== Server configuration, initialization/destruction of services ==================== #
 # ###################################################################################################### #
 
-async def initialize_services():
-    await GUIDataStore.initialize()
-    await GUIImporter.initialize()
-    await GUIRenderer.initialize(workers=NUMBER_OF_RENDERERS)
+async def initialize_services(in_memory, files, workers):
+    await GUIDataStore.initialize(in_memory=in_memory)
+    await GUIImporter.initialize(root_files=files)
+    await GUIRenderer.initialize(workers=workers)
 
 
 async def destroy_services():
@@ -279,7 +289,7 @@ async def on_shutdown(app):
     await destroy_services()
 
 
-def config_and_start_webserver():
+def config_and_start_webserver(port):
     app = web.Application(middlewares=[
         web.normalize_path_middleware(append_slash=True, merge_slashes=True),
     ])
@@ -288,7 +298,6 @@ def config_and_start_webserver():
     def log_file_namer(filename):
         parts = filename.split('/')
         parts[-1] = f'access_{parts[-1][11:]}.log'
-        print('/'.join(parts))
         return '/'.join(parts)
     
     handler = TimedRotatingFileHandler(get_absolute_path('logs/access.log'), when='midnight', interval=1)
@@ -318,9 +327,16 @@ def config_and_start_webserver():
 
     app.on_shutdown.append(on_shutdown)
 
-    web.run_app(app, port=SERVER_PORT)
+    web.run_app(app, port=port)
 
 
 if __name__ == '__main__':
-    asyncio.get_event_loop().run_until_complete(initialize_services())
-    config_and_start_webserver()
+    parser = argparse.ArgumentParser(description='DQM GUI API')
+    parser.add_argument('-f', dest='files', nargs='+', help='DQM files to be imported.')
+    parser.add_argument('-p', dest='port', type=int, default=8889, help='Server port.')
+    parser.add_argument('-r', dest='renderers', type=int, default=2, help='Number of renderer processes.')
+    parser.add_argument('--in-memory', dest='in_memory', default=False, action='store_true', help='If set uses an in memory database.')
+    args = parser.parse_args()
+
+    asyncio.get_event_loop().run_until_complete(initialize_services(args.in_memory, args.files, args.renderers))
+    config_and_start_webserver(args.port)
