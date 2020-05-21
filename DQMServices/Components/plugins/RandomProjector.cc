@@ -47,7 +47,7 @@ private:
 };
 
 RandomProjector::RandomProjector(const edm::ParameterSet& ps) : DQMEDHarvester(ps) {
-  ndimensions = ps.getUntrackedParameter<int>("ndimensions", 1337);
+  ndimensions = ps.getUntrackedParameter<int>("ndimensions", 1000);
   meprefix = ps.getUntrackedParameter<std::string>("meprefix", "");
   outputdir = ps.getUntrackedParameter<std::string>("outputdir", "DQM/RandomProjections");
   writetostdout = ps.getUntrackedParameter<bool>("writetostdout", true);
@@ -75,10 +75,7 @@ void RandomProjector::performProjection(DQMStore::IGetter& igetter,
 
   auto mes = igetter.getAllContents(meprefix);
 
-  ibooker.setCurrentFolder(outputdir);
-  std::string outname = "randomprojection_" + meprefix;
-  std::replace(outname.begin(), outname.end(), '/', '_');
-  MonitorElement* out = ibooker.book1DD(outname, outname, ndimensions, 1, ndimensions);
+  std::vector<double> outbuf(ndimensions, 0);
 
   int totbins = 0;
 
@@ -95,7 +92,7 @@ void RandomProjector::performProjection(DQMStore::IGetter& igetter,
     std::string name = me->getFullname();
 
     auto rand = std::minstd_rand();
-    rand.seed(42);         // determinisitc starting seed
+    rand.seed(42);         // deterministic starting seed
     for (char c : name) {  // poor man's hash function
       rand();
       auto next = rand();
@@ -104,22 +101,15 @@ void RandomProjector::performProjection(DQMStore::IGetter& igetter,
     }
     // now rand() should be a nice random but reproducible sequence based on the ME name.
 
-    auto startdist = std::uniform_int_distribution(1, ndimensions);
-    int currentdim = startdist(rand);
-
     auto weightdist = std::normal_distribution<double>(0.0, 1.0);
 
     if (kind == MonitorElement::Kind::TH1F) {
       auto nbins = me->getNbinsX();
       for (int i = 1; i <= nbins; i++) {
         double val = me->getBinContent(i);
-        double weight = weightdist(rand);
-        double current = out->getBinContent(currentdim);
-        out->setBinContent(currentdim, current + weight * val);
-
-        currentdim += 1;
-        if (currentdim > ndimensions) {
-          currentdim = 1;
+        for (int currentdim = 0; currentdim < ndimensions; currentdim++) {
+          double weight = weightdist(rand);
+          outbuf[currentdim] += weight * val;
         }
         totbins++;
       }
@@ -130,21 +120,26 @@ void RandomProjector::performProjection(DQMStore::IGetter& igetter,
       for (int y = 1; y <= nbinsy; y++) {
         for (int x = 1; x <= nbinsx; x++) {
           double val = me->getBinContent(x, y);
-          double weight = weightdist(rand);
-          double current = out->getBinContent(currentdim);
-          out->setBinContent(currentdim, current + weight * val);
-
-          currentdim += 1;
-          if (currentdim > ndimensions) {
-            currentdim = 1;
+          for (int currentdim = 0; currentdim < ndimensions; currentdim++) {
+            double weight = weightdist(rand);
+            outbuf[currentdim] += weight * val;
           }
           totbins++;
         }
       }
     }
   }
+
+  ibooker.setCurrentFolder(outputdir);
+  std::string outname = "randomprojection_" + meprefix;
+  std::replace(outname.begin(), outname.end(), '/', '_');
+  MonitorElement* out = ibooker.book1DD(outname, outname, ndimensions, 1, ndimensions);
+  for (int i = 1; i <= ndimensions; i++) {
+    out->setBinContent(i, outbuf[i - 1]);
+  }
+
   edm::LogError("RandomProjector") << "Projected " << totbins << " bins from '" << meprefix << "' to "
-                                  << out->getFullname() << "(" << ndimensions << " dimensions)";
+                                   << out->getFullname() << "(" << ndimensions << " dimensions)";
   if (writetostdout) {
     edm::LuminosityBlockID runlumi = out->getRunLumi();
     std::cout << out->getFullname() << "," << runlumi.run() << "," << runlumi.luminosityBlock() << ",";
