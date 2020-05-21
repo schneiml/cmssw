@@ -64,7 +64,7 @@ void RandomProjector::dqmEndLuminosityBlock(DQMStore::IBooker& ibooker,
 }
 
 void RandomProjector::dqmEndJob(DQMStore::IBooker& ibooker, DQMStore::IGetter& igetter) {
-  performProjection(igetter, ibooker, MonitorElementData::Scope::JOB);
+  //performProjection(igetter, ibooker, MonitorElementData::Scope::JOB);
 }
 
 void RandomProjector::performProjection(DQMStore::IGetter& igetter,
@@ -73,7 +73,7 @@ void RandomProjector::performProjection(DQMStore::IGetter& igetter,
   edm::LogInfo("RandomProjector") << "Performing Projection of '" << meprefix << "' to " << ndimensions
                                   << " dimensions";
 
-  auto mes = igetter.getAllContents("");
+  auto mes = igetter.getAllContents(meprefix);
 
   ibooker.setCurrentFolder(outputdir);
   std::string outname = "randomprojection_" + meprefix;
@@ -93,14 +93,14 @@ void RandomProjector::performProjection(DQMStore::IGetter& igetter,
       continue;
 
     std::string name = me->getFullname();
-    if (name.rfind(meprefix, 0) != 0)
-      continue;
 
     auto rand = std::minstd_rand();
     rand.seed(42);         // determinisitc starting seed
     for (char c : name) {  // poor man's hash function
+      rand();
       auto next = rand();
       rand.seed(next + c);
+      rand();
     }
     // now rand() should be a nice random but reproducible sequence based on the ME name.
 
@@ -143,13 +143,14 @@ void RandomProjector::performProjection(DQMStore::IGetter& igetter,
       }
     }
   }
-  edm::LogInfo("RandomProjector") << "Projected " << totbins << " bins from '" << meprefix << "' to "
+  edm::LogError("RandomProjector") << "Projected " << totbins << " bins from '" << meprefix << "' to "
                                   << out->getFullname() << "(" << ndimensions << " dimensions)";
   if (writetostdout) {
-    std::cout << out->getFullname() << ";";
+    edm::LuminosityBlockID runlumi = out->getRunLumi();
+    std::cout << out->getFullname() << "," << runlumi.run() << "," << runlumi.luminosityBlock() << ",";
     for (int i = 1; i <= ndimensions; i++) {
       double val = out->getBinContent(i);
-      std::cout << val << ";";
+      std::cout << val << ",";
     }
     std::cout << "\n";
   }
