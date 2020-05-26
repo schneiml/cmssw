@@ -141,9 +141,17 @@ class MEInfo:
             s = nanoroot.String.unpack(obj, 0, len(obj), None)
             return ScalarValue(b'', s, b's')
         # else
-        classversion = 3 #TODO: we need to have a better guess here...
+        # Usually this value is unused since the class version is already in
+        # the buffer. Only needed for some Trees in DQMIO.
+        #TODO: we need to have a better guess here...
+        classversion = 3 
+        # The buffers in a TKey based file start with the TKey. Since we only 
+        # send the object to the renderer, we need to compensate for that using
+        # the displacement.
+        # TODO: not sure if this does in fact work for TTrees.
+        displacement = - key.fields.fKeyLen - self.offset
         # metype doubles as root class name here.
-        return nanoroot.TBufferFile(obj, self.metype, classversion) 
+        return nanoroot.TBufferFile(obj, self.metype, displacement, classversion) 
 
 
     @staticmethod
