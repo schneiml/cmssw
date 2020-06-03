@@ -72,6 +72,7 @@ void RandomProjector::dqmEndJob(DQMStore::IBooker& ibooker, DQMStore::IGetter& i
 // - Without modulo
 // - As a plain inline function operating on simple types.
 // All of this to help the compiler with auto-vectorization.
+// TODO: Better use a more sane, fast and good random generator here -- sth. like xor-shift.
 typedef uint32_t rand_type;
 static inline rand_type minstd_step(rand_type x) {
   // return (a * x + c) mod m
@@ -79,6 +80,17 @@ static inline rand_type minstd_step(rand_type x) {
   rand_type m = 2147483647UL;
   // unrolled shift-add multiplication with modulo after every step, for constant 48271UL.
   // We could use a loop but GCC seems uable to unroll that itself...
+  // Base version:
+  //int a = 48271;
+  //for (int i = 0; i < 16; i++) {
+  //  if (a & 1) {
+  //    acc += x;
+  //    if (acc >= m) acc -= m;
+  //  }
+  //  x = x * 2;
+  //  if (x >= m) x -= m;
+  //  a = a / 2;
+  //}
   acc += x;
   if (acc >= m)
     acc -= m;

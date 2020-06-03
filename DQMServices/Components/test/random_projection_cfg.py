@@ -3,15 +3,21 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("HARVESTING")
 process.add_(cms.Service("DQMStore"))
 process.add_(cms.Service("Tracer"))
-process.RandomProjector = cms.EDProducer("RandomProjector",
-  meprefix = cms.untracked.string(""),
-  ndimensions = cms.untracked.int32(128))
+
+subsystems = ["CSC", "DT", "Ecal", "Hcal", "L1T", "RPC", "SiStrip", "PixelPhase1"]
+modules = []
+for subsys in subsystems:
+  p = cms.EDProducer("RandomProjector",
+    meprefix = cms.untracked.string(subsys),
+    ndimensions = cms.untracked.int32(128))
+  setattr(process, "RandomProjector" + subsys, p)
+  modules.append(p)
 
 process.source = cms.Source("DQMRootSource",
   fileNames = cms.untracked.vstring(),
   reScope = cms.untracked.string("LUMI"))
 
-process.harvest = cms.Sequence(process.RandomProjector)
+process.harvest = cms.Sequence(sum(modules, modules[0]))
 process.p = cms.Path(process.harvest)
 
 #process.Tracer = cms.Service("Tracer")
