@@ -2,9 +2,10 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("HARVESTING")
 process.add_(cms.Service("DQMStore"))
+process.add_(cms.Service("Tracer"))
 process.RandomProjector = cms.EDProducer("RandomProjector",
   meprefix = cms.untracked.string(""),
-  ndimensions = cms.untracked.int32(100))
+  ndimensions = cms.untracked.int32(128))
 
 process.source = cms.Source("DQMRootSource",
   fileNames = cms.untracked.vstring(),

@@ -67,19 +67,18 @@ void RandomProjector::dqmEndJob(DQMStore::IBooker& ibooker, DQMStore::IGetter& i
   //performProjection(igetter, ibooker, MonitorElementData::Scope::JOB);
 }
 
-// rather than using the std::minstd_rand for perf-ciritcal stuff, we re-implement the
-// same algortihm:
-// - Using a floating-point type
+// rather than using the std::minstd_rand for perf-critical stuff, we re-implement the
+// same algorithm:
 // - Without modulo
 // - As a plain inline function operating on simple types.
 // All of this to help the compiler with auto-vectorization.
-typedef double rand_type;
+typedef uint32_t rand_type;
 static inline rand_type minstd_step(rand_type x) {
   // return (a * x + c) mod m
   rand_type acc = 0;
   rand_type m = 2147483647UL;
   // unrolled shift-add multiplication with modulo after every step, for constant 48271UL.
-  // Maybe we could use a loop and rely on it being unrolled instead...
+  // We could use a loop but GCC seems uable to unroll that itself...
   acc += x;
   if (acc >= m)
     acc -= m;
@@ -162,22 +161,48 @@ static inline rand_type minstd_step(rand_type x) {
 // - be able to use __restrict__ pointers.
 // - make the compiler debug output mor readable.
 // - Help the compiler being less confused.
-typedef double accu_type;
+// We process four dimensions at once, using one bayt each of our 32-bit randomness.
+// Since this vectorizes into 8-long vectors, ndims should be divisible by 32.
+typedef float accu_type;
 static void doAccumulate(rand_type* __restrict__ localrands,
                          accu_type val,
                          accu_type* __restrict__ outbuf,
                          int ndimensions) {
-  for (int currentdim = 0; currentdim < ndimensions; currentdim++) {
+  int quarterdim = ndimensions / 4;
+  assert(4 * quarterdim == ndimensions);
+  for (int currentdim = 0; currentdim < quarterdim; currentdim++) {
     rand_type x = minstd_step(localrands[currentdim]);
-    rand_type r = x;
+    // we do one random generation and then two dimensions at once to save on the expensive ops.
+    rand_type r1 = x & 0x7F;
+    rand_type r2 = (x >> 8) & 0x7F;
+    rand_type r3 = (x >> 16) & 0x7F;
+    rand_type r4 = (x >> 24) & 0x7F;
     localrands[currentdim] = x;
-    accu_type weight = 0.f;
-    // the random number has range 1..0x7FFFFFFF, these values are 1/6 and 2/6 of that.
-    if (r < 715827882)
-      weight = 1.f;  // 1/6'th each, remaining 2/3's stay 0.
-    if (r < 357913941)
-      weight = -1.f;
-    outbuf[currentdim] += weight * val;
+    accu_type weight1 = 0.f;
+    accu_type weight2 = 0.f;
+    accu_type weight3 = 0.f;
+    accu_type weight4 = 0.f;
+    // the random number has range 1..0x7FFF, these values are 1/6 and 2/6 of that.
+    if (r1 < 84)
+      weight1 = 1.f;  // 1/6'th each, remaining 2/3's stay 0.
+    if (r1 < 42)
+      weight1 = -1.f;
+    if (r2 < 84)
+      weight2 = 1.f;  // 1/6'th each, remaining 2/3's stay 0.
+    if (r2 < 42)
+      weight2 = -1.f;
+    if (r3 < 84)
+      weight2 = 1.f;  // 1/6'th each, remaining 2/3's stay 0.
+    if (r3 < 42)
+      weight3 = -1.f;
+    if (r4 < 84)
+      weight4 = 1.f;  // 1/6'th each, remaining 2/3's stay 0.
+    if (r4 < 42)
+      weight4 = -1.f;
+    outbuf[currentdim] += weight1 * val;
+    outbuf[currentdim + 1 * quarterdim] += weight2 * val;
+    outbuf[currentdim + 2 * quarterdim] += weight3 * val;
+    outbuf[currentdim + 3 * quarterdim] += weight4 * val;
   }
 }
 
@@ -219,9 +244,8 @@ void RandomProjector::performProjection(DQMStore::IGetter& igetter,
     // now rand() should be a nice random but reproducible sequence based on the ME name.
 
     // then, we branch off one random generator per dimension to remove a
-    // loop-carried dependency below. That should be enough to get the auto-vectorizer
-    // involved.
-    // We define out own minstd variant with 64 bit state for vectorization (padding!)
+    // loop-carried dependency below.
+    // Actually, we will only use 1/4 of these, but that does not matter.
     auto localrands = &localrands_vec[0];
     for (int currentdim = 0; currentdim < ndimensions; currentdim++) {
       // offset seed a bit, else they all produce the same (offset) sequence
@@ -234,6 +258,7 @@ void RandomProjector::performProjection(DQMStore::IGetter& igetter,
     // We can drop the sqrt(3) since we don't care about the linear scaling.
     // That leaves the distribution between the three, which should be 1/6, 4/6, 1/6.
     // Sixth's are hard as a power of two, but we can approximate using a lot of bits.
+    //auto weightdist = std::uniform_int_distribution<int>(1, 6);
 
     float* buf = nullptr;
     int nbins = 0;
@@ -253,6 +278,18 @@ void RandomProjector::performProjection(DQMStore::IGetter& igetter,
         if (isnan(val) || isinf(val))
           val = 0;
         doAccumulate(localrands, val, outbuf, ndimensions);
+        // Naive version:
+        // The problem here are two integer divisions, in rand() and weightdist().
+        // Also, this would not vectorize due to a loop-carried dependency in rand().
+        //for (int currentdim = 0; currentdim < ndimensions; currentdim++) {
+        //  int r = weightdist(rand);
+        //  accu_type weight = 0.f;
+        //  if (r == 1)
+        //    weight = 1.f;  // 1/6'th each, remaining 2/3's stay 0.
+        //  if (r == 6)
+        //    weight = -1.f;
+        //  outbuf[currentdim] += weight * val;
+        //}
       }
       totbins += nbins;
     }
