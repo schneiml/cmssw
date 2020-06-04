@@ -2,7 +2,7 @@ import glob
 from storage import GUIDataStore
 from compressing import GUIBlobCompressor
 from data_types import FileFormat, SampleFull
-from importing.tdirectory_importer import TDirectoryImporter
+from importing.tdirectory_importer import TDirectoryImporter, DQMIOImporter
 
 
 class GUIImportManager:
@@ -93,5 +93,5 @@ class GUIImportManager:
         if file_format == FileFormat.TDIRECTORY:
             return TDirectoryImporter()
         elif file_format == FileFormat.TTREE:
-            raise Exception('DQMIO import is not yet supported.')
+            return DQMIOImporter()
         return None
