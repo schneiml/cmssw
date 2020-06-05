@@ -2,7 +2,7 @@ import glob
 from storage import GUIDataStore
 from compressing import GUIBlobCompressor
 from data_types import FileFormat, SampleFull
-from importing.tdirectory_importer import TDirectoryImporter, DQMIOImporter
+from importing.dqmclassic_importer import DQMCLASSICImporter
 
 
 class GUIImportManager:
@@ -37,13 +37,13 @@ class GUIImportManager:
             
             print(f'Found {len(files)} files, importing...')
         
-            importer = cls.__pick_importer(FileFormat.TDIRECTORY)
+            importer = cls.__pick_importer(FileFormat.DQMCLASSIC)
             samples = []
 
             # Parse filenames to get the metadata
             for file in files:
                 run, dataset = importer.parse_filename(file)
-                samples.append(SampleFull(dataset=dataset, run=int(run), lumi=0, file=file, fileformat=FileFormat.TDIRECTORY))
+                samples.append(SampleFull(dataset=dataset, run=int(run), lumi=0, file=file, fileformat=FileFormat.DQMCLASSIC))
 
             await cls.register_samples(samples)
 
@@ -62,12 +62,12 @@ class GUIImportManager:
         It is required to first import the blobs before samples can be used.
         """
 
-        file, fileformat = await cls.store.get_sample_file_info(dataset, run, lumi)
-        if not file: # Sample doesn't exist
+        filename, fileformat = await cls.store.get_sample_file_info(dataset, run, lumi)
+        if not filename: # Sample doesn't exist
             return False
         
         importer = cls.__pick_importer(fileformat)
-        mes = await importer.get_mes_list(file, dataset, run, lumi)
+        mes = await importer.get_mes_list(filename, dataset, run, lumi)
         mes.sort()
 
         # Separate lists
@@ -78,7 +78,7 @@ class GUIImportManager:
         names_blob = await cls.compressor.compress_names_list(names_list)
         infos_blob = await cls.compressor.compress_infos_list(infos_list)
 
-        await cls.store.add_blobs(names_blob, infos_blob, dataset, file, run, lumi)
+        await cls.store.add_blobs(names_blob, infos_blob, dataset, filename, run, lumi)
 
         return True
 
@@ -90,8 +90,8 @@ class GUIImportManager:
         If a new file format are added, an importer has to be registered in this method.
         """
 
-        if file_format == FileFormat.TDIRECTORY:
-            return TDirectoryImporter()
-        elif file_format == FileFormat.TTREE:
-            return DQMIOImporter()
+        if file_format == FileFormat.DQMCLASSIC:
+            return DQMCLASSICImporter()
+        elif file_format == FileFormat.DQMIO:
+            raise Exception('DQMIO import is not yet supported.')
         return None

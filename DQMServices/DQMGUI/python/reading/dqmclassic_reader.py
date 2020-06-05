@@ -4,7 +4,7 @@ from data_types import ScalarValue, EfficiencyFlag, QTest
 from ioservice import IOService
 
 
-class TDirectoryReader:
+class DQMCLASSICReader:
 
     ioservice = IOService()
 
