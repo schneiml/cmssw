@@ -1,6 +1,6 @@
 import asyncio
 
-from async_lru import alru_cache
+from ..async_lru import alru_cache
 
 from ..helpers import logged
 from ..ioservice import IOService

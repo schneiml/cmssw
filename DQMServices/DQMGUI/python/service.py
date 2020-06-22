@@ -7,7 +7,7 @@ import json
 import struct
 from collections import defaultdict
 
-from async_lru import alru_cache
+from .async_lru import alru_cache
 
 from .storage import GUIDataStore
 from .helpers import PathUtil, get_api_error, binary_search, logged

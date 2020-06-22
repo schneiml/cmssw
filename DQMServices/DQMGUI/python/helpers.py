@@ -1,5 +1,6 @@
 import os
 import time
+import asyncio
 from collections import namedtuple
 from inspect import getframeinfo, stack
 
@@ -21,22 +22,42 @@ class Timed():
         elapsed = elapsed * 1000
         print('%s:%s - %s ms' % (self.filename, self.lineno, elapsed))
 
+logged_id = 0
 def logged(fn):
     """ A decorator to writee timing information to a log. """
-    async def wrapped(*posargs, **kwargs):
+    async def logged_wrapped(*posargs, **kwargs):
+        reqid = None
+        depth = 1
+
+        #for t in asyncio.tasks.all_tasks():
+        #    print(t.get_coro(), t.get_coro().cr_await)
+        
+        s = stack()
+        for f in s[1:]:
+            if f.function == 'logged_wrapped':
+                reqid = f.frame.f_locals['reqid']
+                depth = f.frame.f_locals['depth'] + 1
+                break
+        if reqid == None:
+            global logged_id
+            logged_id += 1
+            reqid = logged_id
+
         showargs = [repr(arg) for arg in posargs if isinstance(arg, str) or isinstance(arg, int) or isinstance(arg, tuple)]
         showargs += [repr(arg) for arg in kwargs.values() if isinstance(arg, str) or isinstance(arg, int) or isinstance(arg, tuple)]
-        msg = f"{fn.__name__}({', '.join(showargs)})"
-        start_time = time.time()
-        ok = "FAIL"
+        print(reqid, "  "*depth, fn.__qualname__, showargs)
+        start = time.time()
         try:
-            ret = await fn(*posargs, **kwargs)
+            res = await fn(*posargs, **kwargs)
             ok = "OK"
+        except:
+            ok = "FAIL"
+            raise
         finally:
-            elapsed = time.time() - start_time
-            print(f"{msg} [{ok} {elapsed*1000:.1f}ms]")
-        return ret
-    return wrapped
+            end = time.time()
+            print(reqid, "  "*depth, fn.__qualname__, ok, end-start)
+        return res
+    return logged_wrapped
 
 class PathUtil:
     """This helper class provides methods to handle common ME path related operations."""
