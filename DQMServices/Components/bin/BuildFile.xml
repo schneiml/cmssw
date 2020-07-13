@@ -2,3 +2,6 @@
   <use name="DQMServices/Core"/>
   <use name="protobuf"/>
 </bin>
+<bin name="dqmioHadd" file="dqmioHadd.cc">
+  <use name="DQMServices/Core"/>
+</bin>
